@@ -101,6 +101,20 @@ init_docs로 docs 폴더 만들어줘
 - 코드 파일에 경고 표시 (Diagnostic)
 - 프로젝트 유형별 PRD 템플릿 (수익화/개인/사내)
 
+## 로드맵
+
+| 버전 | 목표 |
+|------|------|
+| **v0.1.0** ✅ | MVP - can_code, scan_docs, init_docs 등 9개 도구 |
+| **v0.2.0** | 문서 상태 추적 - freshness 체크, PROGRESS.md 자동화 |
+| **v0.3.0** | 문서-코드 동기화 - Git 커밋 후 문서 미수정 감지 |
+| **v0.4.0** | 컨텍스트 유지 - 세션 요약 저장/복원, handoff 생성 |
+| **v0.5.0** | 에러 학습 - 에러 패턴 기록/검색 |
+| **v1.0.0** | 안정화 + 웹 대시보드 + Boris 검증 통합 |
+| **v2.0.0** | shovel-setup 통합 (미정) |
+
+자세한 내용: [ROADMAP.md](https://github.com/JinHyeokPark28/clouvel/blob/main/ROADMAP.md)
+
 ## 왜?
 
 바이브코딩 = AI가 코드 짬.

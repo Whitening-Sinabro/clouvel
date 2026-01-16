@@ -4,9 +4,15 @@
 
 **PRD 없으면 코딩 없다.**
 
+---
+
+An MCP server that enforces the vibe-coding process.
+
+**No PRD, No Code.**
+
 ## 현재 버전
 
-- MCP 서버: v0.3.3
+- MCP 서버: v0.3.4
 - VS Code 확장: v0.10.2
 - Cursor 확장: v0.10.2
 
@@ -71,6 +77,7 @@ init_docs로 docs 폴더 만들어줘
 | `get_prd_guide` | PRD 작성 가이드 |
 | `get_verify_checklist` | 검증 체크리스트 |
 | `get_setup_guide` | 설치/설정 가이드 |
+| `get_analytics` | 도구 사용량 통계 (로컬 저장) |
 
 ## 사용 플로우
 
@@ -107,7 +114,7 @@ init_docs로 docs 폴더 만들어줘
 
 | 버전 | 목표 |
 |------|------|
-| **v0.1.0** ✅ | MVP - can_code, scan_docs, init_docs 등 9개 도구 |
+| **v0.1.0** ✅ | MVP - can_code, scan_docs, init_docs, get_analytics 등 10개 도구 |
 | **v0.2.0** | 문서 상태 추적 - freshness 체크, PROGRESS.md 자동화 |
 | **v0.3.0** | 문서-코드 동기화 - Git 커밋 후 문서 미수정 감지 |
 | **v0.4.0** | 컨텍스트 유지 - 세션 요약 저장/복원, handoff 생성 |

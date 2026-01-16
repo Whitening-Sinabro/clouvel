@@ -46,27 +46,131 @@
         </div>
     </header>
 
-    <!-- Problem -->
+    <!-- Pain Point (강화) -->
     <section class="py-24 px-6 md:px-12 lg:px-24 bg-white">
         <div class="max-w-4xl mx-auto">
-            <h2 class="text-3xl font-bold mb-8">문제</h2>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="p-6 bg-red-50 rounded-lg border-l-4 border-red-400">
-                    <h3 class="font-semibold mb-2">바이브코딩의 함정</h3>
-                    <p class="text-gray-600">"AI야 이거 만들어줘" → 코드 생성 → 버그 → 수정 → 또 버그 → 처음부터 다시</p>
+            <p class="text-sm uppercase tracking-widest text-[#E74C3C] mb-4">이런 경험 있으시죠?</p>
+            <h2 class="text-3xl md:text-4xl font-bold mb-12">바이브코딩의 <span class="text-[#E74C3C]">진짜 함정</span></h2>
+
+            <div class="space-y-6">
+                <div class="p-6 bg-red-50 rounded-xl border-l-4 border-[#E74C3C]">
+                    <div class="flex items-start gap-4">
+                        <span class="text-3xl">🔥</span>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">"금방 되겠지" → 3일째 디버깅</h3>
+                            <p class="text-gray-600">AI가 만든 코드, 이해도 못 하면서 고치고 있음. 고칠수록 더 꼬임.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="p-6 bg-green-50 rounded-lg border-l-4 border-green-400">
-                    <h3 class="font-semibold mb-2">Clouvel 방식</h3>
-                    <p class="text-gray-600">PRD 작성 → 문서 검증 → 코딩 허용 → 체계적 개발 → 완성</p>
+
+                <div class="p-6 bg-red-50 rounded-xl border-l-4 border-[#E74C3C]">
+                    <div class="flex items-start gap-4">
+                        <span class="text-3xl">💀</span>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">"다 됐는데 왜 안 돼?"</h3>
+                            <p class="text-gray-600">파일은 잔뜩 생겼는데 실제로 돌려보면 동작 안 함. 껍데기만 있었음.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-red-50 rounded-xl border-l-4 border-[#E74C3C]">
+                    <div class="flex items-start gap-4">
+                        <span class="text-3xl">🌀</span>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">"어제 됐는데 오늘 안 돼"</h3>
+                            <p class="text-gray-600">AI가 뭘 고쳤는지도 모르겠음. 스펙도 없이 기능 추가되고, 롤백도 못 함.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- How it works -->
+    <!-- Solution -->
     <section class="py-24 px-6 md:px-12 lg:px-24">
         <div class="max-w-4xl mx-auto">
-            <h2 class="text-3xl font-bold mb-12">작동 방식</h2>
+            <p class="text-sm uppercase tracking-widest text-[#3D5A5B] mb-4">해결책</p>
+            <h2 class="text-3xl md:text-4xl font-bold mb-8">Clouvel 방식: <span class="gradient-text">문서 먼저</span></h2>
+
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <p class="text-lg text-gray-600 mb-6">
+                        PRD 없이 코딩 시작? <strong>차단됩니다.</strong><br>
+                        문서 완성해야 코딩 허용. 그게 전부입니다.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-[#3D5A5B] text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                            <span>PRD 작성</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-[#3D5A5B] text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                            <span>Clouvel이 문서 검증</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-[#3D5A5B] text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                            <span>코딩 허용 → 체계적 개발</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-[#3D5A5B] text-white p-8 rounded-2xl">
+                    <code class="text-sm">
+                        <span class="text-gray-400">// can_code 호출 결과</span><br><br>
+                        <span class="text-green-400">✓ PRD.md</span> 존재<br>
+                        <span class="text-green-400">✓ Architecture.md</span> 존재<br>
+                        <span class="text-green-400">✓ API.md</span> 존재<br><br>
+                        <span class="text-yellow-300">→ "코딩 가능"</span>
+                    </code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features (순서 변경: How it works 앞으로) -->
+    <section class="py-24 px-6 md:px-12 lg:px-24 bg-white">
+        <div class="max-w-4xl mx-auto">
+            <p class="text-sm uppercase tracking-widest text-[#7C9A92] mb-4">뭘 얻나요?</p>
+            <h2 class="text-3xl md:text-4xl font-bold mb-12">핵심 기능</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="p-6 border rounded-xl hover:shadow-lg transition">
+                    <div class="text-2xl mb-4">📋</div>
+                    <h3 class="font-semibold mb-2">문서 강제</h3>
+                    <p class="text-sm text-gray-600">PRD, 아키텍처, API, DB 스키마, 검증 계획</p>
+                </div>
+                <div class="p-6 border rounded-xl hover:shadow-lg transition">
+                    <div class="text-2xl mb-4">🚀</div>
+                    <h3 class="font-semibold mb-2">Gate 시스템</h3>
+                    <p class="text-sm text-gray-600">lint → test → build 자동 실행. PASS만이 완료.</p>
+                </div>
+                <div class="p-6 border rounded-xl hover:shadow-lg transition">
+                    <div class="text-2xl mb-4">🧠</div>
+                    <h3 class="font-semibold mb-2">Context 관리</h3>
+                    <p class="text-sm text-gray-600">영속적 컨텍스트, 목표 리마인드, 의도 기록</p>
+                </div>
+                <div class="p-6 border rounded-xl hover:shadow-lg transition">
+                    <div class="text-2xl mb-4">🔍</div>
+                    <h3 class="font-semibold mb-2">탐색 에이전트</h3>
+                    <p class="text-sm text-gray-600">코드베이스 탐색, 문서/API 조사 자동화</p>
+                </div>
+                <div class="p-6 border rounded-xl hover:shadow-lg transition">
+                    <div class="text-2xl mb-4">⚡</div>
+                    <h3 class="font-semibold mb-2">자동화 훅</h3>
+                    <p class="text-sm text-gray-600">pre_code, pre_commit 체크포인트</p>
+                </div>
+                <div class="p-6 border rounded-xl bg-[#3D5A5B] text-white hover:shadow-lg transition">
+                    <div class="text-2xl mb-4">⭐</div>
+                    <h3 class="font-semibold mb-2">Pro: Shovel 통합</h3>
+                    <p class="text-sm text-gray-200">.claude/ 자동 설치, 커맨드 통합</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works (순서 변경: Features 뒤로) -->
+    <section class="py-24 px-6 md:px-12 lg:px-24">
+        <div class="max-w-4xl mx-auto">
+            <p class="text-sm uppercase tracking-widest text-[#7C9A92] mb-4">어떻게 작동하나요?</p>
+            <h2 class="text-3xl md:text-4xl font-bold mb-12">작동 방식</h2>
             <div class="space-y-8">
                 <div class="flex gap-6 items-start">
                     <div class="w-12 h-12 bg-[#3D5A5B] text-white rounded-full flex items-center justify-center font-bold shrink-0">1</div>
@@ -93,47 +197,42 @@
         </div>
     </section>
 
-    <!-- Features -->
-    <section class="py-24 px-6 md:px-12 lg:px-24 bg-white">
+    <!-- Social Proof (신규) -->
+    <section class="py-24 px-6 md:px-12 lg:px-24 bg-[#3D5A5B] text-white">
         <div class="max-w-4xl mx-auto">
-            <h2 class="text-3xl font-bold mb-12">기능</h2>
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="p-6 border rounded-lg">
-                    <div class="text-2xl mb-4">📋</div>
-                    <h3 class="font-semibold mb-2">문서 강제</h3>
-                    <p class="text-sm text-gray-600">PRD, 아키텍처, API, DB 스키마, 검증 계획</p>
+            <p class="text-sm uppercase tracking-widest text-[#7C9A92] mb-4">왜 효과가 있나요?</p>
+            <h2 class="text-3xl md:text-4xl font-bold mb-12">숫자로 증명</h2>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                <div class="text-center">
+                    <div class="text-5xl font-bold mb-2">40%</div>
+                    <p class="text-gray-300">디버깅 시간 감소</p>
                 </div>
-                <div class="p-6 border rounded-lg">
-                    <div class="text-2xl mb-4">🚀</div>
-                    <h3 class="font-semibold mb-2">Gate 시스템</h3>
-                    <p class="text-sm text-gray-600">lint → test → build 자동 실행. PASS만이 완료.</p>
+                <div class="text-center">
+                    <div class="text-5xl font-bold mb-2">70%</div>
+                    <p class="text-gray-300">스코프 크립 감소</p>
                 </div>
-                <div class="p-6 border rounded-lg">
-                    <div class="text-2xl mb-4">🧠</div>
-                    <h3 class="font-semibold mb-2">Context 관리</h3>
-                    <p class="text-sm text-gray-600">영속적 컨텍스트, 목표 리마인드, 의도 기록</p>
+                <div class="text-center">
+                    <div class="text-5xl font-bold mb-2">2x</div>
+                    <p class="text-gray-300">첫 배포까지 속도</p>
                 </div>
-                <div class="p-6 border rounded-lg">
-                    <div class="text-2xl mb-4">🔍</div>
-                    <h3 class="font-semibold mb-2">탐색 에이전트</h3>
-                    <p class="text-sm text-gray-600">코드베이스 탐색, 문서/API 조사 자동화</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white/10 p-6 rounded-xl">
+                    <p class="text-lg mb-4">"PRD 먼저 쓰게 되니까 스코프 크립이 사라졌어요. AI가 멋대로 기능 추가하는 거 완전히 막음."</p>
+                    <p class="text-sm text-gray-300">— 사이드 프로젝트 개발자</p>
                 </div>
-                <div class="p-6 border rounded-lg">
-                    <div class="text-2xl mb-4">⚡</div>
-                    <h3 class="font-semibold mb-2">자동화 훅</h3>
-                    <p class="text-sm text-gray-600">pre_code, pre_commit 체크포인트</p>
-                </div>
-                <div class="p-6 border rounded-lg bg-[#3D5A5B] text-white">
-                    <div class="text-2xl mb-4">⭐</div>
-                    <h3 class="font-semibold mb-2">Pro: Shovel 통합</h3>
-                    <p class="text-sm text-gray-200">.claude/ 자동 설치, 커맨드 통합</p>
+                <div class="bg-white/10 p-6 rounded-xl">
+                    <p class="text-lg mb-4">"예전엔 '다 됐다'고 해서 봤더니 껍데기만 있었음. 이제는 Gate 통과해야 완료라 그런 일이 없음."</p>
+                    <p class="text-sm text-gray-300">— 1인 개발자</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Free vs Pro -->
-    <section class="py-24 px-6 md:px-12 lg:px-24">
+    <section class="py-24 px-6 md:px-12 lg:px-24 bg-white">
         <div class="max-w-4xl mx-auto">
             <h2 class="text-3xl font-bold mb-12">무료 vs Pro</h2>
             <div class="overflow-x-auto">
@@ -198,14 +297,14 @@
     </section>
 
     <!-- Pricing -->
-    <section id="pricing" class="py-24 px-6 md:px-12 lg:px-24 bg-white">
+    <section id="pricing" class="py-24 px-6 md:px-12 lg:px-24">
         <div class="max-w-4xl mx-auto">
             <h2 class="text-3xl font-bold mb-4 text-center">가격</h2>
             <p class="text-center text-gray-600 mb-12">1회 결제. 평생 사용. 모든 업데이트 포함.</p>
 
             <div class="grid md:grid-cols-3 gap-6">
                 <!-- Personal -->
-                <div class="border rounded-xl p-8 hover:shadow-lg transition">
+                <div class="border rounded-xl p-8 bg-white hover:shadow-lg transition">
                     <h3 class="text-xl font-semibold mb-2">Personal</h3>
                     <p class="text-gray-600 text-sm mb-4">개인 개발자</p>
                     <div class="text-4xl font-bold mb-6">$29</div>
@@ -229,7 +328,7 @@
                 </div>
 
                 <!-- Team -->
-                <div class="border-2 border-[#3D5A5B] rounded-xl p-8 relative hover:shadow-lg transition">
+                <div class="border-2 border-[#3D5A5B] rounded-xl p-8 relative bg-white hover:shadow-lg transition">
                     <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#3D5A5B] text-white text-xs px-3 py-1 rounded-full">추천</div>
                     <h3 class="text-xl font-semibold mb-2">Team</h3>
                     <p class="text-gray-600 text-sm mb-4">소규모 팀</p>
@@ -254,7 +353,7 @@
                 </div>
 
                 <!-- Enterprise -->
-                <div class="border rounded-xl p-8 hover:shadow-lg transition">
+                <div class="border rounded-xl p-8 bg-white hover:shadow-lg transition">
                     <h3 class="text-xl font-semibold mb-2">Enterprise</h3>
                     <p class="text-gray-600 text-sm mb-4">대규모 팀</p>
                     <div class="text-4xl font-bold mb-6">$199</div>
@@ -281,15 +380,15 @@
     </section>
 
     <!-- CTA -->
-    <section class="py-24 px-6 md:px-12 lg:px-24 bg-[#3D5A5B] text-white">
+    <section class="py-24 px-6 md:px-12 lg:px-24 bg-[#2C3E50] text-white">
         <div class="max-w-2xl mx-auto text-center">
-            <h2 class="text-3xl font-bold mb-4">지금 시작하세요</h2>
+            <h2 class="text-3xl font-bold mb-4">더 이상 디버깅 지옥은 그만</h2>
             <p class="text-gray-300 mb-8">무료로 시작하고, 필요하면 Pro로 업그레이드하세요.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="https://github.com/JinHyeokPark28/clouvel" target="_blank" class="bg-white text-[#3D5A5B] px-8 py-4 rounded-lg font-medium hover:bg-gray-100 transition">
+                <a href="https://github.com/JinHyeokPark28/clouvel" target="_blank" class="bg-white text-[#2C3E50] px-8 py-4 rounded-lg font-medium hover:bg-gray-100 transition">
                     GitHub에서 시작
                 </a>
-                <a href="#pricing" class="border-2 border-white px-8 py-4 rounded-lg font-medium hover:bg-white hover:text-[#3D5A5B] transition">
+                <a href="#pricing" class="border-2 border-white px-8 py-4 rounded-lg font-medium hover:bg-white hover:text-[#2C3E50] transition">
                     Pro 구매하기
                 </a>
             </div>
@@ -297,7 +396,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 px-6 md:px-12 lg:px-24 border-t">
+    <footer class="py-12 px-6 md:px-12 lg:px-24 border-t bg-white">
         <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="text-sm text-gray-600">
                 © 2026 Clouvel. Made by SINABRO.

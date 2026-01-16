@@ -136,6 +136,40 @@ async def list_tools() -> list[Tool]:
                 }
             }
         ),
+        Tool(
+            name="init_clouvel",
+            description="""🚀 Clouvel 온보딩. 처음 사용자에게 플랫폼 선택을 안내하고 맞춤 설정을 도와줌.
+
+사용자가 Clouvel을 처음 사용하거나 설정이 필요할 때 이 도구를 호출하세요.""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "platform": {
+                        "type": "string",
+                        "description": "사용 환경",
+                        "enum": ["desktop", "vscode", "cli", "ask"]
+                    }
+                }
+            }
+        ),
+        Tool(
+            name="setup_cli",
+            description="""CLI(Claude Code) 환경 설정. hooks, CLAUDE.md 규칙, pre-commit hook을 자동 생성.
+
+Claude Code에서 "PRD 없으면 코딩 금지"를 강제하기 위한 설정.""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                    "level": {
+                        "type": "string",
+                        "description": "강제 수준",
+                        "enum": ["remind", "strict", "full"]
+                    }
+                },
+                "required": ["path"]
+            }
+        ),
     ]
 
 
@@ -180,6 +214,13 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
         return await _get_analytics(
             arguments.get("path", None),
             arguments.get("days", 30)
+        )
+    elif name == "init_clouvel":
+        return await _init_clouvel(arguments.get("platform", "ask"))
+    elif name == "setup_cli":
+        return await _setup_cli(
+            arguments.get("path", ""),
+            arguments.get("level", "remind")
         )
     else:
         return [TextContent(type="text", text=f"Unknown tool: {name}")]
@@ -1230,14 +1271,505 @@ async def _get_analytics(path: str | None, days: int) -> list[TextContent]:
         return [TextContent(type="text", text=f"통계 조회 실패: {e}")]
 
 
+async def _init_clouvel(platform: str) -> list[TextContent]:
+    """Clouvel 온보딩 - 플랫폼별 맞춤 안내"""
+
+    if platform == "ask":
+        return [TextContent(type="text", text="""# 🚀 Clouvel 시작하기
+
+어떤 환경에서 사용하시나요?
+
+## 1️⃣ Claude Desktop
+- 대화형으로 PRD 작성 도움
+- MCP 도구로 문서 체크
+- **추천: 바이브코딩 입문자**
+
+## 2️⃣ VS Code / Cursor
+- 사이드바에서 문서 상태 확인
+- 에디터 내 가이드
+- **추천: 에디터 중심 작업**
+
+## 3️⃣ Claude Code (CLI)
+- 터미널에서 코딩
+- Hooks로 자동 체크
+- **추천: 파워 유저**
+
+---
+
+**사용자에게 물어보세요:**
+"어떤 환경에서 사용하시나요? (desktop / vscode / cli)"
+
+선택 후 `init_clouvel` 도구를 다시 호출하세요.
+예: init_clouvel(platform="cli")
+""")]
+
+    elif platform == "desktop":
+        return [TextContent(type="text", text="""# ✅ Claude Desktop 설정 완료!
+
+MCP 서버가 이미 연결되어 있습니다.
+
+## 사용법
+
+### 코딩 전 체크
+```
+"이 프로젝트 코딩해도 돼?" → can_code 도구 자동 호출
+```
+
+### PRD 작성 도움
+```
+"PRD 작성 도와줘" → get_prd_guide + get_prd_template
+```
+
+### 문서 분석
+```
+"docs 폴더 분석해줘" → analyze_docs
+```
+
+---
+
+## 다음 단계
+
+1. 프로젝트 docs 폴더 경로를 알려주세요
+2. `can_code` 도구로 문서 상태 확인
+3. 부족한 문서가 있으면 작성 도움 받기
+
+**시작할까요?** 프로젝트 경로를 알려주세요!
+""")]
+
+    elif platform == "vscode":
+        return [TextContent(type="text", text="""# 🔧 VS Code / Cursor 설정
+
+## 1단계: 확장 설치
+
+1. VS Code 열기
+2. 확장(Extensions) 탭 (Ctrl+Shift+X)
+3. "Clouvel" 검색 → 설치
+
+## 2단계: MCP 서버 연결
+
+터미널에서:
+```bash
+clouvel init
+```
+
+또는 명령 팔레트(Ctrl+Shift+P):
+```
+Clouvel: MCP 서버 설정
+```
+
+## 3단계: 사이드바 확인
+
+왼쪽에 Clouvel 아이콘이 생깁니다.
+문서 상태를 실시간으로 확인할 수 있습니다.
+
+---
+
+## CLI도 함께 쓴다면?
+
+`setup_cli` 도구로 Hooks 설정을 추가하세요:
+```
+setup_cli(path="프로젝트경로", level="remind")
+```
+""")]
+
+    elif platform == "cli":
+        return [TextContent(type="text", text="""# 🖥️ Claude Code (CLI) 설정
+
+CLI에서는 **강제**가 핵심입니다.
+자동 설정을 위해 `setup_cli` 도구를 사용하세요.
+
+## 강제 수준 선택
+
+| 수준 | 설명 | 추천 |
+|------|------|------|
+| `remind` | 경고만 출력 | 처음 써보는 분 |
+| `strict` | 커밋 차단 | 일반 사용 |
+| `full` | Hooks + 커밋 차단 | 확실한 강제 |
+
+## 설정 방법
+
+**사용자에게 물어보세요:**
+1. 프로젝트 경로가 어디인가요?
+2. 강제 수준은? (remind / strict / full)
+
+그 후 `setup_cli` 도구를 호출하세요:
+```
+setup_cli(path="프로젝트경로", level="strict")
+```
+
+---
+
+## 수동 설정 (참고용)
+
+### .claude/hooks.json
+```json
+{
+  "hooks": {
+    "preToolUse": [{
+      "matcher": "Edit|Write",
+      "hooks": ["clouvel-check"]
+    }]
+  }
+}
+```
+
+### CLAUDE.md 규칙
+```markdown
+## Clouvel 규칙
+코드 작성(Edit/Write) 전 반드시 can_code 도구 실행.
+```
+""")]
+
+    return [TextContent(type="text", text="알 수 없는 플랫폼입니다.")]
+
+
+async def _setup_cli(path: str, level: str) -> list[TextContent]:
+    """CLI 환경 설정 - hooks, CLAUDE.md, pre-commit"""
+    import json
+
+    project_path = Path(path)
+
+    if not project_path.exists():
+        return [TextContent(type="text", text=f"❌ 경로가 존재하지 않습니다: {path}")]
+
+    created_files = []
+
+    # 1. .claude 폴더 생성
+    claude_dir = project_path / ".claude"
+    claude_dir.mkdir(exist_ok=True)
+
+    # 2. hooks.json 생성 (remind, full 레벨)
+    if level in ["remind", "full"]:
+        hooks_content = {
+            "hooks": {
+                "preToolUse": [
+                    {
+                        "matcher": "Edit|Write|NotebookEdit",
+                        "hooks": [
+                            {
+                                "type": "command",
+                                "command": "echo '⚠️ [Clouvel] 코드 작성 전 can_code 도구로 문서 상태를 확인하세요!'"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+        hooks_file = claude_dir / "hooks.json"
+        hooks_file.write_text(json.dumps(hooks_content, indent=2, ensure_ascii=False), encoding='utf-8')
+        created_files.append(".claude/hooks.json")
+
+    # 3. CLAUDE.md 규칙 추가/생성
+    claude_md = project_path / "CLAUDE.md"
+    clouvel_rule = """
+## Clouvel 규칙 (자동 생성)
+
+> 이 규칙은 Clouvel이 자동으로 추가했습니다.
+
+### 필수 준수 사항
+1. **코드 작성 전 문서 체크**: Edit/Write 도구 사용 전 반드시 `can_code` 도구를 먼저 호출
+2. **can_code 실패 시 코딩 금지**: 필수 문서가 없으면 PRD 작성부터
+3. **PRD가 법**: docs/PRD.md에 없는 기능은 구현하지 않음
+
+### 워크플로우
+```
+사용자 요청 → can_code 호출 →
+  ├─ ✅ 통과 → 코딩 시작
+  └─ ❌ 실패 → PRD 작성 도움
+```
+"""
+
+    if claude_md.exists():
+        existing = claude_md.read_text(encoding='utf-8')
+        if "Clouvel 규칙" not in existing:
+            claude_md.write_text(existing + "\n" + clouvel_rule, encoding='utf-8')
+            created_files.append("CLAUDE.md (규칙 추가)")
+    else:
+        claude_md.write_text(f"# {project_path.name}\n" + clouvel_rule, encoding='utf-8')
+        created_files.append("CLAUDE.md (생성)")
+
+    # 4. pre-commit hook (strict, full 레벨)
+    if level in ["strict", "full"]:
+        git_hooks_dir = project_path / ".git" / "hooks"
+        if git_hooks_dir.exists():
+            pre_commit = git_hooks_dir / "pre-commit"
+            pre_commit_content = '''#!/bin/sh
+# Clouvel pre-commit hook
+# 문서 없이 커밋 방지
+
+DOCS_DIR="./docs"
+
+# PRD 파일 확인
+if ! ls "$DOCS_DIR"/*[Pp][Rr][Dd]* 1> /dev/null 2>&1; then
+    echo "❌ [Clouvel] 커밋 차단: PRD 문서가 없습니다."
+    echo ""
+    echo "먼저 docs/PRD.md를 작성하세요."
+    echo "도움: clouvel get_prd_template"
+    exit 1
+fi
+
+echo "✅ [Clouvel] 문서 체크 통과"
+'''
+            pre_commit.write_text(pre_commit_content, encoding='utf-8')
+            # 실행 권한 (Unix 계열)
+            try:
+                import os
+                os.chmod(pre_commit, 0o755)
+            except Exception:
+                pass
+            created_files.append(".git/hooks/pre-commit")
+        else:
+            created_files.append("⚠️ .git/hooks 없음 (git init 필요)")
+
+    # 결과 출력
+    files_list = "\n".join(f"  - {f}" for f in created_files)
+
+    level_desc = {
+        "remind": "리마인드 (경고만)",
+        "strict": "엄격 (커밋 차단)",
+        "full": "풀옵션 (Hooks + 커밋 차단)"
+    }
+
+    return [TextContent(type="text", text=f"""# ✅ CLI 설정 완료!
+
+## 설정 수준
+**{level_desc.get(level, level)}**
+
+## 생성/수정된 파일
+{files_list}
+
+## 작동 방식
+
+### Hooks (remind, full)
+```
+Edit/Write 호출 시 → 경고 메시지 출력
+```
+
+### CLAUDE.md 규칙
+```
+Claude가 규칙을 읽고 can_code 먼저 호출
+```
+
+### pre-commit (strict, full)
+```
+PRD 없이 커밋 시도 → 커밋 차단
+```
+
+---
+
+## 테스트 해보기
+
+1. `can_code` 도구로 현재 문서 상태 확인:
+   ```
+   can_code(path="{path}/docs")
+   ```
+
+2. PRD 없으면 생성:
+   ```
+   init_docs(path="{path}", project_name="프로젝트명")
+   ```
+
+**이제 PRD 없이는 코딩할 수 없습니다!** 🔒
+""")]
+
+
 async def run_server():
     async with stdio_server() as (read_stream, write_stream):
         await server.run(read_stream, write_stream, server.create_initialization_options())
 
 
+def _cli_init(args):
+    """CLI init 명령어 - 인터랙티브 설정"""
+    import json
+
+    # -p와 -l이 명시적으로 주어졌으면 바로 설정 (non-interactive)
+    if args.path and args.path != "." or args.level != "strict":
+        print("[Clouvel] Quick setup mode.\n")
+        _sync_setup_cli(args.path or ".", args.level)
+        return
+
+    print("[Clouvel] Setup started.\n")
+
+    # 플랫폼 선택
+    print("Where will you use Clouvel?")
+    print("  1) Claude Desktop")
+    print("  2) VS Code / Cursor")
+    print("  3) Claude Code (CLI)")
+    print("  4) All of the above")
+    print()
+
+    try:
+        choice = input("Select (1-4): ").strip()
+    except EOFError:
+        # Non-interactive 환경에서는 CLI로 기본 설정
+        print("\n[Auto] Non-interactive mode, using CLI defaults.")
+        _sync_setup_cli(args.path or ".", args.level)
+        return
+
+    platform_map = {"1": "desktop", "2": "vscode", "3": "cli", "4": "all"}
+    platform = platform_map.get(choice, "cli")
+
+    if platform in ["cli", "all"]:
+        print("\n[Path] Enter project path")
+        path = input(f"Path (default: {args.path or '.'}): ").strip() or args.path or "."
+
+        print("\nSelect enforcement level:")
+        print("  1) remind - Warning only")
+        print("  2) strict - Block commits (Recommended)")
+        print("  3) full   - Hooks + Block commits")
+        print()
+
+        level_choice = input("Select (1-3, default: 2): ").strip() or "2"
+        level_map = {"1": "remind", "2": "strict", "3": "full"}
+        level = level_map.get(level_choice, "strict")
+
+        # 동기 버전으로 설정 실행
+        _sync_setup_cli(path, level)
+
+    elif platform == "desktop":
+        print("\n[OK] Claude Desktop MCP server is already connected.")
+        print("Try saying 'show clouvel tools' in your conversation.")
+
+    elif platform == "vscode":
+        print("\n[Setup] VS Code:")
+        print("1. Search 'Clouvel' in Extensions and install")
+        print("2. Command Palette (Ctrl+Shift+P) -> 'Clouvel: Setup MCP Server'")
+        print("\nAlso setup CLI? (y/n)")
+        if input().strip().lower() == 'y':
+            path = input("Project path (default: .): ").strip() or "."
+            _sync_setup_cli(path, "strict")
+
+
+def _sync_setup_cli(path: str, level: str):
+    """동기 버전 CLI 설정"""
+    import json
+
+    project_path = Path(path).resolve()
+
+    if not project_path.exists():
+        print(f"[ERROR] Path does not exist: {path}")
+        return
+
+    print(f"\n[Setting up...] {project_path}")
+
+    created_files = []
+
+    # 1. .claude 폴더 생성
+    claude_dir = project_path / ".claude"
+    claude_dir.mkdir(exist_ok=True)
+
+    # 2. hooks.json
+    if level in ["remind", "full"]:
+        hooks_content = {
+            "hooks": {
+                "preToolUse": [
+                    {
+                        "matcher": "Edit|Write|NotebookEdit",
+                        "hooks": [
+                            {
+                                "type": "command",
+                                "command": "echo '⚠️ [Clouvel] 코드 작성 전 can_code 도구로 문서 상태를 확인하세요!'"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+        hooks_file = claude_dir / "hooks.json"
+        hooks_file.write_text(json.dumps(hooks_content, indent=2, ensure_ascii=False), encoding='utf-8')
+        created_files.append(".claude/hooks.json")
+
+    # 3. CLAUDE.md 규칙
+    claude_md = project_path / "CLAUDE.md"
+    clouvel_rule = """
+## Clouvel 규칙 (자동 생성)
+
+> 이 규칙은 Clouvel이 자동으로 추가했습니다.
+
+### 필수 준수 사항
+1. **코드 작성 전 문서 체크**: Edit/Write 도구 사용 전 반드시 `can_code` 도구를 먼저 호출
+2. **can_code 실패 시 코딩 금지**: 필수 문서가 없으면 PRD 작성부터
+3. **PRD가 법**: docs/PRD.md에 없는 기능은 구현하지 않음
+"""
+
+    if claude_md.exists():
+        existing = claude_md.read_text(encoding='utf-8')
+        if "Clouvel 규칙" not in existing:
+            claude_md.write_text(existing + "\n" + clouvel_rule, encoding='utf-8')
+            created_files.append("CLAUDE.md (규칙 추가)")
+        else:
+            print("  - CLAUDE.md: 이미 Clouvel 규칙 있음")
+    else:
+        claude_md.write_text(f"# {project_path.name}\n" + clouvel_rule, encoding='utf-8')
+        created_files.append("CLAUDE.md (생성)")
+
+    # 4. pre-commit hook
+    if level in ["strict", "full"]:
+        git_hooks_dir = project_path / ".git" / "hooks"
+        if git_hooks_dir.exists():
+            pre_commit = git_hooks_dir / "pre-commit"
+            pre_commit_content = '''#!/bin/sh
+# Clouvel pre-commit hook
+DOCS_DIR="./docs"
+if ! ls "$DOCS_DIR"/*[Pp][Rr][Dd]* 1> /dev/null 2>&1; then
+    echo "[Clouvel] BLOCKED: No PRD document found."
+    echo "Please create docs/PRD.md first."
+    exit 1
+fi
+echo "[Clouvel] Document check passed."
+'''
+            pre_commit.write_text(pre_commit_content, encoding='utf-8')
+            try:
+                import os
+                os.chmod(pre_commit, 0o755)
+            except Exception:
+                pass
+            created_files.append(".git/hooks/pre-commit")
+        else:
+            print("  [WARN] .git/hooks not found (run git init first)")
+
+    # 결과 출력
+    print("\n[OK] Setup complete!\n")
+    print("Created/modified files:")
+    for f in created_files:
+        print(f"  - {f}")
+
+    print("\nNext steps:")
+    print("1. Create docs/PRD.md")
+    print("2. Ask Claude 'Can I code this project?'")
+    print("\n[LOCKED] No coding without PRD!")
+
+
 def main():
-    import asyncio
-    asyncio.run(run_server())
+    import sys
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Clouvel - 바이브코딩 프로세스 강제 도구",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+예시:
+  clouvel              MCP 서버 실행 (Claude가 사용)
+  clouvel init         인터랙티브 설정
+  clouvel init -p .    현재 폴더에 설정
+        """
+    )
+
+    subparsers = parser.add_subparsers(dest="command", help="명령어")
+
+    # init 서브커맨드
+    init_parser = subparsers.add_parser("init", help="프로젝트 초기화")
+    init_parser.add_argument("-p", "--path", default=".", help="프로젝트 경로")
+    init_parser.add_argument("-l", "--level", choices=["remind", "strict", "full"], default="strict", help="강제 수준")
+
+    args = parser.parse_args()
+
+    if args.command == "init":
+        _cli_init(args)
+    else:
+        # 기본: MCP 서버 실행
+        import asyncio
+        asyncio.run(run_server())
 
 
 if __name__ == "__main__":

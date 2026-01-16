@@ -35,3 +35,13 @@ src/
 - 타입 힌트 필수
 - Pydantic 모델 사용
 - 에러는 HTTPException으로 처리
+
+
+## Clouvel 규칙 (자동 생성)
+
+> 이 규칙은 Clouvel이 자동으로 추가했습니다.
+
+### 필수 준수 사항
+1. **코드 작성 전 문서 체크**: Edit/Write 도구 사용 전 반드시 `can_code` 도구를 먼저 호출
+2. **can_code 실패 시 코딩 금지**: 필수 문서가 없으면 PRD 작성부터
+3. **PRD가 법**: docs/PRD.md에 없는 기능은 구현하지 않음

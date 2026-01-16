@@ -21,47 +21,43 @@
     <meta name="twitter:image" content="https://jinhyeokpark28.github.io/clouvel/og-image.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        sans: ['Space Grotesk', 'system-ui', 'sans-serif'],
                     },
+                    colors: {
+                        'warm-white': '#FDFBF7',
+                        'dark-slate': '#2C3E50',
+                        'coral': '#E74C3C',
+                        'coral-dark': '#C0392B',
+                    }
                 }
             }
         }
     </script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #635BFF 0%, #A960EE 50%, #F7CE68 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .gradient-bg {
-            background: linear-gradient(135deg, #635BFF 0%, #A960EE 50%, #F7CE68 100%);
-        }
-        .gradient-border {
-            background: linear-gradient(white, white) padding-box,
-                        linear-gradient(135deg, #635BFF, #A960EE, #F7CE68) border-box;
-            border: 2px solid transparent;
+        .accent-text {
+            color: #E74C3C;
         }
         .code-block {
-            background: linear-gradient(145deg, #0A2540 0%, #1A1F36 100%);
+            background: linear-gradient(145deg, #2C3E50 0%, #1A252F 100%);
         }
     </style>
 </head>
-<body class="bg-white text-slate-900 font-sans antialiased">
+<body class="bg-warm-white text-dark-slate font-sans antialiased">
     <!-- Nav -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-warm-white/90 backdrop-blur-md border-b border-slate-200/50">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-xl font-bold">Clouvel</div>
+            <div class="text-xl font-bold text-dark-slate">Clouvel</div>
             <div class="flex items-center gap-6">
-                <a href="#features" class="text-sm text-slate-600 hover:text-slate-900 transition">Features</a>
-                <a href="#pricing" class="text-sm text-slate-600 hover:text-slate-900 transition">Pricing</a>
-                <a href="https://github.com/JinHyeokPark28/clouvel" target="_blank" class="text-sm text-slate-600 hover:text-slate-900 transition">GitHub</a>
-                <a href="#pricing" class="text-sm bg-slate-900 text-white px-4 py-2 rounded-full hover:bg-slate-800 transition">Get Started</a>
+                <a href="#features" class="text-sm text-slate-600 hover:text-dark-slate transition">Features</a>
+                <a href="#pricing" class="text-sm text-slate-600 hover:text-dark-slate transition">Pricing</a>
+                <a href="https://github.com/JinHyeokPark28/clouvel" target="_blank" class="text-sm text-slate-600 hover:text-dark-slate transition">GitHub</a>
+                <a href="#pricing" class="text-sm bg-coral text-white px-4 py-2 rounded-full hover:bg-coral-dark transition">Get Started</a>
             </div>
         </div>
     </nav>
@@ -76,20 +72,20 @@
                         <span class="w-2 h-2 bg-green-500 rounded-full"></span>
                         MCP Server for Claude Code
                     </div>
-                    <h1 class="text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-6">
+                    <h1 class="text-5xl lg:text-6xl font-bold leading-[1.1] mb-6">
                         PRD 없으면<br>
-                        <span class="gradient-text">코딩 없다.</span>
+                        <span class="accent-text">코딩 없다.</span>
                     </h1>
                     <p class="text-xl text-slate-600 mb-8 leading-relaxed">
                         문서 먼저, 코드 나중.<br>
                         바이브코딩의 함정에서 벗어나세요.
                     </p>
                     <div class="flex flex-wrap gap-4">
-                        <a href="#pricing" class="inline-flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-full font-medium hover:bg-slate-800 transition">
+                        <a href="#pricing" class="inline-flex items-center gap-2 bg-coral text-white px-6 py-3 rounded-full font-medium hover:bg-coral-dark transition">
                             Pro 시작하기
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>
-                        <a href="https://github.com/JinHyeokPark28/clouvel" target="_blank" class="inline-flex items-center gap-2 border border-slate-300 px-6 py-3 rounded-full font-medium hover:border-slate-400 transition">
+                        <a href="https://github.com/JinHyeokPark28/clouvel" target="_blank" class="inline-flex items-center gap-2 border border-dark-slate/30 px-6 py-3 rounded-full font-medium hover:border-dark-slate/50 transition">
                             GitHub에서 보기
                         </a>
                     </div>
@@ -118,7 +114,7 @@
     </section>
 
     <!-- Problem -->
-    <section class="py-20 px-6 bg-slate-50">
+    <section class="py-20 px-6 bg-white">
         <div class="max-w-6xl mx-auto">
             <div class="max-w-2xl mb-16">
                 <h2 class="text-3xl font-bold mb-4">바이브코딩의 함정</h2>
@@ -162,15 +158,15 @@
                     </p>
                     <div class="space-y-4">
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-semibold text-sm">1</div>
+                            <div class="w-10 h-10 rounded-full bg-coral text-white flex items-center justify-center font-semibold text-sm">1</div>
                             <span class="text-lg">PRD 작성</span>
                         </div>
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-semibold text-sm">2</div>
+                            <div class="w-10 h-10 rounded-full bg-coral text-white flex items-center justify-center font-semibold text-sm">2</div>
                             <span class="text-lg">Clouvel이 문서 검증</span>
                         </div>
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-semibold text-sm">3</div>
+                            <div class="w-10 h-10 rounded-full bg-coral text-white flex items-center justify-center font-semibold text-sm">3</div>
                             <span class="text-lg">코딩 허용 → 체계적 개발</span>
                         </div>
                     </div>
@@ -195,30 +191,30 @@
     </section>
 
     <!-- Social Proof -->
-    <section class="py-20 px-6 bg-slate-900 text-white">
+    <section class="py-20 px-6 bg-dark-slate text-white">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold mb-4">실제 사용 결과</h2>
-                <p class="text-slate-400">Clouvel로 개발한 프로젝트 기준</p>
+                <p class="text-slate-300">Clouvel로 개발한 프로젝트 기준</p>
             </div>
             <div class="grid md:grid-cols-3 gap-8 mb-8">
                 <div class="text-center">
-                    <div class="text-5xl font-bold mb-2 text-white">~95%</div>
-                    <p class="text-slate-400">디버깅 시간 감소</p>
-                    <p class="text-slate-500 text-sm mt-1">2-3일 → 3시간</p>
+                    <div class="text-5xl font-bold mb-2 text-coral">~95%</div>
+                    <p class="text-slate-300">디버깅 시간 감소</p>
+                    <p class="text-slate-400 text-sm mt-1">2-3일 → 3시간</p>
                 </div>
                 <div class="text-center">
-                    <div class="text-5xl font-bold mb-2 text-white">100%</div>
-                    <p class="text-slate-400">스코프 크립 차단</p>
-                    <p class="text-slate-500 text-sm mt-1">AI 멋대로 기능 추가 0건</p>
+                    <div class="text-5xl font-bold mb-2 text-coral">100%</div>
+                    <p class="text-slate-300">스코프 크립 차단</p>
+                    <p class="text-slate-400 text-sm mt-1">AI 멋대로 기능 추가 0건</p>
                 </div>
                 <div class="text-center">
-                    <div class="text-5xl font-bold mb-2 text-white">4x</div>
-                    <p class="text-slate-400">일일 버전 릴리즈</p>
-                    <p class="text-slate-500 text-sm mt-1">1-2시간에 버전 하나</p>
+                    <div class="text-5xl font-bold mb-2 text-coral">4x</div>
+                    <p class="text-slate-300">일일 버전 릴리즈</p>
+                    <p class="text-slate-400 text-sm mt-1">1-2시간에 버전 하나</p>
                 </div>
             </div>
-            <p class="text-center text-slate-500 text-xs">
+            <p class="text-center text-slate-400 text-xs">
                 * 결과는 프로젝트 환경에 따라 다를 수 있으며, 상기 수치는 특정 프로젝트 기준입니다.
                 Clouvel은 해당 결과를 보장하지 않으며 법적 책임을 지지 않습니다.
             </p>
@@ -226,50 +222,50 @@
     </section>
 
     <!-- Features -->
-    <section id="features" class="py-20 px-6 bg-slate-50">
+    <section id="features" class="py-20 px-6 bg-white">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-3xl font-bold mb-4">핵심 기능</h2>
                 <p class="text-slate-600 text-lg">PRD 강제부터 Gate 검증까지</p>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-8 rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-lg transition-all">
-                    <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-6">
-                        <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <div class="bg-warm-white p-8 rounded-xl border border-slate-200/80 hover:border-coral/30 hover:shadow-lg transition-all">
+                    <div class="w-12 h-12 bg-coral/10 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     </div>
                     <h3 class="font-semibold text-lg mb-2">문서 강제</h3>
                     <p class="text-slate-600">PRD, 아키텍처, API, DB 스키마, 검증 계획 없으면 코딩 차단</p>
                 </div>
-                <div class="bg-white p-8 rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-lg transition-all">
-                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-6">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div class="bg-warm-white p-8 rounded-xl border border-slate-200/80 hover:border-coral/30 hover:shadow-lg transition-all">
+                    <div class="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                     <h3 class="font-semibold text-lg mb-2">Gate 시스템</h3>
                     <p class="text-slate-600">lint → test → build 자동 실행. PASS만이 완료</p>
                 </div>
-                <div class="bg-white p-8 rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-lg transition-all">
-                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+                <div class="bg-warm-white p-8 rounded-xl border border-slate-200/80 hover:border-coral/30 hover:shadow-lg transition-all">
+                    <div class="w-12 h-12 bg-dark-slate/10 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-dark-slate" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
                     </div>
                     <h3 class="font-semibold text-lg mb-2">Context 관리</h3>
                     <p class="text-slate-600">영속적 컨텍스트, 목표 리마인드, 의도 기록</p>
                 </div>
-                <div class="bg-white p-8 rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-lg transition-all">
-                    <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-6">
+                <div class="bg-warm-white p-8 rounded-xl border border-slate-200/80 hover:border-coral/30 hover:shadow-lg transition-all">
+                    <div class="w-12 h-12 bg-amber-500/10 rounded-lg flex items-center justify-center mb-6">
                         <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </div>
                     <h3 class="font-semibold text-lg mb-2">탐색 에이전트</h3>
                     <p class="text-slate-600">코드베이스 탐색, 문서/API 조사 자동화</p>
                 </div>
-                <div class="bg-white p-8 rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-lg transition-all">
-                    <div class="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center mb-6">
-                        <svg class="w-6 h-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <div class="bg-warm-white p-8 rounded-xl border border-slate-200/80 hover:border-coral/30 hover:shadow-lg transition-all">
+                    <div class="w-12 h-12 bg-sky-500/10 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                     </div>
                     <h3 class="font-semibold text-lg mb-2">자동화 훅</h3>
                     <p class="text-slate-600">pre_code, pre_commit 체크포인트</p>
                 </div>
-                <div class="bg-slate-900 p-8 rounded-2xl text-white">
-                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-6">
+                <div class="bg-coral p-8 rounded-xl text-white">
+                    <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-6">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
                     </div>
                     <h3 class="font-semibold text-lg mb-2">Pro: Shovel 통합</h3>
@@ -318,8 +314,8 @@
                     </a>
                 </div>
                 <!-- Team -->
-                <div class="border-2 border-slate-900 p-8 rounded-2xl relative">
-                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs font-medium px-3 py-1 rounded-full">추천</div>
+                <div class="border-2 border-coral p-8 rounded-2xl relative">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-coral text-white text-xs font-medium px-3 py-1 rounded-full">추천</div>
                     <h3 class="font-semibold text-lg mb-1">Team</h3>
                     <p class="text-slate-500 text-sm mb-6">소규모 팀</p>
                     <div class="flex items-baseline gap-1 mb-6">
@@ -344,7 +340,7 @@
                             평생 업데이트
                         </li>
                     </ul>
-                    <a href="#" class="block w-full py-3 rounded-full text-center font-medium bg-slate-900 text-white hover:bg-slate-800 transition">
+                    <a href="#" class="block w-full py-3 rounded-full text-center font-medium bg-coral text-white hover:bg-coral-dark transition">
                         구매하기
                     </a>
                 </div>
@@ -385,14 +381,14 @@
     <!-- CTA -->
     <section class="py-20 px-6">
         <div class="max-w-4xl mx-auto">
-            <div class="bg-slate-900 rounded-3xl p-12 text-center text-white">
+            <div class="bg-dark-slate rounded-3xl p-12 text-center text-white">
                 <h2 class="text-3xl font-bold mb-4">디버깅 지옥에서 벗어나세요</h2>
-                <p class="text-white/80 mb-8 text-lg">무료로 시작하고, 필요하면 Pro로 업그레이드하세요.</p>
+                <p class="text-slate-300 mb-8 text-lg">무료로 시작하고, 필요하면 Pro로 업그레이드하세요.</p>
                 <div class="flex flex-wrap gap-4 justify-center">
-                    <a href="https://github.com/JinHyeokPark28/clouvel" target="_blank" class="inline-flex items-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-full font-medium hover:bg-slate-100 transition">
+                    <a href="https://github.com/JinHyeokPark28/clouvel" target="_blank" class="inline-flex items-center gap-2 bg-coral text-white px-6 py-3 rounded-full font-medium hover:bg-coral-dark transition">
                         GitHub에서 시작
                     </a>
-                    <a href="#pricing" class="inline-flex items-center gap-2 border-2 border-white px-6 py-3 rounded-full font-medium hover:bg-white/10 transition">
+                    <a href="#pricing" class="inline-flex items-center gap-2 border-2 border-white/30 px-6 py-3 rounded-full font-medium hover:bg-white/10 transition">
                         Pro 구매하기
                     </a>
                 </div>
@@ -401,16 +397,16 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 px-6 border-t border-slate-200">
+    <footer class="py-12 px-6 border-t border-slate-200/50 bg-warm-white">
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
                 <div class="text-sm text-slate-500">
                     © 2026 Clouvel. Made by SINABRO.
                 </div>
                 <div class="flex gap-6 text-sm text-slate-500">
-                    <a href="https://github.com/JinHyeokPark28/clouvel" target="_blank" class="hover:text-slate-900 transition">GitHub</a>
-                    <a href="https://github.com/JinHyeokPark28/clouvel/issues" target="_blank" class="hover:text-slate-900 transition">Support</a>
-                    <a href="terms.html" class="hover:text-slate-900 transition">Terms</a>
+                    <a href="https://github.com/JinHyeokPark28/clouvel" target="_blank" class="hover:text-dark-slate transition">GitHub</a>
+                    <a href="https://github.com/JinHyeokPark28/clouvel/issues" target="_blank" class="hover:text-dark-slate transition">Support</a>
+                    <a href="terms.html" class="hover:text-dark-slate transition">Terms</a>
                 </div>
             </div>
             <p class="text-center text-slate-400 text-xs">

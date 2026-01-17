@@ -1,136 +1,111 @@
 # Clouvel 로드맵
 
-> 피드백에 따라 변경/추가/삭제될 수 있습니다.
+> 배포 스케줄은 자동화되어 있습니다.
+
+---
 
 ## 현재 버전
-- MCP 서버: PyPI v0.3.3
-- VS Code 확장: v0.10.2
-- Cursor 확장: v0.10.2
+
+- **PyPI**: v0.5.0
+- **도구 수**: 18개 (v0.5.0 기준)
 
 ---
 
-## 완료된 기능
+## 배포 스케줄
 
-### MCP 서버
-- [x] docs 폴더 스캔
-- [x] 필수 문서 분석 (PRD, 아키텍처, API, DB, 검증)
-- [x] PRD 작성 가이드
-- [x] 검증 체크리스트
-- [x] **코딩 차단 기능** (can_code) - 문서 없으면 코딩 금지
-- [x] **PRD 상세 템플릿** (get_prd_template) - 11개 섹션
-- [x] **섹션별 PRD 작성** (write_prd_section)
-- [x] **docs 폴더 초기화** (init_docs) - 템플릿 자동 생성
-- [x] **설정 가이드** (get_setup_guide) - Claude Desktop/Code/VS Code 설정법
-
-### VS Code/Cursor 확장
-- [x] MCP 서버 원클릭 설정
-- [x] Claude Desktop 지원
-- [x] Claude Code 지원 (.mcp.json)
-- [x] 문서 상태 표시 (상태바 + 사이드바)
-- [x] uvx 자동 설치
-- [x] clouvel 자동 설치 (fallback)
-- [x] Python 미설치 시 안내
-
-### CLI
-- [x] setup.sh (macOS/Linux/WSL)
-- [x] setup.bat (Windows)
+| 버전 | 날짜 | 도구 | 상태 |
+|------|------|------|------|
+| v0.4.0 | - | Core (4) + Docs (6) + Setup (2) | ✅ 배포됨 |
+| v0.5.0 | 1/17 | Rules (3) + Verify (3) | ✅ 배포됨 |
+| v0.6.0 | 1/20 | Planning (4) | 자동 대기 |
+| v0.7.0 | 1/23 | Agents (2) | 자동 대기 |
+| v0.8.0 | 1/26 | Hooks (2) | 자동 대기 (마지막 공개) |
 
 ---
 
-## 버전별 로드맵
+## 도구 목록 (23개)
 
-### v0.1.0 ✅ (현재)
-**MVP - 10개 도구**
-- [x] can_code - 코딩 시작 가능 여부 확인
-- [x] scan_docs - 프로젝트 문서 스캔
-- [x] init_docs - 문서 구조 초기화
-- [x] get_prd_template - PRD 상세 템플릿
-- [x] write_prd_section - 섹션별 PRD 작성
-- [x] get_setup_guide - 설정 가이드
-- [x] get_analytics - 도구 사용량 통계 (로컬 저장)
+### Core (4개)
+| 도구 | 설명 |
+|------|------|
+| `can_code` | 코딩 가능? PRD 있어야 허용 |
+| `scan_docs` | docs 폴더 파일 목록 |
+| `analyze_docs` | 필수 문서 체크 |
+| `init_docs` | docs 폴더 + 템플릿 생성 |
 
-### v0.2.0
-**문서 상태 추적**
-- [ ] Freshness 체크 (문서 최신성 검증)
-- [ ] PROGRESS.md 자동화
+### Docs (6개)
+| 도구 | 설명 |
+|------|------|
+| `get_prd_template` | PRD 템플릿 생성 |
+| `write_prd_section` | PRD 섹션별 가이드 |
+| `get_prd_guide` | PRD 작성 전체 가이드 |
+| `get_verify_checklist` | 검증 체크리스트 |
+| `get_setup_guide` | 플랫폼별 설정 가이드 |
+| `get_analytics` | 사용량 통계 |
 
-### v0.3.0
-**문서-코드 동기화**
-- [ ] Git 커밋 후 문서 미수정 감지
-- [ ] 코드 변경과 문서 불일치 알림
+### Setup (2개)
+| 도구 | 설명 |
+|------|------|
+| `init_clouvel` | 온보딩 (플랫폼 선택) |
+| `setup_cli` | CLI 환경 설정 |
 
-### v0.4.0
-**컨텍스트 유지**
-- [ ] 세션 요약 저장/복원
-- [ ] Handoff 문서 자동 생성
+### Rules - v0.5 (3개)
+| 도구 | 설명 |
+|------|------|
+| `init_rules` | 규칙 파일 생성 |
+| `get_rule` | 파일별 적용 규칙 조회 |
+| `add_rule` | 새 규칙 추가 |
 
-### v0.5.0
-**에러 학습**
-- [ ] 에러 패턴 기록
-- [ ] 유사 에러 검색 및 해결책 제안
+### Verify - v0.5 (3개)
+| 도구 | 설명 |
+|------|------|
+| `verify` | Context Bias 제거 검증 |
+| `gate` | lint → test → build 자동화 |
+| `handoff` | 의도 기록 |
 
-### v1.0.0
-**안정화 + 확장**
-- [ ] 웹 대시보드
-- [ ] Boris 검증 통합
-- [ ] API 안정화
+### Planning - v0.6 (4개)
+| 도구 | 설명 |
+|------|------|
+| `init_planning` | 작업 목표 설정 |
+| `save_finding` | 조사 결과 저장 |
+| `refresh_goals` | 목표 리마인드 |
+| `update_progress` | 진행 상황 업데이트 |
 
-### v2.0.0 (미정)
-**shovel-setup 통합**
-- [ ] shovel-setup = Boris 워크플로우 기반 개발 환경 설정 도구
-- [ ] CLAUDE.md 템플릿 + 슬래시 커맨드 + 병렬 터미널 설정
-- [ ] Clouvel(프로세스 강제) + shovel-setup(환경 설정) = 완전한 바이브코딩 시스템
+### Agents - v0.7 (2개)
+| 도구 | 설명 |
+|------|------|
+| `spawn_explore` | 코드베이스 탐색 |
+| `spawn_librarian` | 외부 문서/API 조사 |
+
+### Hooks - v0.8 (2개)
+| 도구 | 설명 |
+|------|------|
+| `hook_design` | 코딩 전 자동 체크 |
+| `hook_verify` | 코딩 후 자동 검증 |
 
 ---
 
-## 기술 부채
+## Pro 버전 (v1.0+)
 
-### 확장
-- [ ] ESLint 설정 추가
-- [ ] 유닛 테스트 추가
-- [ ] CI/CD (GitHub Actions)
+v0.8.0 이후 Pro 전용 기능 추가 예정:
 
-### MCP 서버
-- [ ] 테스트 코드 작성
-- [ ] 로깅 개선
-- [ ] 에러 핸들링 강화
+- 에러 학습 시스템
+- 컨텍스트 유지
+- 디자인 가이드 (AI UI 탈피)
+- 템플릿 시스템
+- 병렬 환경 자동화
 
----
-
-## 아이디어 (검토 필요)
-
-1. **AI 문서 생성**: Claude가 코드 보고 PRD 초안 작성
-2. **문서 품질 점수**: 내용 기반 품질 평가 (0~100)
-3. **변경 추적**: 문서 버전 히스토리
-4. **협업 기능**: 실시간 문서 편집
+**[Clouvel Pro](https://whitening-sinabro.github.io/clouvel/)**
 
 ---
 
 ## 버전 히스토리
 
-### MCP 서버 (PyPI)
-
 | 버전 | 날짜 | 변경사항 |
 |------|------|----------|
-| 0.3.3 | 2026-01-16 | README에 로드맵 추가 |
-| 0.3.2 | 2026-01-16 | GitHub Actions 추가 (CI/CD 자동화) |
-| 0.3.1 | 2026-01-16 | wheel 패키징 버그 수정 (모듈 누락 문제) |
+| 0.5.0 | 2026-01-17 | Rules + Verify 추가 (6개 도구) |
+| 0.4.0 | 2026-01-16 | CLI 온보딩, Analytics 추가 |
+| 0.3.5 | 2026-01-16 | README 업데이트 |
 | 0.3.0 | 2026-01-15 | init_docs, get_setup_guide 추가 |
-| 0.2.0 | 2026-01-15 | can_code (코딩 차단), get_prd_template, write_prd_section 추가 |
-| 0.1.0 | 2026-01-15 | 초기 릴리스 |
-
-### VS Code/Cursor 확장
-
-| 버전 | 날짜 | 변경사항 |
-|------|------|----------|
-| 0.10.2 | 2026-01-16 | 마켓플레이스 아이콘 추가 |
-| 0.10.0 | 2026-01-15 | Diagnostic으로 변경 (빨간 밑줄 + Problems 탭) |
-| 0.9.0 | 2026-01-15 | "--1-- 시작하기.md" 안내 파일 추가 |
-| 0.8.0 | 2026-01-15 | 프로젝트 유형별 PRD 템플릿 (수익화/개인/사내) |
-| 0.7.0 | 2026-01-15 | 코드 파일 상단 경고 배너 (CodeLens) |
-| 0.6.0 | 2026-01-15 | init_docs 명령 추가, docs 없으면 자동 안내 |
-| 0.5.0 | 2026-01-15 | MCP 서버 0.3.0 동기화 |
-| 0.4.0 | 2026-01-15 | Python 미설치 안내 추가 |
-| 0.3.0 | 2026-01-15 | uvx/clouvel 자동 설치 |
-| 0.2.0 | 2026-01-15 | Claude Code 지원 (.mcp.json) |
+| 0.2.0 | 2026-01-15 | can_code, PRD 템플릿 추가 |
 | 0.1.0 | 2026-01-15 | 초기 릴리스 |

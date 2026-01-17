@@ -63,6 +63,7 @@
             <div class="flex items-center gap-6">
                 <a href="#features" class="text-sm text-slate-600 hover:text-dark-slate transition">Features</a>
                 <a href="#pricing" class="text-sm text-slate-600 hover:text-dark-slate transition">Pricing</a>
+                <a href="#contact" class="text-sm text-slate-600 hover:text-dark-slate transition">Contact</a>
                 <a href="https://github.com/Whitening-Sinabro/clouvel" target="_blank" class="text-sm text-slate-600 hover:text-dark-slate transition">GitHub</a>
                 <a href="#pricing" class="text-sm bg-accent text-white px-4 py-2 rounded-full hover:bg-accent-dark transition">Get Started</a>
             </div>
@@ -625,6 +626,118 @@
             </div>
         </div>
     </section>
+
+    <!-- Contact / Support -->
+    <section id="contact" class="py-20 px-6 bg-white">
+        <div class="max-w-2xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">문의하기</h2>
+                <p class="text-slate-600 text-lg">PC 교체, 라이선스 문제 등 빠르게 도와드립니다</p>
+            </div>
+            <form id="contactForm" class="space-y-6">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-slate-700 mb-2">이메일 (필수)</label>
+                    <input type="email" id="email" name="email" required
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition"
+                        placeholder="구매 시 사용한 이메일">
+                </div>
+                <div>
+                    <label for="issueType" class="block text-sm font-medium text-slate-700 mb-2">문의 유형</label>
+                    <select id="issueType" name="issueType"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition">
+                        <option value="machine_reset">PC 교체 / 머신 리셋</option>
+                        <option value="license_issue">라이선스 문제</option>
+                        <option value="bug_report">버그 리포트</option>
+                        <option value="feature_request">기능 요청</option>
+                        <option value="other">기타</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="message" class="block text-sm font-medium text-slate-700 mb-2">상세 내용 (선택)</label>
+                    <textarea id="message" name="message" rows="4"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition resize-none"
+                        placeholder="문제 상황을 설명해주세요"></textarea>
+                </div>
+                <button type="submit" id="submitBtn"
+                    class="w-full py-4 rounded-full font-medium bg-accent text-white hover:bg-accent-dark transition flex items-center justify-center gap-2">
+                    <span>문의 보내기</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                </button>
+            </form>
+            <div id="formSuccess" class="hidden mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
+                <p class="text-emerald-700 font-medium">문의가 접수되었습니다! 빠르게 확인 후 답변드리겠습니다.</p>
+            </div>
+            <div id="formError" class="hidden mt-6 p-4 bg-red-50 border border-red-200 rounded-xl text-center">
+                <p class="text-red-700 font-medium">전송 실패. 잠시 후 다시 시도하거나 GitHub Issues를 이용해주세요.</p>
+            </div>
+            <p class="text-center text-slate-500 text-sm mt-6">
+                또는 <a href="https://github.com/Whitening-Sinabro/clouvel/issues" target="_blank" class="text-accent hover:underline">GitHub Issues</a>에서 문의하세요
+            </p>
+        </div>
+    </section>
+
+    <script>
+    document.getElementById('contactForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('submitBtn');
+        const formSuccess = document.getElementById('formSuccess');
+        const formError = document.getElementById('formError');
+
+        // Reset states
+        formSuccess.classList.add('hidden');
+        formError.classList.add('hidden');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>전송 중...</span>';
+
+        const email = document.getElementById('email').value;
+        const issueType = document.getElementById('issueType').value;
+        const message = document.getElementById('message').value;
+
+        const issueTypeLabels = {
+            'machine_reset': 'PC 교체 / 머신 리셋',
+            'license_issue': '라이선스 문제',
+            'bug_report': '버그 리포트',
+            'feature_request': '기능 요청',
+            'other': '기타'
+        };
+
+        const webhookUrl = 'https://discord.com/api/webhooks/1462105007804645468/JWNks6MBwpBOMeWj3nWFo6wwE3SpsXUZ8KMUVw9riBUR3uvETvLNSxSW4VU69fJ31w_2';
+
+        const payload = {
+            embeds: [{
+                title: '📬 새 문의 접수',
+                color: 0x0EA5E9,
+                fields: [
+                    { name: '이메일', value: email, inline: true },
+                    { name: '유형', value: issueTypeLabels[issueType] || issueType, inline: true },
+                    { name: '내용', value: message || '(없음)', inline: false }
+                ],
+                timestamp: new Date().toISOString()
+            }]
+        };
+
+        try {
+            const response = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                formSuccess.classList.remove('hidden');
+                document.getElementById('contactForm').reset();
+            } else {
+                formError.classList.remove('hidden');
+            }
+        } catch (error) {
+            formError.classList.remove('hidden');
+        }
+
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>문의 보내기</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>';
+    });
+    </script>
 
     <!-- CTA -->
     <section class="py-20 px-6">

@@ -53,6 +53,16 @@
         .cta-pulse {
             animation: pulse-glow 2s ease-in-out infinite;
         }
+        .tool-card {
+            cursor: pointer;
+        }
+        .tool-card:hover {
+            transform: translateY(-2px);
+        }
+        .modal-backdrop {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(4px);
+        }
     </style>
 </head>
 <body class="bg-warm-white text-dark-slate font-sans antialiased">
@@ -362,52 +372,52 @@
                     <span class="text-slate-500 text-sm">clouvel-pro · $29 · 10개 MCP 도구</span>
                 </div>
                 <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
-                    <div class="bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all" data-tool="activate_license">
                         <div class="font-mono text-xs text-accent mb-2">activate_license</div>
                         <h3 class="font-semibold mb-1">라이선스 활성화</h3>
                         <p class="text-slate-600 text-sm">Lemon Squeezy 연동</p>
                     </div>
-                    <div class="bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all" data-tool="install_shovel">
                         <div class="font-mono text-xs text-accent mb-2">install_shovel</div>
                         <h3 class="font-semibold mb-1">Shovel 설치</h3>
                         <p class="text-slate-600 text-sm">24개 슬래시 커맨드</p>
                     </div>
-                    <div class="bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all" data-tool="sync_commands">
                         <div class="font-mono text-xs text-accent mb-2">sync_commands</div>
                         <h3 class="font-semibold mb-1">커맨드 동기화</h3>
                         <p class="text-slate-600 text-sm">merge/overwrite</p>
                     </div>
-                    <div class="bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all" data-tool="log_error">
                         <div class="font-mono text-xs text-accent mb-2">log_error</div>
                         <h3 class="font-semibold mb-1">에러 기록</h3>
                         <p class="text-slate-600 text-sm">ERROR_LOG.md 자동화</p>
                     </div>
-                    <div class="bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all" data-tool="analyze_error">
                         <div class="font-mono text-xs text-accent mb-2">analyze_error</div>
                         <h3 class="font-semibold mb-1">에러 분석</h3>
                         <p class="text-slate-600 text-sm">패턴 분석, 통계</p>
                     </div>
-                    <div class="bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all" data-tool="get_error_summary">
                         <div class="font-mono text-xs text-accent mb-2">get_error_summary</div>
                         <h3 class="font-semibold mb-1">에러 요약</h3>
                         <p class="text-slate-600 text-sm">타입별 통계</p>
                     </div>
-                    <div class="bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all" data-tool="add_prevention_rule">
                         <div class="font-mono text-xs text-accent mb-2">add_prevention_rule</div>
                         <h3 class="font-semibold mb-1">방지 규칙</h3>
                         <p class="text-slate-600 text-sm">NEVER/ALWAYS 추가</p>
                     </div>
-                    <div class="bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all" data-tool="watch_logs">
                         <div class="font-mono text-xs text-accent mb-2">watch_logs</div>
                         <h3 class="font-semibold mb-1">로그 감시</h3>
                         <p class="text-slate-600 text-sm">실시간 모니터링</p>
                     </div>
-                    <div class="bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all" data-tool="check_logs">
                         <div class="font-mono text-xs text-accent mb-2">check_logs</div>
                         <h3 class="font-semibold mb-1">로그 체크</h3>
                         <p class="text-slate-600 text-sm">로그 상태 확인</p>
                     </div>
-                    <div class="bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-accent/5 to-accent/10 p-6 rounded-xl border-2 border-accent/30 hover:border-accent hover:shadow-lg transition-all" data-tool="check_license">
                         <div class="font-mono text-xs text-accent mb-2">check_license</div>
                         <h3 class="font-semibold mb-1">라이선스 상태</h3>
                         <p class="text-slate-600 text-sm">티어, 잠금 확인</p>
@@ -421,52 +431,52 @@
                     <span class="text-slate-500 text-sm">clouvel-pro · $79 · +10개 Team 도구</span>
                 </div>
                 <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
-                    <div class="bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all" data-tool="team_invite">
                         <div class="font-mono text-xs text-violet-600 mb-2">team_invite</div>
                         <h3 class="font-semibold mb-1">팀원 초대</h3>
                         <p class="text-slate-600 text-sm">이메일로 초대</p>
                     </div>
-                    <div class="bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all" data-tool="team_members">
                         <div class="font-mono text-xs text-violet-600 mb-2">team_members</div>
                         <h3 class="font-semibold mb-1">팀원 목록</h3>
                         <p class="text-slate-600 text-sm">최대 10명</p>
                     </div>
-                    <div class="bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all" data-tool="team_settings">
                         <div class="font-mono text-xs text-violet-600 mb-2">team_settings</div>
                         <h3 class="font-semibold mb-1">C-Level 설정</h3>
                         <p class="text-slate-600 text-sm">역할 ON/OFF</p>
                     </div>
-                    <div class="bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all" data-tool="team_toggle_role">
                         <div class="font-mono text-xs text-violet-600 mb-2">team_toggle_role</div>
                         <h3 class="font-semibold mb-1">역할 토글</h3>
                         <p class="text-slate-600 text-sm">CTO/CDO/CPO</p>
                     </div>
-                    <div class="bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all" data-tool="sync_team_errors">
                         <div class="font-mono text-xs text-violet-600 mb-2">sync_team_errors</div>
                         <h3 class="font-semibold mb-1">에러 팀 동기화</h3>
                         <p class="text-slate-600 text-sm">패턴 공유</p>
                     </div>
-                    <div class="bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all" data-tool="get_team_rules">
                         <div class="font-mono text-xs text-violet-600 mb-2">get_team_rules</div>
                         <h3 class="font-semibold mb-1">팀 규칙 조회</h3>
                         <p class="text-slate-600 text-sm">NEVER/ALWAYS</p>
                     </div>
-                    <div class="bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all" data-tool="apply_team_rules">
                         <div class="font-mono text-xs text-violet-600 mb-2">apply_team_rules</div>
                         <h3 class="font-semibold mb-1">팀 규칙 적용</h3>
                         <p class="text-slate-600 text-sm">로컬에 적용</p>
                     </div>
-                    <div class="bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all" data-tool="sync_project_context">
                         <div class="font-mono text-xs text-violet-600 mb-2">sync_project_context</div>
                         <h3 class="font-semibold mb-1">컨텍스트 업로드</h3>
                         <p class="text-slate-600 text-sm">PRD, 구조 공유</p>
                     </div>
-                    <div class="bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all" data-tool="get_project_context">
                         <div class="font-mono text-xs text-violet-600 mb-2">get_project_context</div>
                         <h3 class="font-semibold mb-1">컨텍스트 조회</h3>
                         <p class="text-slate-600 text-sm">팀 공유 정보</p>
                     </div>
-                    <div class="bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all">
+                    <div class="tool-card bg-gradient-to-br from-violet-50 to-violet-100 p-6 rounded-xl border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all" data-tool="team_remove">
                         <div class="font-mono text-xs text-violet-600 mb-2">team_remove</div>
                         <h3 class="font-semibold mb-1">팀원 제거</h3>
                         <p class="text-slate-600 text-sm">오너 전용</p>
@@ -966,5 +976,510 @@
             </p>
         </div>
     </footer>
+
+    <!-- Tool Detail Modal -->
+    <div id="toolModal" class="fixed inset-0 z-[100] hidden">
+        <div class="modal-backdrop absolute inset-0" onclick="closeModal()"></div>
+        <div class="absolute inset-4 md:inset-10 lg:inset-20 bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+            <div class="flex items-center justify-between p-6 border-b border-slate-200">
+                <div>
+                    <span id="modalBadge" class="text-xs font-medium px-2 py-1 rounded bg-accent/10 text-accent">PRO</span>
+                    <h2 id="modalTitle" class="text-2xl font-bold mt-2">도구 이름</h2>
+                </div>
+                <button onclick="closeModal()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <div>
+                    <h3 class="font-semibold text-lg mb-2">설명</h3>
+                    <p id="modalDesc" class="text-slate-600"></p>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-lg mb-2">사용법</h3>
+                    <div class="code-block rounded-xl p-4 font-mono text-sm">
+                        <pre id="modalUsage" class="text-slate-300 whitespace-pre-wrap"></pre>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-lg mb-2">실행 결과 예시</h3>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                        <pre id="modalResult" class="text-slate-700 whitespace-pre-wrap text-sm"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Tool Data
+    const toolData = {
+        // Pro Tools
+        activate_license: {
+            badge: 'PRO',
+            badgeColor: 'bg-accent/10 text-accent',
+            title: 'activate_license',
+            desc: 'Lemon Squeezy에서 구매한 라이선스 키를 활성화합니다. 활성화 후 7일 잠금 기간이 시작되며, 이 기간이 지나면 프리미엄 기능을 사용할 수 있습니다.',
+            usage: `> activate_license(license_key="XXXX-XXXX-XXXX-XXXX")`,
+            result: `# ✅ 라이선스 활성화 완료
+
+- **티어**: Personal
+- **가격**: $29
+- **인원**: 1명
+
+## 7일 잠금
+Buy-Use-Refund 공격 방어를 위해 7일 후부터
+프리미엄 기능이 활성화됩니다.
+
+**잠금 해제일**: 2026-01-25`
+        },
+        install_shovel: {
+            badge: 'PRO',
+            badgeColor: 'bg-accent/10 text-accent',
+            title: 'install_shovel',
+            desc: 'Shovel 워크플로우의 .claude/ 구조를 프로젝트에 자동 설치합니다. 24개의 슬래시 커맨드, 템플릿, 설정 파일이 포함됩니다.',
+            usage: `> install_shovel(path=".", force=False)
+
+# 강제 덮어쓰기
+> install_shovel(path=".", force=True)`,
+            result: `# ✅ Shovel 설치 완료
+
+## 설치 경로
+\`D:\\my-project\`
+
+## 생성된 구조
+\`\`\`
+.claude/
+├── commands/      (슬래시 커맨드) - 24개
+├── templates/     (템플릿) - 6개
+├── config/        (설정) - 1개
+├── evidence/      (Gate 증거)
+├── logs/          (작업 로그)
+└── settings.json  (설정)
+\`\`\`
+
+## 다음 단계
+1. \`/start\` - 프로젝트 온보딩
+2. \`/plan\` - 계획 수립
+3. \`/gate\` - 검증 실행`
+        },
+        sync_commands: {
+            badge: 'PRO',
+            badgeColor: 'bg-accent/10 text-accent',
+            title: 'sync_commands',
+            desc: 'Shovel 커맨드를 최신 버전으로 동기화합니다. merge 모드는 기존 파일을 유지하고, overwrite 모드는 모두 덮어씁니다.',
+            usage: `# 기존 파일 유지 (merge)
+> sync_commands(path=".", mode="merge")
+
+# 모두 덮어쓰기 (overwrite)
+> sync_commands(path=".", mode="overwrite")`,
+            result: `# ✅ 커맨드 동기화 완료
+
+## 버전
+\`v1.4.2\`
+
+## 모드
+\`merge\` (기존 파일 유지)
+
+## 동기화된 커맨드
+- start.md
+- plan.md
+- implement.md
+- gate.md
+...
+
+## 스킵된 커맨드 (이미 존재)
+- commit.md (커스터마이징됨)`
+        },
+        log_error: {
+            badge: 'PRO',
+            badgeColor: 'bg-accent/10 text-accent',
+            title: 'log_error',
+            desc: '발생한 에러를 ERROR_LOG.md에 기록합니다. 에러 타입, 메시지, 컨텍스트를 분류하여 저장하며, 나중에 패턴 분석에 활용됩니다.',
+            usage: `> log_error(
+    error_type="TypeError",
+    message="Cannot read property 'x' of undefined",
+    context={"file": "app.js", "line": 42}
+)`,
+            result: `# 에러 기록됨
+
+## 분류
+- **타입**: TypeError
+- **소스**: terminal
+- **시간**: 2026-01-18T10:30:00
+
+## 위치
+- 파일: app.js
+- 라인: 42
+
+## 방지책
+로그 분석 후 패턴 추가
+
+## 다음 단계
+1. \`analyze_error\` 도구로 상세 분석
+2. \`add_prevention_rule\` 도구로 방지 규칙 추가`
+        },
+        analyze_error: {
+            badge: 'PRO',
+            badgeColor: 'bg-accent/10 text-accent',
+            title: 'analyze_error',
+            desc: 'ERROR_LOG.md의 에러 패턴을 분석합니다. 가장 빈번한 에러, 타입별 통계, 권장 조치를 제공합니다.',
+            usage: `> analyze_error(
+    error_type="TypeError",
+    message="Cannot read property"
+)`,
+            result: `# 에러 분석
+
+## 에러 히스토리
+
+| 타입 | 횟수 | 마지막 발생 |
+|------|------|-------------|
+| TypeError | 5 | 2026-01-18 |
+| SyntaxError | 2 | 2026-01-17 |
+
+### 가장 빈번한 에러
+- **타입**: TypeError
+- **횟수**: 5회
+- **권장 조치**: null 체크 추가`
+        },
+        get_error_summary: {
+            badge: 'PRO',
+            badgeColor: 'bg-accent/10 text-accent',
+            title: 'get_error_summary',
+            desc: '최근 N일간의 에러 통계를 요약합니다. 에러 타입별 비율과 추세를 파악할 수 있습니다.',
+            usage: `> get_error_summary(days=7)`,
+            result: `# 에러 요약 (최근 7일)
+
+**총 에러 수**: 12
+
+## 에러 타입별 통계
+
+| 타입 | 횟수 | 비율 |
+|------|------|------|
+| TypeError | 5 | 41.7% |
+| SyntaxError | 3 | 25.0% |
+| ReferenceError | 2 | 16.7% |
+| NetworkError | 2 | 16.7% |`
+        },
+        add_prevention_rule: {
+            badge: 'PRO',
+            badgeColor: 'bg-accent/10 text-accent',
+            title: 'add_prevention_rule',
+            desc: 'CLAUDE.md에 NEVER/ALWAYS 규칙을 추가합니다. 같은 실수를 반복하지 않도록 방지 규칙을 학습시킵니다.',
+            usage: `> add_prevention_rule(
+    rule_type="NEVER",
+    rule="undefined 체크 없이 객체 속성 접근",
+    reason="TypeError 5회 발생"
+)`,
+            result: `# ✅ 방지 규칙 추가됨
+
+## 추가된 규칙
+**NEVER**: undefined 체크 없이 객체 속성 접근
+
+## 사유
+TypeError 5회 발생
+
+## CLAUDE.md 업데이트됨
+\`\`\`markdown
+## NEVER (절대 하지 마세요)
+- undefined 체크 없이 객체 속성 접근
+\`\`\``
+        },
+        watch_logs: {
+            badge: 'PRO',
+            badgeColor: 'bg-accent/10 text-accent',
+            title: 'watch_logs',
+            desc: '로그 파일을 실시간으로 모니터링하도록 설정합니다. 에러 발생 시 자동으로 감지하여 기록합니다.',
+            usage: `> watch_logs(
+    log_path="./logs/app.log",
+    pattern="ERROR|WARN"
+)`,
+            result: `# ✅ 로그 감시 설정됨
+
+## 감시 대상
+- **경로**: ./logs/app.log
+- **패턴**: ERROR|WARN
+
+## 상태
+감시 중...
+
+새로운 에러 발견 시 자동으로 log_error가 호출됩니다.`
+        },
+        check_logs: {
+            badge: 'PRO',
+            badgeColor: 'bg-accent/10 text-accent',
+            title: 'check_logs',
+            desc: '현재 로그 감시 상태를 확인합니다. 활성화된 감시 대상과 최근 감지된 에러를 보여줍니다.',
+            usage: `> check_logs()`,
+            result: `# 로그 감시 상태
+
+## 활성 감시
+| 경로 | 패턴 | 마지막 체크 |
+|------|------|------------|
+| ./logs/app.log | ERROR|WARN | 10초 전 |
+
+## 최근 감지
+- [10:30:02] ERROR: Connection timeout
+- [10:28:15] WARN: Deprecated API usage`
+        },
+        check_license: {
+            badge: 'PRO',
+            badgeColor: 'bg-accent/10 text-accent',
+            title: 'check_license',
+            desc: '현재 라이선스 상태를 확인합니다. 티어, 잠금 상태, 사용 가능한 기능 목록을 보여줍니다.',
+            usage: `> check_license()`,
+            result: `# ✅ 라이선스 활성화됨
+
+- **티어**: Personal
+- **인원**: 1명
+- **활성화 경과**: 3일
+- ⏳ **프리미엄 잠금 중** (4일 남음)
+
+## 지금 사용 가능한 기능
+- \`watch_logs\` - 로그 감시 설정
+- \`check_logs\` - 로그 체크
+
+## 4일 후 사용 가능 (프리미엄)
+- \`install_shovel\` - Shovel 설치
+- \`sync_commands\` - 커맨드 동기화
+- \`log_error\` - 에러 기록
+...`
+        },
+        // Team Tools
+        team_invite: {
+            badge: 'TEAM',
+            badgeColor: 'bg-violet-100 text-violet-600',
+            title: 'team_invite',
+            desc: '팀원을 이메일로 초대합니다. 초대된 팀원은 같은 라이선스 키로 활성화하면 팀에 합류됩니다.',
+            usage: `> team_invite(
+    email="developer@company.com",
+    role="member"  # 또는 "admin"
+)`,
+            result: `# ✅ 멤버 초대 완료
+
+**초대 대상**: developer@company.com
+**역할**: member
+
+## 팀 현황
+- **현재 멤버**: 3명
+- **남은 시트**: 7개
+
+## 다음 단계
+초대받은 팀원이 같은 라이선스 키로
+activate_license를 실행하면 합류됩니다.`
+        },
+        team_members: {
+            badge: 'TEAM',
+            badgeColor: 'bg-violet-100 text-violet-600',
+            title: 'team_members',
+            desc: '현재 팀 멤버 목록을 조회합니다. 이메일, 역할, 가입일을 확인할 수 있습니다.',
+            usage: `> team_members()`,
+            result: `# 팀 멤버 목록
+
+**오너**: owner@company.com
+
+## 멤버 (3/10)
+
+| 이메일 | 역할 | 가입일 |
+|--------|------|--------|
+| owner@company.com | owner | 2026-01-10 |
+| dev1@company.com | admin | 2026-01-12 |
+| dev2@company.com | member | 2026-01-15 |
+
+**남은 시트**: 7개`
+        },
+        team_settings: {
+            badge: 'TEAM',
+            badgeColor: 'bg-violet-100 text-violet-600',
+            title: 'team_settings',
+            desc: 'C-Level 역할 설정을 조회합니다. 각 역할(CTO, CDO, CPO, CFO, CMO)의 활성화 상태를 확인합니다.',
+            usage: `> team_settings()`,
+            result: `# 팀 C-Level 역할 설정
+
+| 역할 | 상태 |
+|------|------|
+| CTO | ✅ 활성화 |
+| CDO | ✅ 활성화 |
+| CPO | ✅ 활성화 |
+| CFO | ❌ 비활성화 |
+| CMO | ❌ 비활성화 |
+
+## 설정 변경
+\`team_toggle_role\` 도구를 사용하세요.`
+        },
+        team_toggle_role: {
+            badge: 'TEAM',
+            badgeColor: 'bg-violet-100 text-violet-600',
+            title: 'team_toggle_role',
+            desc: 'C-Level 역할을 활성화/비활성화합니다. 필요한 역할만 켜서 Claude의 응답을 커스터마이징합니다.',
+            usage: `# CFO 역할 활성화
+> team_toggle_role(role="CFO", enabled=True)
+
+# CMO 역할 비활성화
+> team_toggle_role(role="CMO", enabled=False)`,
+            result: `# ✅ C-Level 역할 설정 변경 완료
+
+| 역할 | 상태 |
+|------|------|
+| CTO | ✅ |
+| CDO | ✅ |
+| CPO | ✅ |
+| CFO | ✅ |  ← 변경됨
+| CMO | ❌ |`
+        },
+        sync_team_errors: {
+            badge: 'TEAM',
+            badgeColor: 'bg-violet-100 text-violet-600',
+            title: 'sync_team_errors',
+            desc: '로컬 ERROR_LOG.md의 에러 패턴을 팀에 공유합니다. 한 명의 실수를 전체 팀이 학습합니다.',
+            usage: `> sync_team_errors()`,
+            result: `# ✅ 에러 패턴 팀 동기화 완료
+
+## 동기화된 패턴
+- TypeError: null 체크 누락 (3회)
+- SyntaxError: 세미콜론 누락 (2회)
+
+## 팀 학습 효과
+이제 모든 팀원의 Claude가 이 패턴을 인식하고
+같은 실수를 방지합니다.`
+        },
+        get_team_rules: {
+            badge: 'TEAM',
+            badgeColor: 'bg-violet-100 text-violet-600',
+            title: 'get_team_rules',
+            desc: '팀에서 공유하는 NEVER/ALWAYS 규칙을 조회합니다. 팀 전체의 코딩 규칙을 확인합니다.',
+            usage: `> get_team_rules()`,
+            result: `# 팀 공유 규칙
+
+## 🚫 NEVER (절대 금지)
+- console.log를 프로덕션에 남기지 않기
+- any 타입 사용 금지
+- 하드코딩된 API 키 금지
+
+## ✅ ALWAYS (항상 수행)
+- 모든 함수에 JSDoc 작성
+- 에러 발생 시 적절한 fallback 제공
+- 새 기능은 테스트와 함께 커밋
+
+---
+이 규칙들을 CLAUDE.md에 추가하려면
+\`apply_team_rules\`를 사용하세요.`
+        },
+        apply_team_rules: {
+            badge: 'TEAM',
+            badgeColor: 'bg-violet-100 text-violet-600',
+            title: 'apply_team_rules',
+            desc: '팀 규칙을 로컬 CLAUDE.md에 적용합니다. 팀의 NEVER/ALWAYS 규칙이 내 프로젝트에 추가됩니다.',
+            usage: `> apply_team_rules(path=".")`,
+            result: `# ✅ 팀 규칙 적용 완료
+
+## 추가된 규칙
+
+### NEVER (3개)
+- console.log를 프로덕션에 남기지 않기
+- any 타입 사용 금지
+- 하드코딩된 API 키 금지
+
+### ALWAYS (3개)
+- 모든 함수에 JSDoc 작성
+- 에러 발생 시 적절한 fallback 제공
+- 새 기능은 테스트와 함께 커밋
+
+## CLAUDE.md 업데이트됨`
+        },
+        sync_project_context: {
+            badge: 'TEAM',
+            badgeColor: 'bg-violet-100 text-violet-600',
+            title: 'sync_project_context',
+            desc: '프로젝트 컨텍스트(PRD, 파일 구조, 결정사항)를 팀에 업로드합니다. 팀원들이 프로젝트 상황을 파악할 수 있습니다.',
+            usage: `> sync_project_context(path=".")`,
+            result: `# ✅ 프로젝트 컨텍스트 동기화 완료
+
+**프로젝트 ID**: my-awesome-project
+**PRD**: ✅
+**CLAUDE.md**: ✅
+**파일 구조**: 156개 파일
+
+팀원들이 이 프로젝트의 컨텍스트를
+조회할 수 있습니다.`
+        },
+        get_project_context: {
+            badge: 'TEAM',
+            badgeColor: 'bg-violet-100 text-violet-600',
+            title: 'get_project_context',
+            desc: '팀에서 공유된 프로젝트 컨텍스트를 조회합니다. 다른 팀원이 작업 중인 프로젝트의 상황을 파악합니다.',
+            usage: `> get_project_context(project_id="my-awesome-project")`,
+            result: `# 프로젝트 컨텍스트: my-awesome-project
+
+**마지막 업데이트**: 2026-01-17
+**업데이트 by**: lead@company.com
+
+## PRD 요약
+사용자 인증 시스템 구현
+- OAuth 2.0 지원 (Google, GitHub)
+- JWT 기반 세션 관리
+- 역할 기반 접근 제어
+
+## 결정사항
+- NextAuth.js 사용 (1월 15일)
+- Prisma ORM 채택 (1월 16일)
+
+## 파일 구조
+\`\`\`
+src/
+├── auth/
+├── components/
+└── lib/
+\`\`\``
+        },
+        team_remove: {
+            badge: 'TEAM',
+            badgeColor: 'bg-violet-100 text-violet-600',
+            title: 'team_remove',
+            desc: '팀에서 멤버를 제거합니다. 오너만 사용할 수 있으며, 제거된 멤버는 더 이상 팀 기능을 사용할 수 없습니다.',
+            usage: `> team_remove(email="former@company.com")`,
+            result: `# ✅ 멤버 제거 완료
+
+**제거된 멤버**: former@company.com
+**현재 멤버 수**: 2명
+
+해당 멤버의 라이선스는 비활성화됩니다.
+시트가 1개 확보되었습니다.`
+        }
+    };
+
+    function openModal(toolName) {
+        const tool = toolData[toolName];
+        if (!tool) return;
+
+        document.getElementById('modalBadge').textContent = tool.badge;
+        document.getElementById('modalBadge').className = `text-xs font-medium px-2 py-1 rounded ${tool.badgeColor}`;
+        document.getElementById('modalTitle').textContent = tool.title;
+        document.getElementById('modalDesc').textContent = tool.desc;
+        document.getElementById('modalUsage').textContent = tool.usage;
+        document.getElementById('modalResult').textContent = tool.result;
+
+        document.getElementById('toolModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('toolModal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    // Add click handlers to all tool cards
+    document.querySelectorAll('.tool-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const toolName = card.dataset.tool;
+            openModal(toolName);
+        });
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
+    </script>
 </body>
 </html>

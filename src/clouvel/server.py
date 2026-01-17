@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Clouvel MCP Server v1.1.0
+Clouvel MCP Server v0.8.0
 바이브코딩 프로세스를 강제하는 MCP 서버
 
-v1.1.0: Clouvel Pro (Shovel 통합)
+Free 버전 - Pro 기능은 clouvel-pro 패키지 참조
 """
 
 from mcp.server import Server
@@ -28,15 +28,13 @@ from .tools import (
     spawn_explore, spawn_librarian,
     # hooks (v0.8)
     hook_design, hook_verify,
-    # pro (v1.1)
-    install_shovel, sync_commands, activate_license,
 )
 
 server = Server("clouvel")
 
 
 # ============================================================
-# Tool Definitions
+# Tool Definitions (Free - v0.8까지)
 # ============================================================
 
 TOOL_DEFINITIONS = [
@@ -349,42 +347,11 @@ TOOL_DEFINITIONS = [
         }
     ),
 
-    # === Pro Tools (v1.1) ===
+    # === Pro 안내 ===
     Tool(
-        name="install_shovel",
-        description="v1.1 Pro: Shovel .claude/ 구조 자동 설치. 라이선스 필요.",
-        inputSchema={
-            "type": "object",
-            "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "project_type": {"type": "string", "enum": ["web", "api", "desktop", "fullstack"]},
-                "license_key": {"type": "string", "description": "라이선스 키 (선택)"}
-            },
-            "required": ["path"]
-        }
-    ),
-    Tool(
-        name="sync_commands",
-        description="v1.1 Pro: Clouvel MCP와 Shovel 커맨드 통합.",
-        inputSchema={
-            "type": "object",
-            "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "mode": {"type": "string", "enum": ["merge", "overwrite", "skip"]}
-            },
-            "required": ["path"]
-        }
-    ),
-    Tool(
-        name="activate_license",
-        description="v1.1 Pro: 라이선스 활성화.",
-        inputSchema={
-            "type": "object",
-            "properties": {
-                "license_key": {"type": "string", "description": "라이선스 키"}
-            },
-            "required": ["license_key"]
-        }
+        name="upgrade_pro",
+        description="Clouvel Pro 안내. Shovel 자동 설치, Error Learning 등.",
+        inputSchema={"type": "object", "properties": {}}
     ),
 ]
 
@@ -440,11 +407,51 @@ TOOL_HANDLERS = {
     "hook_design": lambda args: hook_design(args.get("path", ""), args.get("trigger", "pre_code"), args.get("checks", []), args.get("block_on_fail", True)),
     "hook_verify": lambda args: hook_verify(args.get("path", ""), args.get("trigger", "post_code"), args.get("steps", ["lint", "test", "build"]), args.get("parallel", False), args.get("continue_on_error", False)),
 
-    # Pro (v1.1)
-    "install_shovel": lambda args: install_shovel(args.get("path", ""), args.get("project_type", "web"), args.get("license_key", None)),
-    "sync_commands": lambda args: sync_commands(args.get("path", ""), args.get("mode", "merge")),
-    "activate_license": lambda args: activate_license(args.get("license_key", "")),
+    # Pro 안내
+    "upgrade_pro": lambda args: _upgrade_pro(),
 }
+
+
+async def _upgrade_pro() -> list[TextContent]:
+    """Pro 업그레이드 안내"""
+    return [TextContent(type="text", text="""
+# Clouvel Pro
+
+더 강력한 기능이 필요하다면 Clouvel Pro를 확인하세요.
+
+## Pro 기능
+
+### Shovel 자동 설치
+- `.claude/` 워크플로우 구조 자동 생성
+- 슬래시 커맨드 (/start, /plan, /gate...)
+- 설정 파일 + 템플릿
+
+### Error Learning
+- 에러 패턴 자동 분류
+- 방지 규칙 자동 생성
+- 로그 파일 모니터링
+
+### 커맨드 동기화
+- Shovel 커맨드 업데이트
+
+## 가격
+
+| 티어 | 가격 | 인원 |
+|------|------|------|
+| Personal | $29 | 1명 |
+| Team | $79 | 10명 |
+| Enterprise | $199 | 무제한 |
+
+## 구매
+
+https://clouvel.lemonsqueezy.com
+
+## 설치
+
+```bash
+pip install clouvel-pro
+```
+""")]
 
 
 @server.call_tool()

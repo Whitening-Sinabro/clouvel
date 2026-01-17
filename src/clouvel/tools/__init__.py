@@ -1,5 +1,6 @@
 # Clouvel Tools Package
 # 모듈별로 도구 구현을 분리
+# Free 기능만 포함 (v0.8까지)
 
 from .core import (
     can_code,
@@ -51,11 +52,8 @@ from .hooks import (
     hook_verify,
 )
 
-from .pro import (
-    install_shovel,
-    sync_commands,
-    activate_license,
-)
+# Pro 기능은 clouvel-pro 패키지로 분리됨
+# pip install clouvel-pro
 
 __all__ = [
     # core
@@ -74,6 +72,4 @@ __all__ = [
     "spawn_explore", "spawn_librarian",
     # hooks (v0.8)
     "hook_design", "hook_verify",
-    # pro (v1.1)
-    "install_shovel", "sync_commands", "activate_license",
 ]

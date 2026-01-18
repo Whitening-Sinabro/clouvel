@@ -49,3 +49,45 @@ claude --mcp clouvel
 
 - [GitHub](https://github.com/Whitening-Sinabro/clouvel)
 - [Landing Page](https://whitening-sinabro.github.io/clouvel/)
+
+---
+
+## 🔒 보안 규칙 (MUST CHECK)
+
+> **커밋 전 반드시 확인. 위반 시 커밋 금지.**
+
+### 절대 커밋 금지 파일
+
+| 카테고리 | 패턴 | 이유 |
+|---------|------|------|
+| 마케팅 | `*MARKETING*`, `*STRATEGY*`, `*마케팅*`, `*전략*` | 비즈니스 기밀 |
+| 가격 | `*pricing*`, `*PRICING*`, `*가격*` | 비즈니스 기밀 |
+| Pro 코드 | `server_pro.py`, `license.py`, `tools/team.py` | 유료 기능 |
+| 시크릿 | `*.key`, `*.secret`, `license*.json` | 보안 |
+
+### 커밋 전 체크리스트
+
+```bash
+# 반드시 실행
+git diff --cached --name-only | grep -iE "(marketing|strategy|pricing|pro|license|secret|key)"
+```
+
+**결과가 있으면 커밋 금지!**
+
+### 실수로 커밋했다면
+
+```bash
+# 히스토리에서 완전 삭제
+git filter-branch --force --index-filter \
+  "git rm --cached --ignore-unmatch <파일경로>" \
+  --prune-empty --tag-name-filter cat -- --all
+
+# 원격에 강제 푸시
+git push origin main --force
+```
+
+### Claude 규칙
+
+- Write/Edit 전에 파일명이 위 패턴과 일치하면 **작업 거부**
+- 의심스러우면 사용자에게 먼저 확인
+- `.gitignore` 확인 후 추적 여부 검증

@@ -28,10 +28,26 @@ Thumbs.db
 .coverage
 htmlcov/
 
-# Internal docs (절대 커밋 금지)
-.claude/ROADMAP_INTERNAL.md
+# ============================================
+# 🔒 SECURITY: 절대 커밋 금지 파일들
+# ============================================
 
-# Pro/Team (private - 절대 커밋 금지)
+# 마케팅/전략 문서
+**/MARKETING*.md
+**/STRATEGY*.md
+**/pricing*.md
+**/PRICING*.md
+**/*마케팅*.md
+**/*전략*.md
+**/*가격*.md
+
+# 내부 로드맵
+.claude/ROADMAP_INTERNAL.md
+.claude/plans/PLAN-marketing*.md
+.claude/plans/*-internal*.md
+
+# Pro/Team 소스코드
+src/clouvel/server_pro.py
 src/clouvel/license.py
 src/clouvel/tools/context.py
 src/clouvel/tools/errors.py
@@ -40,6 +56,12 @@ src/clouvel/tools/team.py
 src/clouvel/tools/roles.py
 src/clouvel/content_api.py
 src/shovel/
+
+# 라이선스 키/시크릿
+*.key
+*.secret
+license*.json
+*_license*.py
 
 # Test artifacts
 *_result.txt

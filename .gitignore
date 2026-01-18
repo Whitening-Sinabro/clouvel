@@ -45,3 +45,4 @@ src/shovel/
 *_result.txt
 *_test.txt
 *_test2.txt
+.claude/hooks/

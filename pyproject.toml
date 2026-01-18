@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "clouvel"
-version = "0.6.3"
+version = "1.1.0"
 description = "바이브코딩 프로세스를 강제하는 MCP 서버 - PRD 없으면 코딩 없다"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -12,9 +12,9 @@ license = "MIT"
 authors = [
     { name = "SINABRO" }
 ]
-keywords = ["mcp", "vibe-coding", "prd", "documentation"]
+keywords = ["mcp", "vibe-coding", "prd", "documentation", "shovel", "claude-code"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3.11",
@@ -23,6 +23,7 @@ classifiers = [
 dependencies = [
     "mcp>=1.0.0",
     "pydantic>=2.0.0",
+    "requests>=2.25.0",
 ]
 
 [project.scripts]

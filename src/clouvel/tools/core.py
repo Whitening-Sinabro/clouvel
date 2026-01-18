@@ -9,20 +9,97 @@ from mcp.types import TextContent
 # 필수 문서 정의
 REQUIRED_DOCS = [
     {"type": "prd", "name": "PRD", "patterns": [r"prd", r"product.?requirement"], "priority": "critical"},
-    {"type": "architecture", "name": "아키텍처", "patterns": [r"architect", r"module"], "priority": "critical"},
-    {"type": "api_spec", "name": "API 스펙", "patterns": [r"api", r"swagger", r"openapi"], "priority": "critical"},
-    {"type": "db_schema", "name": "DB 스키마", "patterns": [r"schema", r"database", r"db"], "priority": "critical"},
-    {"type": "verification", "name": "검증 계획", "patterns": [r"verif", r"test.?plan"], "priority": "critical"},
+    {"type": "architecture", "name": "아키텍처", "patterns": [r"architect", r"arch", r"module"], "priority": "warn"},  # B4: WARN으로 변경
+    {"type": "api_spec", "name": "API 스펙", "patterns": [r"api", r"swagger", r"openapi"], "priority": "warn"},
+    {"type": "db_schema", "name": "DB 스키마", "patterns": [r"schema", r"database", r"db"], "priority": "warn"},
+    {"type": "verification", "name": "검증 계획", "patterns": [r"verif", r"test.?plan"], "priority": "warn"},
+]
+
+# PRD 필수 섹션 (B4: acceptance 없으면 BLOCK)
+REQUIRED_PRD_SECTIONS = [
+    {"name": "acceptance", "patterns": [r"##\s*(acceptance|완료\s*기준|수락\s*조건|done\s*when)"], "priority": "critical"},
+    {"name": "scope", "patterns": [r"##\s*(scope|범위|목표)"], "priority": "warn"},
+    {"name": "non_goals", "patterns": [r"##\s*(non.?goals?|하지\s*않을|제외|out\s*of\s*scope)"], "priority": "warn"},
 ]
 
 
+def _find_prd_file(docs_path: Path) -> Path | None:
+    """PRD 파일 찾기"""
+    for f in docs_path.iterdir():
+        if f.is_file():
+            name_lower = f.name.lower()
+            if "prd" in name_lower or "product" in name_lower and "requirement" in name_lower:
+                return f
+    return None
+
+
+def _check_prd_sections(prd_path: Path) -> tuple[list[str], list[str], list[str]]:
+    """PRD 파일 내용에서 필수 섹션 확인
+    Returns: (found_critical, missing_critical, missing_warn)
+    """
+    try:
+        content = prd_path.read_text(encoding='utf-8')
+    except Exception:
+        return [], ["acceptance"], []
+
+    found_critical = []
+    missing_critical = []
+    missing_warn = []
+
+    for section in REQUIRED_PRD_SECTIONS:
+        found = False
+        for pattern in section["patterns"]:
+            if re.search(pattern, content, re.IGNORECASE | re.MULTILINE):
+                found = True
+                break
+
+        if found:
+            if section["priority"] == "critical":
+                found_critical.append(section["name"])
+        else:
+            if section["priority"] == "critical":
+                missing_critical.append(section["name"])
+            else:
+                missing_warn.append(section["name"])
+
+    return found_critical, missing_critical, missing_warn
+
+
+def _check_tests(project_path: Path) -> tuple[int, list[str]]:
+    """테스트 파일 확인
+    Returns: (test_count, test_files)
+    """
+    test_patterns = [r"test_.*\.py$", r".*_test\.py$", r".*\.test\.(ts|js)$", r".*\.spec\.(ts|js)$"]
+    test_files = []
+
+    # 프로젝트 루트와 하위 폴더에서 테스트 파일 검색
+    search_paths = [project_path]
+    for subdir in ["tests", "test", "src", "__tests__"]:
+        subpath = project_path / subdir
+        if subpath.exists():
+            search_paths.append(subpath)
+
+    for search_path in search_paths:
+        if not search_path.exists():
+            continue
+        for f in search_path.rglob("*"):
+            if f.is_file():
+                for pattern in test_patterns:
+                    if re.match(pattern, f.name, re.IGNORECASE):
+                        test_files.append(str(f.relative_to(project_path)))
+                        break
+
+    return len(test_files), test_files[:5]  # 최대 5개만 반환
+
+
 async def can_code(path: str) -> list[TextContent]:
-    """코딩 가능 여부 확인 - 핵심 기능"""
+    """코딩 가능 여부 확인 - 핵심 기능 (B4: 품질 게이트 확장)"""
     docs_path = Path(path)
+    project_path = docs_path.parent if docs_path.name == "docs" else docs_path
 
     if not docs_path.exists():
         return [TextContent(type="text", text=f"""
-# ⛔ 코딩 금지
+# ⛔ BLOCK: 코딩 금지
 
 ## 이유
 docs 폴더가 없습니다: `{path}`
@@ -43,65 +120,110 @@ PRD 없이 코딩하면:
 사용자에게 PRD 작성을 도와주겠다고 말하세요.
 """)]
 
-    files = [f.name.lower() for f in docs_path.iterdir() if f.is_file()]
-    detected = []
-    missing = []
+    files = [f for f in docs_path.iterdir() if f.is_file()]
+    file_names = [f.name.lower() for f in files]
+
+    detected_critical = []
+    detected_warn = []
+    missing_critical = []
+    missing_warn = []
 
     for req in REQUIRED_DOCS:
         found = False
-        for filename in files:
+        for filename in file_names:
             for pattern in req["patterns"]:
                 if re.search(pattern, filename, re.IGNORECASE):
-                    detected.append(req["name"])
+                    if req["priority"] == "critical":
+                        detected_critical.append(req["name"])
+                    else:
+                        detected_warn.append(req["name"])
                     found = True
                     break
             if found:
                 break
         if not found:
-            missing.append(req["name"])
+            if req["priority"] == "critical":
+                missing_critical.append(req["name"])
+            else:
+                missing_warn.append(req["name"])
 
-    if missing:
-        missing_list = "\n".join(f"- {m}" for m in missing)
-        detected_list = "\n".join(f"- {d}" for d in detected) if detected else "없음"
+    # B4: PRD 내용 검사 (acceptance 섹션 필수)
+    prd_file = _find_prd_file(docs_path)
+    prd_sections_found = []
+    prd_sections_missing_critical = []
+    prd_sections_missing_warn = []
+
+    if prd_file:
+        prd_sections_found, prd_sections_missing_critical, prd_sections_missing_warn = _check_prd_sections(prd_file)
+
+    # B4: 테스트 파일 확인
+    test_count, test_files = _check_tests(project_path)
+
+    # BLOCK 조건: PRD 없음 OR acceptance 섹션 없음
+    if missing_critical or prd_sections_missing_critical:
+        all_missing_critical = missing_critical + [f"PRD의 {s} 섹션" for s in prd_sections_missing_critical]
+        detected_list = "\n".join(f"- {d}" for d in detected_critical + detected_warn) if (detected_critical or detected_warn) else "없음"
 
         return [TextContent(type="text", text=f"""
-# ⛔ 코딩 금지
+# ⛔ BLOCK: 코딩 금지
 
 ## 현재 상태
 ✅ 있음:
 {detected_list}
 
-❌ 없음 (필수):
-{missing_list}
+❌ 없음 (필수 - BLOCK):
+{chr(10).join(f'- {m}' for m in all_missing_critical)}
 
 ## 지금 해야 할 것
 코드를 작성하지 마세요. 대신:
 
-1. 누락된 문서를 먼저 작성하세요
-2. 특히 **PRD**가 가장 중요합니다
+1. 누락된 문서/섹션을 먼저 작성하세요
+2. **PRD에 acceptance(완료 기준) 섹션이 필수입니다**
 3. `get_prd_guide` 도구로 작성법을 확인하세요
 4. `get_prd_template` 도구로 템플릿을 생성하세요
 
 ## 사용자에게 전달할 메시지
 "코드를 작성하기 전에 먼저 문서를 준비해야 합니다.
-{len(missing)}개의 필수 문서가 없습니다: {', '.join(missing)}
+필수 항목이 없습니다: {', '.join(all_missing_critical)}
 제가 PRD 작성을 도와드릴까요?"
 
 **절대 코드를 작성하지 마세요. 문서 작성을 도와주세요.**
 """)]
 
+    # WARN 조건: 아키텍처 없음, 테스트 0개 등
+    warnings = []
+    if missing_warn:
+        warnings.extend([f"📄 {m} 문서 없음" for m in missing_warn])
+    if prd_sections_missing_warn:
+        warnings.extend([f"📝 PRD에 {s} 섹션 없음" for s in prd_sections_missing_warn])
+    if test_count == 0:
+        warnings.append("🧪 테스트 파일 없음 (품질 보장 어려움)")
+
+    warn_section = ""
+    if warnings:
+        warn_section = f"""
+## ⚠️ WARN: 권장 사항
+{chr(10).join(f'- {w}' for w in warnings)}
+
+*위 항목들은 BLOCK하지 않지만, 품질을 위해 추가를 권장합니다.*
+"""
+
+    test_section = ""
+    if test_count > 0:
+        test_section = f"\n- 테스트 파일 {test_count}개 발견"
+
     return [TextContent(type="text", text=f"""
-# ✅ 코딩 가능
+# ✅ PASS: 코딩 가능
 
 ## 문서 상태
-모든 필수 문서가 준비되어 있습니다:
-{chr(10).join(f'- {d}' for d in detected)}
-
+필수 문서가 준비되어 있습니다:
+{chr(10).join(f'- {d}' for d in detected_critical)}
+{chr(10).join(f'- {d}' for d in detected_warn) if detected_warn else ''}{test_section}
+{warn_section}
 ## 코딩 시작 전 확인사항
-1. PRD에 명시된 요구사항을 따르세요
-2. API 스펙에 맞게 구현하세요
-3. DB 스키마를 참고하세요
-4. 검증 계획에 따라 테스트하세요
+1. PRD의 **acceptance 기준**을 확인하세요
+2. 요구사항대로 구현하세요
+3. 테스트를 작성하세요
 
 이제 사용자의 요청에 따라 코드를 작성해도 됩니다.
 """)]

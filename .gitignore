@@ -54,6 +54,7 @@ src/clouvel/tools/errors.py
 src/clouvel/tools/shovel.py
 src/clouvel/tools/team.py
 src/clouvel/tools/roles.py
+src/clouvel/tools/security.py
 src/clouvel/content_api.py
 src/shovel/
 
@@ -68,3 +69,6 @@ license*.json
 *_test.txt
 *_test2.txt
 .claude/hooks/
+
+# Clouvel 로컬 설정/로그
+.clouvel/

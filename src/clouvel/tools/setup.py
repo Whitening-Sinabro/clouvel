@@ -131,17 +131,50 @@ async def setup_cli(path: str, level: str) -> list[TextContent]:
         git_hooks_dir = project_path / ".git" / "hooks"
         if git_hooks_dir.exists():
             pre_commit = git_hooks_dir / "pre-commit"
-            pre_commit_content = '''#!/bin/sh
-# Clouvel pre-commit hook
+            pre_commit_content = '''#!/bin/bash
+# Clouvel pre-commit hook (Free)
+# 1. PRD 문서 확인
+# 2. 민감 파일 커밋 차단
+
+# === PRD 체크 ===
 DOCS_DIR="./docs"
 if ! ls "$DOCS_DIR"/*[Pp][Rr][Dd]* 1> /dev/null 2>&1; then
     echo "[Clouvel] BLOCKED: No PRD document found."
     echo "Please create docs/PRD.md first."
     exit 1
 fi
+
+# === 보안 체크 (민감 파일 차단) ===
+SENSITIVE_PATTERNS="(marketing|strategy|pricing|가격|마케팅|전략|server_pro|_pro\\.py|\\.key$|\\.secret$|credentials|password)"
+
+SENSITIVE_FILES=$(git diff --cached --name-only | grep -iE "$SENSITIVE_PATTERNS" 2>/dev/null)
+
+if [ -n "$SENSITIVE_FILES" ]; then
+    echo ""
+    echo "========================================"
+    echo "[Clouvel] SECURITY BLOCK: 민감 파일 감지!"
+    echo "========================================"
+    echo ""
+    echo "다음 파일은 커밋할 수 없습니다:"
+    echo "$SENSITIVE_FILES" | while read -r file; do
+        echo "  ❌ $file"
+    done
+    echo ""
+    echo "해결: git reset HEAD <파일명>"
+    echo "무시: git commit --no-verify (권장하지 않음)"
+    echo ""
+    exit 1
+fi
+
 echo "[Clouvel] Document check passed."
 '''
             pre_commit.write_text(pre_commit_content, encoding='utf-8')
+            # chmod +x 처리
+            try:
+                import os
+                os.chmod(pre_commit, 0o755)
+            except:
+                pass
             created_files.append(".git/hooks/pre-commit")
 
     files_list = "\n".join(f"- {f}" for f in created_files) if created_files else "없음"

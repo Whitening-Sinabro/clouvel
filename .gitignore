@@ -30,3 +30,18 @@ htmlcov/
 
 # Internal docs (절대 커밋 금지)
 .claude/ROADMAP_INTERNAL.md
+
+# Pro/Team (private - 절대 커밋 금지)
+src/clouvel/license.py
+src/clouvel/tools/context.py
+src/clouvel/tools/errors.py
+src/clouvel/tools/shovel.py
+src/clouvel/tools/team.py
+src/clouvel/tools/roles.py
+src/clouvel/content_api.py
+src/shovel/
+
+# Test artifacts
+*_result.txt
+*_test.txt
+*_test2.txt

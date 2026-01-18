@@ -63,7 +63,7 @@
             <div class="flex items-center gap-6">
                 <a href="index.html" class="text-sm text-slate-600 hover:text-dark-slate transition">Home</a>
                 <a href="https://github.com/Whitening-Sinabro/clouvel" target="_blank" class="text-sm text-slate-600 hover:text-dark-slate transition">GitHub</a>
-                <a href="https://pypi.org/project/clouvel-pro/" target="_blank" class="text-sm bg-accent text-white px-4 py-2 rounded-full hover:bg-accent-dark transition">PyPI</a>
+                <a href="https://pypi.org/project/clouvel/" target="_blank" class="text-sm bg-accent text-white px-4 py-2 rounded-full hover:bg-accent-dark transition">PyPI</a>
             </div>
         </div>
     </nav>
@@ -130,7 +130,7 @@
                             <p class="text-slate-500"># Free</p>
                             <p class="text-slate-300">pip install clouvel</p>
                             <p class="text-slate-500 mt-3"># Pro</p>
-                            <p class="text-slate-300">pip install clouvel-pro</p>
+                            <p class="text-slate-300">pip install clouvel</p>
                         </div>
                     </li>
                     <li>
@@ -286,7 +286,7 @@
                         <p class="text-slate-500"># clouvel (free)</p>
                         <p>mcp>=1.0.0</p>
                         <p>pydantic>=2.0.0</p>
-                        <p class="mt-4 text-slate-500"># clouvel-pro (paid)</p>
+                        <p class="mt-4 text-slate-500"># clouvel (paid)</p>
                         <p>mcp>=1.0.0</p>
                         <p>pydantic>=2.0.0</p>
                         <p>httpx>=0.25.0</p>
@@ -318,11 +318,11 @@
                     <div class="bg-white border border-accent/30 rounded-xl p-6">
                         <div class="flex items-center gap-2 mb-4">
                             <span class="bg-accent text-white text-xs font-semibold px-2 py-1 rounded">PRO</span>
-                            <span class="font-semibold">clouvel-pro</span>
+                            <span class="font-semibold">clouvel</span>
                         </div>
                         <div class="code-block rounded-lg p-4 font-mono text-sm">
                             <p class="text-slate-500"># pip</p>
-                            <p class="text-slate-300">pip install clouvel-pro</p>
+                            <p class="text-slate-300">pip install clouvel</p>
                             <p class="text-slate-500 mt-3"># 라이선스 활성화 (Claude Code에서)</p>
                             <p class="text-accent">&gt; activate_license 도구 사용</p>
                         </div>
@@ -357,13 +357,13 @@
                     </ol>
                     <div class="code-block rounded-lg p-4 font-mono text-sm mt-4">
                         <p class="text-slate-500"># 등록</p>
-                        <p class="text-slate-300">claude mcp add clouvel-pro</p>
+                        <p class="text-slate-300">claude mcp add clouvel</p>
                         <p class="text-slate-500 mt-3"># ~/.claude.json에 추가되는 내용</p>
                         <p class="text-slate-300">{</p>
                         <p class="text-slate-300">  "mcpServers": {</p>
-                        <p class="text-slate-300">    "clouvel-pro": {</p>
+                        <p class="text-slate-300">    "clouvel": {</p>
                         <p class="text-slate-300">      "type": "stdio",</p>
-                        <p class="text-slate-300">      "command": "clouvel-pro",</p>
+                        <p class="text-slate-300">      "command": "clouvel",</p>
                         <p class="text-slate-300">      "args": []</p>
                         <p class="text-slate-300">    }</p>
                         <p class="text-slate-300">  }</p>
@@ -417,8 +417,8 @@
                         <p class="text-slate-500">// claude_desktop_config.json</p>
                         <p class="text-slate-300">{</p>
                         <p class="text-slate-300">  "mcpServers": {</p>
-                        <p class="text-slate-300">    "clouvel-pro": {</p>
-                        <p class="text-slate-300">      "command": "clouvel-pro",</p>
+                        <p class="text-slate-300">    "clouvel": {</p>
+                        <p class="text-slate-300">      "command": "clouvel",</p>
                         <p class="text-slate-300">      "args": [],</p>
                         <p class="text-slate-300">      "env": {</p>
                         <p class="text-slate-300">        "PROJECT_PATH": "/path/to/project"</p>
@@ -453,8 +453,8 @@
                         <p class="text-slate-500">// .vscode/mcp.json 또는 Cursor 설정</p>
                         <p class="text-slate-300">{</p>
                         <p class="text-slate-300">  "servers": {</p>
-                        <p class="text-slate-300">    "clouvel-pro": {</p>
-                        <p class="text-slate-300">      "command": "clouvel-pro",</p>
+                        <p class="text-slate-300">    "clouvel": {</p>
+                        <p class="text-slate-300">      "command": "clouvel",</p>
                         <p class="text-slate-300">      "type": "stdio"</p>
                         <p class="text-slate-300">    }</p>
                         <p class="text-slate-300">  }</p>
@@ -503,9 +503,9 @@
                     <p class="text-slate-500">// ~/.claude.json</p>
                     <p class="text-slate-300">{</p>
                     <p class="text-slate-300">  "mcpServers": {</p>
-                    <p class="text-slate-300">    "clouvel-pro": {</p>
+                    <p class="text-slate-300">    "clouvel": {</p>
                     <p class="text-slate-300">      "type": "stdio",</p>
-                    <p class="text-slate-300">      "command": "clouvel-pro",</p>
+                    <p class="text-slate-300">      "command": "clouvel",</p>
                     <p class="text-slate-300">      "env": {</p>
                     <p class="text-accent">        "CLOUVEL_DEV_MODE": "1"</p>
                     <p class="text-slate-300">      }</p>
@@ -626,7 +626,7 @@
             <!-- API Reference: Pro -->
             <section id="api-pro" class="mb-16">
                 <h2 class="text-2xl font-bold mb-6">API Reference: Pro Tools</h2>
-                <p class="text-slate-600 mb-6">clouvel-pro 패키지에 포함된 도구 (11개)</p>
+                <p class="text-slate-600 mb-6">clouvel 패키지에 포함된 도구 (11개)</p>
 
                 <div class="space-y-4">
                     <!-- activate_license -->
@@ -1081,7 +1081,7 @@
                 <!-- Pro Version -->
                 <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
                     <span class="bg-accent text-white text-xs px-2 py-1 rounded">PRO</span>
-                    clouvel-pro
+                    clouvel
                 </h3>
                 <div class="space-y-6">
                     <div class="border-l-4 border-accent pl-6">
@@ -1167,7 +1167,7 @@
                 <p class="mt-2">
                     <a href="https://github.com/Whitening-Sinabro/clouvel" class="text-accent hover:underline">GitHub</a>
                     &middot;
-                    <a href="https://pypi.org/project/clouvel-pro/" class="text-accent hover:underline">PyPI</a>
+                    <a href="https://pypi.org/project/clouvel/" class="text-accent hover:underline">PyPI</a>
                     &middot;
                     <a href="index.html" class="text-accent hover:underline">Home</a>
                 </p>

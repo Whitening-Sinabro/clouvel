@@ -134,25 +134,30 @@
                         </div>
                     </li>
                     <li>
-                        <p class="font-semibold text-dark-slate mb-3">2. Connect (Claude Code)</p>
+                        <p class="font-semibold text-dark-slate mb-3">2. Setup (Free - 자동 설정)</p>
                         <div class="code-block rounded-lg p-4 font-mono text-sm">
-                            <p class="text-slate-500"># Free</p>
-                            <p class="text-slate-300">claude mcp add clouvel</p>
-                            <p class="text-slate-500 mt-3"># Pro</p>
-                            <p class="text-slate-300">claude mcp add clouvel-pro</p>
+                            <p class="text-slate-500"># 글로벌 규칙 + MCP 서버 자동 등록</p>
+                            <p class="text-emerald-400">clouvel setup</p>
+                            <p class="text-slate-500 mt-3"># 이 명령 하나로:</p>
+                            <p class="text-slate-400 text-xs">- ~/.claude/CLAUDE.md에 can_code 자동 호출 규칙 추가</p>
+                            <p class="text-slate-400 text-xs">- claude mcp add clouvel 자동 실행</p>
                         </div>
                         <p class="text-slate-600 text-sm mt-3">설정 확인: Claude Code에서 <code class="bg-slate-100 px-2 py-0.5 rounded">/mcp</code> 실행 후 도구 목록에 clouvel이 보이면 연결 완료</p>
                     </li>
                     <li>
-                        <p class="font-semibold text-dark-slate mb-3">3. Verify</p>
+                        <p class="font-semibold text-dark-slate mb-3">3. Verify (3단계 품질 게이트)</p>
                         <ul class="text-slate-600 space-y-2 ml-4">
                             <li class="flex items-start gap-2">
-                                <span class="text-accent">&#8226;</span>
-                                <span><code class="bg-slate-100 px-2 py-0.5 rounded">can_code</code> 실행 → PRD/Architecture가 없으면 <strong class="text-red-500">BLOCK</strong> 되는지 확인</span>
+                                <span class="text-red-500">&#8226;</span>
+                                <span>PRD 없음 → <strong class="text-red-500">BLOCK</strong> (코딩 차단)</span>
                             </li>
                             <li class="flex items-start gap-2">
-                                <span class="text-accent">&#8226;</span>
-                                <span>PRD/Architecture 추가 후 재실행 → <strong class="text-emerald-500">PASS</strong> 되는지 확인</span>
+                                <span class="text-yellow-500">&#8226;</span>
+                                <span>PRD 있지만 권장 문서 부족 → <strong class="text-yellow-500">WARN</strong> (진행 가능, 권장 안내)</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500">&#8226;</span>
+                                <span>모든 문서 완비 → <strong class="text-emerald-500">PASS</strong> (코딩 시작 가능)</span>
                             </li>
                         </ul>
                     </li>
@@ -530,33 +535,38 @@
                 <div class="bg-white border border-slate-200 rounded-xl p-6 mb-6">
                     <div class="flex items-center gap-3 mb-4">
                         <code class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm">can_code</code>
-                        <span class="text-slate-500 text-sm">코딩 가능 여부 검사</span>
+                        <span class="text-slate-500 text-sm">3단계 품질 게이트 (BLOCK/WARN/PASS)</span>
                     </div>
                     <div class="space-y-4">
                         <div>
                             <p class="text-xs font-semibold text-slate-400 uppercase mb-2">Parameters</p>
                             <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
-                                <p>project_path: str (optional) - 프로젝트 경로, 기본값 cwd</p>
+                                <p>path: str - docs 폴더 경로 (예: "docs" 또는 "/path/to/project/docs")</p>
                             </div>
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-slate-400 uppercase mb-2">Returns</p>
-                            <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
-                                <p class="text-emerald-400"># 허용 시</p>
-                                <p>✓ PRD.md</p>
-                                <p>✓ Architecture.md</p>
-                                <p>→ 코딩 가능</p>
-                                <p class="text-red-400 mt-2"># 차단 시</p>
-                                <p>✗ PRD.md not found</p>
-                                <p>→ 코딩 차단됨</p>
+                            <p class="text-xs font-semibold text-slate-400 uppercase mb-2">Returns (3단계)</p>
+                            <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300 space-y-3">
+                                <div>
+                                    <p class="text-red-400"># BLOCK - 코딩 금지</p>
+                                    <p class="text-red-300">⛔ BLOCK: 코딩 금지</p>
+                                    <p class="text-slate-500">PRD 없음 또는 acceptance 섹션 누락</p>
+                                </div>
+                                <div>
+                                    <p class="text-yellow-400"># WARN - 진행 가능, 권장 안내</p>
+                                    <p class="text-yellow-300">✅ PASS | ⚠️ WARN 2개 | 필수: PRD ✓ | 권장 없음: 아키텍처, 테스트</p>
+                                </div>
+                                <div>
+                                    <p class="text-emerald-400"># PASS - 코딩 시작 가능</p>
+                                    <p class="text-emerald-300">✅ PASS | 필수: PRD ✓ | 테스트 3개 | 코딩 시작 가능</p>
+                                </div>
                             </div>
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-slate-400 uppercase mb-2">Checked Files</p>
+                            <p class="text-xs font-semibold text-slate-400 uppercase mb-2">검사 항목</p>
                             <ul class="text-sm text-slate-600 space-y-1">
-                                <li>• <code>docs/PRD.md</code> 또는 <code>PRD.md</code></li>
-                                <li>• <code>docs/Architecture.md</code> 또는 <code>Architecture.md</code></li>
-                                <li>• <code>docs/API.md</code> (optional)</li>
+                                <li><strong class="text-red-500">필수 (BLOCK)</strong>: PRD 파일, acceptance(완료 기준) 섹션</li>
+                                <li><strong class="text-yellow-600">권장 (WARN)</strong>: 아키텍처, API 스펙, DB 스키마, 검증 계획, 테스트 파일</li>
                             </ul>
                         </div>
                     </div>
@@ -1036,6 +1046,43 @@
             <section id="changelog" class="mb-16">
                 <h2 class="text-2xl font-bold mb-6">Changelog</h2>
 
+                <!-- Free Version -->
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded">FREE</span>
+                    clouvel
+                </h3>
+                <div class="space-y-6 mb-10">
+                    <div class="border-l-4 border-emerald-500 pl-6">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="font-mono font-bold">v0.6.1</span>
+                            <span class="text-slate-500 text-sm">2026-01-18</span>
+                            <span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded">Latest</span>
+                        </div>
+                        <ul class="text-sm text-slate-600 space-y-1">
+                            <li>- <strong>clouvel setup</strong>: 원커맨드 설정 (글로벌 규칙 + MCP 자동 등록)</li>
+                            <li>- <strong>3단계 품질 게이트</strong>: BLOCK / WARN / PASS</li>
+                            <li>- can_code 자동 호출 메커니즘 (B0)</li>
+                            <li>- 출력 간소화 (한 줄 요약)</li>
+                        </ul>
+                    </div>
+                    <div class="border-l-4 border-slate-300 pl-6">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="font-mono font-bold">v0.5.0</span>
+                            <span class="text-slate-500 text-sm">2026-01-17</span>
+                        </div>
+                        <ul class="text-sm text-slate-600 space-y-1">
+                            <li>- 초기 릴리즈</li>
+                            <li>- can_code, get_progress, get_goal 도구</li>
+                            <li>- PRD 기반 코딩 게이트</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Pro Version -->
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <span class="bg-accent text-white text-xs px-2 py-1 rounded">PRO</span>
+                    clouvel-pro
+                </h3>
                 <div class="space-y-6">
                     <div class="border-l-4 border-accent pl-6">
                         <div class="flex items-center gap-3 mb-2">

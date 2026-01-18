@@ -191,42 +191,21 @@ PRD 없이 코딩하면:
 """)]
 
     # WARN 조건: 아키텍처 없음, 테스트 0개 등
-    warnings = []
-    if missing_warn:
-        warnings.extend([f"📄 {m} 문서 없음" for m in missing_warn])
-    if prd_sections_missing_warn:
-        warnings.extend([f"📝 PRD에 {s} 섹션 없음" for s in prd_sections_missing_warn])
+    warn_count = len(missing_warn) + len(prd_sections_missing_warn) + (1 if test_count == 0 else 0)
+
+    # 짧은 요약 형식
+    found_docs = ", ".join(detected_critical) if detected_critical else "없음"
+    warn_items = missing_warn + [f"PRD.{s}" for s in prd_sections_missing_warn]
     if test_count == 0:
-        warnings.append("🧪 테스트 파일 없음 (품질 보장 어려움)")
+        warn_items.append("테스트")
+    warn_summary = ", ".join(warn_items) if warn_items else "없음"
 
-    warn_section = ""
-    if warnings:
-        warn_section = f"""
-## ⚠️ WARN: 권장 사항
-{chr(10).join(f'- {w}' for w in warnings)}
+    test_info = f" | 테스트 {test_count}개" if test_count > 0 else ""
 
-*위 항목들은 BLOCK하지 않지만, 품질을 위해 추가를 권장합니다.*
-"""
-
-    test_section = ""
-    if test_count > 0:
-        test_section = f"\n- 테스트 파일 {test_count}개 발견"
-
-    return [TextContent(type="text", text=f"""
-# ✅ PASS: 코딩 가능
-
-## 문서 상태
-필수 문서가 준비되어 있습니다:
-{chr(10).join(f'- {d}' for d in detected_critical)}
-{chr(10).join(f'- {d}' for d in detected_warn) if detected_warn else ''}{test_section}
-{warn_section}
-## 코딩 시작 전 확인사항
-1. PRD의 **acceptance 기준**을 확인하세요
-2. 요구사항대로 구현하세요
-3. 테스트를 작성하세요
-
-이제 사용자의 요청에 따라 코드를 작성해도 됩니다.
-""")]
+    if warn_count > 0:
+        return [TextContent(type="text", text=f"✅ PASS | ⚠️ WARN {warn_count}개 | 필수: {found_docs} ✓{test_info} | 권장 없음: {warn_summary}")]
+    else:
+        return [TextContent(type="text", text=f"✅ PASS | 필수: {found_docs} ✓{test_info} | 코딩 시작 가능")]
 
 
 async def scan_docs(path: str) -> list[TextContent]:

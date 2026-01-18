@@ -491,6 +491,126 @@ async def run_server():
         await server.run(read_stream, write_stream, server.create_initialization_options())
 
 
+def _run_setup(global_only: bool = False) -> str:
+    """B0: clouvel setup - 강제 호출 메커니즘 설치"""
+    import subprocess
+    import os
+    from pathlib import Path
+
+    results = []
+
+    # 1. 글로벌 CLAUDE.md에 규칙 추가
+    if os.name == 'nt':  # Windows
+        claude_dir = Path.home() / ".claude"
+    else:  # Mac/Linux
+        claude_dir = Path.home() / ".claude"
+
+    claude_dir.mkdir(parents=True, exist_ok=True)
+    claude_md_path = claude_dir / "CLAUDE.md"
+
+    clouvel_rule = """
+## Clouvel 규칙 (자동 생성)
+
+**코드 작성 전 반드시 clouvel의 `can_code` 도구 호출 필수.**
+
+- 코드를 작성(Edit/Write)하기 전에 항상 `can_code` 도구를 먼저 호출하세요
+- path 인자로 프로젝트의 docs 폴더 경로를 전달하세요
+- BLOCK이 뜨면 코드 작성 금지, 사용자에게 문서 작성 안내
+- PASS가 뜨면 코딩 진행 가능
+- WARN은 권장 사항, 진행 가능하지만 권장 문서 추가 안내
+
+"""
+
+    marker = "## Clouvel 규칙"
+
+    if claude_md_path.exists():
+        content = claude_md_path.read_text(encoding='utf-8')
+        if marker in content:
+            results.append("[OK] 글로벌 CLAUDE.md: 이미 Clouvel 규칙 있음")
+        else:
+            # 기존 내용 끝에 추가
+            new_content = content.rstrip() + "\n\n---\n" + clouvel_rule
+            claude_md_path.write_text(new_content, encoding='utf-8')
+            results.append(f"[OK] 글로벌 CLAUDE.md: 규칙 추가됨 ({claude_md_path})")
+    else:
+        # 새로 생성
+        initial_content = f"# Claude Code 글로벌 설정\n\n> 자동 생성됨 by clouvel setup\n\n---\n{clouvel_rule}"
+        claude_md_path.write_text(initial_content, encoding='utf-8')
+        results.append(f"[OK] 글로벌 CLAUDE.md: 생성됨 ({claude_md_path})")
+
+    # 2. MCP 서버 등록 (global_only가 아닐 때만)
+    if not global_only:
+        try:
+            # 먼저 기존 등록 확인
+            check_result = subprocess.run(
+                ["claude", "mcp", "list"],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+
+            if "clouvel" in check_result.stdout:
+                results.append("[OK] MCP 서버: 이미 등록됨")
+            else:
+                # 등록
+                add_result = subprocess.run(
+                    ["claude", "mcp", "add", "clouvel", "-s", "user", "--", "clouvel"],
+                    capture_output=True,
+                    text=True,
+                    timeout=30
+                )
+
+                if add_result.returncode == 0:
+                    results.append("[OK] MCP 서버: 등록 완료")
+                else:
+                    results.append(f"[WARN] MCP 서버: 등록 실패 - {add_result.stderr.strip()}")
+                    results.append("   수동 등록: claude mcp add clouvel -s user -- clouvel")
+        except FileNotFoundError:
+            results.append("[WARN] MCP 서버: claude 명령어 없음")
+            results.append("   Claude Code 설치 후 다시 실행하세요")
+        except subprocess.TimeoutExpired:
+            results.append("[WARN] MCP 서버: 타임아웃")
+            results.append("   수동 등록: claude mcp add clouvel -s user -- clouvel")
+        except Exception as e:
+            results.append(f"[WARN] MCP 서버: 오류 - {str(e)}")
+            results.append("   수동 등록: claude mcp add clouvel -s user -- clouvel")
+
+    # 결과 출력
+    output = """
+================================================================
+                    Clouvel Setup 완료
+================================================================
+
+"""
+    output += "\n".join(results)
+    output += """
+
+----------------------------------------------------------------
+
+## 작동 방식
+
+1. Claude Code 실행
+2. "로그인 기능 만들어줘" 요청
+3. Claude가 자동으로 can_code 먼저 호출
+4. PRD 없으면 → [BLOCK] BLOCK (코딩 금지)
+5. PRD 있으면 → [OK] PASS (코딩 진행)
+
+## 테스트
+
+```bash
+# PRD 없는 폴더에서 테스트
+mkdir test-project && cd test-project
+claude
+> "코드 짜줘"
+# → BLOCK 메시지 확인
+```
+
+----------------------------------------------------------------
+"""
+
+    return output
+
+
 def main():
     import sys
     import asyncio
@@ -500,9 +620,14 @@ def main():
     parser = argparse.ArgumentParser(description="Clouvel - 바이브코딩 프로세스 강제 도구")
     subparsers = parser.add_subparsers(dest="command")
 
+    # init 명령
     init_parser = subparsers.add_parser("init", help="프로젝트 초기화")
     init_parser.add_argument("-p", "--path", default=".", help="프로젝트 경로")
     init_parser.add_argument("-l", "--level", choices=["remind", "strict", "full"], default="strict")
+
+    # setup 명령 (B0)
+    setup_parser = subparsers.add_parser("setup", help="Clouvel 강제 호출 메커니즘 설치 (글로벌)")
+    setup_parser.add_argument("--global-only", action="store_true", help="CLAUDE.md만 설정 (MCP 등록 제외)")
 
     args = parser.parse_args()
 
@@ -511,6 +636,9 @@ def main():
         import asyncio
         result = asyncio.run(sync_setup(args.path, args.level))
         print(result[0].text)
+    elif args.command == "setup":
+        result = _run_setup(global_only=args.global_only if hasattr(args, 'global_only') else False)
+        print(result)
     else:
         asyncio.run(run_server())
 

@@ -1,6 +1,6 @@
 # Clouvel 현재 상태
 
-> **마지막 업데이트**: 2026-01-18 (저녁)
+> **마지막 업데이트**: 2026-01-19
 
 ---
 
@@ -8,12 +8,12 @@
 
 | 항목 | 상태 |
 |------|------|
-| **clouvel (Free)** | PyPI v0.5.0 (3개 도구) |
-| **clouvel-pro (Paid)** | PyPI v1.4.2 (23개 MCP 도구) |
-| **랜딩 페이지** | 배포 완료 + 기술 문서 추가 |
-| **라이선스 서버** | ✅ 동작 중 (`clouvel-license-webhook.vnddns999.workers.dev`) |
-| **Lemon Squeezy** | ⏳ Identity 인증 심사 중 (24-48h) |
-| **블로커** | Identity 인증 대기 → Store 활성화 → Email 활성화 |
+| **clouvel** | v1.1.0 PyPI 배포 완료 |
+| **clouvel-pro** | ⚠️ Deprecated (clouvel에 통합됨) |
+| **랜딩 페이지** | 배포 완료 + 결제 "문의하기"로 변경 |
+| **라이선스 서버** | ✅ 동작 중 |
+| **결제** | ⏳ 일시 중단 (문의 형태로 전환) |
+| **보안** | ✅ 민감 파일 커밋 차단 자동화 |
 
 ---
 
@@ -51,21 +51,49 @@
 
 ---
 
-## 오늘 완료 (2026-01-18)
+## 오늘 완료 (2026-01-19)
 
+### v1.1.0 릴리즈
+- [x] **setup_cli 보안 hook 추가** (Free)
+  - 민감 파일 커밋 자동 차단 (marketing, pricing, credentials 등)
+  - PRD 체크 + 보안 체크 통합
+- [x] **setup_security 도구** (Pro, 로컬만)
+  - 커스텀 패턴 추가
+  - 차단 로그 기록
+  - 팀 동기화 옵션
+
+### 보안 강화
+- [x] 마케팅 문서 Git 히스토리에서 완전 삭제 (filter-branch)
+- [x] .gitignore 강화 (마케팅/전략/가격/Pro코드 패턴)
+- [x] CLAUDE.md에 보안 체크리스트 추가
+- [x] pre-commit hook 자동 설치 (setup_cli)
+- [x] GitHub 검증 완료 (민감 파일 없음)
+
+### 배포
+- [x] v1.1.0 PyPI 배포 완료
+- [x] `pip install clouvel==1.1.0` 테스트 완료
+
+---
+
+## 이전 완료 (2026-01-18)
+
+### clouvel (Free) v0.6.x
+- [x] **B0: clouvel setup** - 원커맨드 설정 (글로벌 규칙 + MCP 자동 등록)
+- [x] **3단계 품질 게이트** - BLOCK / WARN / PASS
+- [x] can_code 자동 호출 메커니즘 (글로벌 CLAUDE.md 규칙)
+
+### 패키지 통합
+- [x] **clouvel + clouvel-pro 통합** → 단일 패키지 v1.0.0
+  - Free 도구: 28개 (라이선스 불필요)
+  - Pro 도구: 21개 (라이선스 필요)
+  - 총 49개 도구
+
+### 이전 작업
 - [x] 랜딩 페이지 인터랙티브 모달 추가
 - [x] 기술 문서 페이지 (docs.html) 생성
-- [x] DEV_MODE MCP 테스트 완료 (20개 도구)
 - [x] recover_context 도구 구현 (컨텍스트 압축 후 자동 복구)
 - [x] setup_auto_recovery 도구 구현 (Hook 자동 설치)
 - [x] Claude Code Hook 연동 (PreCompact + SessionStart)
-- [x] **/compact 실제 테스트 → 컨텍스트 복구 성공**
-- [x] Windows UTF-8 인코딩 이슈 해결 (hooks)
-- [x] Lemon Squeezy 상품 생성 + 가격 확정 (Personal $49, Team $149)
-- [x] Lemon Squeezy 웹훅 URL 등록 완료
-- [x] 실제 라이선스 키 E2E 테스트 완료
-- [x] 어드민 대시보드 배포 (`clouvel-admin.pages.dev`)
-- [x] 가격 전략 확정 (Early Bird until Feb 15)
 
 ---
 
@@ -84,33 +112,49 @@
 
 ## 로드맵
 
-### v1.5 - 정식 출시 (Now)
+> **📄 5개년 로드맵**: `docs/roadmap/` 폴더 참조 (8개 파일로 분리)
+
+### 비전 (2026-2030)
+
+```
+2026: "PRD 없으면 코딩 없다" (현재)
+2030: "PRD가 곧 제품이다" (AI가 스펙만으로 구현)
+```
+
+### 단기 목표 (2026)
+
+| 분기 | 목표 | 핵심 지표 |
+|------|------|-----------|
+| Q1-Q2 | Cursor 통합 + 무료 티어 강화 | 1,000 signups |
+| Q3 | 템플릿 라이브러리 v1 (50개) | Discord 1,000명 |
+| Q4 | Pro 티어 활성화 | $10K MRR |
+
+### 현재 단계 (v1.5)
+
 | 항목 | 상태 |
 |------|------|
 | 라이선스 서버 | ✅ 완료 |
 | Lemon Squeezy 연동 | ✅ 완료 |
 | 가격 확정 | ✅ $49 / $149 (until Feb 15) |
-| 가격 문구 확정 | ✅ After launch 방식 채택 |
-| Identity 인증 | ⏳ 심사 중 (24-48h) |
-| Store 활성화 | ⏳ 인증 후 |
-| 랜딩 페이지 가격 업데이트 | ⏳ 진행 중 |
+| Identity 인증 | ⏳ 심사 중 |
+| Cursor MCP 통합 | ⏳ 준비 중 |
 
-### v1.6 - 마케팅 (출시 후 1-2주)
-- [ ] Twitter/X 계정 + 홍보
-- [ ] 데모 영상 (컨텍스트 복구 전후 비교)
-- [ ] ProductHunt 런칭
-- [ ] 블로그 포스트 ("Claude Code 컨텍스트 문제 해결")
+### 다음 단계
 
-### v1.7 - Analytics (출시 후 1개월)
-- [ ] 에러 패턴 시각화 대시보드
-- [ ] 팀 생산성 메트릭
-- [ ] 웹 대시보드 UI
+**v1.6 - 마케팅 + Cursor 통합**
+- [ ] Cursor 디렉토리 제출
+- [ ] Product Hunt 런칭
+- [ ] 기본 템플릿 10개
 
-### v2.0 - Enterprise (3-6개월)
+**v1.7 - 템플릿 라이브러리**
+- [ ] 구현 가이드라인 시스템
+- [ ] 커뮤니티 기여 시스템
+- [ ] 템플릿 50개
+
+**v2.0 - Enterprise (2027)**
 - [ ] SSO 통합
 - [ ] 감사 로그
-- [ ] 온프레미스 배포
-- [ ] 가격 인상: $79 / $249 (정가)
+- [ ] 오픈소스 코어
 
 ---
 
@@ -138,9 +182,40 @@ Team: $149 (After launch: $249)
 
 ---
 
+## 전략 문서
+
+| 문서 | 설명 |
+|------|------|
+| `docs/ROADMAP_5Y.md` | 5개년 로드맵 (2026-2030) |
+| (내부) 차별화 전략 | AI Coding Agent 시장 분석 + Clouvel 포지셔닝 |
+| (내부) 시장 분석 | 2026 AI 코딩 도구 생태계 전체 분석 |
+| (내부) 전략적 기회 | Clouvel의 enforcement gap 기회 분석 |
+
+### 핵심 전략 요약
+
+```
+시장 기회: "enforcement" 하는 스펙 도구 없음
+차별점: 추천이 아닌 강제 (No PRD, No Code)
+장기 Moat: 스펙 템플릿 라이브러리 + 커뮤니티
+Exit 목표: 2028-2030, $100-200M M&A 또는 지속 성장
+```
+
+---
+
 ## BACKLOG
 
 → `docs/BACKLOG.md` 참조
 
 - api.clouvel.dev 커스텀 도메인 (유저 늘면)
 - 문서 자동 생성 스크립트
+- **MCP 설치 간소화** (높음) - `clouvel install` 명령 추가
+
+---
+
+## 다음 할 일
+
+- [x] v1.1.0 릴리즈 ✅ 보안 hook 추가
+- [x] 민감 파일 보호 자동화 ✅ pre-commit hook
+- [ ] 결제 시스템 재오픈 준비
+- [ ] 랜딩페이지 v1.1.0 변경사항 반영
+- [ ] Pro setup_security 서버 등록 (라이선스 체크 후)

@@ -52,6 +52,10 @@ from .hooks import (
     hook_verify,
 )
 
+from .install import (
+    run_install,
+)
+
 # Pro 기능은 clouvel-pro 패키지로 분리됨
 # pip install clouvel-pro
 
@@ -72,4 +76,6 @@ __all__ = [
     "spawn_explore", "spawn_librarian",
     # hooks (v0.8)
     "hook_design", "hook_verify",
+    # install
+    "run_install",
 ]

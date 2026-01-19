@@ -625,9 +625,14 @@ def main():
     init_parser.add_argument("-p", "--path", default=".", help="프로젝트 경로")
     init_parser.add_argument("-l", "--level", choices=["remind", "strict", "full"], default="strict")
 
-    # setup 명령 (B0)
+    # setup 명령 (B0) - 레거시, install 권장
     setup_parser = subparsers.add_parser("setup", help="Clouvel 강제 호출 메커니즘 설치 (글로벌)")
     setup_parser.add_argument("--global-only", action="store_true", help="CLAUDE.md만 설정 (MCP 등록 제외)")
+
+    # install 명령 (신규, 권장)
+    install_parser = subparsers.add_parser("install", help="Clouvel MCP 서버 설치 (권장)")
+    install_parser.add_argument("--platform", choices=["auto", "code", "desktop", "cursor", "all"], default="auto", help="설치 대상 플랫폼")
+    install_parser.add_argument("--force", action="store_true", help="이미 설치되어 있어도 재설치")
 
     args = parser.parse_args()
 
@@ -638,6 +643,13 @@ def main():
         print(result[0].text)
     elif args.command == "setup":
         result = _run_setup(global_only=args.global_only if hasattr(args, 'global_only') else False)
+        print(result)
+    elif args.command == "install":
+        from .tools.install import run_install
+        result = run_install(
+            platform=args.platform if hasattr(args, 'platform') else "auto",
+            force=args.force if hasattr(args, 'force') else False
+        )
         print(result)
     else:
         asyncio.run(run_server())

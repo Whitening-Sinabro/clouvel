@@ -323,13 +323,14 @@
                         <p class="text-emerald-400">pip install clouvel</p>
                     </div>
                     <div>
-                        <p class="text-slate-400 mb-2"># 2. Setup (글로벌 규칙 + MCP 등록)</p>
-                        <p class="text-emerald-400">clouvel setup</p>
+                        <p class="text-slate-400 mb-2"># 2. MCP 등록 (한 줄로 끝)</p>
+                        <p class="text-emerald-400">clouvel install</p>
+                        <p class="text-slate-500 text-xs mt-1"># 플랫폼 자동 감지 + 글로벌 규칙 설정</p>
                     </div>
                     <div>
                         <p class="text-slate-400 mb-2"># 3. Run</p>
                         <p class="text-slate-300">claude</p>
-                        <p class="text-slate-500 text-xs mt-1"># 이제 코드 작성 요청 시 자동으로 can_code 검사</p>
+                        <p class="text-slate-500 text-xs mt-1"># 코드 작성 요청 시 자동으로 can_code 검사</p>
                     </div>
                 </div>
             </div>
@@ -340,14 +341,9 @@
                         <p class="text-emerald-400">pip install clouvel</p>
                     </div>
                     <div>
-                        <p class="text-slate-400 mb-2"># 2. Config (~/.config/claude/claude_desktop_config.json)</p>
-                        <pre class="text-slate-300 overflow-x-auto">{
-  "mcpServers": {
-    "clouvel": {
-      "command": "clouvel"
-    }
-  }
-}</pre>
+                        <p class="text-slate-400 mb-2"># 2. MCP 등록</p>
+                        <p class="text-emerald-400">clouvel install --platform desktop</p>
+                        <p class="text-slate-500 text-xs mt-1"># config.json 자동 수정</p>
                     </div>
                     <div>
                         <p class="text-slate-400 mb-2"># 3. Run</p>

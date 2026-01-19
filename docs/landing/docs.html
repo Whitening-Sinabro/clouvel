@@ -27,13 +27,11 @@
             }
         }
     </script>
+    <link rel="stylesheet" href="styles.css">
     <style>
-        .code-block {
-            background: linear-gradient(145deg, #0F172A 0%, #1E293B 100%);
-        }
+        /* docs.html specific styles */
         .sidebar-link.active {
             background: rgba(14, 165, 233, 0.1);
-            color: #0EA5E9;
             border-left-color: #0EA5E9;
         }
         .diagram-box {
@@ -1175,27 +1173,6 @@
         </main>
     </div>
 
-    <script>
-        // Active sidebar link on scroll
-        const sections = document.querySelectorAll('section[id]');
-        const sidebarLinks = document.querySelectorAll('.sidebar-link');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (scrollY >= sectionTop - 100) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            sidebarLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === '#' + current) {
-                    link.classList.add('active');
-                }
-            });
-        });
-    </script>
+    <script src="docs.js"></script>
 </body>
 </html>

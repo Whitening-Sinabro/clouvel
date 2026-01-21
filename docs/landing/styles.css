@@ -2,67 +2,72 @@
 
 /* Common */
 .accent-text {
-    color: #0EA5E9;
+  color: #0ea5e9;
 }
 
 .code-block {
-    background: linear-gradient(145deg, #0F172A 0%, #1E293B 100%);
+  background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
 }
 
 /* Index page specific */
 @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4); }
-    50% { box-shadow: 0 0 20px 4px rgba(14, 165, 233, 0.3); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 4px rgba(14, 165, 233, 0.3);
+  }
 }
 
 .cta-pulse {
-    animation: pulse-glow 2s ease-in-out infinite;
+  animation: pulse-glow 2s ease-in-out infinite;
 }
 
 .tool-card {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .tool-card:hover {
-    transform: translateY(-2px);
+  transform: translateY(-2px);
 }
 
 .modal-backdrop {
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(4px);
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(4px);
 }
 
 .tab-btn.active {
-    background-color: #0EA5E9;
-    color: white;
+  background-color: #0ea5e9;
+  color: white;
 }
 
 .tab-content {
-    display: none;
+  display: none;
 }
 
 .tab-content.active {
-    display: block;
+  display: block;
 }
 
 /* Docs page specific */
 .sidebar-link {
-    display: block;
-    padding: 0.5rem 0;
-    color: #64748B;
-    font-size: 0.875rem;
-    transition: color 0.2s;
+  display: block;
+  padding: 0.5rem 0;
+  color: #64748b;
+  font-size: 0.875rem;
+  transition: color 0.2s;
 }
 
 .sidebar-link:hover {
-    color: #0F172A;
+  color: #0f172a;
 }
 
 .sidebar-link.active {
-    color: #0EA5E9;
-    font-weight: 500;
+  color: #0ea5e9;
+  font-weight: 500;
 }
 
 .content section {
-    scroll-margin-top: 6rem;
+  scroll-margin-top: 6rem;
 }

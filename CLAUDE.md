@@ -26,11 +26,11 @@ claude --mcp clouvel
 
 ## 핵심 도구
 
-| 도구 | 설명 |
-|------|------|
-| `can_code` | 코딩 가능 여부 검사 |
-| `get_progress` | 진행 상황 확인 |
-| `get_goal` | 프로젝트 목표 리마인드 |
+| 도구           | 설명                   |
+| -------------- | ---------------------- |
+| `can_code`     | 코딩 가능 여부 검사    |
+| `get_progress` | 진행 상황 확인         |
+| `get_goal`     | 프로젝트 목표 리마인드 |
 
 ---
 
@@ -58,12 +58,12 @@ claude --mcp clouvel
 
 ### 절대 커밋 금지 파일
 
-| 카테고리 | 패턴 | 이유 |
-|---------|------|------|
-| 마케팅 | `*MARKETING*`, `*STRATEGY*`, `*마케팅*`, `*전략*` | 비즈니스 기밀 |
-| 가격 | `*pricing*`, `*PRICING*`, `*가격*` | 비즈니스 기밀 |
-| Pro 코드 | `server_pro.py`, `license.py`, `tools/team.py` | 유료 기능 |
-| 시크릿 | `*.key`, `*.secret`, `license*.json` | 보안 |
+| 카테고리 | 패턴                                              | 이유          |
+| -------- | ------------------------------------------------- | ------------- |
+| 마케팅   | `*MARKETING*`, `*STRATEGY*`, `*마케팅*`, `*전략*` | 비즈니스 기밀 |
+| 가격     | `*pricing*`, `*PRICING*`, `*가격*`                | 비즈니스 기밀 |
+| Pro 코드 | `server_pro.py`, `license.py`, `tools/team.py`    | 유료 기능     |
+| 시크릿   | `*.key`, `*.secret`, `license*.json`              | 보안          |
 
 ### 커밋 전 체크리스트
 
@@ -91,3 +91,13 @@ git push origin main --force
 - Write/Edit 전에 파일명이 위 패턴과 일치하면 **작업 거부**
 - 의심스러우면 사용자에게 먼저 확인
 - `.gitignore` 확인 후 추적 여부 검증
+
+## Clouvel 규칙 (자동 생성)
+
+> 이 규칙은 Clouvel이 자동으로 추가했습니다.
+
+### 필수 준수 사항
+
+1. **코드 작성 전 문서 체크**: Edit/Write 도구 사용 전 반드시 `can_code` 도구를 먼저 호출
+2. **can_code 실패 시 코딩 금지**: 필수 문서가 없으면 PRD 작성부터
+3. **PRD가 법**: docs/PRD.md에 없는 기능은 구현하지 않음

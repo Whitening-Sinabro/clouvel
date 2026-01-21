@@ -43,11 +43,11 @@
 
 ### 가설 1: AI 발전할수록 스펙이 중요해진다
 
-| 근거 | 출처 |
-|------|------|
-| "We're moving from 'code is the source of truth' to 'intent is the source of truth'" | GitHub Engineering, 2025.09 |
-| PM:Engineer 비율 2:1 예측 | Andrew Ng, Y Combinator AI Startup School |
-| 95% 코드가 AI 생성될 것 | Kevin Scott (Microsoft CTO), 2030 예측 |
+| 근거                                                                                 | 출처                                      |
+| ------------------------------------------------------------------------------------ | ----------------------------------------- |
+| "We're moving from 'code is the source of truth' to 'intent is the source of truth'" | GitHub Engineering, 2025.09               |
+| PM:Engineer 비율 2:1 예측                                                            | Andrew Ng, Y Combinator AI Startup School |
+| 95% 코드가 AI 생성될 것                                                              | Kevin Scott (Microsoft CTO), 2030 예측    |
 
 **검증 상태**: ✅ 검증됨
 
@@ -57,12 +57,12 @@
 
 ### 가설 2: "almost right" 코드가 핵심 문제다
 
-| 근거 | 출처 |
-|------|------|
-| 66%가 AI 코드 수정에 더 많은 시간 소비 | 개발자 설문 2025 |
+| 근거                                               | 출처                |
+| -------------------------------------------------- | ------------------- |
+| 66%가 AI 코드 수정에 더 많은 시간 소비             | 개발자 설문 2025    |
 | 45%가 "solutions almost right, but not quite" 불만 | Stack Overflow 2025 |
-| AI 코드가 인간 코드보다 1.7x 버그 많음 | CodeRabbit 연구 |
-| 20% 빠르다고 느끼지만 실제로 19% 느림 | METR 연구, 2025.07 |
+| AI 코드가 인간 코드보다 1.7x 버그 많음             | CodeRabbit 연구     |
+| 20% 빠르다고 느끼지만 실제로 19% 느림              | METR 연구, 2025.07  |
 
 **검증 상태**: ✅ 검증됨
 
@@ -72,13 +72,13 @@
 
 ### 가설 3: Enforcement 하는 도구가 없다
 
-| 경쟁자 | 하는 것 | 안 하는 것 |
-|--------|---------|-----------|
-| GitHub Spec Kit | 스펙 템플릿 추천 | 스펙 없이 코딩 차단 |
-| AWS Kiro | 구조화된 요구사항 워크플로우 | enforcement 없음, PM 타겟 |
-| ChatPRD | PRD 생성 | 생성만 함, 강제 없음 |
-| Linear, Notion | 스펙 저장/정리 | 개발자 타겟 아님, 비쌈 |
-| Cursor, Windsurf | 코드 생성 | 스펙 강제 없음 |
+| 경쟁자           | 하는 것                      | 안 하는 것                |
+| ---------------- | ---------------------------- | ------------------------- |
+| GitHub Spec Kit  | 스펙 템플릿 추천             | 스펙 없이 코딩 차단       |
+| AWS Kiro         | 구조화된 요구사항 워크플로우 | enforcement 없음, PM 타겟 |
+| ChatPRD          | PRD 생성                     | 생성만 함, 강제 없음      |
+| Linear, Notion   | 스펙 저장/정리               | 개발자 타겟 아님, 비쌈    |
+| Cursor, Windsurf | 코드 생성                    | 스펙 강제 없음            |
 
 **검증 상태**: ✅ 검증됨
 
@@ -88,12 +88,12 @@
 
 ### 가설 4: MCP가 배포 채널이 된다
 
-| 근거 | 수치 |
-|------|------|
-| MCP 다운로드 | 8M+ (2025.04 기준) |
-| MCP 서버 수 | 2,000+ |
-| 채택 플랫폼 | OpenAI, Google, Microsoft, Cursor, Claude |
-| 성장률 | 407% (2025.09 이후) |
+| 근거         | 수치                                      |
+| ------------ | ----------------------------------------- |
+| MCP 다운로드 | 8M+ (2025.04 기준)                        |
+| MCP 서버 수  | 2,000+                                    |
+| 채택 플랫폼  | OpenAI, Google, Microsoft, Cursor, Claude |
+| 성장률       | 407% (2025.09 이후)                       |
 
 **검증 상태**: ✅ 검증됨
 

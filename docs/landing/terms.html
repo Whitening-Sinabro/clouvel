@@ -1,140 +1,167 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>이용약관 - Clouvel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                }
-            }
-        }
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
     </script>
-</head>
-<body class="bg-white text-slate-900 font-sans antialiased">
+  </head>
+  <body class="bg-white text-slate-900 font-sans antialiased">
     <!-- Nav -->
     <nav class="border-b border-slate-200">
-        <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-xl font-bold">Clouvel</a>
-            <a href="index.html" class="text-sm text-slate-600 hover:text-slate-900 transition">← 돌아가기</a>
-        </div>
+      <div
+        class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center"
+      >
+        <a href="index.html" class="text-xl font-bold">Clouvel</a>
+        <a
+          href="index.html"
+          class="text-sm text-slate-600 hover:text-slate-900 transition"
+          >← 돌아가기</a
+        >
+      </div>
     </nav>
 
     <!-- Content -->
     <main class="max-w-4xl mx-auto px-6 py-16">
-        <h1 class="text-4xl font-bold mb-8">이용약관</h1>
-        <p class="text-slate-500 mb-12">최종 수정일: 2026년 1월 17일</p>
+      <h1 class="text-4xl font-bold mb-8">이용약관</h1>
+      <p class="text-slate-500 mb-12">최종 수정일: 2026년 1월 17일</p>
 
-        <div class="prose prose-slate max-w-none space-y-8">
-            <!-- 1. 서비스 개요 -->
-            <section>
-                <h2 class="text-2xl font-semibold mb-4">1. 서비스 개요</h2>
-                <p class="text-slate-600 leading-relaxed">
-                    Clouvel("서비스")은 SINABRO("회사")가 제공하는 MCP(Model Context Protocol) 서버 및 관련 도구입니다.
-                    본 서비스는 Claude Code와 통합되어 문서 기반 개발 프로세스를 지원합니다.
-                </p>
-            </section>
+      <div class="prose prose-slate max-w-none space-y-8">
+        <!-- 1. 서비스 개요 -->
+        <section>
+          <h2 class="text-2xl font-semibold mb-4">1. 서비스 개요</h2>
+          <p class="text-slate-600 leading-relaxed">
+            Clouvel("서비스")은 SINABRO("회사")가 제공하는 MCP(Model Context
+            Protocol) 서버 및 관련 도구입니다. 본 서비스는 Claude Code와
+            통합되어 문서 기반 개발 프로세스를 지원합니다.
+          </p>
+        </section>
 
-            <!-- 2. 라이선스 -->
-            <section>
-                <h2 class="text-2xl font-semibold mb-4">2. 라이선스</h2>
-                <p class="text-slate-600 leading-relaxed mb-4">
-                    구매한 라이선스는 다음과 같은 조건으로 제공됩니다:
-                </p>
-                <ul class="list-disc list-inside text-slate-600 space-y-2">
-                    <li><strong>Personal:</strong> 1명의 사용자, 1개 디바이스</li>
-                    <li><strong>Team:</strong> 최대 10명의 사용자</li>
-                    <li><strong>Enterprise:</strong> 무제한 사용자</li>
-                </ul>
-                <p class="text-slate-600 leading-relaxed mt-4">
-                    라이선스는 양도, 재판매, 공유가 금지됩니다. 위반 시 라이선스가 취소될 수 있습니다.
-                </p>
-            </section>
+        <!-- 2. 라이선스 -->
+        <section>
+          <h2 class="text-2xl font-semibold mb-4">2. 라이선스</h2>
+          <p class="text-slate-600 leading-relaxed mb-4">
+            구매한 라이선스는 다음과 같은 조건으로 제공됩니다:
+          </p>
+          <ul class="list-disc list-inside text-slate-600 space-y-2">
+            <li><strong>Personal:</strong> 1명의 사용자, 1개 디바이스</li>
+            <li><strong>Team:</strong> 최대 10명의 사용자</li>
+            <li><strong>Enterprise:</strong> 무제한 사용자</li>
+          </ul>
+          <p class="text-slate-600 leading-relaxed mt-4">
+            라이선스는 양도, 재판매, 공유가 금지됩니다. 위반 시 라이선스가
+            취소될 수 있습니다.
+          </p>
+        </section>
 
-            <!-- 3. 면책 조항 -->
-            <section class="bg-slate-50 p-6 rounded-xl">
-                <h2 class="text-2xl font-semibold mb-4">3. 면책 조항</h2>
-                <p class="text-slate-600 leading-relaxed mb-4">
-                    <strong>중요:</strong> 본 서비스는 "있는 그대로(AS IS)" 제공됩니다.
-                </p>
-                <ul class="list-disc list-inside text-slate-600 space-y-2">
-                    <li>회사는 서비스의 특정 결과나 성능을 보장하지 않습니다.</li>
-                    <li>랜딩페이지에 표시된 수치(디버깅 시간 감소, 스코프 크립 차단 등)는 특정 프로젝트 환경에서의 결과이며, 모든 사용자에게 동일한 결과를 보장하지 않습니다.</li>
-                    <li>서비스 사용으로 인한 직접적, 간접적, 우발적, 특수적, 결과적 손해에 대해 회사는 책임을 지지 않습니다.</li>
-                    <li>서비스는 코드 품질 향상을 위한 도구일 뿐, 버그 없는 소프트웨어를 보장하지 않습니다.</li>
-                </ul>
-            </section>
+        <!-- 3. 면책 조항 -->
+        <section class="bg-slate-50 p-6 rounded-xl">
+          <h2 class="text-2xl font-semibold mb-4">3. 면책 조항</h2>
+          <p class="text-slate-600 leading-relaxed mb-4">
+            <strong>중요:</strong> 본 서비스는 "있는 그대로(AS IS)" 제공됩니다.
+          </p>
+          <ul class="list-disc list-inside text-slate-600 space-y-2">
+            <li>회사는 서비스의 특정 결과나 성능을 보장하지 않습니다.</li>
+            <li>
+              랜딩페이지에 표시된 수치(디버깅 시간 감소, 스코프 크립 차단 등)는
+              특정 프로젝트 환경에서의 결과이며, 모든 사용자에게 동일한 결과를
+              보장하지 않습니다.
+            </li>
+            <li>
+              서비스 사용으로 인한 직접적, 간접적, 우발적, 특수적, 결과적 손해에
+              대해 회사는 책임을 지지 않습니다.
+            </li>
+            <li>
+              서비스는 코드 품질 향상을 위한 도구일 뿐, 버그 없는 소프트웨어를
+              보장하지 않습니다.
+            </li>
+          </ul>
+        </section>
 
-            <!-- 4. 환불 정책 -->
-            <section>
-                <h2 class="text-2xl font-semibold mb-4">4. 환불 정책</h2>
-                <p class="text-slate-600 leading-relaxed">
-                    디지털 제품의 특성상, 구매 후 14일 이내에 환불을 요청할 수 있습니다.
-                    단, 라이선스 키가 활성화된 경우 환불이 제한될 수 있습니다.
-                    환불 요청은 GitHub Issues를 통해 접수해주세요.
-                </p>
-            </section>
+        <!-- 4. 환불 정책 -->
+        <section>
+          <h2 class="text-2xl font-semibold mb-4">4. 환불 정책</h2>
+          <p class="text-slate-600 leading-relaxed">
+            디지털 제품의 특성상, 구매 후 14일 이내에 환불을 요청할 수 있습니다.
+            단, 라이선스 키가 활성화된 경우 환불이 제한될 수 있습니다. 환불
+            요청은 GitHub Issues를 통해 접수해주세요.
+          </p>
+        </section>
 
-            <!-- 5. 업데이트 및 지원 -->
-            <section>
-                <h2 class="text-2xl font-semibold mb-4">5. 업데이트 및 지원</h2>
-                <p class="text-slate-600 leading-relaxed">
-                    구매한 라이선스에는 평생 업데이트가 포함됩니다.
-                    기술 지원은 GitHub Issues를 통해 제공되며, 응답 시간은 보장되지 않습니다.
-                </p>
-            </section>
+        <!-- 5. 업데이트 및 지원 -->
+        <section>
+          <h2 class="text-2xl font-semibold mb-4">5. 업데이트 및 지원</h2>
+          <p class="text-slate-600 leading-relaxed">
+            구매한 라이선스에는 평생 업데이트가 포함됩니다. 기술 지원은 GitHub
+            Issues를 통해 제공되며, 응답 시간은 보장되지 않습니다.
+          </p>
+        </section>
 
-            <!-- 6. 서비스 변경 -->
-            <section>
-                <h2 class="text-2xl font-semibold mb-4">6. 서비스 변경</h2>
-                <p class="text-slate-600 leading-relaxed">
-                    회사는 사전 통지 없이 서비스의 기능을 변경, 추가 또는 제거할 수 있습니다.
-                    중대한 변경 사항은 GitHub 및 이메일을 통해 공지됩니다.
-                </p>
-            </section>
+        <!-- 6. 서비스 변경 -->
+        <section>
+          <h2 class="text-2xl font-semibold mb-4">6. 서비스 변경</h2>
+          <p class="text-slate-600 leading-relaxed">
+            회사는 사전 통지 없이 서비스의 기능을 변경, 추가 또는 제거할 수
+            있습니다. 중대한 변경 사항은 GitHub 및 이메일을 통해 공지됩니다.
+          </p>
+        </section>
 
-            <!-- 7. 약관 변경 -->
-            <section>
-                <h2 class="text-2xl font-semibold mb-4">7. 약관 변경</h2>
-                <p class="text-slate-600 leading-relaxed">
-                    본 약관은 필요에 따라 변경될 수 있습니다.
-                    변경된 약관은 본 페이지에 게시되며, 게시 후 서비스를 계속 사용하면 변경된 약관에 동의한 것으로 간주됩니다.
-                </p>
-            </section>
+        <!-- 7. 약관 변경 -->
+        <section>
+          <h2 class="text-2xl font-semibold mb-4">7. 약관 변경</h2>
+          <p class="text-slate-600 leading-relaxed">
+            본 약관은 필요에 따라 변경될 수 있습니다. 변경된 약관은 본 페이지에
+            게시되며, 게시 후 서비스를 계속 사용하면 변경된 약관에 동의한 것으로
+            간주됩니다.
+          </p>
+        </section>
 
-            <!-- 8. 준거법 -->
-            <section>
-                <h2 class="text-2xl font-semibold mb-4">8. 준거법</h2>
-                <p class="text-slate-600 leading-relaxed">
-                    본 약관은 대한민국 법률에 따라 해석되며, 관련 분쟁은 대한민국 법원의 관할에 따릅니다.
-                </p>
-            </section>
+        <!-- 8. 준거법 -->
+        <section>
+          <h2 class="text-2xl font-semibold mb-4">8. 준거법</h2>
+          <p class="text-slate-600 leading-relaxed">
+            본 약관은 대한민국 법률에 따라 해석되며, 관련 분쟁은 대한민국 법원의
+            관할에 따릅니다.
+          </p>
+        </section>
 
-            <!-- 문의 -->
-            <section class="border-t border-slate-200 pt-8">
-                <h2 class="text-2xl font-semibold mb-4">문의</h2>
-                <p class="text-slate-600 leading-relaxed">
-                    약관에 대한 문의사항이 있으시면
-                    <a href="https://github.com/Whitening-Sinabro/clouvel/issues" target="_blank" class="text-indigo-600 hover:underline">GitHub Issues</a>를
-                    통해 연락해주세요.
-                </p>
-            </section>
-        </div>
+        <!-- 문의 -->
+        <section class="border-t border-slate-200 pt-8">
+          <h2 class="text-2xl font-semibold mb-4">문의</h2>
+          <p class="text-slate-600 leading-relaxed">
+            약관에 대한 문의사항이 있으시면
+            <a
+              href="https://github.com/Whitening-Sinabro/clouvel/issues"
+              target="_blank"
+              class="text-indigo-600 hover:underline"
+              >GitHub Issues</a
+            >를 통해 연락해주세요.
+          </p>
+        </section>
+      </div>
     </main>
 
     <!-- Footer -->
     <footer class="py-8 px-6 border-t border-slate-200">
-        <div class="max-w-4xl mx-auto text-center text-sm text-slate-500">
-            © 2026 Clouvel. Made by SINABRO.
-        </div>
+      <div class="max-w-4xl mx-auto text-center text-sm text-slate-500">
+        © 2026 Clouvel. Made by SINABRO.
+      </div>
     </footer>
-</body>
+  </body>
 </html>

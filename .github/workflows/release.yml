@@ -3,18 +3,18 @@ name: Release to PyPI
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Dry run (테스트만, 배포 안 함)'
+        description: "Dry run (테스트만, 배포 안 함)"
         required: false
         type: boolean
         default: false
 
 env:
-  PYTHON_VERSION: '3.11'
+  PYTHON_VERSION: "3.11"
 
 jobs:
   test:

@@ -1038,13 +1038,13 @@
                   class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
                   >manager</code
                 >
-                <span
-                  class="bg-accent text-white text-xs px-2 py-0.5 rounded"
+                <span class="bg-accent text-white text-xs px-2 py-0.5 rounded"
                   >NEW v1.2</span
                 >
               </div>
               <p class="text-slate-600 text-sm mb-3">
-                8명의 C-Level 매니저가 컨텍스트 기반으로 협업 피드백을 제공합니다.
+                8명의 C-Level 매니저가 컨텍스트 기반으로 협업 피드백을
+                제공합니다.
               </p>
               <div
                 class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
@@ -1071,8 +1071,7 @@
                   class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
                   >ship</code
                 >
-                <span
-                  class="bg-accent text-white text-xs px-2 py-0.5 rounded"
+                <span class="bg-accent text-white text-xs px-2 py-0.5 rounded"
                   >NEW v1.2</span
                 >
               </div>
@@ -1092,6 +1091,43 @@
                 <p class="text-slate-400">lint (120ms), test (450ms)...</p>
                 <p class="text-slate-500 mt-2"># 증거 파일 생성</p>
                 <p>.claude/evidence/feature_20260121.md</p>
+              </div>
+            </div>
+
+            <!-- plan (NEW v1.3) -->
+            <div class="bg-white border border-accent/30 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-4">
+                <code
+                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
+                  >plan</code
+                >
+                <span class="bg-accent text-white text-xs px-2 py-0.5 rounded"
+                  >NEW v1.3</span
+                >
+              </div>
+              <p class="text-slate-600 text-sm mb-3">
+                매니저 피드백을 종합하여 상세 실행 계획을 자동 생성합니다.
+              </p>
+              <div
+                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
+              >
+                <p class="text-slate-500"># Parameters</p>
+                <p>path: str - 프로젝트 루트 경로</p>
+                <p>task: str - 수행할 작업</p>
+                <p>goals: list[str] - 달성 목표</p>
+                <p class="text-slate-500 mt-2"># Returns: task_plan.md 생성</p>
+                <p class="text-emerald-400">## 상세 실행 계획</p>
+                <p class="text-slate-400">### Phase: 준비</p>
+                <p class="text-slate-400">| # | 액션 | 담당 | 완료조건 |</p>
+                <p class="text-slate-400">
+                  | 1 | PRD 확인 | PM | 기능 정의 존재 |
+                </p>
+                <p class="text-slate-400">### Phase: 설계</p>
+                <p class="text-slate-400">
+                  | 2 | 아키텍처 검토 | CTO | 문서 확인됨 |
+                </p>
+                <p class="text-slate-500 mt-2"># 4개 Phase 자동 구성</p>
+                <p>준비 → 설계 → 구현 → 검증</p>
               </div>
             </div>
 
@@ -1773,10 +1809,12 @@
               </div>
               <ul class="text-sm text-slate-600 space-y-1">
                 <li>
-                  - <strong>start</strong>: 프로젝트 온보딩 + PRD 자동 생성 (Free)
+                  - <strong>start</strong>: 프로젝트 온보딩 + PRD 자동 생성
+                  (Free)
                 </li>
                 <li>
-                  - <strong>manager</strong>: 8명 C-Level 매니저 협업 피드백 (Pro)
+                  - <strong>manager</strong>: 8명 C-Level 매니저 협업 피드백
+                  (Pro)
                 </li>
                 <li>
                   - <strong>ship</strong>: 원클릭 테스트→검증→증거 생성 (Pro)
@@ -1791,9 +1829,7 @@
                 <span class="text-slate-500 text-sm">2026-01-19</span>
               </div>
               <ul class="text-sm text-slate-600 space-y-1">
-                <li>
-                  - <strong>clouvel install</strong>: MCP 설치 간소화
-                </li>
+                <li>- <strong>clouvel install</strong>: MCP 설치 간소화</li>
                 <li>- 보안 hook 추가 (민감 파일 커밋 차단)</li>
                 <li>- pre-commit hook 자동 설치</li>
               </ul>

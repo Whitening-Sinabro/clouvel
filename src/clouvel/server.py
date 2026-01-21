@@ -827,6 +827,16 @@ def main():
     install_parser.add_argument("--platform", choices=["auto", "code", "desktop", "cursor", "all"], default="auto", help="설치 대상 플랫폼")
     install_parser.add_argument("--force", action="store_true", help="이미 설치되어 있어도 재설치")
 
+    # activate 명령 (라이센스 활성화)
+    activate_parser = subparsers.add_parser("activate", help="라이선스 활성화")
+    activate_parser.add_argument("license_key", help="라이선스 키")
+
+    # status 명령 (라이센스 상태)
+    status_parser = subparsers.add_parser("status", help="라이선스 상태 확인")
+
+    # deactivate 명령 (라이센스 비활성화)
+    deactivate_parser = subparsers.add_parser("deactivate", help="라이선스 비활성화 (로컬 캐시 삭제)")
+
     args = parser.parse_args()
 
     if args.command == "init":
@@ -844,6 +854,98 @@ def main():
             force=args.force if hasattr(args, 'force') else False
         )
         print(result)
+    elif args.command == "activate":
+        try:
+            from .license import activate_license_cli
+            result = activate_license_cli(args.license_key)
+            if result["success"]:
+                print(f"""
+================================================================
+              Clouvel Pro 라이선스 활성화 완료
+================================================================
+
+{result['message']}
+
+티어: {result.get('tier_info', {}).get('name', 'Unknown')}
+기기: {result.get('machine_id', 'Unknown')[:8]}...
+상품: {result.get('product', 'Clouvel Pro')}
+
+----------------------------------------------------------------
+프리미엄 기능은 활성화 후 7일이 지나야 사용할 수 있습니다.
+'clouvel status'로 상태를 확인하세요.
+================================================================
+""")
+            else:
+                print(result["message"])
+                sys.exit(1)
+        except ImportError:
+            print("""
+================================================================
+                   Clouvel Pro 필요
+================================================================
+
+이 기능은 Clouvel Pro에서만 사용할 수 있습니다.
+
+구매: https://clouvel.lemonsqueezy.com
+================================================================
+""")
+            sys.exit(1)
+    elif args.command == "status":
+        try:
+            from .license import get_license_status
+            result = get_license_status()
+            if result.get("has_license"):
+                tier_info = result.get("tier_info", {})
+                unlock_status = "✅ 해제됨" if result.get("premium_unlocked") else f"⏳ {result.get('premium_unlock_remaining', '?')}일 남음"
+                print(f"""
+================================================================
+                   Clouvel 라이선스 상태
+================================================================
+
+상태: ✅ 활성화됨
+티어: {tier_info.get('name', 'Unknown')} ({tier_info.get('price', '?')})
+기기: {result.get('machine_id', 'Unknown')[:8]}...
+
+활성화 일시: {result.get('activated_at', 'N/A')[:19]}
+경과 일수: {result.get('days_since_activation', 0)}일
+프리미엄 기능: {unlock_status}
+
+================================================================
+""")
+            else:
+                print(f"""
+================================================================
+                   Clouvel 라이선스 상태
+================================================================
+
+상태: ❌ 미활성화
+
+{result.get('message', '')}
+
+구매: https://clouvel.lemonsqueezy.com
+================================================================
+""")
+        except ImportError:
+            print("""
+================================================================
+                   Clouvel Free 버전
+================================================================
+
+Pro 라이선스 기능은 Clouvel Pro에서만 사용할 수 있습니다.
+
+구매: https://clouvel.lemonsqueezy.com
+================================================================
+""")
+    elif args.command == "deactivate":
+        try:
+            from .license import deactivate_license_cli
+            result = deactivate_license_cli()
+            print(result["message"])
+            if not result["success"]:
+                sys.exit(1)
+        except ImportError:
+            print("Clouvel Pro 필요: https://clouvel.lemonsqueezy.com")
+            sys.exit(1)
     else:
         asyncio.run(run_server())
 

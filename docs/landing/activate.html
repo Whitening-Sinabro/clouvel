@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Activate License - Clouvel</title>
+    <meta name="description" content="Activate your Clouvel Pro license" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Space Grotesk", "system-ui", "sans-serif"],
+            },
+            colors: {
+              "warm-white": "#F8FAFC",
+              "dark-slate": "#0F172A",
+              accent: "#0EA5E9",
+              "accent-dark": "#0284C7",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body
+    class="bg-warm-white text-dark-slate font-sans antialiased min-h-screen"
+  >
+    <!-- Nav -->
+    <nav class="bg-warm-white/90 backdrop-blur-md border-b border-slate-200/50">
+      <div
+        class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center"
+      >
+        <a href="index.html" class="text-xl font-bold text-dark-slate"
+          >Clouvel</a
+        >
+        <a
+          href="index.html"
+          class="text-sm text-slate-600 hover:text-dark-slate transition"
+        >
+          Back to Home
+        </a>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="py-16 px-6">
+      <div class="max-w-2xl mx-auto">
+        <!-- Success State (with license key) -->
+        <div id="withKey" class="hidden">
+          <div class="text-center mb-8">
+            <div
+              class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <svg
+                class="w-8 h-8 text-emerald-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Activate Your License</h1>
+            <p class="text-slate-600">Thank you for purchasing Clouvel Pro!</p>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+            <h2 class="font-semibold text-lg mb-4">Your License Key</h2>
+            <div
+              class="bg-slate-100 rounded-xl p-4 font-mono text-sm break-all mb-4"
+            >
+              <span id="licenseKey" class="text-dark-slate"></span>
+            </div>
+            <button
+              id="copyKeyBtn"
+              class="w-full py-3 rounded-xl font-medium border border-slate-300 hover:border-slate-400 transition flex items-center justify-center gap-2"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                />
+              </svg>
+              <span>Copy License Key</span>
+            </button>
+          </div>
+
+          <div class="bg-dark-slate text-white rounded-2xl p-6 mb-6">
+            <h2 class="font-semibold text-lg mb-4">Activation Command</h2>
+            <p class="text-slate-400 text-sm mb-4">
+              Run this command in your terminal:
+            </p>
+            <div class="bg-slate-800 rounded-xl p-4 font-mono text-sm mb-4">
+              <span class="text-slate-500">$</span>
+              <span id="activateCommand" class="text-emerald-400 ml-2"></span>
+            </div>
+            <button
+              id="copyCommandBtn"
+              class="w-full py-3 rounded-xl font-medium bg-accent text-white hover:bg-accent-dark transition flex items-center justify-center gap-2"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                />
+              </svg>
+              <span>Copy Command</span>
+            </button>
+          </div>
+
+          <div class="bg-slate-50 rounded-2xl p-6">
+            <h2 class="font-semibold text-lg mb-4">What's Next?</h2>
+            <ol class="space-y-3 text-sm text-slate-600">
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-6 h-6 bg-accent text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                  >1</span
+                >
+                <span
+                  >Install Clouvel:
+                  <code class="bg-slate-200 px-2 py-0.5 rounded"
+                    >pip install clouvel</code
+                  ></span
+                >
+              </li>
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-6 h-6 bg-accent text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                  >2</span
+                >
+                <span>Run the activation command above</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-6 h-6 bg-accent text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                  >3</span
+                >
+                <span
+                  >Check status:
+                  <code class="bg-slate-200 px-2 py-0.5 rounded"
+                    >clouvel status</code
+                  ></span
+                >
+              </li>
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-6 h-6 bg-accent text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                  >4</span
+                >
+                <span>Premium features unlock after 7 days</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- No Key State -->
+        <div id="noKey" class="hidden">
+          <div class="text-center mb-8">
+            <div
+              class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <svg
+                class="w-8 h-8 text-yellow-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">No License Key Found</h1>
+            <p class="text-slate-600">
+              Please check your purchase email for the license key.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+            <h2 class="font-semibold text-lg mb-4">Manual Activation</h2>
+            <p class="text-slate-600 text-sm mb-4">
+              If you have a license key, run this command:
+            </p>
+            <div class="bg-slate-100 rounded-xl p-4 font-mono text-sm">
+              <span class="text-slate-500">$</span>
+              <span class="text-dark-slate ml-2"
+                >clouvel activate YOUR-LICENSE-KEY</span
+              >
+            </div>
+          </div>
+
+          <div class="text-center">
+            <p class="text-slate-500 text-sm mb-4">Don't have a license yet?</p>
+            <a
+              href="index.html#pricing"
+              class="inline-flex items-center gap-2 bg-accent text-white px-6 py-3 rounded-full font-medium hover:bg-accent-dark transition"
+            >
+              Get Clouvel Pro
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-slate-200/50 bg-warm-white">
+      <div class="max-w-4xl mx-auto text-center text-sm text-slate-500">
+        &copy; 2026 Clouvel. Made by SINABRO.
+      </div>
+    </footer>
+
+    <script>
+      // Get license key from URL params
+      const urlParams = new URLSearchParams(window.location.search);
+      const licenseKey = urlParams.get("key");
+      const email = urlParams.get("email");
+
+      if (licenseKey) {
+        // Show with-key state
+        document.getElementById("withKey").classList.remove("hidden");
+        document.getElementById("licenseKey").textContent = licenseKey;
+        document.getElementById("activateCommand").textContent =
+          `clouvel activate ${licenseKey}`;
+
+        // Copy key button
+        document
+          .getElementById("copyKeyBtn")
+          .addEventListener("click", function () {
+            navigator.clipboard.writeText(licenseKey).then(() => {
+              this.innerHTML = `
+              <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Copied!</span>
+            `;
+              setTimeout(() => {
+                this.innerHTML = `
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                </svg>
+                <span>Copy License Key</span>
+              `;
+              }, 2000);
+            });
+          });
+
+        // Copy command button
+        document
+          .getElementById("copyCommandBtn")
+          .addEventListener("click", function () {
+            const command = `clouvel activate ${licenseKey}`;
+            navigator.clipboard.writeText(command).then(() => {
+              this.innerHTML = `
+              <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Copied!</span>
+            `;
+              setTimeout(() => {
+                this.innerHTML = `
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                </svg>
+                <span>Copy Command</span>
+              `;
+              }, 2000);
+            });
+          });
+      } else {
+        // Show no-key state
+        document.getElementById("noKey").classList.remove("hidden");
+      }
+    </script>
+  </body>
+</html>

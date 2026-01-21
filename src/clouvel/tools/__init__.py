@@ -41,6 +41,7 @@ from .planning import (
     save_finding,
     refresh_goals,
     update_progress,
+    create_detailed_plan,
 )
 
 from .agents import (
@@ -89,8 +90,8 @@ __all__ = [
     "init_rules", "get_rule", "add_rule",
     # verify (v0.5)
     "verify", "gate", "handoff",
-    # planning (v0.6)
-    "init_planning", "save_finding", "refresh_goals", "update_progress",
+    # planning (v0.6, v1.3)
+    "init_planning", "save_finding", "refresh_goals", "update_progress", "create_detailed_plan",
     # agents (v0.7)
     "spawn_explore", "spawn_librarian",
     # hooks (v0.8)

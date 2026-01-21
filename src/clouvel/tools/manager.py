@@ -23,6 +23,23 @@ MANAGERS = {
             "우선순위 태그 (P0/P1/P2)",
             "완료 조건 명시",
             "영향 범위 파악"
+        ],
+        "action_templates": [
+            {
+                "trigger": "기능|feature|구현|implement|추가|add",
+                "actions": [
+                    {"id": "pm-1", "action": "docs/PRD.md에서 해당 기능 요구사항 확인", "depends": [], "verify": "PRD에 기능 정의 존재", "phase": "준비"},
+                    {"id": "pm-2", "action": "우선순위 태그(P0/P1/P2) 확인", "depends": ["pm-1"], "verify": "우선순위 명시됨", "phase": "준비"},
+                    {"id": "pm-3", "action": "완료 조건(Definition of Done) 정의", "depends": ["pm-1"], "verify": "DoD 문서화됨", "phase": "설계"}
+                ]
+            },
+            {
+                "trigger": "스코프|scope|범위|mvp",
+                "actions": [
+                    {"id": "pm-4", "action": "MVP 범위 문서 확인", "depends": [], "verify": "MVP 범위 내 기능임", "phase": "준비"},
+                    {"id": "pm-5", "action": "스코프 크리프 여부 검토", "depends": ["pm-4"], "verify": "추가 스코프 없음", "phase": "준비"}
+                ]
+            }
         ]
     },
     "CTO": {
@@ -42,6 +59,32 @@ MANAGERS = {
             "성능 벤치마크",
             "기술 부채 평가",
             "코드 리뷰 완료"
+        ],
+        "action_templates": [
+            {
+                "trigger": "아키텍처|architecture|구조|설계",
+                "actions": [
+                    {"id": "cto-1", "action": "기존 아키텍처 문서(ARCHITECTURE.md) 확인", "depends": [], "verify": "아키텍처 문서 읽음", "phase": "준비"},
+                    {"id": "cto-2", "action": "변경 영향 범위 분석", "depends": ["cto-1"], "verify": "영향받는 모듈 목록 작성됨", "phase": "설계"},
+                    {"id": "cto-3", "action": "기술 부채 평가", "depends": ["cto-2"], "verify": "부채 증가 여부 판단됨", "phase": "설계"}
+                ]
+            },
+            {
+                "trigger": "api|endpoint|backend",
+                "actions": [
+                    {"id": "cto-4", "action": "API 스펙 문서 확인 또는 작성", "depends": [], "verify": "API 스펙 문서화됨", "phase": "설계"},
+                    {"id": "cto-5", "action": "기존 API 패턴과 일관성 검토", "depends": ["cto-4"], "verify": "패턴 일관성 확인됨", "phase": "설계"},
+                    {"id": "cto-6", "action": "API 엔드포인트 구현", "depends": ["cto-5"], "verify": "엔드포인트 구현 완료", "phase": "구현"}
+                ]
+            },
+            {
+                "trigger": "성능|performance|최적화|optimize",
+                "actions": [
+                    {"id": "cto-7", "action": "현재 성능 벤치마크 측정", "depends": [], "verify": "기준 성능 측정됨", "phase": "준비"},
+                    {"id": "cto-8", "action": "병목 지점 분석", "depends": ["cto-7"], "verify": "병목 지점 식별됨", "phase": "설계"},
+                    {"id": "cto-9", "action": "최적화 후 성능 재측정", "depends": [], "verify": "성능 개선 확인됨", "phase": "검증"}
+                ]
+            }
         ]
     },
     "QA": {
@@ -61,6 +104,24 @@ MANAGERS = {
             "Integration Test 작성",
             "엣지 케이스 테스트",
             "에러 시나리오 테스트"
+        ],
+        "action_templates": [
+            {
+                "trigger": "테스트|test|검증|verify|qa",
+                "actions": [
+                    {"id": "qa-1", "action": "테스트 시나리오 작성", "depends": [], "verify": "테스트 시나리오 문서화됨", "phase": "설계"},
+                    {"id": "qa-2", "action": "Unit Test 작성", "depends": ["qa-1"], "verify": "Unit Test 통과", "phase": "구현"},
+                    {"id": "qa-3", "action": "엣지 케이스 테스트 추가", "depends": ["qa-2"], "verify": "엣지 케이스 커버됨", "phase": "구현"},
+                    {"id": "qa-4", "action": "Integration Test 작성", "depends": ["qa-2"], "verify": "Integration Test 통과", "phase": "검증"}
+                ]
+            },
+            {
+                "trigger": "버그|bug|에러|error|fix",
+                "actions": [
+                    {"id": "qa-5", "action": "버그 재현 시나리오 작성", "depends": [], "verify": "버그 재현 가능", "phase": "준비"},
+                    {"id": "qa-6", "action": "회귀 테스트 케이스 추가", "depends": [], "verify": "회귀 테스트 작성됨", "phase": "검증"}
+                ]
+            }
         ]
     },
     "CDO": {
@@ -86,6 +147,17 @@ MANAGERS = {
             "불필요한 로딩 애니메이션",
             "복잡한 다단계 모달",
             "자동 재생 미디어"
+        ],
+        "action_templates": [
+            {
+                "trigger": "ui|ux|디자인|design|컴포넌트|component",
+                "actions": [
+                    {"id": "cdo-1", "action": "디자인 시스템 가이드 확인", "depends": [], "verify": "디자인 시스템 확인됨", "phase": "준비"},
+                    {"id": "cdo-2", "action": "AI 안티패턴 체크", "depends": [], "verify": "AI 패턴 없음", "phase": "설계"},
+                    {"id": "cdo-3", "action": "접근성(a11y) 요구사항 확인", "depends": [], "verify": "WCAG 가이드라인 적용", "phase": "설계"},
+                    {"id": "cdo-4", "action": "반응형 디자인 테스트", "depends": [], "verify": "모바일/데스크톱 확인됨", "phase": "검증"}
+                ]
+            }
         ]
     },
     "CMO": {
@@ -105,6 +177,16 @@ MANAGERS = {
             "경쟁사 분석",
             "타겟 페르소나 정의",
             "메시지 일관성 검토"
+        ],
+        "action_templates": [
+            {
+                "trigger": "마케팅|marketing|런칭|launch|브랜드|brand",
+                "actions": [
+                    {"id": "cmo-1", "action": "타겟 페르소나 정의 확인", "depends": [], "verify": "페르소나 문서화됨", "phase": "준비"},
+                    {"id": "cmo-2", "action": "가치 제안(Value Proposition) 검토", "depends": ["cmo-1"], "verify": "VP 명확함", "phase": "설계"},
+                    {"id": "cmo-3", "action": "경쟁사 대비 차별점 정리", "depends": ["cmo-2"], "verify": "차별점 문서화됨", "phase": "설계"}
+                ]
+            }
         ]
     },
     "CFO": {
@@ -124,6 +206,15 @@ MANAGERS = {
             "개발 비용 추정",
             "수익 영향 분석",
             "ROI 계산"
+        ],
+        "action_templates": [
+            {
+                "trigger": "비용|cost|예산|budget|결제|payment",
+                "actions": [
+                    {"id": "cfo-1", "action": "인프라 비용 영향 분석", "depends": [], "verify": "비용 추정 완료", "phase": "준비"},
+                    {"id": "cfo-2", "action": "ROI 계산 및 문서화", "depends": ["cfo-1"], "verify": "ROI 문서화됨", "phase": "설계"}
+                ]
+            }
         ]
     },
     "CSO": {
@@ -151,6 +242,18 @@ MANAGERS = {
             "평문 비밀번호",
             "SQL 문자열 연결",
             "innerHTML 직접 할당"
+        ],
+        "action_templates": [
+            {
+                "trigger": "보안|security|인증|auth|로그인|login",
+                "actions": [
+                    {"id": "cso-1", "action": "OWASP Top 10 체크리스트 검토", "depends": [], "verify": "보안 취약점 없음", "phase": "설계"},
+                    {"id": "cso-2", "action": "입력값 검증 로직 확인", "depends": [], "verify": "입력 검증 구현됨", "phase": "설계"},
+                    {"id": "cso-3", "action": "인증/인가 로직 검토", "depends": [], "verify": "인증 로직 안전함", "phase": "설계"},
+                    {"id": "cso-4", "action": "민감 데이터 암호화 확인", "depends": [], "verify": "암호화 적용됨", "phase": "검증"},
+                    {"id": "cso-5", "action": "보안 코드 리뷰 수행", "depends": ["cso-1", "cso-2", "cso-3"], "verify": "보안 리뷰 통과", "phase": "검증"}
+                ]
+            }
         ]
     },
     "ERROR": {
@@ -186,7 +289,19 @@ MANAGERS = {
 **예방 규칙**:
 - NEVER:
 - ALWAYS:
-"""
+""",
+        "action_templates": [
+            {
+                "trigger": "에러|error|버그|bug|예외|exception",
+                "actions": [
+                    {"id": "err-1", "action": "에러 재현 및 로그 수집", "depends": [], "verify": "에러 재현 가능", "phase": "준비"},
+                    {"id": "err-2", "action": "5 Whys 분석 수행", "depends": ["err-1"], "verify": "Root Cause 식별됨", "phase": "설계"},
+                    {"id": "err-3", "action": "NEVER/ALWAYS 규칙 정의", "depends": ["err-2"], "verify": "예방 규칙 문서화됨", "phase": "설계"},
+                    {"id": "err-4", "action": "에러 복구 전략 구현", "depends": ["err-2"], "verify": "복구 전략 구현됨", "phase": "구현"},
+                    {"id": "err-5", "action": "에러 로깅 및 모니터링 설정", "depends": [], "verify": "모니터링 설정됨", "phase": "검증"}
+                ]
+            }
+        ]
     }
 }
 
@@ -204,6 +319,121 @@ CONTEXT_GROUPS = {
     "design": ["CDO", "PM", "CMO"],  # 디자인
     "database": ["CTO", "CSO", "QA", "ERROR"],  # 데이터베이스
 }
+
+# Phase 우선순위 (정렬용)
+PHASE_ORDER = {"준비": 1, "설계": 2, "구현": 3, "검증": 4}
+
+
+def _generate_action_items(context: str, active_managers: List[str]) -> List[Dict[str, Any]]:
+    """컨텍스트 기반으로 모든 활성 매니저의 액션 아이템을 생성합니다.
+
+    Args:
+        context: 분석할 컨텍스트 문자열
+        active_managers: 활성화된 매니저 키 목록
+
+    Returns:
+        액션 아이템 리스트 (의존성 정렬됨)
+        [{"id": "pm-1", "manager": "PM", "action": "...", "depends": [], "verify": "...", "phase": "준비"}, ...]
+    """
+    context_lower = context.lower()
+    action_items = []
+
+    for manager_key in active_managers:
+        manager_info = MANAGERS.get(manager_key, {})
+        templates = manager_info.get("action_templates", [])
+
+        for template in templates:
+            trigger = template.get("trigger", "")
+            trigger_patterns = trigger.split("|")
+
+            # 트리거 키워드 매칭
+            if any(pattern.lower() in context_lower for pattern in trigger_patterns):
+                for action in template.get("actions", []):
+                    action_item = {
+                        **action,
+                        "manager": manager_key,
+                        "emoji": manager_info.get("emoji", "")
+                    }
+                    # 중복 방지
+                    if not any(a["id"] == action_item["id"] for a in action_items):
+                        action_items.append(action_item)
+
+    # 의존성 기반 위상 정렬
+    sorted_items = _topological_sort(action_items)
+
+    return sorted_items
+
+
+def _topological_sort(action_items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """의존성 기반으로 액션 아이템을 위상 정렬합니다.
+
+    Args:
+        action_items: 정렬되지 않은 액션 아이템 리스트
+
+    Returns:
+        의존성 순서대로 정렬된 액션 아이템 리스트
+    """
+    if not action_items:
+        return []
+
+    # ID -> 아이템 매핑
+    id_to_item = {item["id"]: item for item in action_items}
+
+    # 진입 차수 계산
+    in_degree = {item["id"]: 0 for item in action_items}
+    for item in action_items:
+        for dep in item.get("depends", []):
+            if dep in in_degree:
+                in_degree[item["id"]] += 1
+
+    # 진입 차수가 0인 노드로 시작
+    queue = [item_id for item_id, degree in in_degree.items() if degree == 0]
+    result = []
+
+    while queue:
+        # Phase 우선순위로 정렬
+        queue.sort(key=lambda x: (
+            PHASE_ORDER.get(id_to_item[x].get("phase", "검증"), 5),
+            x  # 같은 phase면 ID 순
+        ))
+
+        current_id = queue.pop(0)
+        result.append(id_to_item[current_id])
+
+        # 의존하는 노드의 진입 차수 감소
+        for item in action_items:
+            if current_id in item.get("depends", []):
+                in_degree[item["id"]] -= 1
+                if in_degree[item["id"]] == 0:
+                    queue.append(item["id"])
+
+    # 사이클이 있으면 나머지 아이템 추가 (Phase 순서로)
+    remaining = [item for item in action_items if item not in result]
+    remaining.sort(key=lambda x: PHASE_ORDER.get(x.get("phase", "검증"), 5))
+    result.extend(remaining)
+
+    return result
+
+
+def _group_by_phase(action_items: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
+    """액션 아이템을 Phase별로 그룹화합니다.
+
+    Args:
+        action_items: 액션 아이템 리스트
+
+    Returns:
+        {"준비": [...], "설계": [...], "구현": [...], "검증": [...]}
+    """
+    phases = {"준비": [], "설계": [], "구현": [], "검증": []}
+
+    for item in action_items:
+        phase = item.get("phase", "검증")
+        if phase in phases:
+            phases[phase].append(item)
+        else:
+            phases["검증"].append(item)
+
+    return phases
 
 
 def manager(
@@ -228,6 +458,8 @@ def manager(
         "context_analysis": {},
         "active_managers": [],
         "feedback": {},
+        "action_items": [],          # 전체 액션 아이템 (위상 정렬됨)
+        "action_items_by_phase": {}, # Phase별 그룹화
         "combined_checklist": [],
         "warnings": [],
         "recommendations": []
@@ -266,6 +498,11 @@ def manager(
         # 경고 수집
         if feedback.get("warnings"):
             result["warnings"].extend(feedback["warnings"])
+
+    # 3.5. 액션 아이템 생성 (모든 활성 매니저 기반)
+    action_items = _generate_action_items(context, active_managers)
+    result["action_items"] = action_items
+    result["action_items_by_phase"] = _group_by_phase(action_items)
 
     # 4. 종합 추천 사항
     result["recommendations"] = _generate_recommendations(result)
@@ -338,6 +575,7 @@ def _generate_feedback(manager_key: str, manager_info: Dict, context: str) -> Di
         "questions": [],
         "concerns": [],
         "warnings": [],
+        "action_items": [],  # 개별 매니저 액션 아이템
         "approval_status": "REVIEW_NEEDED"
     }
 
@@ -353,6 +591,21 @@ def _generate_feedback(manager_key: str, manager_info: Dict, context: str) -> Di
     # 질문이 없으면 처음 2개 질문 추가
     if not feedback["questions"]:
         feedback["questions"] = manager_info["questions"][:2]
+
+    # 개별 매니저 액션 아이템 생성
+    templates = manager_info.get("action_templates", [])
+    for template in templates:
+        trigger = template.get("trigger", "")
+        trigger_patterns = trigger.split("|")
+        if any(pattern.lower() in context_lower for pattern in trigger_patterns):
+            for action in template.get("actions", []):
+                feedback["action_items"].append({
+                    "id": action["id"],
+                    "action": action["action"],
+                    "depends": action.get("depends", []),
+                    "verify": action.get("verify", ""),
+                    "phase": action.get("phase", "검증")
+                })
 
     # 경고 패턴 체크
     if manager_key == "CSO":
@@ -461,6 +714,28 @@ def _format_output(result: Dict) -> str:
                 lines.append(f"  - {c}")
 
         lines.append("")
+
+    # 액션 아이템 (Phase별)
+    action_items_by_phase = result.get("action_items_by_phase", {})
+    has_actions = any(items for items in action_items_by_phase.values())
+
+    if has_actions:
+        lines.append("### 📋 실행 계획")
+        lines.append("")
+
+        idx = 1
+        for phase in ["준비", "설계", "구현", "검증"]:
+            items = action_items_by_phase.get(phase, [])
+            if items:
+                lines.append(f"**{phase} 단계**")
+                lines.append("")
+                lines.append("| # | 액션 | 담당 | 완료 조건 |")
+                lines.append("|---|------|------|----------|")
+                for item in items:
+                    deps = f" (의존: {', '.join(item['depends'])})" if item.get("depends") else ""
+                    lines.append(f"| {idx} | {item['action']}{deps} | {item['emoji']} {item['manager']} | {item['verify']} |")
+                    idx += 1
+                lines.append("")
 
     # 체크리스트
     if result["combined_checklist"]:

@@ -318,3 +318,246 @@ async def update_progress(path: str, completed: list, in_progress: str, blockers
 
 **진행 상황이 기록되었습니다!**
 """)]
+
+
+async def create_detailed_plan(
+    path: str,
+    task: str,
+    goals: list = None,
+    auto_manager_feedback: bool = True
+) -> list[TextContent]:
+    """상세 실행 계획을 생성합니다.
+
+    manager 도구를 호출하여 각 매니저의 액션 아이템을 수집하고,
+    의존성 기반으로 정렬된 단계별 계획을 생성합니다.
+
+    Args:
+        path: 프로젝트 루트 경로
+        task: 수행할 작업
+        goals: 달성 목표 리스트
+        auto_manager_feedback: manager 피드백 자동 호출 여부
+
+    Returns:
+        상세 계획이 포함된 TextContent
+    """
+    from .manager import manager, MANAGERS
+
+    project_path = Path(path)
+    if not project_path.exists():
+        return [TextContent(type="text", text=f"❌ 경로가 존재하지 않습니다: {path}")]
+
+    planning_dir = project_path / ".claude" / "planning"
+    planning_dir.mkdir(parents=True, exist_ok=True)
+
+    # Manager 피드백 수집
+    context = f"Task: {task}"
+    if goals:
+        context += f"\nGoals: {', '.join(goals)}"
+
+    manager_result = manager(context=context, mode="auto", include_checklist=True)
+
+    # 액션 아이템 추출
+    action_items = manager_result.get("action_items", [])
+    action_items_by_phase = manager_result.get("action_items_by_phase", {})
+    active_managers = manager_result.get("active_managers", [])
+    warnings = manager_result.get("warnings", [])
+
+    # 목표 마크다운
+    goals_md = "\n".join(f"- [ ] {g}" for g in goals) if goals else "- [ ] (목표 정의 필요)"
+
+    # Phase별 테이블 생성
+    phase_tables = []
+    global_idx = 1
+
+    for phase in ["준비", "설계", "구현", "검증"]:
+        items = action_items_by_phase.get(phase, [])
+        if items:
+            table_lines = [f"### Phase: {phase}"]
+            table_lines.append("")
+            table_lines.append("| # | 액션 | 담당 | 의존성 | 완료 조건 | 상태 |")
+            table_lines.append("|---|------|------|--------|-----------|------|")
+
+            for item in items:
+                deps = ", ".join(item.get("depends", [])) if item.get("depends") else "-"
+                table_lines.append(
+                    f"| {global_idx} | {item['action']} | {item.get('emoji', '')} {item['manager']} | {deps} | {item.get('verify', '')} | [ ] |"
+                )
+                global_idx += 1
+
+            table_lines.append("")
+            phase_tables.append("\n".join(table_lines))
+
+    phases_md = "\n".join(phase_tables) if phase_tables else "(액션 아이템 없음)"
+
+    # 경고 마크다운
+    warnings_md = "\n".join(f"- {w}" for w in warnings) if warnings else "(없음)"
+
+    # 매니저 피드백 요약
+    feedback_summary = []
+    for mgr_key in active_managers:
+        mgr_info = MANAGERS.get(mgr_key, {})
+        feedback = manager_result.get("feedback", {}).get(mgr_key, {})
+        questions = feedback.get("questions", [])[:2]
+        concerns = feedback.get("concerns", [])
+
+        if questions or concerns:
+            lines = [f"#### {mgr_info.get('emoji', '')} {mgr_info.get('title', mgr_key)}"]
+            if questions:
+                lines.append("**질문:**")
+                for q in questions:
+                    lines.append(f"  - {q}")
+            if concerns:
+                lines.append("**우려:**")
+                for c in concerns:
+                    lines.append(f"  - {c}")
+            lines.append("")
+            feedback_summary.append("\n".join(lines))
+
+    feedback_md = "\n".join(feedback_summary) if feedback_summary else "(없음)"
+
+    # task_plan.md 생성 (상세 계획 포함)
+    task_plan_content = f"""# Task Plan
+
+> 생성일: {datetime.now().strftime('%Y-%m-%d %H:%M')}
+> 도구: create_detailed_plan (v1.3)
+
+---
+
+## 현재 작업
+
+{task}
+
+---
+
+## 목표
+
+{goals_md}
+
+---
+
+## 상세 실행 계획
+
+{phases_md}
+
+---
+
+## 검증 포인트
+
+- [ ] 준비 단계 완료 → 설계 단계 시작 가능
+- [ ] 설계 단계 완료 → 구현 단계 시작 가능
+- [ ] 구현 단계 완료 → 검증 단계 시작 가능
+- [ ] 전체 완료 → `ship` 도구로 최종 검증
+
+---
+
+## 경고
+
+{warnings_md}
+
+---
+
+## 매니저 피드백 요약
+
+{feedback_md}
+
+---
+
+## 제약 조건
+
+- PRD에 명시된 범위 내에서만 작업
+- 테스트 없이 배포 금지
+
+---
+
+> 💡 진행 상황 업데이트: `update_progress` 도구 호출
+"""
+
+    # findings.md 생성
+    findings_content = f"""# Findings
+
+> 조사 결과 기록
+> 생성일: {datetime.now().strftime('%Y-%m-%d %H:%M')}
+
+---
+
+## 2-Action Rule
+
+> view/browser 작업 2개 후 반드시 여기에 기록!
+
+---
+
+(아직 기록 없음)
+"""
+
+    # progress.md 생성
+    progress_content = f"""# Progress
+
+> 마지막 업데이트: {datetime.now().strftime('%Y-%m-%d %H:%M')}
+
+---
+
+## 완료 (Completed)
+
+*(아직 없음)*
+
+---
+
+## 진행중 (In Progress)
+
+*(없음)*
+
+---
+
+## 블로커 (Blockers)
+
+*(없음)*
+
+---
+
+## 다음 할 일 (Next)
+
+*(결정 필요)*
+
+---
+
+> 💡 업데이트: `update_progress` 도구 호출
+"""
+
+    # 파일 저장
+    (planning_dir / "task_plan.md").write_text(task_plan_content, encoding='utf-8')
+    (planning_dir / "findings.md").write_text(findings_content, encoding='utf-8')
+    (planning_dir / "progress.md").write_text(progress_content, encoding='utf-8')
+
+    # 활성 매니저 아이콘
+    manager_icons = " ".join([MANAGERS[m]["emoji"] for m in active_managers])
+
+    return [TextContent(type="text", text=f"""# 상세 실행 계획 생성 완료
+
+## 작업
+{task}
+
+## 활성 매니저
+{manager_icons}
+
+## 생성된 계획
+총 **{len(action_items)}개** 액션 아이템이 **{len([p for p in action_items_by_phase.values() if p])}개 Phase**로 구성됨
+
+| Phase | 액션 수 |
+|-------|---------|
+| 준비 | {len(action_items_by_phase.get('준비', []))} |
+| 설계 | {len(action_items_by_phase.get('설계', []))} |
+| 구현 | {len(action_items_by_phase.get('구현', []))} |
+| 검증 | {len(action_items_by_phase.get('검증', []))} |
+
+## 경로
+`{planning_dir}/task_plan.md`
+
+## 다음 단계
+
+1. `task_plan.md` 확인
+2. Phase 1(준비)부터 순서대로 진행
+3. 각 단계 완료 시 `update_progress` 호출
+4. 전체 완료 후 `ship` 도구로 검증
+
+**상세한 계획으로 작업을 시작하세요!**
+""")]

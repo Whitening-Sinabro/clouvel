@@ -27,8 +27,8 @@ from .tools import (
     init_rules, get_rule, add_rule,
     # verify (v0.5)
     verify, gate, handoff,
-    # planning (v0.6)
-    init_planning, save_finding, refresh_goals, update_progress,
+    # planning (v0.6, v1.3)
+    init_planning, save_finding, refresh_goals, update_progress, create_detailed_plan,
     # agents (v0.7)
     spawn_explore, spawn_librarian,
     # hooks (v0.8)
@@ -249,7 +249,7 @@ TOOL_DEFINITIONS = [
         }
     ),
 
-    # === Planning Tools (v0.6) ===
+    # === Planning Tools (v0.6, v1.3) ===
     Tool(
         name="init_planning",
         description="v0.6: 영속적 컨텍스트 초기화.",
@@ -259,6 +259,19 @@ TOOL_DEFINITIONS = [
                 "path": {"type": "string", "description": "프로젝트 루트 경로"},
                 "task": {"type": "string", "description": "현재 작업"},
                 "goals": {"type": "array", "items": {"type": "string"}}
+            },
+            "required": ["path", "task"]
+        }
+    ),
+    Tool(
+        name="plan",
+        description="v1.3: 상세 실행 계획 생성. manager 피드백을 종합하여 단계별 액션 아이템, 의존성, 검증 포인트를 포함한 계획 생성. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "task": {"type": "string", "description": "수행할 작업"},
+                "goals": {"type": "array", "items": {"type": "string"}, "description": "달성 목표"}
             },
             "required": ["path", "task"]
         }
@@ -488,8 +501,9 @@ TOOL_HANDLERS = {
     "gate": lambda args: gate(args.get("path", ""), args.get("steps", ["lint", "test", "build"]), args.get("fix", False)),
     "handoff": lambda args: handoff(args.get("path", ""), args.get("feature", ""), args.get("decisions", ""), args.get("warnings", ""), args.get("next_steps", "")),
 
-    # Planning (v0.6)
+    # Planning (v0.6, v1.3)
     "init_planning": lambda args: init_planning(args.get("path", ""), args.get("task", ""), args.get("goals", [])),
+    "plan": lambda args: create_detailed_plan(args.get("path", ""), args.get("task", ""), args.get("goals", [])),
     "save_finding": lambda args: save_finding(args.get("path", ""), args.get("topic", ""), args.get("question", ""), args.get("findings", ""), args.get("source", ""), args.get("conclusion", "")),
     "refresh_goals": lambda args: refresh_goals(args.get("path", "")),
     "update_progress": lambda args: update_progress(args.get("path", ""), args.get("completed", []), args.get("in_progress", ""), args.get("blockers", []), args.get("next", "")),

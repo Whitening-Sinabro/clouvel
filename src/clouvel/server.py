@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Clouvel MCP Server v0.8.0
+Clouvel MCP Server v1.2.0
 바이브코딩 프로세스를 강제하는 MCP 서버
+
+v1.2 신규 도구:
+- start: 프로젝트 온보딩 + PRD 강제 (Free)
+- manager: 8명 C-Level 매니저 협업 피드백 (Pro)
+- ship: 원클릭 테스트→검증→증거 생성 (Pro)
 
 Free 버전 - Pro 기능은 clouvel-pro 패키지 참조
 """
@@ -15,7 +20,7 @@ from .tools import (
     # core
     can_code, scan_docs, analyze_docs, init_docs, REQUIRED_DOCS,
     # docs
-    get_prd_template, write_prd_section, get_prd_guide, get_verify_checklist, get_setup_guide,
+    get_prd_template, list_templates, write_prd_section, get_prd_guide, get_verify_checklist, get_setup_guide,
     # setup
     init_clouvel, setup_cli,
     # rules (v0.5)
@@ -28,6 +33,12 @@ from .tools import (
     spawn_explore, spawn_librarian,
     # hooks (v0.8)
     hook_design, hook_verify,
+    # start (Free, v1.2)
+    start, quick_start,
+    # manager (Pro, v1.2)
+    manager, ask_manager, list_managers, MANAGERS,
+    # ship (Pro, v1.2)
+    ship, quick_ship, full_ship,
 )
 
 server = Server("clouvel")
@@ -82,15 +93,22 @@ TOOL_DEFINITIONS = [
     # === Docs Tools ===
     Tool(
         name="get_prd_template",
-        description="PRD 템플릿 생성.",
+        description="PRD 템플릿 생성. 템플릿과 레이아웃 선택 가능.",
         inputSchema={
             "type": "object",
             "properties": {
                 "project_name": {"type": "string", "description": "프로젝트 이름"},
-                "output_path": {"type": "string", "description": "출력 경로"}
+                "output_path": {"type": "string", "description": "출력 경로"},
+                "template": {"type": "string", "enum": ["web-app", "api", "cli", "generic"], "description": "템플릿 종류"},
+                "layout": {"type": "string", "enum": ["lite", "standard", "detailed"], "description": "레이아웃 (분량)"}
             },
             "required": ["project_name", "output_path"]
         }
+    ),
+    Tool(
+        name="list_templates",
+        description="사용 가능한 PRD 템플릿 목록 조회.",
+        inputSchema={"type": "object", "properties": {}}
     ),
     Tool(
         name="write_prd_section",
@@ -347,6 +365,82 @@ TOOL_DEFINITIONS = [
         }
     ),
 
+    # === Start Tool (Free, v1.2) ===
+    Tool(
+        name="start",
+        description="프로젝트 온보딩. PRD 체크 및 생성, 다음 단계 안내. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "project_name": {"type": "string", "description": "프로젝트 이름 (선택)"}
+            },
+            "required": ["path"]
+        }
+    ),
+
+    # === Manager Tool (Pro, v1.2) ===
+    Tool(
+        name="manager",
+        description="8명 C-Level 매니저의 컨텍스트 기반 협업 피드백. PM/CTO/QA/CDO/CMO/CFO/CSO/Error. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "context": {"type": "string", "description": "검토할 내용 (플랜, 코드, 질문 등)"},
+                "mode": {"type": "string", "enum": ["auto", "all", "specific"], "description": "매니저 선택 모드"},
+                "managers": {"type": "array", "items": {"type": "string"}, "description": "mode=specific일 때 매니저 목록"},
+                "include_checklist": {"type": "boolean", "description": "체크리스트 포함 여부"}
+            },
+            "required": ["context"]
+        }
+    ),
+    Tool(
+        name="list_managers",
+        description="사용 가능한 매니저 목록 조회. (Pro)",
+        inputSchema={"type": "object", "properties": {}}
+    ),
+
+    # === Ship Tool (Pro, v1.2) ===
+    Tool(
+        name="ship",
+        description="원클릭 테스트→검증→증거 생성. lint/typecheck/test/build 순차 실행. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "feature": {"type": "string", "description": "검증할 기능명 (선택)"},
+                "steps": {"type": "array", "items": {"type": "string"}, "description": "실행할 단계 ['lint', 'typecheck', 'test', 'build']"},
+                "generate_evidence": {"type": "boolean", "description": "증거 파일 생성 여부"},
+                "auto_fix": {"type": "boolean", "description": "lint 에러 자동 수정 시도"}
+            },
+            "required": ["path"]
+        }
+    ),
+    Tool(
+        name="quick_ship",
+        description="빠른 ship - lint와 test만 실행. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "feature": {"type": "string", "description": "검증할 기능명 (선택)"}
+            },
+            "required": ["path"]
+        }
+    ),
+    Tool(
+        name="full_ship",
+        description="전체 ship - 모든 검증 단계 + 자동 수정. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "feature": {"type": "string", "description": "검증할 기능명 (선택)"}
+            },
+            "required": ["path"]
+        }
+    ),
+
     # === Pro 안내 ===
     Tool(
         name="upgrade_pro",
@@ -373,7 +467,8 @@ TOOL_HANDLERS = {
     "init_docs": lambda args: init_docs(args.get("path", ""), args.get("project_name", "")),
 
     # Docs
-    "get_prd_template": lambda args: get_prd_template(args.get("project_name", ""), args.get("output_path", "")),
+    "get_prd_template": lambda args: get_prd_template(args.get("project_name", ""), args.get("output_path", ""), args.get("template", "generic"), args.get("layout", "standard")),
+    "list_templates": lambda args: list_templates(),
     "write_prd_section": lambda args: write_prd_section(args.get("section", ""), args.get("content", "")),
     "get_prd_guide": lambda args: get_prd_guide(),
     "get_verify_checklist": lambda args: get_verify_checklist(),
@@ -407,9 +502,107 @@ TOOL_HANDLERS = {
     "hook_design": lambda args: hook_design(args.get("path", ""), args.get("trigger", "pre_code"), args.get("checks", []), args.get("block_on_fail", True)),
     "hook_verify": lambda args: hook_verify(args.get("path", ""), args.get("trigger", "post_code"), args.get("steps", ["lint", "test", "build"]), args.get("parallel", False), args.get("continue_on_error", False)),
 
+    # Start (Free, v1.2)
+    "start": lambda args: _wrap_start(args),
+
+    # Manager (Pro, v1.2)
+    "manager": lambda args: _wrap_manager(args),
+    "list_managers": lambda args: _wrap_list_managers(),
+
+    # Ship (Pro, v1.2)
+    "ship": lambda args: _wrap_ship(args),
+    "quick_ship": lambda args: _wrap_quick_ship(args),
+    "full_ship": lambda args: _wrap_full_ship(args),
+
     # Pro 안내
     "upgrade_pro": lambda args: _upgrade_pro(),
 }
+
+
+async def _wrap_start(args: dict) -> list[TextContent]:
+    """start 도구 래퍼"""
+    import json
+    result = start(args.get("path", ""), args.get("project_name", ""))
+    # formatted 출력이 있으면 사용, 없으면 JSON
+    if isinstance(result, dict):
+        output = f"""# 🚀 Start
+
+**상태**: {result.get('status', 'UNKNOWN')}
+**프로젝트**: {result.get('project_name', 'N/A')}
+
+{result.get('message', '')}
+
+## 다음 단계
+"""
+        for step in result.get('next_steps', []):
+            output += f"- {step}\n"
+
+        if result.get('created_files'):
+            output += "\n## 생성된 파일\n"
+            for f in result['created_files']:
+                output += f"- {f}\n"
+
+        return [TextContent(type="text", text=output)]
+    return [TextContent(type="text", text=str(result))]
+
+
+async def _wrap_manager(args: dict) -> list[TextContent]:
+    """manager 도구 래퍼"""
+    result = manager(
+        context=args.get("context", ""),
+        mode=args.get("mode", "auto"),
+        managers=args.get("managers", None),
+        include_checklist=args.get("include_checklist", True)
+    )
+    # formatted_output 사용
+    if isinstance(result, dict) and result.get("formatted_output"):
+        return [TextContent(type="text", text=result["formatted_output"])]
+    return [TextContent(type="text", text=str(result))]
+
+
+async def _wrap_list_managers() -> list[TextContent]:
+    """list_managers 도구 래퍼"""
+    managers_list = list_managers()
+    output = "# 👔 사용 가능한 매니저 (8명)\n\n"
+    for m in managers_list:
+        output += f"- **{m['emoji']} {m['key']}** ({m['title']}): {m['focus']}\n"
+    return [TextContent(type="text", text=output)]
+
+
+async def _wrap_ship(args: dict) -> list[TextContent]:
+    """ship 도구 래퍼"""
+    result = ship(
+        path=args.get("path", ""),
+        feature=args.get("feature", ""),
+        steps=args.get("steps", None),
+        generate_evidence=args.get("generate_evidence", True),
+        auto_fix=args.get("auto_fix", False)
+    )
+    if isinstance(result, dict) and result.get("formatted_output"):
+        return [TextContent(type="text", text=result["formatted_output"])]
+    return [TextContent(type="text", text=str(result))]
+
+
+async def _wrap_quick_ship(args: dict) -> list[TextContent]:
+    """quick_ship 도구 래퍼"""
+    result = quick_ship(
+        path=args.get("path", ""),
+        feature=args.get("feature", "")
+    )
+    if isinstance(result, dict) and result.get("formatted_output"):
+        return [TextContent(type="text", text=result["formatted_output"])]
+    return [TextContent(type="text", text=str(result))]
+
+
+async def _wrap_full_ship(args: dict) -> list[TextContent]:
+    """full_ship 도구 래퍼"""
+    result = full_ship(
+        path=args.get("path", ""),
+        feature=args.get("feature", "")
+    )
+    if isinstance(result, dict) and result.get("formatted_output"):
+        return [TextContent(type="text", text=result["formatted_output"])]
+    return [TextContent(type="text", text=str(result))]
 
 
 async def _upgrade_pro() -> list[TextContent]:

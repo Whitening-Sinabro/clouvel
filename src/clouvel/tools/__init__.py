@@ -12,6 +12,7 @@ from .core import (
 
 from .docs import (
     get_prd_template,
+    list_templates,
     write_prd_section,
     get_prd_guide,
     get_verify_checklist,
@@ -56,6 +57,24 @@ from .install import (
     run_install,
 )
 
+from .start import (
+    start,
+    quick_start,
+)
+
+from .manager import (
+    manager,
+    ask_manager,
+    list_managers,
+    MANAGERS,
+)
+
+from .ship import (
+    ship,
+    quick_ship,
+    full_ship,
+)
+
 # Pro 기능은 clouvel-pro 패키지로 분리됨
 # pip install clouvel-pro
 
@@ -63,7 +82,7 @@ __all__ = [
     # core
     "can_code", "scan_docs", "analyze_docs", "init_docs", "REQUIRED_DOCS",
     # docs
-    "get_prd_template", "write_prd_section", "get_prd_guide", "get_verify_checklist", "get_setup_guide",
+    "get_prd_template", "list_templates", "write_prd_section", "get_prd_guide", "get_verify_checklist", "get_setup_guide",
     # setup
     "init_clouvel", "setup_cli",
     # rules (v0.5)
@@ -78,4 +97,10 @@ __all__ = [
     "hook_design", "hook_verify",
     # install
     "run_install",
+    # start (Free, v1.2)
+    "start", "quick_start",
+    # manager (Pro, v1.2)
+    "manager", "ask_manager", "list_managers", "MANAGERS",
+    # ship (Pro, v1.2)
+    "ship", "quick_ship", "full_ship",
 ]

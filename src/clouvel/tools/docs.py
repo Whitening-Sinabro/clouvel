@@ -1,13 +1,93 @@
 # -*- coding: utf-8 -*-
 """Docs tools: PRD 템플릿, 가이드 등"""
 
+import os
 from datetime import datetime
+from pathlib import Path
 from mcp.types import TextContent
 
 
-async def get_prd_template(project_name: str, output_path: str) -> list[TextContent]:
-    """PRD 템플릿 생성"""
-    template = f"""# {project_name} PRD
+# 사용 가능한 템플릿 목록
+TEMPLATES = {
+    "web-app": {
+        "name": "Web Application",
+        "layouts": ["lite", "standard", "detailed"],
+        "description": "웹 애플리케이션 (React, Vue, Next.js 등)"
+    },
+    "api": {
+        "name": "API Server",
+        "layouts": ["lite", "standard", "detailed"],
+        "description": "REST/GraphQL API 서버"
+    },
+    "cli": {
+        "name": "CLI Tool",
+        "layouts": ["lite", "standard"],
+        "description": "커맨드라인 도구"
+    },
+    "generic": {
+        "name": "Generic",
+        "layouts": ["standard"],
+        "description": "범용 템플릿"
+    }
+}
+
+
+def _get_template_path(template: str, layout: str) -> Path:
+    """템플릿 파일 경로 반환"""
+    # 패키지 내부 templates 폴더
+    base_path = Path(__file__).parent.parent / "templates"
+    return base_path / template / f"{layout}.md"
+
+
+def _load_template(template: str, layout: str) -> str:
+    """템플릿 파일 로드"""
+    template_path = _get_template_path(template, layout)
+
+    if template_path.exists():
+        return template_path.read_text(encoding="utf-8")
+
+    # 파일이 없으면 generic 템플릿 반환
+    return None
+
+
+async def get_prd_template(project_name: str, output_path: str, template: str = "generic", layout: str = "standard") -> list[TextContent]:
+    """PRD 템플릿 생성
+
+    Args:
+        project_name: 프로젝트 이름
+        output_path: 출력 경로
+        template: 템플릿 종류 (web-app, api, cli, generic)
+        layout: 레이아웃 (lite, standard, detailed)
+    """
+    # 템플릿 로드 시도
+    content = _load_template(template, layout)
+
+    if content:
+        # placeholder 치환
+        now = datetime.now().strftime('%Y-%m-%d')
+        content = content.replace("{PROJECT_NAME}", project_name)
+        content = content.replace("{DATE}", now)
+
+        return [TextContent(type="text", text=f"""# {template}/{layout} 템플릿
+
+```markdown
+{content}
+```
+
+---
+
+**저장 경로**: `{output_path}`
+
+**다음 단계**:
+1. 위 내용을 `{output_path}`에 저장
+2. [ ] 로 표시된 부분을 채우기
+3. 완료 후 코딩 시작
+
+**팁**: 한 번에 다 채우려 하지 마세요. 핵심(1~4번)부터 채우고 시작해도 됩니다.
+""")]
+
+    # generic fallback
+    template_content = f"""# {project_name} PRD
 
 > 이 문서가 법. 여기 없으면 안 만듦.
 > 작성일: {datetime.now().strftime('%Y-%m-%d')}
@@ -71,52 +151,41 @@ async def get_prd_template(project_name: str, output_path: str) -> list[TextCont
 
 ---
 
-## 7. 상태 머신
+## 7. 검증 계획
 
-> 있으면 그림으로. 상태 전이 명확하게.
-
-```
-[상태1] --이벤트--> [상태2]
-```
-
----
-
-## 8. API 엔드포인트
-
-| Method | Path | 설명 |
-|--------|------|------|
-| GET | /api/... | ... |
-
----
-
-## 9. DB 스키마
-
-| 테이블 | 컬럼 | 타입 | 설명 |
-|--------|------|------|------|
-| | | | |
-
----
-
-## 10. 검증 계획
-
-> 어떻게 테스트할 건지. 뭘 확인해야 하는지.
-
-### 10.1 단위 테스트
 - [ ] [테스트 케이스 1]
-
-### 10.2 통합 테스트
-- [ ] [테스트 케이스 1]
+- [ ] [테스트 케이스 2]
 
 ---
 
-## 11. 변경 로그
+## 변경 로그
 
 | 날짜 | 변경 내용 | 작성자 |
 |------|----------|--------|
 | {datetime.now().strftime('%Y-%m-%d')} | 최초 작성 | |
 
 """
-    return [TextContent(type="text", text=f"```markdown\n{template}\n```\n\n출력 경로: `{output_path}`에 저장하세요.")]
+    return [TextContent(type="text", text=f"```markdown\n{template_content}\n```\n\n출력 경로: `{output_path}`에 저장하세요.")]
+
+
+async def list_templates() -> list[TextContent]:
+    """사용 가능한 템플릿 목록"""
+    lines = ["# PRD 템플릿 목록\n"]
+
+    for key, info in TEMPLATES.items():
+        layouts = ", ".join(info["layouts"])
+        lines.append(f"## {info['name']} (`{key}`)")
+        lines.append(f"- **설명**: {info['description']}")
+        lines.append(f"- **레이아웃**: {layouts}")
+        lines.append("")
+
+    lines.append("---")
+    lines.append("**사용법**: `get_prd_template` 호출 시 `template`과 `layout` 지정")
+    lines.append("```")
+    lines.append('예: template="web-app", layout="standard"')
+    lines.append("```")
+
+    return [TextContent(type="text", text="\n".join(lines))]
 
 
 async def write_prd_section(section: str, content: str) -> list[TextContent]:

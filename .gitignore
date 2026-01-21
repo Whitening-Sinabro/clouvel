@@ -72,3 +72,6 @@ license*.json
 
 # Clouvel 로컬 설정/로그
 .clouvel/
+
+# PRD 템플릿 (PyPI 전용, git 비공개)
+src/clouvel/templates/

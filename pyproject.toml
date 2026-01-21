@@ -42,3 +42,6 @@ packages = ["src/clouvel"]
 
 [tool.hatch.build.targets.sdist]
 include = ["src/clouvel"]
+
+[tool.hatch.build]
+artifacts = ["src/clouvel/templates/**/*.md"]

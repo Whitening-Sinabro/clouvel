@@ -61,6 +61,7 @@ from .install import (
 from .start import (
     start,
     quick_start,
+    save_prd,
 )
 
 from .manager import (
@@ -75,6 +76,26 @@ from .ship import (
     quick_ship,
     full_ship,
 )
+
+# Error Learning 도구 (Pro 기능 - 파일이 없으면 스킵)
+try:
+    from .errors import (
+        error_record,
+        error_check,
+        error_learn,
+        log_error,
+        analyze_error,
+        get_error_summary,
+    )
+    _HAS_ERRORS = True
+except ImportError:
+    _HAS_ERRORS = False
+    error_record = None
+    error_check = None
+    error_learn = None
+    log_error = None
+    analyze_error = None
+    get_error_summary = None
 
 # Pro 기능은 clouvel-pro 패키지로 분리됨
 # pip install clouvel-pro
@@ -99,9 +120,11 @@ __all__ = [
     # install
     "run_install",
     # start (Free, v1.2)
-    "start", "quick_start",
+    "start", "quick_start", "save_prd",
     # manager (Pro, v1.2)
     "manager", "ask_manager", "list_managers", "MANAGERS",
     # ship (Pro, v1.2)
     "ship", "quick_ship", "full_ship",
+    # errors (Pro, v1.4)
+    "error_record", "error_check", "error_learn", "log_error", "analyze_error", "get_error_summary",
 ]

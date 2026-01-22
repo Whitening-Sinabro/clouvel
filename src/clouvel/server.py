@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Clouvel MCP Server v1.2.0
+Clouvel MCP Server v1.3.0
 바이브코딩 프로세스를 강제하는 MCP 서버
 
 v1.2 신규 도구:
@@ -34,14 +34,33 @@ from .tools import (
     # hooks (v0.8)
     hook_design, hook_verify,
     # start (Free, v1.2)
-    start, quick_start,
+    start, quick_start, save_prd,
     # manager (Pro, v1.2)
     manager, ask_manager, list_managers, MANAGERS,
     # ship (Pro, v1.2)
     ship, quick_ship, full_ship,
 )
 
+# Error Learning 도구 (Pro 기능 - 별도 import)
+try:
+    from .tools.errors import error_record, error_check, error_learn
+    _HAS_ERROR_TOOLS = True
+except ImportError:
+    _HAS_ERROR_TOOLS = False
+    error_record = None
+    error_check = None
+    error_learn = None
+# 라이선스 모듈 import (Pro 버전이 없으면 Free stub 사용)
+try:
+    from .license import activate_license_cli, get_license_status
+except ImportError:
+    from .license_free import activate_license_cli, get_license_status
+from .version_check import init_version_check, get_cached_update_info, get_update_banner
+
 server = Server("clouvel")
+
+# 서버 시작 시 버전 체크 (비동기적으로 처리)
+_version_check_done = False
 
 
 # ============================================================
@@ -381,14 +400,29 @@ TOOL_DEFINITIONS = [
     # === Start Tool (Free, v1.2) ===
     Tool(
         name="start",
-        description="프로젝트 온보딩. PRD 체크 및 생성, 다음 단계 안내. (Free)",
+        description="프로젝트 온보딩. PRD 체크, 프로젝트 타입 자동 감지, 대화형 PRD 작성 가이드. (Free)",
         inputSchema={
             "type": "object",
             "properties": {
                 "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "project_name": {"type": "string", "description": "프로젝트 이름 (선택)"}
+                "project_name": {"type": "string", "description": "프로젝트 이름 (선택)"},
+                "project_type": {"type": "string", "description": "프로젝트 타입 강제 지정 (선택)", "enum": ["web-app", "api", "cli", "chrome-ext", "discord-bot", "landing-page", "generic"]}
             },
             "required": ["path"]
+        }
+    ),
+    Tool(
+        name="save_prd",
+        description="PRD 내용 저장. Claude가 사용자와 대화하며 작성한 PRD를 저장. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "content": {"type": "string", "description": "PRD 내용 (마크다운)"},
+                "project_name": {"type": "string", "description": "프로젝트 이름 (선택)"},
+                "project_type": {"type": "string", "description": "프로젝트 타입 (선택)"}
+            },
+            "required": ["path", "content"]
         }
     ),
 
@@ -452,6 +486,70 @@ TOOL_DEFINITIONS = [
             },
             "required": ["path"]
         }
+    ),
+
+    # === Error Learning Tools (Pro, v1.4) ===
+    Tool(
+        name="error_record",
+        description="5 Whys 구조화된 에러 기록 + MD 파일 생성. 에러 발생 시 근본 원인 분석. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "error_text": {"type": "string", "description": "에러 메시지"},
+                "context": {"type": "string", "description": "에러 발생 상황 설명"},
+                "five_whys": {"type": "array", "items": {"type": "string"}, "description": "5 Whys 분석 결과"},
+                "root_cause": {"type": "string", "description": "근본 원인"},
+                "solution": {"type": "string", "description": "해결 방법"},
+                "prevention": {"type": "string", "description": "재발 방지 대책"}
+            },
+            "required": ["path", "error_text"]
+        }
+    ),
+    Tool(
+        name="error_check",
+        description="컨텍스트 기반 선제적 경고. 코드 수정 전 과거 에러 패턴 체크. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "context": {"type": "string", "description": "현재 작업 컨텍스트"},
+                "file_path": {"type": "string", "description": "수정하려는 파일 경로"},
+                "operation": {"type": "string", "description": "수행하려는 작업"}
+            },
+            "required": ["path", "context"]
+        }
+    ),
+    Tool(
+        name="error_learn",
+        description="세션 분석 + CLAUDE.md 자동 업데이트. 에러 패턴에서 NEVER/ALWAYS 규칙 학습. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "auto_update_claude_md": {"type": "boolean", "description": "CLAUDE.md 자동 업데이트 여부"},
+                "min_count": {"type": "integer", "description": "NEVER 규칙 생성 최소 에러 횟수"}
+            },
+            "required": ["path"]
+        }
+    ),
+
+    # === License Tools ===
+    Tool(
+        name="activate_license",
+        description="라이선스 활성화. Lemon Squeezy 또는 테스트 라이선스 지원.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "license_key": {"type": "string", "description": "라이선스 키"}
+            },
+            "required": ["license_key"]
+        }
+    ),
+    Tool(
+        name="license_status",
+        description="현재 라이선스 상태 확인.",
+        inputSchema={"type": "object", "properties": {}}
     ),
 
     # === Pro 안내 ===
@@ -518,6 +616,7 @@ TOOL_HANDLERS = {
 
     # Start (Free, v1.2)
     "start": lambda args: _wrap_start(args),
+    "save_prd": lambda args: _wrap_save_prd(args),
 
     # Manager (Pro, v1.2)
     "manager": lambda args: _wrap_manager(args),
@@ -528,33 +627,94 @@ TOOL_HANDLERS = {
     "quick_ship": lambda args: _wrap_quick_ship(args),
     "full_ship": lambda args: _wrap_full_ship(args),
 
+    # Error Learning (Pro, v1.4)
+    "error_record": lambda args: _wrap_error_record(args),
+    "error_check": lambda args: _wrap_error_check(args),
+    "error_learn": lambda args: _wrap_error_learn(args),
+
+    # License
+    "activate_license": lambda args: _wrap_activate_license(args),
+    "license_status": lambda args: _wrap_license_status(),
+
     # Pro 안내
     "upgrade_pro": lambda args: _upgrade_pro(),
 }
 
 
+def _check_version_once():
+    """첫 호출 시 버전 체크 (lazy initialization)"""
+    global _version_check_done
+    if not _version_check_done:
+        try:
+            init_version_check()
+        except Exception:
+            pass
+        _version_check_done = True
+
+
 async def _wrap_start(args: dict) -> list[TextContent]:
     """start 도구 래퍼"""
-    import json
-    result = start(args.get("path", ""), args.get("project_name", ""))
-    # formatted 출력이 있으면 사용, 없으면 JSON
+    result = start(
+        args.get("path", ""),
+        args.get("project_name", ""),
+        args.get("project_type", "")
+    )
+
     if isinstance(result, dict):
+        # 프로젝트 타입 정보
+        ptype = result.get("project_type", {})
+        type_info = f"**타입**: {ptype.get('description', 'N/A')} ({ptype.get('type', 'generic')}) - 신뢰도 {ptype.get('confidence', 0)}%"
+
         output = f"""# 🚀 Start
 
 **상태**: {result.get('status', 'UNKNOWN')}
 **프로젝트**: {result.get('project_name', 'N/A')}
+{type_info}
 
 {result.get('message', '')}
-
-## 다음 단계
 """
+
+        # PRD 작성 가이드 (NEED_PRD 상태일 때)
+        if result.get("status") == "NEED_PRD" and result.get("prd_guide"):
+            guide = result["prd_guide"]
+            output += guide.get("instruction", "")
+
+        # 다음 단계
+        output += "\n## 다음 단계\n"
         for step in result.get('next_steps', []):
             output += f"- {step}\n"
 
+        # 생성된 파일
         if result.get('created_files'):
             output += "\n## 생성된 파일\n"
             for f in result['created_files']:
                 output += f"- {f}\n"
+
+        return [TextContent(type="text", text=output)]
+    return [TextContent(type="text", text=str(result))]
+
+
+async def _wrap_save_prd(args: dict) -> list[TextContent]:
+    """save_prd 도구 래퍼"""
+    result = save_prd(
+        args.get("path", ""),
+        args.get("content", ""),
+        args.get("project_name", ""),
+        args.get("project_type", "")
+    )
+
+    if isinstance(result, dict):
+        output = f"""# 📝 Save PRD
+
+**상태**: {result.get('status', 'UNKNOWN')}
+**경로**: {result.get('prd_path', 'N/A')}
+
+{result.get('message', '')}
+"""
+        if result.get('next_steps'):
+            output += "\n## 다음 단계\n"
+            for step in result['next_steps']:
+                output += f"- {step}\n"
 
         return [TextContent(type="text", text=output)]
     return [TextContent(type="text", text=str(result))]
@@ -619,6 +779,176 @@ async def _wrap_full_ship(args: dict) -> list[TextContent]:
     return [TextContent(type="text", text=str(result))]
 
 
+async def _wrap_error_record(args: dict) -> list[TextContent]:
+    """error_record 도구 래퍼"""
+    if not _HAS_ERROR_TOOLS or error_record is None:
+        return [TextContent(type="text", text="""
+# Clouvel Pro 기능
+
+Error Learning은 Pro 라이선스가 필요합니다.
+
+## 구매
+https://clouvel.lemonsqueezy.com
+""")]
+    return await error_record(
+        path=args.get("path", ""),
+        error_text=args.get("error_text", ""),
+        context=args.get("context", ""),
+        five_whys=args.get("five_whys", None),
+        root_cause=args.get("root_cause", ""),
+        solution=args.get("solution", ""),
+        prevention=args.get("prevention", "")
+    )
+
+
+async def _wrap_error_check(args: dict) -> list[TextContent]:
+    """error_check 도구 래퍼"""
+    if not _HAS_ERROR_TOOLS or error_check is None:
+        return [TextContent(type="text", text="""
+# Clouvel Pro 기능
+
+Error Learning은 Pro 라이선스가 필요합니다.
+
+## 구매
+https://clouvel.lemonsqueezy.com
+""")]
+    return await error_check(
+        path=args.get("path", ""),
+        context=args.get("context", ""),
+        file_path=args.get("file_path", ""),
+        operation=args.get("operation", "")
+    )
+
+
+async def _wrap_error_learn(args: dict) -> list[TextContent]:
+    """error_learn 도구 래퍼"""
+    if not _HAS_ERROR_TOOLS or error_learn is None:
+        return [TextContent(type="text", text="""
+# Clouvel Pro 기능
+
+Error Learning은 Pro 라이선스가 필요합니다.
+
+## 구매
+https://clouvel.lemonsqueezy.com
+""")]
+    return await error_learn(
+        path=args.get("path", ""),
+        auto_update_claude_md=args.get("auto_update_claude_md", True),
+        min_count=args.get("min_count", 2)
+    )
+
+
+async def _wrap_activate_license(args: dict) -> list[TextContent]:
+    """activate_license 도구 래퍼"""
+    license_key = args.get("license_key", "")
+    if not license_key:
+        return [TextContent(type="text", text="""
+# ❌ 라이선스 키를 입력하세요
+
+## 사용법
+```
+activate_license(license_key="YOUR-LICENSE-KEY")
+```
+
+## 구매
+https://clouvel.lemonsqueezy.com
+""")]
+
+    result = activate_license_cli(license_key)
+
+    if result.get("success"):
+        tier_info = result.get("tier_info", {})
+        machine_id = result.get("machine_id", "unknown")
+        product = result.get("product", "Clouvel Pro")
+
+        # 테스트 라이선스 추가 정보
+        extra_info = ""
+        if result.get("test_license"):
+            expires_at = result.get("expires_at", "")
+            expires_in_days = result.get("expires_in_days", 7)
+            extra_info = f"""
+## ⚠️ 테스트 라이선스
+- **만료일**: {expires_at}
+- **남은 기간**: {expires_in_days}일
+"""
+
+        return [TextContent(type="text", text=f"""
+# ✅ 라이선스 활성화 완료
+
+## 정보
+- **티어**: {tier_info.get('name', 'Unknown')}
+- **상품**: {product}
+- **기기**: `{machine_id[:8]}...`
+{extra_info}
+## 🔒 기기 바인딩
+
+이 라이선스는 현재 기기에 바인딩됩니다.
+- Personal: 1대의 기기에서만 사용 가능
+- Team: 최대 10대 기기에서 사용 가능
+- Enterprise: 무제한 기기
+
+다른 기기에서 사용하려면 기존 기기를 해제하거나 상위 티어로 업그레이드하세요.
+""")]
+    else:
+        return [TextContent(type="text", text=f"""
+# ❌ 라이선스 활성화 실패
+
+{result.get('message', '알 수 없는 오류')}
+
+## 확인사항
+- 라이선스 키가 정확한지 확인
+- 네트워크 연결 확인
+- 활성화 횟수 제한 확인 (Personal: 1회)
+
+## 구매
+https://clouvel.lemonsqueezy.com
+""")]
+
+
+async def _wrap_license_status() -> list[TextContent]:
+    """license_status 도구 래퍼"""
+    result = get_license_status()
+
+    if not result.get("has_license"):
+        return [TextContent(type="text", text=f"""
+# 📋 라이선스 상태
+
+**상태**: ❌ 미활성화
+
+{result.get('message', '')}
+
+## 활성화 방법
+```
+activate_license(license_key="YOUR-LICENSE-KEY")
+```
+
+## 구매
+https://clouvel.lemonsqueezy.com
+""")]
+
+    tier_info = result.get("tier_info", {})
+    machine_id = result.get("machine_id", "unknown")
+    activated_at = result.get("activated_at", "N/A")
+    days = result.get("days_since_activation", 0)
+    premium_unlocked = result.get("premium_unlocked", False)
+    remaining = result.get("premium_unlock_remaining", 0)
+
+    unlock_status = "✅ 해제됨" if premium_unlocked else f"⏳ {remaining}일 남음"
+
+    return [TextContent(type="text", text=f"""
+# 📋 라이선스 상태
+
+**상태**: ✅ 활성화됨
+
+## 정보
+- **티어**: {tier_info.get('name', 'Unknown')} ({tier_info.get('price', '?')})
+- **기기**: `{machine_id[:8]}...`
+- **활성화 일시**: {activated_at[:19] if len(activated_at) > 19 else activated_at}
+- **경과 일수**: {days}일
+- **프리미엄 기능**: {unlock_status}
+""")]
+
+
 async def _upgrade_pro() -> list[TextContent]:
     """Pro 업그레이드 안내"""
     return [TextContent(type="text", text="""
@@ -663,6 +993,12 @@ pip install clouvel-pro
 
 @server.call_tool()
 async def call_tool(name: str, arguments: dict) -> list[TextContent]:
+    global _version_check_done
+
+    # 첫 호출 시 버전 체크 (어떤 도구든)
+    if not _version_check_done:
+        _check_version_once()
+
     # Analytics 기록
     project_path = arguments.get("path", None)
     if name != "get_analytics":
@@ -678,7 +1014,20 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
     # 핸들러 실행
     handler = TOOL_HANDLERS.get(name)
     if handler:
-        return await handler(arguments)
+        result = await handler(arguments)
+
+        # 첫 호출이고 업데이트 있으면 배너 추가
+        update_info = get_cached_update_info()
+        if update_info and update_info.get("update_available"):
+            banner = get_update_banner()
+            if banner and result and len(result) > 0:
+                # 첫 번째 결과에 배너 prepend
+                original_text = result[0].text if hasattr(result[0], 'text') else str(result[0])
+                result[0] = TextContent(type="text", text=banner + "\n" + original_text)
+                # 배너는 한 번만 표시
+                update_info["update_available"] = False
+
+        return result
 
     return [TextContent(type="text", text=f"Unknown tool: {name}")]
 
@@ -871,9 +1220,11 @@ def main():
     elif args.command == "activate":
         try:
             from .license import activate_license_cli
-            result = activate_license_cli(args.license_key)
-            if result["success"]:
-                print(f"""
+        except ImportError:
+            from .license_free import activate_license_cli
+        result = activate_license_cli(args.license_key)
+        if result["success"]:
+            print(f"""
 ================================================================
               Clouvel Pro 라이선스 활성화 완료
 ================================================================
@@ -889,29 +1240,19 @@ def main():
 'clouvel status'로 상태를 확인하세요.
 ================================================================
 """)
-            else:
-                print(result["message"])
-                sys.exit(1)
-        except ImportError:
-            print("""
-================================================================
-                   Clouvel Pro 필요
-================================================================
-
-이 기능은 Clouvel Pro에서만 사용할 수 있습니다.
-
-구매: https://clouvel.lemonsqueezy.com
-================================================================
-""")
+        else:
+            print(result["message"])
             sys.exit(1)
     elif args.command == "status":
         try:
             from .license import get_license_status
-            result = get_license_status()
-            if result.get("has_license"):
-                tier_info = result.get("tier_info", {})
-                unlock_status = "✅ 해제됨" if result.get("premium_unlocked") else f"⏳ {result.get('premium_unlock_remaining', '?')}일 남음"
-                print(f"""
+        except ImportError:
+            from .license_free import get_license_status
+        result = get_license_status()
+        if result.get("has_license"):
+            tier_info = result.get("tier_info", {})
+            unlock_status = "✅ 해제됨" if result.get("premium_unlocked") else f"⏳ {result.get('premium_unlock_remaining', '?')}일 남음"
+            print(f"""
 ================================================================
                    Clouvel 라이선스 상태
 ================================================================
@@ -926,8 +1267,8 @@ def main():
 
 ================================================================
 """)
-            else:
-                print(f"""
+        else:
+            print(f"""
 ================================================================
                    Clouvel 라이선스 상태
 ================================================================
@@ -939,26 +1280,14 @@ def main():
 구매: https://clouvel.lemonsqueezy.com
 ================================================================
 """)
-        except ImportError:
-            print("""
-================================================================
-                   Clouvel Free 버전
-================================================================
-
-Pro 라이선스 기능은 Clouvel Pro에서만 사용할 수 있습니다.
-
-구매: https://clouvel.lemonsqueezy.com
-================================================================
-""")
     elif args.command == "deactivate":
         try:
             from .license import deactivate_license_cli
-            result = deactivate_license_cli()
-            print(result["message"])
-            if not result["success"]:
-                sys.exit(1)
         except ImportError:
-            print("Clouvel Pro 필요: https://clouvel.lemonsqueezy.com")
+            from .license_free import deactivate_license_cli
+        result = deactivate_license_cli()
+        print(result["message"])
+        if not result["success"]:
             sys.exit(1)
     else:
         asyncio.run(run_server())

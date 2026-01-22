@@ -686,6 +686,12 @@
           >
             Cursor
           </button>
+          <button
+            class="tab-btn px-4 py-3 md:px-6 md:py-2 rounded-xl md:rounded-full font-medium text-sm md:text-base bg-slate-700 hover:bg-slate-600 transition"
+            data-tab="antigravity"
+          >
+            Antigravity
+          </button>
         </div>
         <!-- Tab Contents -->
         <div id="tab-cli" class="tab-content active">
@@ -792,6 +798,54 @@
             <div>
               <p class="text-slate-400 mb-2"># 4. Run</p>
               <p class="text-slate-300">Cursor에서 Claude 확장과 함께 사용</p>
+            </div>
+          </div>
+        </div>
+        <div id="tab-antigravity" class="tab-content">
+          <div class="bg-slate-800 rounded-xl p-6 font-mono text-sm space-y-4">
+            <div>
+              <p class="text-slate-400 mb-2"># 1. Install</p>
+              <p class="text-emerald-400">pip install clouvel</p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2">
+                # 2. Activate
+                <span class="text-accent">(Pro만)</span>
+              </p>
+              <p class="text-emerald-400">clouvel activate 라이선스키</p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2"># 3. MCP 설정 파일 열기</p>
+              <p class="text-slate-300">
+                Antigravity → Agent → "..." → MCP Servers
+              </p>
+              <p class="text-slate-300">
+                → Manage MCP Servers → View raw config
+              </p>
+              <p class="text-slate-500 text-xs mt-1">
+                # 또는 직접: ~/.gemini/antigravity/mcp_config.json
+              </p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2"># 4. 설정 추가</p>
+              <pre
+                class="text-emerald-400 bg-slate-900 p-3 rounded-lg overflow-x-auto"
+              >
+{
+  "mcpServers": {
+    "clouvel": {
+      "command": "clouvel"
+    }
+  }
+}</pre
+              >
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2"># 5. Run</p>
+              <p class="text-slate-300">Antigravity 재시작 후 자동 연동</p>
+              <p class="text-slate-500 text-xs mt-1">
+                # Gemini/Claude 모델 모두 지원
+              </p>
             </div>
           </div>
         </div>

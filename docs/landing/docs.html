@@ -161,6 +161,11 @@
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
             >VS Code / Cursor</a
           >
+          <a
+            href="#integration-antigravity"
+            class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
+            >Antigravity (Google)</a
+          >
 
           <p
             class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 mt-6"
@@ -170,7 +175,7 @@
           <a
             href="#api-free"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Free Tools (4)</a
+            >Free Tools (5)</a
           >
           <a
             href="#api-pro"
@@ -279,7 +284,9 @@
               </div>
             </li>
             <li>
-              <p class="font-semibold text-dark-slate mb-3">3. Setup (자동 설정)</p>
+              <p class="font-semibold text-dark-slate mb-3">
+                3. Setup (자동 설정)
+              </p>
               <div class="code-block rounded-lg p-4 font-mono text-sm">
                 <p class="text-emerald-400">clouvel setup</p>
                 <p class="text-slate-500 mt-3"># 이 명령 하나로:</p>
@@ -755,6 +762,71 @@
               <p class="text-slate-300">}</p>
             </div>
           </div>
+
+          <!-- Antigravity (Google) -->
+          <div
+            id="integration-antigravity"
+            class="bg-white border border-slate-200 rounded-xl p-6"
+          >
+            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+              <span
+                class="w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center text-sm"
+                >5</span
+              >
+              Antigravity (Google)
+            </h3>
+            <p class="text-slate-600 mb-4">
+              Google Antigravity IDE는 VS Code 기반으로 MCP를 네이티브
+              지원합니다. Gemini와 Claude 모델 모두 사용 가능합니다.
+            </p>
+            <ol class="space-y-4 text-slate-600">
+              <li class="flex gap-3">
+                <span class="font-semibold text-dark-slate whitespace-nowrap"
+                  >설정 파일 위치:</span
+                >
+                <code class="bg-slate-100 px-2 py-0.5 rounded text-sm"
+                  >~/.gemini/antigravity/mcp_config.json</code
+                >
+              </li>
+              <li class="flex gap-3">
+                <span class="font-semibold text-dark-slate whitespace-nowrap"
+                  >UI로 열기:</span
+                >
+                <span
+                  >Agent → "..." → MCP Servers → Manage → View raw config</span
+                >
+              </li>
+            </ol>
+            <div class="code-block rounded-lg p-4 font-mono text-sm mt-4">
+              <p class="text-slate-500">
+                // ~/.gemini/antigravity/mcp_config.json
+              </p>
+              <p class="text-slate-300">{</p>
+              <p class="text-slate-300 pl-4">"mcpServers": {</p>
+              <p class="text-slate-300 pl-8">"clouvel": {</p>
+              <p class="text-slate-300 pl-12">"command": "clouvel"</p>
+              <p class="text-slate-300 pl-8">}</p>
+              <p class="text-slate-300 pl-4">}</p>
+              <p class="text-slate-300">}</p>
+            </div>
+            <div
+              class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg"
+            >
+              <p class="text-sm text-amber-800">
+                <strong>Windows 사용자:</strong> Python 전체 경로를 사용해야 할
+                수 있습니다.
+                <code class="bg-amber-100 px-1 rounded"
+                  >C:\\Users\\사용자명\\AppData\\Local\\Programs\\Python\\Python310\\Scripts\\clouvel.exe</code
+                >
+              </p>
+            </div>
+            <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p class="text-sm text-blue-800">
+                <strong>기존 설정이 있는 경우:</strong> mcpServers 안에
+                "clouvel" 블록만 추가하세요. 기존 서버 설정을 덮어쓰지 마세요.
+              </p>
+            </div>
+          </div>
         </section>
 
         <!-- Configuration -->
@@ -954,6 +1026,48 @@
                     아키텍처, API 스펙, DB 스키마, 검증 계획, 테스트 파일
                   </li>
                 </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- save_prd (NEW v1.3.4) -->
+          <div class="bg-white border border-slate-200 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+              <code
+                class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm"
+                >save_prd</code
+              >
+              <span
+                class="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded"
+                >NEW v1.3.4</span
+              >
+              <span class="text-slate-500 text-sm">PRD 저장</span>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
+                  Parameters
+                </p>
+                <div
+                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
+                >
+                  <p>path: str - 프로젝트 경로</p>
+                  <p>content: str - PRD 내용</p>
+                  <p>project_name: str (optional) - 프로젝트 이름</p>
+                  <p>project_type: str (optional) - 프로젝트 타입</p>
+                </div>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
+                  Returns
+                </p>
+                <div
+                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
+                >
+                  <p class="text-emerald-400"># PRD 저장 완료</p>
+                  <p>✅ docs/PRD.md 저장됨</p>
+                  <p class="text-slate-500">이제 can_code가 PASS됩니다</p>
+                </div>
               </div>
             </div>
           </div>
@@ -1764,12 +1878,33 @@
           <div class="space-y-6 mb-10">
             <div class="border-l-4 border-emerald-500 pl-6">
               <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v0.6.1</span>
-                <span class="text-slate-500 text-sm">2026-01-18</span>
+                <span class="font-mono font-bold">v1.3.4</span>
+                <span class="text-slate-500 text-sm">2026-01-22</span>
                 <span
                   class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded"
                   >Latest</span
                 >
+              </div>
+              <ul class="text-sm text-slate-600 space-y-1">
+                <li>
+                  - <strong>템플릿 8종</strong>: web-app, api, cli, chrome-ext,
+                  discord-bot, landing-page, saas, generic (16개 파일)
+                </li>
+                <li>
+                  - <strong>start 개선</strong>: 프로젝트 타입 자동 감지 +
+                  대화형 PRD 가이드
+                </li>
+                <li>- <strong>save_prd</strong>: PRD 저장 도구 추가</li>
+                <li>
+                  - <strong>버전 체크</strong>: PyPI 최신 버전 알림 (24시간
+                  캐싱)
+                </li>
+              </ul>
+            </div>
+            <div class="border-l-4 border-slate-300 pl-6">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="font-mono font-bold">v0.6.1</span>
+                <span class="text-slate-500 text-sm">2026-01-18</span>
               </div>
               <ul class="text-sm text-slate-600 space-y-1">
                 <li>
@@ -1806,12 +1941,33 @@
           <div class="space-y-6">
             <div class="border-l-4 border-accent pl-6">
               <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v1.2.0</span>
-                <span class="text-slate-500 text-sm">2026-01-21</span>
+                <span class="font-mono font-bold">v1.3.4</span>
+                <span class="text-slate-500 text-sm">2026-01-22</span>
                 <span
                   class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded"
                   >Latest</span
                 >
+              </div>
+              <ul class="text-sm text-slate-600 space-y-1">
+                <li>
+                  - <strong>템플릿 8종</strong>: web-app, api, cli, chrome-ext,
+                  discord-bot, landing-page, saas, generic
+                </li>
+                <li>
+                  - <strong>start 개선</strong>: 프로젝트 타입 자동 감지 +
+                  대화형 PRD 가이드 (5-6개 질문)
+                </li>
+                <li>- <strong>save_prd</strong>: PRD 저장 도구 추가</li>
+                <li>
+                  - <strong>버전 체크</strong>: PyPI 최신 버전 알림 (24시간
+                  캐싱)
+                </li>
+              </ul>
+            </div>
+            <div class="border-l-4 border-slate-300 pl-6">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="font-mono font-bold">v1.2.0</span>
+                <span class="text-slate-500 text-sm">2026-01-21</span>
               </div>
               <ul class="text-sm text-slate-600 space-y-1">
                 <li>

@@ -83,46 +83,6 @@
           {
             "type": "command",
             "command": "pnpm format --if-present 2>/dev/null || npx prettier --write \"$CLAUDE_FILE_PATHS\" 2>/dev/null || true"
-          },
-          {
-            "type": "command",
-            "command": "echo \"[$(date '+%Y-%m-%d %H:%M:%S')] PostWrite: formatted\" >> \"$CLAUDE_PROJECT_DIR/.claude/logs/tool.log\" 2>/dev/null || true"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/recover-context.py\"",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo \"[$(date '+%Y-%m-%d %H:%M:%S')] Session End\" >> \"$CLAUDE_PROJECT_DIR/.claude/logs/sessions.log\" 2>/dev/null || true"
-          },
-          {
-            "type": "command",
-            "command": "echo \"\\n⚠️  Remember: Run 'pnpm gate' before committing!\" 2>/dev/null || true"
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/save-state.py\"",
-            "timeout": 10
           }
         ]
       }

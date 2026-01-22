@@ -16,13 +16,33 @@ TEMPLATES = {
     },
     "api": {
         "name": "API Server",
-        "layouts": ["lite", "standard", "detailed"],
+        "layouts": ["lite", "standard"],
         "description": "REST/GraphQL API 서버"
     },
     "cli": {
         "name": "CLI Tool",
         "layouts": ["lite", "standard"],
         "description": "커맨드라인 도구"
+    },
+    "chrome-ext": {
+        "name": "Chrome Extension",
+        "layouts": ["lite", "standard"],
+        "description": "Chrome 확장프로그램 (MV3)"
+    },
+    "discord-bot": {
+        "name": "Discord Bot",
+        "layouts": ["lite", "standard"],
+        "description": "디스코드 봇 (discord.js/discord.py)"
+    },
+    "landing-page": {
+        "name": "Landing Page",
+        "layouts": ["lite", "standard"],
+        "description": "랜딩 페이지 / 마케팅 페이지"
+    },
+    "saas": {
+        "name": "SaaS MVP",
+        "layouts": ["lite", "standard"],
+        "description": "SaaS MVP (인증 + 결제 + 구독)"
     },
     "generic": {
         "name": "Generic",

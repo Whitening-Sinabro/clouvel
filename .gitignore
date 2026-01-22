@@ -46,16 +46,17 @@ htmlcov/
 .claude/plans/PLAN-marketing*.md
 .claude/plans/*-internal*.md
 
-# Pro/Team 소스코드
+# Pro/Team 소스코드 (Pro 전용, Free에 없음)
 src/clouvel/server_pro.py
 src/clouvel/license.py
+src/clouvel/content_api.py
 src/clouvel/tools/context.py
 src/clouvel/tools/errors.py
 src/clouvel/tools/shovel.py
 src/clouvel/tools/team.py
 src/clouvel/tools/roles.py
 src/clouvel/tools/security.py
-src/clouvel/content_api.py
+src/clouvel/tools/manager/
 src/shovel/
 
 # 라이선스 키/시크릿
@@ -75,3 +76,17 @@ license*.json
 
 # PRD 템플릿 (PyPI 전용, git 비공개)
 src/clouvel/templates/
+
+# Claude 로컬 설정
+.claude/settings.local.json
+.claude/plan.md
+
+# 임시/테스트 파일
+nul
+D:test-project/
+
+# 이미지/스크린샷
+*.png
+*.jpg
+*.jpeg
+KakaoTalk_*.png

@@ -7,6 +7,15 @@
 
 ---
 
+## v1.3.4 (2026-01-22)
+
+- **템플릿 8종**: web-app, api, cli, chrome-ext, discord-bot, landing-page, saas, generic
+- **start 개선**: 프로젝트 타입 자동 감지 + 대화형 PRD 가이드
+- **save_prd**: PRD 저장 도구 추가
+- **버전 체크**: PyPI 최신 버전 알림 (24시간 캐싱)
+
+---
+
 ## 설치
 
 ```bash

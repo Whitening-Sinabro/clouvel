@@ -263,18 +263,24 @@
             <li>
               <p class="font-semibold text-dark-slate mb-3">1. Install</p>
               <div class="code-block rounded-lg p-4 font-mono text-sm">
-                <p class="text-slate-500"># Free</p>
-                <p class="text-slate-300">pip install clouvel</p>
-                <p class="text-slate-500 mt-3"># Pro</p>
                 <p class="text-slate-300">pip install clouvel</p>
               </div>
             </li>
             <li>
               <p class="font-semibold text-dark-slate mb-3">
-                2. Setup (Free - 자동 설정)
+                2. Activate
+                <span class="text-accent text-sm font-normal">(Pro만)</span>
               </p>
               <div class="code-block rounded-lg p-4 font-mono text-sm">
-                <p class="text-slate-500"># 글로벌 규칙 + MCP 서버 자동 등록</p>
+                <p class="text-slate-300">clouvel activate 라이선스키</p>
+                <p class="text-slate-500 mt-2 text-xs">
+                  # Free 사용자는 이 단계 스킵
+                </p>
+              </div>
+            </li>
+            <li>
+              <p class="font-semibold text-dark-slate mb-3">3. Setup (자동 설정)</p>
+              <div class="code-block rounded-lg p-4 font-mono text-sm">
                 <p class="text-emerald-400">clouvel setup</p>
                 <p class="text-slate-500 mt-3"># 이 명령 하나로:</p>
                 <p class="text-slate-400 text-xs">
@@ -292,7 +298,7 @@
             </li>
             <li>
               <p class="font-semibold text-dark-slate mb-3">
-                3. Verify (3단계 품질 게이트)
+                4. Verify (품질 게이트)
               </p>
               <ul class="text-slate-600 space-y-2 ml-4">
                 <li class="flex items-start gap-2">

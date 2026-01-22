@@ -175,12 +175,12 @@
           <a
             href="#api-free"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Free Tools (5)</a
+            >Free Tools (6)</a
           >
           <a
             href="#api-pro"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Pro Tools (13)</a
+            >Pro Tools (12)</a
           >
           <a
             href="#api-team"
@@ -907,7 +907,7 @@
           </div>
 
           <p class="text-slate-600 mb-6">
-            clouvel 패키지에 포함된 무료 도구 (4개)
+            clouvel 패키지에 포함된 무료 도구 (6개)
           </p>
 
           <!-- start -->
@@ -1039,7 +1039,7 @@
               >
               <span
                 class="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded"
-                >NEW v1.3.4</span
+                >NEW v1.3</span
               >
               <span class="text-slate-500 text-sm">PRD 저장</span>
             </div>
@@ -1143,12 +1143,54 @@
               </div>
             </div>
           </div>
+
+          <!-- plan (NEW v1.3 - Free) -->
+          <div class="bg-white border border-slate-200 rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <code
+                class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm"
+                >plan</code
+              >
+              <span
+                class="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded"
+                >NEW v1.3</span
+              >
+              <span class="text-slate-500 text-sm">상세 실행 계획 생성</span>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
+                  Parameters
+                </p>
+                <div
+                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
+                >
+                  <p>path: str - 프로젝트 루트 경로</p>
+                  <p>task: str - 수행할 작업</p>
+                  <p>goals: list[str] - 달성 목표</p>
+                </div>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
+                  Returns
+                </p>
+                <div
+                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
+                >
+                  <p class="text-emerald-400">## 상세 실행 계획</p>
+                  <p>### Phase: 준비 → 설계 → 구현 → 검증</p>
+                  <p class="text-slate-500">| # | 액션 | 담당 | 완료조건 |</p>
+                  <p class="text-slate-500">매니저 피드백 기반 자동 구성</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
         <!-- API Reference: Pro -->
         <section id="api-pro" class="mb-16">
           <h2 class="text-2xl font-bold mb-6">API Reference: Pro Tools</h2>
-          <p class="text-slate-600 mb-6">clouvel 패키지에 포함된 도구 (13개)</p>
+          <p class="text-slate-600 mb-6">clouvel 패키지에 포함된 도구 (12개)</p>
 
           <div class="space-y-4">
             <!-- manager (NEW) -->
@@ -1211,43 +1253,6 @@
                 <p class="text-slate-400">lint (120ms), test (450ms)...</p>
                 <p class="text-slate-500 mt-2"># 증거 파일 생성</p>
                 <p>.claude/evidence/feature_20260121.md</p>
-              </div>
-            </div>
-
-            <!-- plan (NEW v1.3) -->
-            <div class="bg-white border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
-                  >plan</code
-                >
-                <span class="bg-accent text-white text-xs px-2 py-0.5 rounded"
-                  >NEW v1.3</span
-                >
-              </div>
-              <p class="text-slate-600 text-sm mb-3">
-                매니저 피드백을 종합하여 상세 실행 계획을 자동 생성합니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># Parameters</p>
-                <p>path: str - 프로젝트 루트 경로</p>
-                <p>task: str - 수행할 작업</p>
-                <p>goals: list[str] - 달성 목표</p>
-                <p class="text-slate-500 mt-2"># Returns: task_plan.md 생성</p>
-                <p class="text-emerald-400">## 상세 실행 계획</p>
-                <p class="text-slate-400">### Phase: 준비</p>
-                <p class="text-slate-400">| # | 액션 | 담당 | 완료조건 |</p>
-                <p class="text-slate-400">
-                  | 1 | PRD 확인 | PM | 기능 정의 존재 |
-                </p>
-                <p class="text-slate-400">### Phase: 설계</p>
-                <p class="text-slate-400">
-                  | 2 | 아키텍처 검토 | CTO | 문서 확인됨 |
-                </p>
-                <p class="text-slate-500 mt-2"># 4개 Phase 자동 구성</p>
-                <p>준비 → 설계 → 구현 → 검증</p>
               </div>
             </div>
 

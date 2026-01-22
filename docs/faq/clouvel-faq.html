@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clouvel FAQ - 자주 묻는 질문</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      details[open] summary::after {
+        content: "−";
+      }
+      summary::after {
+        content: "+";
+        float: right;
+        font-weight: bold;
+      }
+      .code-block {
+        background: #1e293b;
+        color: #e2e8f0;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-800">
+    <div class="max-w-3xl mx-auto px-4 py-12">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <h1 class="text-3xl font-bold mb-2">Clouvel FAQ</h1>
+        <p class="text-slate-600">자주 묻는 질문과 해결 방법</p>
+      </div>
+
+      <!-- 목차 -->
+      <div class="bg-white rounded-xl p-6 mb-8 border border-slate-200">
+        <h2 class="font-semibold mb-4">목차</h2>
+        <ul class="space-y-2 text-sm">
+          <li>
+            <a href="#install" class="text-blue-600 hover:underline"
+              >1. 설치 문제</a
+            >
+          </li>
+          <li>
+            <a href="#license" class="text-blue-600 hover:underline"
+              >2. 라이선스 활성화</a
+            >
+          </li>
+          <li>
+            <a href="#cancode" class="text-blue-600 hover:underline"
+              >3. can_code 차단될 때</a
+            >
+          </li>
+          <li>
+            <a href="#prd" class="text-blue-600 hover:underline"
+              >4. PRD 작성 팁</a
+            >
+          </li>
+          <li>
+            <a href="#commands" class="text-blue-600 hover:underline"
+              >5. 자주 쓰는 명령어</a
+            >
+          </li>
+          <li>
+            <a href="#errors" class="text-blue-600 hover:underline"
+              >6. 에러 해결</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- 1. 설치 문제 -->
+      <section
+        id="install"
+        class="bg-white rounded-xl p-6 mb-6 border border-slate-200"
+      >
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+          <span
+            class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center text-sm"
+            >1</span
+          >
+          설치 문제
+        </h2>
+
+        <details class="border-b border-slate-100 py-4">
+          <summary class="cursor-pointer font-medium">
+            pip install clouvel 이 안 돼요
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p><strong>원인:</strong> Python 버전이 낮거나 pip가 오래됨</p>
+            <p><strong>해결:</strong></p>
+            <div class="code-block rounded p-3 font-mono text-xs">
+              <p># Python 버전 확인 (3.10 이상 필요)</p>
+              <p>python --version</p>
+              <p class="mt-2"># pip 업그레이드</p>
+              <p>pip install --upgrade pip</p>
+              <p class="mt-2"># 다시 설치</p>
+              <p>pip install clouvel</p>
+            </div>
+          </div>
+        </details>
+
+        <details class="border-b border-slate-100 py-4">
+          <summary class="cursor-pointer font-medium">
+            Claude Code에서 MCP 서버가 안 보여요
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p><strong>원인:</strong> claude.json 설정이 안 됨</p>
+            <p><strong>해결:</strong></p>
+            <div class="code-block rounded p-3 font-mono text-xs">
+              <p># ~/.claude.json 파일 확인</p>
+              <p>{</p>
+              <p>"mcpServers": {</p>
+              <p>"clouvel": {</p>
+              <p>"command": "python",</p>
+              <p>"args": ["-m", "clouvel"]</p>
+              <p>}</p>
+              <p>}</p>
+              <p>}</p>
+            </div>
+            <p class="mt-2">
+              설정 후 <strong>Claude Code 재시작</strong> 필수!
+            </p>
+          </div>
+        </details>
+
+        <details class="py-4">
+          <summary class="cursor-pointer font-medium">
+            Windows에서 경로 문제가 생겨요
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p><strong>원인:</strong> Python 경로에 공백이나 한글이 포함됨</p>
+            <p><strong>해결:</strong></p>
+            <div class="code-block rounded p-3 font-mono text-xs">
+              <p># Python 전체 경로 사용</p>
+              <p>
+                "command":
+                "C:\\Users\\사용자명\\AppData\\Local\\Programs\\Python\\Python311\\python.exe"
+              </p>
+            </div>
+            <p class="text-amber-600 mt-2">
+              ⚠️ 경로에 한글이 있으면 영문 경로로 Python 재설치 권장
+            </p>
+          </div>
+        </details>
+      </section>
+
+      <!-- 2. 라이선스 활성화 -->
+      <section
+        id="license"
+        class="bg-white rounded-xl p-6 mb-6 border border-slate-200"
+      >
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+          <span
+            class="bg-green-100 text-green-700 w-8 h-8 rounded-full flex items-center justify-center text-sm"
+            >2</span
+          >
+          라이선스 활성화
+        </h2>
+
+        <details class="border-b border-slate-100 py-4">
+          <summary class="cursor-pointer font-medium">
+            라이선스 키는 어디서 받나요?
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p>구매 후 이메일로 전송됩니다.</p>
+            <p>
+              형식:
+              <code class="bg-slate-100 px-2 py-1 rounded"
+                >CLOUVEL-XXXX-XXXX-XXXX</code
+              >
+            </p>
+            <p>못 받았으면 스팸함 확인 또는 크몽 메시지로 문의하세요.</p>
+          </div>
+        </details>
+
+        <details class="border-b border-slate-100 py-4">
+          <summary class="cursor-pointer font-medium">
+            라이선스 활성화 방법
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p>Claude Code에서 다음 명령어 실행:</p>
+            <div class="code-block rounded p-3 font-mono text-xs">
+              <p>> activate_license 도구 사용</p>
+              <p>> license_key: "CLOUVEL-XXXX-XXXX-XXXX"</p>
+            </div>
+            <p class="text-green-600 mt-2">
+              ✓ "라이선스 활성화됨" 메시지가 나오면 성공!
+            </p>
+          </div>
+        </details>
+
+        <details class="border-b border-slate-100 py-4">
+          <summary class="cursor-pointer font-medium">
+            "이미 활성화된 라이선스" 에러
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p><strong>원인:</strong> 다른 PC에서 이미 활성화됨</p>
+            <p><strong>해결:</strong></p>
+            <ul class="list-disc list-inside space-y-1">
+              <li>Personal: 1대만 가능 → 기존 PC 비활성화 필요</li>
+              <li>Team 5: 5대까지 가능</li>
+              <li>Team 10: 10대까지 가능</li>
+            </ul>
+            <p class="mt-2">PC 교체가 필요하면 크몽 메시지로 문의하세요.</p>
+          </div>
+        </details>
+
+        <details class="py-4">
+          <summary class="cursor-pointer font-medium">
+            라이선스 상태 확인 방법
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <div class="code-block rounded p-3 font-mono text-xs">
+              <p>> license_status 도구 사용</p>
+              <p class="mt-2 text-green-400"># 결과 예시</p>
+              <p>티어: Personal | 상태: 활성 | 만료: 없음</p>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <!-- 3. can_code 차단 -->
+      <section
+        id="cancode"
+        class="bg-white rounded-xl p-6 mb-6 border border-slate-200"
+      >
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+          <span
+            class="bg-amber-100 text-amber-700 w-8 h-8 rounded-full flex items-center justify-center text-sm"
+            >3</span
+          >
+          can_code 차단될 때
+        </h2>
+
+        <details class="border-b border-slate-100 py-4">
+          <summary class="cursor-pointer font-medium">
+            "PRD가 없습니다" 메시지
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p><strong>원인:</strong> docs/PRD.md 파일이 없음</p>
+            <p><strong>해결:</strong></p>
+            <div class="code-block rounded p-3 font-mono text-xs">
+              <p># start 도구로 PRD 생성</p>
+              <p>> start 도구 사용</p>
+              <p>> path: "/프로젝트/경로"</p>
+            </div>
+            <p class="mt-2">
+              또는 직접
+              <code class="bg-slate-100 px-2 py-1 rounded">docs/PRD.md</code>
+              파일 생성
+            </p>
+          </div>
+        </details>
+
+        <details class="border-b border-slate-100 py-4">
+          <summary class="cursor-pointer font-medium">
+            "PRD에 필수 섹션이 없습니다"
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p><strong>원인:</strong> PRD.md에 필수 항목 누락</p>
+            <p><strong>필수 섹션:</strong></p>
+            <ul class="list-disc list-inside space-y-1">
+              <li>## 프로젝트 개요</li>
+              <li>## 핵심 기능</li>
+              <li>## 기술 스택 (또는 ## 기술 요구사항)</li>
+            </ul>
+            <p class="mt-2">위 섹션이 PRD.md에 있는지 확인하세요.</p>
+          </div>
+        </details>
+
+        <details class="py-4">
+          <summary class="cursor-pointer font-medium">
+            can_code를 일시적으로 우회하고 싶어요
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p><strong>방법:</strong> DEV_MODE 환경변수 설정</p>
+            <div class="code-block rounded p-3 font-mono text-xs">
+              <p># ~/.claude.json</p>
+              <p>{</p>
+              <p>"mcpServers": {</p>
+              <p>"clouvel": {</p>
+              <p>"command": "python",</p>
+              <p>"args": ["-m", "clouvel"],</p>
+              <p>"env": {</p>
+              <p>"CLOUVEL_DEV_MODE": "true"</p>
+              <p>}</p>
+              <p>}</p>
+              <p>}</p>
+              <p>}</p>
+            </div>
+            <p class="text-amber-600 mt-2">
+              ⚠️ 개발/테스트 용도로만 사용하세요. 프로덕션에서는 끄세요.
+            </p>
+          </div>
+        </details>
+      </section>
+
+      <!-- 4. PRD 작성 팁 -->
+      <section
+        id="prd"
+        class="bg-white rounded-xl p-6 mb-6 border border-slate-200"
+      >
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+          <span
+            class="bg-violet-100 text-violet-700 w-8 h-8 rounded-full flex items-center justify-center text-sm"
+            >4</span
+          >
+          PRD 작성 팁
+        </h2>
+
+        <details class="border-b border-slate-100 py-4">
+          <summary class="cursor-pointer font-medium">PRD 기본 템플릿</summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <div
+              class="code-block rounded p-3 font-mono text-xs whitespace-pre-wrap"
+            >
+              # 프로젝트명 ## 프로젝트 개요 - 한 줄 설명: [프로젝트가 뭔지] -
+              목표: [달성하려는 것] - 타겟 사용자: [누가 쓸 건지] ## 핵심 기능
+              1. 기능 A - [설명] 2. 기능 B - [설명] 3. 기능 C - [설명] ## 기술
+              스택 - Frontend: React, TypeScript - Backend: Node.js, Express -
+              Database: PostgreSQL ## 제약 조건 - [제약 1] - [제약 2]
+            </div>
+          </div>
+        </details>
+
+        <details class="border-b border-slate-100 py-4">
+          <summary class="cursor-pointer font-medium">
+            PRD 자동 생성하기
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p>
+              Claude Code에서
+              <code class="bg-slate-100 px-2 py-1 rounded">start</code> 도구
+              사용:
+            </p>
+            <div class="code-block rounded p-3 font-mono text-xs">
+              <p>> start 도구 사용</p>
+              <p>> path: "/프로젝트/경로"</p>
+              <p class="mt-2"># Claude가 질문을 던지면 답변하세요</p>
+              <p># 대화가 끝나면 PRD.md가 자동 생성됩니다</p>
+            </div>
+          </div>
+        </details>
+
+        <details class="py-4">
+          <summary class="cursor-pointer font-medium">
+            좋은 PRD vs 나쁜 PRD
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p class="text-red-600 font-medium">❌ 나쁜 예:</p>
+            <div class="bg-red-50 rounded p-3 text-xs mb-3">
+              <p>## 핵심 기능</p>
+              <p>- 로그인</p>
+              <p>- 게시판</p>
+            </div>
+            <p class="text-green-600 font-medium">✓ 좋은 예:</p>
+            <div class="bg-green-50 rounded p-3 text-xs">
+              <p>## 핵심 기능</p>
+              <p>1. 로그인</p>
+              <p>- 이메일/비밀번호 인증</p>
+              <p>- 소셜 로그인 (Google, GitHub)</p>
+              <p>- JWT 토큰 기반 세션</p>
+              <p>2. 게시판</p>
+              <p>- CRUD (생성, 조회, 수정, 삭제)</p>
+              <p>- 마크다운 에디터</p>
+              <p>- 이미지 업로드 (최대 5MB)</p>
+            </div>
+            <p class="mt-2 text-slate-500">
+              구체적일수록 Claude가 더 정확하게 코딩합니다.
+            </p>
+          </div>
+        </details>
+      </section>
+
+      <!-- 5. 자주 쓰는 명령어 -->
+      <section
+        id="commands"
+        class="bg-white rounded-xl p-6 mb-6 border border-slate-200"
+      >
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+          <span
+            class="bg-cyan-100 text-cyan-700 w-8 h-8 rounded-full flex items-center justify-center text-sm"
+            >5</span
+          >
+          자주 쓰는 명령어
+        </h2>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50">
+              <tr>
+                <th class="text-left py-3 px-4">도구</th>
+                <th class="text-left py-3 px-4">설명</th>
+                <th class="text-left py-3 px-4">티어</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr>
+                <td class="py-3 px-4 font-mono text-xs">start</td>
+                <td class="py-3 px-4">프로젝트 온보딩 + PRD 생성</td>
+                <td class="py-3 px-4">
+                  <span
+                    class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded"
+                    >Free</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-xs">can_code</td>
+                <td class="py-3 px-4">코딩 가능 여부 체크</td>
+                <td class="py-3 px-4">
+                  <span
+                    class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded"
+                    >Free</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-xs">plan</td>
+                <td class="py-3 px-4">상세 실행 계획 생성</td>
+                <td class="py-3 px-4">
+                  <span
+                    class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded"
+                    >Free</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-xs">manager</td>
+                <td class="py-3 px-4">8명 C-Level 매니저 피드백</td>
+                <td class="py-3 px-4">
+                  <span
+                    class="bg-violet-100 text-violet-700 text-xs px-2 py-1 rounded"
+                    >Pro</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-xs">ship</td>
+                <td class="py-3 px-4">원클릭 검증 (lint→test→build)</td>
+                <td class="py-3 px-4">
+                  <span
+                    class="bg-violet-100 text-violet-700 text-xs px-2 py-1 rounded"
+                    >Pro</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-xs">activate_license</td>
+                <td class="py-3 px-4">라이선스 활성화</td>
+                <td class="py-3 px-4">
+                  <span
+                    class="bg-violet-100 text-violet-700 text-xs px-2 py-1 rounded"
+                    >Pro</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-xs">license_status</td>
+                <td class="py-3 px-4">라이선스 상태 확인</td>
+                <td class="py-3 px-4">
+                  <span
+                    class="bg-violet-100 text-violet-700 text-xs px-2 py-1 rounded"
+                    >Pro</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 6. 에러 해결 -->
+      <section
+        id="errors"
+        class="bg-white rounded-xl p-6 mb-6 border border-slate-200"
+      >
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+          <span
+            class="bg-red-100 text-red-700 w-8 h-8 rounded-full flex items-center justify-center text-sm"
+            >6</span
+          >
+          에러 해결
+        </h2>
+
+        <details class="border-b border-slate-100 py-4">
+          <summary class="cursor-pointer font-medium">
+            "MCP server not responding"
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p><strong>원인:</strong> Clouvel 서버가 시작 안 됨</p>
+            <p><strong>해결:</strong></p>
+            <ol class="list-decimal list-inside space-y-1">
+              <li>Claude Code 완전 종료 후 재시작</li>
+              <li>
+                터미널에서
+                <code class="bg-slate-100 px-2 py-1 rounded"
+                  >python -m clouvel</code
+                >
+                직접 실행해서 에러 확인
+              </li>
+              <li>에러 메시지 확인 후 해결</li>
+            </ol>
+          </div>
+        </details>
+
+        <details class="border-b border-slate-100 py-4">
+          <summary class="cursor-pointer font-medium">
+            "Network error" / "Connection refused"
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p><strong>원인:</strong> 라이선스 서버 연결 실패</p>
+            <p><strong>해결:</strong></p>
+            <ul class="list-disc list-inside space-y-1">
+              <li>인터넷 연결 확인</li>
+              <li>방화벽/VPN 확인</li>
+              <li>잠시 후 재시도</li>
+            </ul>
+            <p class="mt-2">계속 안 되면 크몽 메시지로 문의하세요.</p>
+          </div>
+        </details>
+
+        <details class="border-b border-slate-100 py-4">
+          <summary class="cursor-pointer font-medium">
+            "Invalid license key"
+          </summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p><strong>원인:</strong> 라이선스 키 오타 또는 만료</p>
+            <p><strong>해결:</strong></p>
+            <ul class="list-disc list-inside space-y-1">
+              <li>키 복사/붙여넣기 (직접 입력 X)</li>
+              <li>앞뒤 공백 제거</li>
+              <li>
+                형식 확인:
+                <code class="bg-slate-100 px-2 py-1 rounded"
+                  >CLOUVEL-XXXX-XXXX-XXXX</code
+                >
+              </li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="py-4">
+          <summary class="cursor-pointer font-medium">그 외 문제</summary>
+          <div class="mt-4 text-slate-600 text-sm space-y-3">
+            <p>위에 없는 문제는 크몽 메시지로 문의해주세요.</p>
+            <p><strong>문의 시 포함해주세요:</strong></p>
+            <ul class="list-disc list-inside space-y-1">
+              <li>에러 메시지 전체 (스크린샷)</li>
+              <li>OS (Windows/Mac/Linux)</li>
+              <li>Python 버전</li>
+              <li>시도한 해결 방법</li>
+            </ul>
+          </div>
+        </details>
+      </section>
+
+      <!-- Footer -->
+      <div class="text-center text-slate-500 text-sm mt-12">
+        <p>© 2026 Clouvel. All rights reserved.</p>
+        <p class="mt-2">
+          <a
+            href="https://whitening-sinabro.github.io/clouvel/"
+            class="text-blue-600 hover:underline"
+            >공식 문서</a
+          >
+          ·
+          <a
+            href="https://github.com/Whitening-Sinabro/clouvel"
+            class="text-blue-600 hover:underline"
+            >GitHub</a
+          >
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

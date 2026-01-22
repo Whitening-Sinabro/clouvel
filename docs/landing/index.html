@@ -644,10 +644,13 @@
               <p class="text-emerald-400">pip install clouvel</p>
             </div>
             <div>
-              <p class="text-slate-400 mb-2"># 2. MCP 등록 (한 줄로 끝)</p>
-              <p class="text-emerald-400">clouvel install</p>
+              <p class="text-slate-400 mb-2"># 2. Setup (자동 설정)</p>
+              <p class="text-emerald-400">clouvel setup</p>
               <p class="text-slate-500 text-xs mt-1">
-                # 플랫폼 자동 감지 + 글로벌 규칙 설정
+                # ~/.claude/CLAUDE.md에 can_code 규칙 추가
+              </p>
+              <p class="text-slate-500 text-xs">
+                # claude mcp add clouvel 자동 실행
               </p>
             </div>
             <div>
@@ -666,9 +669,11 @@
               <p class="text-emerald-400">pip install clouvel</p>
             </div>
             <div>
-              <p class="text-slate-400 mb-2"># 2. MCP 등록</p>
-              <p class="text-emerald-400">clouvel install --platform desktop</p>
-              <p class="text-slate-500 text-xs mt-1"># config.json 자동 수정</p>
+              <p class="text-slate-400 mb-2"># 2. Setup (자동 설정)</p>
+              <p class="text-emerald-400">clouvel setup</p>
+              <p class="text-slate-500 text-xs mt-1">
+                # config.json 자동 수정 + 글로벌 규칙 추가
+              </p>
             </div>
             <div>
               <p class="text-slate-400 mb-2"># 3. Run</p>
@@ -683,16 +688,11 @@
               <p class="text-emerald-400">pip install clouvel</p>
             </div>
             <div>
-              <p class="text-slate-400 mb-2"># 2. Config (settings.json)</p>
-              <pre class="text-slate-300 overflow-x-auto">
-{
-  "claude.mcpServers": {
-    "clouvel": {
-      "command": "clouvel"
-    }
-  }
-}</pre
-              >
+              <p class="text-slate-400 mb-2"># 2. Setup (자동 설정)</p>
+              <p class="text-emerald-400">clouvel setup</p>
+              <p class="text-slate-500 text-xs mt-1">
+                # settings.json 자동 수정 + 글로벌 규칙 추가
+              </p>
             </div>
             <div>
               <p class="text-slate-400 mb-2"># 3. Run</p>
@@ -707,14 +707,15 @@
               <p class="text-emerald-400">pip install clouvel</p>
             </div>
             <div>
-              <p class="text-slate-400 mb-2"># 2. Config</p>
-              <p class="text-slate-300">Cursor Settings > MCP 서버 추가</p>
+              <p class="text-slate-400 mb-2"># 2. Setup (자동 설정)</p>
+              <p class="text-emerald-400">clouvel setup</p>
+              <p class="text-slate-500 text-xs mt-1">
+                # MCP 설정 자동 추가 + 글로벌 규칙 추가
+              </p>
             </div>
             <div>
               <p class="text-slate-400 mb-2"># 3. Run</p>
-              <p class="text-slate-300">
-                프로젝트 열고 "pre-coding gate" 워크플로 활성화
-              </p>
+              <p class="text-slate-300">Cursor에서 Claude 확장과 함께 사용</p>
             </div>
           </div>
         </div>

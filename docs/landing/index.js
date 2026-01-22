@@ -107,3 +107,36 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
     document.getElementById(tabId).classList.add("active");
   });
 });
+
+// Pricing Billing Toggle
+function toggleBilling(type) {
+  const monthlyBtn = document.getElementById("monthly-btn");
+  const yearlyBtn = document.getElementById("yearly-btn");
+  const monthlyPrices = document.querySelectorAll(".monthly-price");
+  const yearlyPrices = document.querySelectorAll(".yearly-price");
+
+  if (type === "monthly") {
+    // Update button styles
+    monthlyBtn.classList.add("bg-white", "text-dark-slate", "shadow-sm");
+    monthlyBtn.classList.remove("text-slate-500");
+    yearlyBtn.classList.remove("bg-white", "text-dark-slate", "shadow-sm");
+    yearlyBtn.classList.add("text-slate-500");
+
+    // Show monthly, hide yearly
+    monthlyPrices.forEach((el) => el.classList.remove("hidden"));
+    yearlyPrices.forEach((el) => el.classList.add("hidden"));
+  } else {
+    // Update button styles
+    yearlyBtn.classList.add("bg-white", "text-dark-slate", "shadow-sm");
+    yearlyBtn.classList.remove("text-slate-500");
+    monthlyBtn.classList.remove("bg-white", "text-dark-slate", "shadow-sm");
+    monthlyBtn.classList.add("text-slate-500");
+
+    // Show yearly, hide monthly
+    yearlyPrices.forEach((el) => el.classList.remove("hidden"));
+    monthlyPrices.forEach((el) => el.classList.add("hidden"));
+  }
+}
+
+// Make toggleBilling globally available
+window.toggleBilling = toggleBilling;

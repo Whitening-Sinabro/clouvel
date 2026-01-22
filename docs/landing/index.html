@@ -181,7 +181,7 @@
             class="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-600 text-sm px-4 py-2 rounded-full"
           >
             <span class="font-semibold">NEW</span>
-            v1.3 - 상세 계획 생성
+            v1.3.4 - 템플릿 8종 + 타입 자동 감지
           </div>
         </div>
         <h1
@@ -806,10 +806,27 @@
           <p class="text-slate-600 text-lg mb-4">
             Free로 시작하고, 필요하면 Pro로 업그레이드
           </p>
-          <p class="text-slate-500 text-sm max-w-2xl mx-auto">
+          <p class="text-slate-500 text-sm max-w-2xl mx-auto mb-6">
             팀/프로젝트에서 AI 코딩을 쓰는데, 요구사항 누락으로 디버깅이 잦다면
             이게 이득입니다.
           </p>
+          <!-- Billing Toggle -->
+          <div class="inline-flex items-center bg-slate-100 rounded-full p-1">
+            <button
+              id="monthly-btn"
+              onclick="toggleBilling('monthly')"
+              class="px-6 py-2 rounded-full text-sm font-medium transition bg-white text-dark-slate shadow-sm"
+            >
+              월간
+            </button>
+            <button
+              id="yearly-btn"
+              onclick="toggleBilling('yearly')"
+              class="px-6 py-2 rounded-full text-sm font-medium transition text-slate-500 hover:text-slate-700"
+            >
+              연간 <span class="text-accent text-xs ml-1">최대 38% 할인</span>
+            </button>
+          </div>
         </div>
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           <!-- Free -->
@@ -922,20 +939,25 @@
           <div
             class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 relative"
           >
-            <div
-              class="absolute -top-3 left-4 bg-orange-500 text-white text-xs font-medium px-3 py-1 rounded-full"
-            >
-              Early Bird
-            </div>
             <h3 class="font-semibold text-lg mb-1">Personal Pro</h3>
-            <p class="text-slate-500 text-sm mb-6">개인 개발자</p>
-            <div class="flex items-baseline gap-1 mb-1">
-              <span class="text-2xl text-slate-400 line-through">$79</span>
-              <span class="text-4xl font-bold">$49</span>
-              <span class="text-slate-500">/ 평생</span>
+            <p class="text-slate-500 text-sm mb-6">개인 개발자 (1명)</p>
+            <div
+              class="price-display monthly-price flex items-baseline gap-1 mb-1"
+            >
+              <span class="text-4xl font-bold">$19.99</span>
+              <span class="text-slate-500">/ 월</span>
             </div>
-            <p class="text-orange-500 text-sm font-medium mb-6">
-              Jan 23 - Feb 13
+            <div
+              class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
+            >
+              <span class="text-4xl font-bold">$149</span>
+              <span class="text-slate-500">/ 년</span>
+            </div>
+            <p class="monthly-price text-slate-400 text-sm font-medium mb-6">
+              연간 결제 시 38% 할인
+            </p>
+            <p class="yearly-price hidden text-accent text-sm font-medium mb-6">
+              38% 할인 적용 ($239.88 → $149)
             </p>
             <ul class="space-y-3 mb-8 text-sm">
               <li class="flex items-center gap-2">
@@ -1006,34 +1028,36 @@
               </li>
             </ul>
             <a
-              href="https://clouvel.lemonsqueezy.com/checkout/buy/698a4b0b-b6c1-404e-b400-9790719f4c34"
+              href="https://clouvel.lemonsqueezy.com/buy/personal-pro"
               target="_blank"
               class="block w-full py-3 rounded-full text-center font-medium border border-slate-300 hover:border-slate-400 transition"
             >
-              구매하기
+              구독하기
             </a>
           </div>
-          <!-- Team Pro -->
-          <div class="border-2 border-accent p-6 md:p-8 rounded-2xl relative">
+          <!-- Team 5 -->
+          <div
+            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 relative"
+          >
+            <h3 class="font-semibold text-lg mb-1">Team 5</h3>
+            <p class="text-slate-500 text-sm mb-6">소규모 팀 (5명)</p>
             <div
-              class="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-medium px-3 py-1 rounded-full"
+              class="price-display monthly-price flex items-baseline gap-1 mb-1"
             >
-              추천
+              <span class="text-4xl font-bold">$49.99</span>
+              <span class="text-slate-500">/ 월</span>
             </div>
             <div
-              class="absolute -top-3 right-4 bg-orange-500 text-white text-xs font-medium px-3 py-1 rounded-full"
+              class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
             >
-              Early Bird
+              <span class="text-4xl font-bold">$399</span>
+              <span class="text-slate-500">/ 년</span>
             </div>
-            <h3 class="font-semibold text-lg mb-1">Team Pro</h3>
-            <p class="text-slate-500 text-sm mb-6">소규모 팀 (최대 10명)</p>
-            <div class="flex items-baseline gap-1 mb-1">
-              <span class="text-2xl text-slate-400 line-through">$249</span>
-              <span class="text-4xl font-bold">$149</span>
-              <span class="text-slate-500">/ 평생</span>
-            </div>
-            <p class="text-orange-500 text-sm font-medium mb-6">
-              Jan 23 - Feb 13
+            <p class="monthly-price text-slate-400 text-sm font-medium mb-6">
+              연간 결제 시 33% 할인
+            </p>
+            <p class="yearly-price hidden text-accent text-sm font-medium mb-6">
+              33% 할인 적용 ($599.88 → $399)
             </p>
             <ul class="space-y-3 mb-8 text-sm">
               <li class="flex items-center gap-2">
@@ -1086,6 +1110,94 @@
               </li>
               <li class="flex items-center gap-2">
                 <svg
+                  class="w-5 h-5 text-slate-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span class="monthly-price text-slate-400">인당 $10/월</span>
+                <span class="yearly-price hidden text-slate-400"
+                  >인당 $79.80/년</span
+                >
+              </li>
+            </ul>
+            <a
+              href="https://clouvel.lemonsqueezy.com/buy/team-5"
+              target="_blank"
+              class="block w-full py-3 rounded-full text-center font-medium border border-slate-300 hover:border-slate-400 transition"
+            >
+              구독하기
+            </a>
+          </div>
+          <!-- Team 10 -->
+          <div class="border-2 border-accent p-6 md:p-8 rounded-2xl relative">
+            <div
+              class="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-medium px-3 py-1 rounded-full"
+            >
+              추천
+            </div>
+            <h3 class="font-semibold text-lg mb-1">Team 10</h3>
+            <p class="text-slate-500 text-sm mb-6">중규모 팀 (10명)</p>
+            <div
+              class="price-display monthly-price flex items-baseline gap-1 mb-1"
+            >
+              <span class="text-4xl font-bold">$79.99</span>
+              <span class="text-slate-500">/ 월</span>
+            </div>
+            <div
+              class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
+            >
+              <span class="text-4xl font-bold">$599</span>
+              <span class="text-slate-500">/ 년</span>
+            </div>
+            <p class="monthly-price text-slate-400 text-sm font-medium mb-6">
+              연간 결제 시 38% 할인
+            </p>
+            <p class="yearly-price hidden text-accent text-sm font-medium mb-6">
+              38% 할인 적용 ($959.88 → $599)
+            </p>
+            <ul class="space-y-3 mb-8 text-sm">
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Personal Pro 전체
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-accent"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span class="text-accent font-medium">팀원 초대/관리</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
                   class="w-5 h-5 text-accent"
                   fill="none"
                   stroke="currentColor"
@@ -1102,81 +1214,49 @@
                   >프로젝트 컨텍스트 동기화</span
                 >
               </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-slate-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span class="monthly-price text-slate-400"
+                  >인당 $8/월 (최저가)</span
+                >
+                <span class="yearly-price hidden text-slate-400"
+                  >인당 $59.90/년 (최저가)</span
+                >
+              </li>
             </ul>
             <a
-              href="https://clouvel.lemonsqueezy.com/checkout/buy/0cc0065b-9c2f-4d19-b73d-611630c16308"
+              href="https://clouvel.lemonsqueezy.com/buy/team-10"
               target="_blank"
               class="block w-full py-3 rounded-full text-center font-medium bg-accent text-white hover:bg-accent-dark transition"
             >
-              구매하기
+              구독하기
             </a>
           </div>
-          <!-- Enterprise -->
-          <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200">
-            <h3 class="font-semibold text-lg mb-1">Enterprise</h3>
-            <p class="text-slate-500 text-sm mb-6">대규모 팀</p>
-            <div class="flex items-baseline gap-1 mb-1">
-              <span class="text-4xl font-bold text-slate-600">문의</span>
-            </div>
-            <p class="text-slate-400 text-sm font-medium mb-6">맞춤 견적</p>
-            <ul class="space-y-3 mb-8 text-sm">
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Team Pro 전체
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-accent font-medium">라이선스 무제한</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                우선 지원
-              </li>
-            </ul>
+        </div>
+        <!-- Enterprise -->
+        <div class="mt-8 text-center">
+          <p class="text-slate-600">
+            <strong>10명 이상?</strong>
             <a
               href="https://github.com/Whitening-Sinabro/clouvel/issues"
               target="_blank"
-              class="block w-full py-3 rounded-full text-center font-medium border border-slate-300 hover:border-slate-400 transition"
+              class="text-accent hover:underline"
+              >Enterprise 문의</a
             >
-              문의하기
-            </a>
-          </div>
+            - 맞춤 견적, 라이선스 무제한, 우선 지원
+          </p>
         </div>
       </div>
     </section>

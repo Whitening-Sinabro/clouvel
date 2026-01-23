@@ -1,0 +1,318 @@
+/* Developer Theme (Option 4: Warp Style)
+ * 터미널/AI 코딩 느낌
+ * 다크 배경, 터미널 UI 요소, AI 강조, 그라데이션 보더
+ */
+
+:root {
+  /* Colors - Terminal Dark */
+  --color-bg-primary: #0a0a0a;
+  --color-bg-secondary: #111111;
+  --color-bg-tertiary: #1a1a2e;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a0a0a0;
+  --color-text-muted: #666666;
+  --color-accent: #00d4aa;
+  --color-accent-dark: #00b894;
+  --color-accent-light: rgba(0, 212, 170, 0.15);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-success: #00d4aa;
+  --color-warning: #ffd93d;
+  --color-error: #ff6b6b;
+
+  /* Typography */
+  --font-family: "JetBrains Mono", "Fira Code", "SF Mono", monospace;
+  --font-family-display: "Inter", system-ui, sans-serif;
+
+  /* Terminal specific */
+  --terminal-green: #00d4aa;
+  --terminal-yellow: #ffd93d;
+  --terminal-red: #ff6b6b;
+  --terminal-blue: #6c9eff;
+  --terminal-purple: #b794f6;
+
+  /* Gradients */
+  --gradient-border: linear-gradient(135deg, #00d4aa, #6c9eff, #b794f6);
+  --gradient-glow: radial-gradient(
+    ellipse at center,
+    rgba(0, 212, 170, 0.15) 0%,
+    transparent 70%
+  );
+}
+
+/* Base */
+body {
+  font-family: var(--font-family-display);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+/* Nav - Terminal style */
+.nav-developer {
+  background-color: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.nav-developer .logo {
+  font-family: var(--font-family);
+  color: var(--terminal-green);
+}
+
+/* Hero - Terminal centered */
+.hero-developer {
+  padding-top: 10rem;
+  padding-bottom: 4rem;
+  text-align: center;
+  position: relative;
+}
+
+.hero-developer::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: var(--gradient-glow);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  color: var(--terminal-green);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 1rem;
+}
+
+.hero-title-developer {
+  font-size: var(--font-size-4xl);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .hero-title-developer {
+    font-size: var(--font-size-6xl);
+  }
+}
+
+/* Typing animation */
+.typing-text {
+  font-family: var(--font-family);
+  font-size: var(--font-size-xl);
+  color: var(--terminal-green);
+  border-right: 2px solid var(--terminal-green);
+  white-space: nowrap;
+  overflow: hidden;
+  animation:
+    typing 3s steps(20) infinite,
+    blink 0.7s step-end infinite;
+}
+
+@keyframes typing {
+  0%,
+  100% {
+    width: 0;
+  }
+  50%,
+  90% {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+/* Terminal Window */
+.terminal-window {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-bg-tertiary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.terminal-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.terminal-dot.red {
+  background-color: var(--terminal-red);
+}
+.terminal-dot.yellow {
+  background-color: var(--terminal-yellow);
+}
+.terminal-dot.green {
+  background-color: var(--terminal-green);
+}
+
+.terminal-body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  padding: 1rem;
+  line-height: 1.8;
+}
+
+.terminal-prompt {
+  color: var(--terminal-green);
+}
+
+.terminal-command {
+  color: var(--color-text-primary);
+}
+
+.terminal-output {
+  color: var(--color-text-secondary);
+}
+
+.terminal-error {
+  color: var(--terminal-red);
+}
+
+.terminal-success {
+  color: var(--terminal-green);
+}
+
+/* Buttons - Gradient border */
+.btn-primary-developer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  padding: 0.875rem 2rem;
+  border-radius: var(--border-radius-lg);
+  font-weight: 600;
+  font-family: var(--font-family);
+  transition: all var(--transition-base);
+  z-index: 1;
+}
+
+.btn-primary-developer::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: var(--gradient-border);
+  border-radius: calc(var(--border-radius-lg) + 2px);
+  z-index: -1;
+  opacity: 0.8;
+  transition: opacity var(--transition-base);
+}
+
+.btn-primary-developer:hover::before {
+  opacity: 1;
+}
+
+.btn-primary-developer:hover {
+  transform: translateY(-2px);
+}
+
+/* Cards - Gradient border on hover */
+.card-developer {
+  position: relative;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  transition: all var(--transition-base);
+}
+
+.card-developer::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background: var(--gradient-border);
+  border-radius: var(--border-radius-lg);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.card-developer:hover::before {
+  opacity: 1;
+}
+
+.card-developer:hover {
+  border-color: transparent;
+  transform: translateY(-4px);
+}
+
+/* Stats Section */
+.stats-developer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  text-align: center;
+  padding: 3rem 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.stat-value {
+  font-family: var(--font-family);
+  font-size: var(--font-size-4xl);
+  font-weight: 700;
+  color: var(--terminal-green);
+}
+
+.stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-top: 0.5rem;
+}
+
+/* Code Syntax Highlighting */
+.code-keyword {
+  color: var(--terminal-purple);
+}
+.code-string {
+  color: var(--terminal-green);
+}
+.code-comment {
+  color: var(--color-text-muted);
+}
+.code-function {
+  color: var(--terminal-blue);
+}
+.code-number {
+  color: var(--terminal-yellow);
+}
+
+/* Section Headers */
+.section-header-developer {
+  font-family: var(--font-family);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--terminal-green);
+  font-size: var(--font-size-sm);
+  margin-bottom: 0.5rem;
+}
+
+/* Grid Lines Background */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}

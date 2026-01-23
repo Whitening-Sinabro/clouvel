@@ -1,0 +1,330 @@
+/* Minimal Theme (Option 3: Vercel Style + Option 9: xmcp)
+ * 극 미니멀
+ * 흑백 기반, 큰 타이포그래피, 최대 여백
+ */
+
+:root {
+  /* Colors - Minimal Black & White */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #fafafa;
+  --color-bg-tertiary: #f5f5f5;
+  --color-text-primary: #000000;
+  --color-text-secondary: #666666;
+  --color-text-muted: #999999;
+  --color-accent: #000000;
+  --color-accent-hover: #333333;
+  --color-border: #eaeaea;
+  --color-success: #000000;
+  --color-warning: #000000;
+  --color-error: #ee0000;
+
+  /* Single point color (optional) */
+  --color-point: #0070f3;
+
+  /* Typography */
+  --font-family:
+    "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui,
+    sans-serif;
+
+  /* Extreme spacing */
+  --spacing-hero: 15vh;
+  --spacing-section: 8rem;
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+  --color-bg-primary: #000000;
+  --color-bg-secondary: #0a0a0a;
+  --color-bg-tertiary: #111111;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #888888;
+  --color-text-muted: #666666;
+  --color-accent: #ffffff;
+  --color-accent-hover: #cccccc;
+  --color-border: #222222;
+}
+
+/* Base */
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Nav - Ultra minimal */
+.nav-minimal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  z-index: 100;
+}
+
+.nav-minimal .logo {
+  font-weight: 600;
+  font-size: var(--font-size-lg);
+  letter-spacing: -0.02em;
+}
+
+.nav-minimal .menu-btn {
+  font-size: 1.5rem;
+  color: var(--color-text-primary);
+}
+
+/* Hero - Maximum white space */
+.hero-minimal {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: var(--spacing-hero) 2rem;
+}
+
+.hero-title-minimal {
+  font-size: clamp(2.5rem, 10vw, 6rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  margin-bottom: 1rem;
+}
+
+.hero-subtitle-minimal {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  max-width: 400px;
+  margin: 0 auto 2rem;
+}
+
+/* Arrow indicator */
+.scroll-indicator {
+  margin-top: 4rem;
+  font-size: 1.5rem;
+  color: var(--color-text-muted);
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+/* Buttons - Minimal */
+.btn-minimal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--color-accent);
+  color: var(--color-bg-primary);
+  padding: 0.875rem 1.75rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  transition: background-color var(--transition-fast);
+}
+
+.btn-minimal:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.btn-minimal-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  padding: 0.875rem 1.75rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  transition: border-color var(--transition-fast);
+}
+
+.btn-minimal-outline:hover {
+  border-color: var(--color-text-primary);
+}
+
+/* Text Link */
+.link-minimal {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color var(--transition-fast);
+}
+
+.link-minimal:hover {
+  color: var(--color-text-secondary);
+}
+
+/* Sections - Maximum spacing */
+.section-minimal {
+  padding: var(--spacing-section) 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Section Divider */
+.divider-minimal {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-border);
+  margin: 4rem 0;
+}
+
+/* Text-only features */
+.feature-text {
+  margin-bottom: 4rem;
+}
+
+.feature-title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+
+.feature-description {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* Install Command */
+.install-command {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: var(--font-size-sm);
+  margin: 2rem 0;
+}
+
+.install-command code {
+  color: var(--color-text-primary);
+}
+
+.install-command .copy-btn {
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.install-command .copy-btn:hover {
+  color: var(--color-text-primary);
+}
+
+/* Simple Links Section */
+.links-minimal {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  font-size: var(--font-size-sm);
+}
+
+.links-minimal a {
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.links-minimal a:hover {
+  color: var(--color-text-primary);
+}
+
+/* Pricing - Simple table */
+.pricing-table-minimal {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.pricing-table-minimal th,
+.pricing-table-minimal td {
+  text-align: left;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.pricing-table-minimal th {
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: var(--font-size-xs);
+}
+
+/* Footer - Ultra minimal */
+.footer-minimal {
+  padding: 3rem 2rem;
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* Grid for logos/trusted by */
+.logo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3rem;
+  padding: 3rem 0;
+  opacity: 0.6;
+}
+
+.logo-grid img {
+  height: 24px;
+  filter: grayscale(100%);
+}
+
+/* Quote/Testimonial - Minimal */
+.quote-minimal {
+  font-size: var(--font-size-xl);
+  font-style: italic;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+  color: var(--color-text-secondary);
+}
+
+.quote-author {
+  margin-top: 1rem;
+  font-size: var(--font-size-sm);
+  font-style: normal;
+  color: var(--color-text-muted);
+}
+
+/* No frills, just content */
+.content-minimal {
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.content-minimal h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  margin: 3rem 0 1rem;
+  letter-spacing: -0.02em;
+}
+
+.content-minimal p {
+  color: var(--color-text-secondary);
+  margin-bottom: 1.5rem;
+}

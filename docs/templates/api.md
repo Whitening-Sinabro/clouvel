@@ -16,13 +16,14 @@
 
 ## PRD 질문 가이드
 
-| 순서 | 섹션         | 질문                        | 예시                            |
-| ---- | ------------ | --------------------------- | ------------------------------- |
-| 1    | summary      | 이 API가 해결하려는 문제는? | 프론트엔드에서 데이터 접근 필요 |
-| 2    | clients      | 주요 API 소비자는?          | 웹 프론트엔드, 모바일 앱        |
-| 3    | endpoints    | 핵심 엔드포인트 5개         | POST /auth/login, GET /users    |
-| 4    | auth         | 인증 방식은?                | JWT Bearer Token                |
-| 5    | out_of_scope | 제외할 것은?                | GraphQL, WebSocket              |
+| 순서 | 섹션         | 질문                        | 예시                                         |
+| ---- | ------------ | --------------------------- | -------------------------------------------- |
+| 1    | summary      | 이 API가 해결하려는 문제는? | 프론트엔드에서 데이터 접근 필요              |
+| 2    | clients      | 주요 API 소비자는?          | 웹 프론트엔드, 모바일 앱                     |
+| 3    | endpoints    | 핵심 엔드포인트 5개         | POST /auth/login, GET /users                 |
+| 4    | auth         | 인증 방식은?                | JWT Bearer Token                             |
+| 5    | side_effects | 기존 시스템/데이터에 영향?  | 기존 API 호환성, DB 스키마 변경, 캐시 무효화 |
+| 6    | out_of_scope | 제외할 것은?                | GraphQL, WebSocket                           |
 
 ---
 

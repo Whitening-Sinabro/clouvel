@@ -46,11 +46,117 @@
 
 /* Base */
 body {
-  font-family: var(--font-family);
-  background-color: var(--color-bg-primary);
-  color: var(--color-text-primary);
+  font-family: var(--font-family) !important;
+  background-color: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Override Tailwind - Minimal Theme (Black & White) */
+.bg-warm-white {
+  background-color: #ffffff !important;
+}
+.bg-white {
+  background-color: #fafafa !important;
+}
+.text-dark-slate {
+  color: #000000 !important;
+}
+.text-slate-600 {
+  color: #666666 !important;
+}
+.text-slate-500 {
+  color: #999999 !important;
+}
+.text-slate-400 {
+  color: #999999 !important;
+}
+.bg-accent {
+  background-color: #000000 !important;
+}
+.text-accent {
+  color: #000000 !important;
+}
+.hover\:bg-accent-dark:hover {
+  background-color: #333333 !important;
+}
+.border-slate-200\/50 {
+  border-color: #eaeaea !important;
+}
+.border-slate-200 {
+  border-color: #eaeaea !important;
+}
+.bg-slate-50 {
+  background-color: #f5f5f5 !important;
+}
+.bg-slate-100 {
+  background-color: #f5f5f5 !important;
+}
+nav.fixed {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+.bg-dark-slate {
+  background-color: #000000 !important;
+}
+.accent-text {
+  color: #000000 !important;
+}
+.text-emerald-400,
+.text-emerald-500,
+.text-emerald-600 {
+  color: #000000 !important;
+}
+.bg-emerald-50 {
+  background-color: #f5f5f5 !important;
+}
+.bg-emerald-600 {
+  background-color: #000000 !important;
+}
+.border-emerald-200 {
+  border-color: #eaeaea !important;
+}
+.cta-pulse {
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+/* Dark mode overrides */
+[data-theme="dark"] .bg-warm-white {
+  background-color: #000000 !important;
+}
+[data-theme="dark"] .bg-white {
+  background-color: #0a0a0a !important;
+}
+[data-theme="dark"] .text-dark-slate {
+  color: #ffffff !important;
+}
+[data-theme="dark"] .text-slate-600 {
+  color: #888888 !important;
+}
+[data-theme="dark"] .text-slate-500 {
+  color: #666666 !important;
+}
+[data-theme="dark"] .bg-accent {
+  background-color: #ffffff !important;
+}
+[data-theme="dark"] .text-accent {
+  color: #ffffff !important;
+}
+[data-theme="dark"] .border-slate-200\/50 {
+  border-color: #222222 !important;
+}
+[data-theme="dark"] .bg-slate-50 {
+  background-color: #111111 !important;
+}
+[data-theme="dark"] nav.fixed {
+  background-color: rgba(0, 0, 0, 0.9) !important;
+}
+[data-theme="dark"] .bg-dark-slate {
+  background-color: #000000 !important;
+}
+[data-theme="dark"] .accent-text {
+  color: #ffffff !important;
 }
 
 /* Nav - Ultra minimal */

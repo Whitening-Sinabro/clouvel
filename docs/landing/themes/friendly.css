@@ -52,10 +52,98 @@
 
 /* Base */
 body {
-  font-family: var(--font-family);
-  background-color: var(--color-bg-primary);
-  color: var(--color-text-primary);
+  font-family: var(--font-family) !important;
+  background-color: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Override Tailwind - Friendly Theme (Blue Accent) */
+.bg-warm-white {
+  background-color: #ffffff !important;
+}
+.bg-white {
+  background-color: #f8fafc !important;
+}
+.text-dark-slate {
+  color: #1e293b !important;
+}
+.text-slate-600 {
+  color: #64748b !important;
+}
+.text-slate-500 {
+  color: #94a3b8 !important;
+}
+.text-slate-400 {
+  color: #94a3b8 !important;
+}
+.bg-accent {
+  background-color: #3b82f6 !important;
+}
+.text-accent {
+  color: #3b82f6 !important;
+}
+.hover\:bg-accent-dark:hover {
+  background-color: #2563eb !important;
+}
+.border-slate-200\/50 {
+  border-color: #e2e8f0 !important;
+}
+.border-slate-200 {
+  border-color: #e2e8f0 !important;
+}
+.bg-slate-50 {
+  background-color: #f1f5f9 !important;
+}
+.bg-slate-100 {
+  background-color: #f1f5f9 !important;
+}
+nav.fixed {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+.accent-text {
+  color: #3b82f6 !important;
+}
+.cta-pulse {
+  animation: pulse-glow-blue 2s ease-in-out infinite !important;
+}
+@keyframes pulse-glow-blue {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 4px rgba(59, 130, 246, 0.3);
+  }
+}
+
+/* Dark mode overrides */
+[data-theme="dark"] .bg-warm-white {
+  background-color: #0f172a !important;
+}
+[data-theme="dark"] .bg-white {
+  background-color: #1e293b !important;
+}
+[data-theme="dark"] .text-dark-slate {
+  color: #f8fafc !important;
+}
+[data-theme="dark"] .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+[data-theme="dark"] .text-slate-500 {
+  color: #64748b !important;
+}
+[data-theme="dark"] .border-slate-200\/50 {
+  border-color: #334155 !important;
+}
+[data-theme="dark"] .bg-slate-50 {
+  background-color: #334155 !important;
+}
+[data-theme="dark"] nav.fixed {
+  background-color: rgba(15, 23, 42, 0.9) !important;
+}
+[data-theme="dark"] .bg-dark-slate {
+  background-color: #0f172a !important;
 }
 
 /* Nav - Friendly with dark mode toggle */

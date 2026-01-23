@@ -43,9 +43,99 @@
 
 /* Base */
 body {
-  font-family: var(--font-family);
-  background-color: var(--color-bg-primary);
-  color: var(--color-text-primary);
+  font-family: var(--font-family) !important;
+  background-color: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* Override Tailwind - Premium Theme (Always Dark, Purple) */
+.bg-warm-white {
+  background-color: #0f0f0f !important;
+}
+.bg-white {
+  background-color: #171717 !important;
+}
+.text-dark-slate {
+  color: #ffffff !important;
+}
+.text-slate-600 {
+  color: #a1a1a1 !important;
+}
+.text-slate-500 {
+  color: #6b6b6b !important;
+}
+.text-slate-400 {
+  color: #6b6b6b !important;
+}
+.bg-accent {
+  background-color: #7c3aed !important;
+}
+.text-accent {
+  color: #7c3aed !important;
+}
+.hover\:bg-accent-dark:hover {
+  background-color: #6d28d9 !important;
+}
+.border-slate-200\/50 {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+.border-slate-200 {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+.bg-slate-50 {
+  background-color: #1f1f1f !important;
+}
+.bg-slate-100 {
+  background-color: #1f1f1f !important;
+}
+.bg-slate-800 {
+  background-color: #171717 !important;
+}
+.bg-slate-800\/50 {
+  background-color: rgba(23, 23, 23, 0.5) !important;
+}
+nav.fixed {
+  background-color: rgba(15, 15, 15, 0.8) !important;
+}
+.bg-dark-slate {
+  background-color: #0f0f0f !important;
+}
+.accent-text {
+  background: linear-gradient(
+    135deg,
+    #7c3aed 0%,
+    #a855f7 50%,
+    #ec4899 100%
+  ) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+.text-emerald-400,
+.text-emerald-500,
+.text-emerald-600 {
+  color: #10b981 !important;
+}
+.bg-emerald-50 {
+  background-color: rgba(124, 58, 237, 0.1) !important;
+}
+.bg-emerald-600 {
+  background-color: #7c3aed !important;
+}
+.border-emerald-200 {
+  border-color: rgba(124, 58, 237, 0.3) !important;
+}
+.cta-pulse {
+  animation: pulse-glow-purple 2s ease-in-out infinite !important;
+}
+@keyframes pulse-glow-purple {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 4px rgba(124, 58, 237, 0.3);
+  }
 }
 
 /* Nav - Premium minimal */

@@ -36,10 +36,92 @@
 
 /* Base */
 body {
-  font-family: var(--font-family);
-  background: var(--gradient-dark);
-  background-attachment: fixed;
-  color: var(--color-text-primary);
+  font-family: var(--font-family) !important;
+  background: var(--gradient-dark) !important;
+  background-attachment: fixed !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* Override Tailwind - Creative Theme (Always Dark, Orange) */
+.bg-warm-white {
+  background-color: #1a1a1a !important;
+}
+.bg-white {
+  background-color: #222222 !important;
+}
+.text-dark-slate {
+  color: #ffffff !important;
+}
+.text-slate-600 {
+  color: #b0b0b0 !important;
+}
+.text-slate-500 {
+  color: #707070 !important;
+}
+.text-slate-400 {
+  color: #707070 !important;
+}
+.bg-accent {
+  background: linear-gradient(135deg, #f6821f 0%, #fbad41 100%) !important;
+}
+.text-accent {
+  color: #f6821f !important;
+}
+.hover\:bg-accent-dark:hover {
+  background-color: #e5720e !important;
+}
+.border-slate-200\/50 {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+.border-slate-200 {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+.bg-slate-50 {
+  background-color: #2a2a2a !important;
+}
+.bg-slate-100 {
+  background-color: #2a2a2a !important;
+}
+.bg-slate-800 {
+  background-color: #222222 !important;
+}
+.bg-slate-800\/50 {
+  background-color: rgba(34, 34, 34, 0.5) !important;
+}
+nav.fixed {
+  background-color: rgba(26, 26, 26, 0.95) !important;
+}
+.bg-dark-slate {
+  background-color: #1a1a1a !important;
+}
+.accent-text {
+  color: #f6821f !important;
+}
+.text-emerald-400,
+.text-emerald-500,
+.text-emerald-600 {
+  color: #f6821f !important;
+}
+.bg-emerald-50 {
+  background-color: rgba(246, 130, 31, 0.15) !important;
+}
+.bg-emerald-600 {
+  background: linear-gradient(135deg, #f6821f 0%, #fbad41 100%) !important;
+}
+.border-emerald-200 {
+  border-color: rgba(246, 130, 31, 0.3) !important;
+}
+.cta-pulse {
+  animation: pulse-glow-orange 2s ease-in-out infinite !important;
+}
+@keyframes pulse-glow-orange {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(246, 130, 31, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 4px rgba(246, 130, 31, 0.3);
+  }
 }
 
 /* Nav - Creative */

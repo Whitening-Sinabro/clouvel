@@ -41,7 +41,7 @@ PROJECT_TYPE_PATTERNS = {
     },
     "saas": {
         "files": ["src/App.tsx", "pages/pricing", "app/pricing", "stripe.ts", "checkout"],
-        "dependencies": ["stripe", "@stripe/stripe-js", "lemonsqueezy", "paddle"],
+        "dependencies": ["stripe", "@stripe/stripe-js", "polar-sh", "paddle"],
         "description": "SaaS MVP"
     }
 }

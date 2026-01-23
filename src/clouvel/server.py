@@ -537,7 +537,7 @@ TOOL_DEFINITIONS = [
     # === License Tools ===
     Tool(
         name="activate_license",
-        description="라이선스 활성화. Lemon Squeezy 또는 테스트 라이선스 지원.",
+        description="라이선스 활성화. Polar.sh 또는 테스트 라이선스 지원.",
         inputSchema={
             "type": "object",
             "properties": {

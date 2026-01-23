@@ -114,6 +114,7 @@ function toggleBilling(type) {
   const yearlyBtn = document.getElementById("yearly-btn");
   const monthlyPrices = document.querySelectorAll(".monthly-price");
   const yearlyPrices = document.querySelectorAll(".yearly-price");
+  const checkoutLinks = document.querySelectorAll(".checkout-link");
 
   if (type === "monthly") {
     // Update button styles
@@ -125,6 +126,13 @@ function toggleBilling(type) {
     // Show monthly, hide yearly
     monthlyPrices.forEach((el) => el.classList.remove("hidden"));
     yearlyPrices.forEach((el) => el.classList.add("hidden"));
+
+    // Update checkout links to monthly
+    checkoutLinks.forEach((link) => {
+      if (link.dataset.monthly) {
+        link.href = link.dataset.monthly;
+      }
+    });
   } else {
     // Update button styles
     yearlyBtn.classList.add("bg-white", "text-dark-slate", "shadow-sm");
@@ -135,8 +143,22 @@ function toggleBilling(type) {
     // Show yearly, hide monthly
     yearlyPrices.forEach((el) => el.classList.remove("hidden"));
     monthlyPrices.forEach((el) => el.classList.add("hidden"));
+
+    // Update checkout links to yearly
+    checkoutLinks.forEach((link) => {
+      if (link.dataset.yearly) {
+        link.href = link.dataset.yearly;
+      }
+    });
   }
 }
+
+// Store original monthly links on load
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".checkout-link").forEach((link) => {
+    link.dataset.monthly = link.href;
+  });
+});
 
 // Make toggleBilling globally available
 window.toggleBilling = toggleBilling;

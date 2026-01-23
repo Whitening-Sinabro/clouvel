@@ -58,6 +58,7 @@ src/clouvel/tools/roles.py
 src/clouvel/tools/security.py
 src/clouvel/tools/manager/
 src/clouvel/tools/ship_pro.py
+src/clouvel/db/
 src/shovel/
 
 # 인프라 (배포 스크립트)

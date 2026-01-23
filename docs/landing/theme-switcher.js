@@ -166,6 +166,11 @@ class ThemeSwitcher {
     this.currentTheme = themeName;
     this.themeStylesheet.href = theme.file;
 
+    // Apply layout if layoutManager exists
+    if (window.layoutManager) {
+      window.layoutManager.applyLayout(themeName);
+    }
+
     // Handle dark mode availability
     const darkModeBtn = document.getElementById("dark-mode-btn");
     if (darkModeBtn) {

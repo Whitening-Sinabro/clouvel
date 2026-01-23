@@ -89,6 +89,7 @@ src/clouvel/templates/
 # Claude 로컬 설정
 .claude/settings.local.json
 .claude/plan.md
+.claude/planning/error-system-v2.md
 
 # 임시/테스트 파일
 nul

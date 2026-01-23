@@ -57,7 +57,11 @@ src/clouvel/tools/team.py
 src/clouvel/tools/roles.py
 src/clouvel/tools/security.py
 src/clouvel/tools/manager/
+src/clouvel/tools/ship_pro.py
 src/shovel/
+
+# 인프라 (배포 스크립트)
+infra/
 
 # 라이선스 키/시크릿
 *.key

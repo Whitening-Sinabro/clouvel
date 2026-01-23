@@ -53,6 +53,7 @@ PRD_QUESTIONS = {
         {"section": "target", "question": "주요 사용자는 누구인가요?", "example": "예: 유튜브 헤비 유저, 직장인"},
         {"section": "features", "question": "핵심 기능 3가지를 알려주세요", "example": "예: 1. 광고 자동 스킵 2. 스폰서 구간 건너뛰기 3. 통계 표시"},
         {"section": "permissions", "question": "필요한 권한은 무엇인가요?", "example": "예: activeTab, storage"},
+        {"section": "side_effects", "question": "이 기능이 기존 기능이나 다른 확장에 영향을 줄 수 있는 부분은?", "example": "예: 다른 광고 차단 확장과 충돌 가능, 사이트 로딩 속도 영향"},
         {"section": "out_of_scope", "question": "이번 버전에서 제외할 기능은?", "example": "예: Firefox 지원, 다크모드"}
     ],
     "discord-bot": [
@@ -60,6 +61,7 @@ PRD_QUESTIONS = {
         {"section": "target", "question": "주요 사용 서버 유형과 규모는?", "example": "예: 게임 커뮤니티, 100-500명"},
         {"section": "commands", "question": "핵심 명령어 3-5개를 알려주세요", "example": "예: /경고, /뮤트, /전적, /매칭"},
         {"section": "permissions", "question": "필요한 봇 권한은?", "example": "예: 메시지 관리, 멤버 관리"},
+        {"section": "side_effects", "question": "이 봇이 서버나 다른 봇에 영향을 줄 수 있는 부분은?", "example": "예: 다른 관리 봇과 권한 충돌, 메시지 삭제 시 로그 손실"},
         {"section": "out_of_scope", "question": "이번 버전에서 제외할 기능은?", "example": "예: 음성 기능, 대시보드"}
     ],
     "cli": [
@@ -67,6 +69,7 @@ PRD_QUESTIONS = {
         {"section": "target", "question": "주요 사용자는 누구인가요?", "example": "예: 백엔드 개발자"},
         {"section": "commands", "question": "핵심 명령어 3-5개를 알려주세요", "example": "예: init, run, build, deploy"},
         {"section": "options", "question": "주요 옵션/플래그는?", "example": "예: --verbose, --config, --dry-run"},
+        {"section": "side_effects", "question": "이 CLI가 시스템이나 기존 파일에 영향을 줄 수 있는 부분은?", "example": "예: 기존 설정 파일 덮어쓰기, 전역 패키지 설치"},
         {"section": "out_of_scope", "question": "이번 버전에서 제외할 기능은?", "example": "예: GUI, 자동 업데이트"}
     ],
     "landing-page": [
@@ -74,6 +77,7 @@ PRD_QUESTIONS = {
         {"section": "target", "question": "타겟 방문자는 누구인가요?", "example": "예: 스타트업 창업자, 개발자"},
         {"section": "cta", "question": "Primary CTA(전환 목표)는?", "example": "예: 얼리버드 가입, 데모 신청"},
         {"section": "sections", "question": "필요한 섹션들을 나열해주세요", "example": "예: Hero, Problem, Solution, Features, Pricing, FAQ"},
+        {"section": "side_effects", "question": "이 페이지가 기존 마케팅이나 브랜딩에 영향을 줄 수 있는 부분은?", "example": "예: 기존 홈페이지와 디자인 불일치, SEO 키워드 충돌"},
         {"section": "metrics", "question": "목표 지표는?", "example": "예: 전환율 5%, 이탈률 40% 미만"}
     ],
     "api": [
@@ -81,6 +85,7 @@ PRD_QUESTIONS = {
         {"section": "clients", "question": "주요 API 소비자는?", "example": "예: 웹 프론트엔드, 모바일 앱"},
         {"section": "endpoints", "question": "핵심 엔드포인트 5개를 알려주세요", "example": "예: POST /auth/login, GET /users, POST /orders"},
         {"section": "auth", "question": "인증 방식은?", "example": "예: JWT Bearer Token"},
+        {"section": "side_effects", "question": "이 API가 기존 시스템이나 데이터에 영향을 줄 수 있는 부분은?", "example": "예: 기존 API 버전과 호환성, DB 스키마 변경, 캐시 무효화"},
         {"section": "out_of_scope", "question": "이번 버전에서 제외할 것은?", "example": "예: GraphQL, WebSocket"}
     ],
     "web-app": [
@@ -88,6 +93,7 @@ PRD_QUESTIONS = {
         {"section": "target", "question": "주요 사용자는 누구인가요?", "example": "예: 20-30대 직장인, 다이어터"},
         {"section": "features", "question": "핵심 기능 3-5개를 알려주세요", "example": "예: 1. 식단 기록 2. 칼로리 계산 3. 주간 리포트"},
         {"section": "pages", "question": "주요 페이지/화면은?", "example": "예: 로그인, 대시보드, 기록 입력, 통계"},
+        {"section": "side_effects", "question": "이 기능이 기존 화면이나 사용자 경험에 영향을 줄 수 있는 부분은?", "example": "예: 기존 UI 레이아웃 변경, 로딩 속도 영향, 기존 데이터 마이그레이션"},
         {"section": "out_of_scope", "question": "이번 버전에서 제외할 기능은?", "example": "예: 소셜 기능, 다국어"}
     ],
     "saas": [
@@ -96,6 +102,7 @@ PRD_QUESTIONS = {
         {"section": "features", "question": "핵심 기능 3-5개를 알려주세요", "example": "예: 1. 드래그앤드롭 빌더 2. 템플릿 3. 커스텀 도메인"},
         {"section": "pricing", "question": "가격 구조는? (Free/Pro 등)", "example": "예: Free $0 (3개 제한), Pro $15/월 (무제한)"},
         {"section": "payment", "question": "결제 방식은?", "example": "예: Stripe 구독, 연/월 결제"},
+        {"section": "side_effects", "question": "이 기능이 기존 사용자나 결제에 영향을 줄 수 있는 부분은?", "example": "예: 기존 요금제 사용자 영향, 기존 데이터 마이그레이션, 결제 플로우 변경"},
         {"section": "out_of_scope", "question": "이번 버전에서 제외할 기능은?", "example": "예: 팀 기능, 모바일 앱"}
     ],
     "generic": [
@@ -103,6 +110,7 @@ PRD_QUESTIONS = {
         {"section": "target", "question": "주요 사용자/대상은 누구인가요?"},
         {"section": "features", "question": "핵심 기능 3-5개를 알려주세요"},
         {"section": "tech", "question": "사용할 기술 스택은?"},
+        {"section": "side_effects", "question": "이 기능이 기존 시스템에 영향을 줄 수 있는 부분은?", "example": "예: 기존 API 호환성, DB 변경, 성능 영향"},
         {"section": "out_of_scope", "question": "이번 버전에서 제외할 것은?"}
     ]
 }

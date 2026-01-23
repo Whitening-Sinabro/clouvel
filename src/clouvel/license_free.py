@@ -30,7 +30,9 @@ def _get_machine_id() -> str:
     components.append(platform.machine())
 
     mac = uuid.getnode()
-    if (mac >> 40) % 2 == 0:
+    # MAC 주소가 유효한지 확인 (랜덤 생성된 경우 40번째 비트가 1)
+    # 또한 0이 아닌지 확인
+    if mac and (mac >> 40) % 2 == 0:
         mac_str = ':'.join(f'{(mac >> i) & 0xff:02x}' for i in range(0, 48, 8))
         components.append(mac_str)
 

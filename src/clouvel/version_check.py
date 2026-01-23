@@ -15,7 +15,7 @@ CACHE_FILE = CACHE_DIR / "version_cache.json"
 CACHE_TTL = 86400  # 24시간 (초)
 
 # 현재 버전 (pyproject.toml과 동기화)
-CURRENT_VERSION = "1.3.4"
+CURRENT_VERSION = "1.3.10"
 
 
 def _get_current_version() -> str:
@@ -77,7 +77,7 @@ def _compare_versions(current: str, latest: str) -> int:
         # "1.3.3" -> [1, 3, 3]
         try:
             return [int(x) for x in v.split(".")]
-        except:
+        except (ValueError, AttributeError):
             return [0]
 
     curr_parts = parse(current)

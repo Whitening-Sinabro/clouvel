@@ -6,12 +6,16 @@
 
 ## 완료 (Completed)
 
+- **Polar.sh 마이그레이션 완료**
+  - Lemon Squeezy → Polar.sh 전환
+  - 상품 6종 생성 (월간/연간)
+  - Worker 라이선스 검증 Polar.sh API 연동
+  - 랜딩페이지 가격/체크아웃 링크 업데이트
+  - 코드베이스 Lemon Squeezy 참조 제거
 - PRD 설명 섹션 추가 (index.html)
 - ROADMAP.md에서 크몽 관련 내용 전체 제거
 - v1.4 목표 현실적으로 수정 (안정화 + 크로스플랫폼)
 - KmongMCP 프로젝트 분리 완료
-- ROADMAP.md 크몽 제거
-- v1.4 목표 수정
 - .gitignore 정리
 - FAQ 페이지 추가
 - **ship.py Pro 코드 stub 전환** (417줄 → 70줄 stub)
@@ -24,7 +28,7 @@
 - **PyPI v1.3.9 배포**
   - Pro 활성화 플로우 구현
   - 에러 처리 강화 (재시도, 지수 백오프)
-  - 테스트 라이선스 만료 로직 (2025-01-28)
+  - 테스트 라이선스 만료 로직 (2026-01-28)
   - README 문서화
 
 ---
@@ -32,18 +36,23 @@
 ## 진행중 (In Progress)
 
 - v1.4 안정화
+  - 코드 점검 + 버그 수정
+  - 리팩토링
+  - 템플릿 문서 작성
 
 ---
 
 ## 블로커 (Blockers)
 
-_(없음)_
+- Polar.sh Payout 계정 인증 대기 중
 
 ---
 
 ## 다음 할 일 (Next)
 
-- 템플릿 8종 테스트 (web-app, api, cli, chrome-ext, discord-bot, landing-page, saas, generic)
+- 코드 점검 + 버그 수정
+- 리팩토링
+- 템플릿 8종 문서 작성
 
 ---
 

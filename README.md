@@ -7,6 +7,12 @@
 
 ---
 
+## v1.3.9 (2026-01-23)
+
+- **Pro 배포 인프라**: S3 기반 Pro 모듈 자동 다운로드
+- **activate 개선**: 라이선스 활성화 시 Pro 자동 설치
+- **에러 처리 강화**: 네트워크 재시도, 지수 백오프
+
 ## v1.3.8 (2026-01-23)
 
 - **manager 개선**: relevance score 기반 질문 필터링 (삼천포 방지)
@@ -267,11 +273,26 @@ You: "커밋 전에 자동으로 검사하게 해줘"
 
 더 강력한 기능이 필요하다면 **Clouvel Pro**를 확인하세요.
 
-- **Shovel 워크플로우** 자동 설치
-- **에러 학습 시스템**
-- **Context 관리 도구**
+### Pro 기능
 
-**[Clouvel Pro 보러가기](https://whitening-sinabro.github.io/clouvel/)**
+- **Manager**: 8명 C-Level 매니저 피드백 (PM, CTO, QA, CDO, CMO, CFO, CSO, Error)
+- **Ship**: 원클릭 테스트→검증→증거 생성
+- **Error Learning**: 에러 패턴 학습 + NEVER/ALWAYS 규칙 자동 생성
+- **Shovel 워크플로우** 자동 설치
+
+### Pro 활성화
+
+```bash
+# 1. 설치
+pip install clouvel
+
+# 2. 라이선스 활성화
+clouvel activate <LICENSE_KEY>
+
+# 자동으로 Pro 모듈 9개 다운로드 & 설치됨
+```
+
+**[Clouvel Pro 구매하기](https://clouvel.lemonsqueezy.com)**
 
 ---
 

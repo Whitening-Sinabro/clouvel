@@ -35,6 +35,9 @@ DOWNLOAD_API_URL = os.environ.get(
     "https://clouvel-pro-download.vnddns999.workers.dev"
 )
 
+# Worker 배포 완료: 2025-01-23
+# Version ID: 2d43d994-df4a-4c26-a523-6c8440d007cb
+
 # Pro 모듈 목록
 PRO_MODULES = [
     "manager",
@@ -67,24 +70,46 @@ def get_cached_license_key() -> Optional[str]:
     return os.environ.get("CLOUVEL_LICENSE")
 
 
-def download_file(url: str, dest_path: Path) -> bool:
-    """URL에서 파일 다운로드"""
+def download_file(url: str, dest_path: Path, max_retries: int = 3) -> bool:
+    """URL에서 파일 다운로드 (재시도 지원)"""
     if requests is None:
         print("requests 패키지가 필요합니다: pip install requests")
         return False
 
-    try:
-        response = requests.get(url, stream=True, timeout=60)
-        response.raise_for_status()
+    import time
 
-        with open(dest_path, "wb") as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
-        return True
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, stream=True, timeout=60)
+            response.raise_for_status()
 
-    except Exception as e:
-        print(f"다운로드 실패: {e}")
-        return False
+            with open(dest_path, "wb") as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            return True
+
+        except requests.exceptions.Timeout:
+            if attempt < max_retries - 1:
+                print(f"  타임아웃, 재시도 중... ({attempt + 1}/{max_retries})")
+                time.sleep(2 ** attempt)  # 지수 백오프
+            else:
+                print("다운로드 실패: 연결 시간 초과")
+                return False
+        except requests.exceptions.ConnectionError:
+            if attempt < max_retries - 1:
+                print(f"  연결 실패, 재시도 중... ({attempt + 1}/{max_retries})")
+                time.sleep(2 ** attempt)
+            else:
+                print("다운로드 실패: 네트워크 연결 오류")
+                return False
+        except Exception as e:
+            print(f"다운로드 실패: {e}")
+            # 부분 다운로드 파일 삭제
+            if dest_path.exists():
+                dest_path.unlink()
+            return False
+
+    return False
 
 
 def verify_hash(file_path: Path, expected_hash: str) -> bool:
@@ -100,31 +125,43 @@ def verify_hash(file_path: Path, expected_hash: str) -> bool:
 def get_download_url(
     license_key: str,
     file_name: str,
-    version: Optional[str] = None
+    version: Optional[str] = None,
+    max_retries: int = 3
 ) -> Dict[str, Any]:
-    """Worker API에서 다운로드 URL 요청"""
+    """Worker API에서 다운로드 URL 요청 (재시도 지원)"""
     if requests is None:
         return {"error": "requests 패키지가 필요합니다"}
 
-    try:
-        response = requests.post(
-            f"{DOWNLOAD_API_URL}/download",
-            json={
-                "license_key": license_key,
-                "file": file_name,
-                "version": version
-            },
-            timeout=15
-        )
+    import time
 
-        return response.json()
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(
+                f"{DOWNLOAD_API_URL}/download",
+                json={
+                    "license_key": license_key,
+                    "file": file_name,
+                    "version": version
+                },
+                timeout=15
+            )
 
-    except requests.exceptions.Timeout:
-        return {"error": "연결 시간 초과"}
-    except requests.exceptions.ConnectionError:
-        return {"error": "네트워크 연결 실패"}
-    except Exception as e:
-        return {"error": str(e)}
+            return response.json()
+
+        except requests.exceptions.Timeout:
+            if attempt < max_retries - 1:
+                time.sleep(2 ** attempt)
+                continue
+            return {"error": "연결 시간 초과 (재시도 실패)"}
+        except requests.exceptions.ConnectionError:
+            if attempt < max_retries - 1:
+                time.sleep(2 ** attempt)
+                continue
+            return {"error": "네트워크 연결 실패 (재시도 실패)"}
+        except Exception as e:
+            return {"error": str(e)}
+
+    return {"error": "알 수 없는 오류"}
 
 
 def download_pro(

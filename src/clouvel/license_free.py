@@ -48,7 +48,13 @@ def get_machine_id() -> str:
 
 
 def get_cached_license() -> dict:
-    """캐시된 라이선스 조회 (Free 버전은 None)"""
+    """캐시된 라이선스 조회"""
+    import json
+    if LICENSE_FILE.exists():
+        try:
+            return json.loads(LICENSE_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            pass
     return None
 
 
@@ -62,22 +68,68 @@ def verify_license(license_key: str = None, check_machine_id: bool = True) -> di
 
 
 def activate_license_cli(license_key: str) -> dict:
-    """CLI용 라이선스 활성화 (Free 버전)"""
-    return {
-        "success": False,
-        "message": """Clouvel Pro 라이선스가 필요합니다.
+    """CLI용 라이선스 활성화 (Free 버전 → Pro 다운로드)"""
+    import json
 
-구매: https://clouvel.lemonsqueezy.com
+    if not license_key:
+        return {
+            "success": False,
+            "message": "라이선스 키를 입력하세요."
+        }
 
-활성화 방법:
-1. 위 링크에서 라이선스 구매
-2. clouvel activate <LICENSE_KEY> 실행
-"""
-    }
+    # 1. 라이선스 키 저장
+    try:
+        license_data = {
+            "license_key": license_key,
+            "activated_at": datetime.now().isoformat(),
+            "machine_id": _get_machine_id()
+        }
+        LICENSE_FILE.write_text(json.dumps(license_data, indent=2), encoding="utf-8")
+    except Exception as e:
+        return {
+            "success": False,
+            "message": f"라이선스 저장 실패: {e}"
+        }
+
+    # 2. Pro 모듈 다운로드
+    try:
+        from .pro_downloader import install_pro
+        result = install_pro(license_key=license_key)
+
+        if result["success"]:
+            installed = ", ".join(result["installed"])
+            return {
+                "success": True,
+                "message": f"""Clouvel Pro 활성화 완료!
+
+설치된 모듈: {installed}
+버전: {result.get('version', 'unknown')}
+
+Pro 기능을 사용할 수 있습니다."""
+            }
+        else:
+            failed = [f["module"] for f in result.get("failed", [])]
+            return {
+                "success": False,
+                "message": f"일부 모듈 설치 실패: {failed}\n라이선스 키를 확인하세요."
+            }
+    except Exception as e:
+        return {
+            "success": False,
+            "message": f"Pro 다운로드 실패: {e}\n라이선스 키가 유효한지 확인하세요."
+        }
 
 
 def get_license_status() -> dict:
-    """CLI용 라이선스 상태 확인 (Free 버전)"""
+    """CLI용 라이선스 상태 확인"""
+    cached = get_cached_license()
+    if cached:
+        return {
+            "has_license": True,
+            "license_key": cached.get("license_key", "")[:12] + "...",
+            "activated_at": cached.get("activated_at"),
+            "message": "라이선스가 활성화되어 있습니다."
+        }
     return {
         "has_license": False,
         "message": "라이선스가 없습니다.\n\n구매: https://clouvel.lemonsqueezy.com"
@@ -85,7 +137,19 @@ def get_license_status() -> dict:
 
 
 def deactivate_license_cli() -> dict:
-    """CLI용 라이선스 비활성화 (Free 버전)"""
+    """CLI용 라이선스 비활성화"""
+    if LICENSE_FILE.exists():
+        try:
+            LICENSE_FILE.unlink()
+            return {
+                "success": True,
+                "message": "라이선스가 비활성화되었습니다."
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "message": f"라이선스 파일 삭제 실패: {e}"
+            }
     return {
         "success": True,
         "message": "라이선스가 없습니다."

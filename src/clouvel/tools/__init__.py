@@ -64,12 +64,21 @@ from .start import (
     save_prd,
 )
 
-from .manager import (
-    manager,
-    ask_manager,
-    list_managers,
-    MANAGERS,
-)
+# Manager 도구 (Pro 기능 - 폴더가 없으면 스킵)
+try:
+    from .manager import (
+        manager,
+        ask_manager,
+        list_managers,
+        MANAGERS,
+    )
+    _HAS_MANAGER = True
+except ImportError:
+    _HAS_MANAGER = False
+    manager = None
+    ask_manager = None
+    list_managers = None
+    MANAGERS = {}
 
 from .ship import (
     ship,
@@ -86,6 +95,11 @@ try:
         log_error,
         analyze_error,
         get_error_summary,
+        # v2.0 새 도구
+        error_search,
+        error_resolve,
+        error_get,
+        error_stats,
     )
     _HAS_ERRORS = True
 except ImportError:
@@ -96,6 +110,10 @@ except ImportError:
     log_error = None
     analyze_error = None
     get_error_summary = None
+    error_search = None
+    error_resolve = None
+    error_get = None
+    error_stats = None
 
 # Pro 기능은 clouvel-pro 패키지로 분리됨
 # pip install clouvel-pro
@@ -125,6 +143,7 @@ __all__ = [
     "manager", "ask_manager", "list_managers", "MANAGERS",
     # ship (Pro, v1.2)
     "ship", "quick_ship", "full_ship",
-    # errors (Pro, v1.4)
+    # errors (Pro, v1.4, v2.0)
     "error_record", "error_check", "error_learn", "log_error", "analyze_error", "get_error_summary",
+    "error_search", "error_resolve", "error_get", "error_stats",
 ]

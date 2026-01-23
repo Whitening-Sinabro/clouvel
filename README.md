@@ -7,6 +7,19 @@
 
 ---
 
+## v1.3.13 (2026-01-24)
+
+- **Import 수정**: manager 모듈 조건부 import (Free 버전 호환)
+
+## v1.3.12 (2026-01-24)
+
+- **Windows 지원**: cp949 인코딩 이슈 수정
+- **플랫폼별 Python**: Windows는 `py`, Linux/Mac은 `python3` 자동 선택
+
+## v1.3.11 (2026-01-23)
+
+- **동적 회의록**: manager에 Claude API 연동 회의록 생성 추가
+
 ## v1.3.10 (2026-01-23)
 
 - **Polar.sh 연동**: 라이선스 결제/검증 Polar.sh로 이전
@@ -53,18 +66,40 @@
 pip install clouvel
 ```
 
+> **Windows 완벽 지원** - v1.3.12부터 Windows cp949 인코딩 이슈 해결
+
 ---
 
 ## Claude Code 연동
 
-`claude_desktop_config.json`에 추가:
+### 자동 설치 (권장)
 
+```bash
+# clouvel이 자동으로 플랫폼 감지
+clouvel install
+```
+
+### 수동 설치
+
+**Windows:**
 ```json
 {
   "mcpServers": {
     "clouvel": {
-      "command": "uvx",
-      "args": ["clouvel"]
+      "command": "py",
+      "args": ["-m", "clouvel.server"]
+    }
+  }
+}
+```
+
+**Mac/Linux:**
+```json
+{
+  "mcpServers": {
+    "clouvel": {
+      "command": "python3",
+      "args": ["-m", "clouvel.server"]
     }
   }
 }

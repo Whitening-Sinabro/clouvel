@@ -7,6 +7,26 @@
 
 ---
 
+## v1.3.8 (2026-01-23)
+
+- **manager 개선**: relevance score 기반 질문 필터링 (삼천포 방지)
+- **크리티컬 체크**: 각 매니저별 누락 사항/보안 이슈 자동 검출
+- **승인 상태**: BLOCKED / NEEDS_REVISION / APPROVED 표시
+
+## v1.3.7 (2026-01-22)
+
+- **Antigravity 지원**: Google Antigravity 연동 가이드 추가
+- **Pro 안정화**: 도구 안정성 개선
+
+## v1.3.6 (2026-01-22)
+
+- **FAQ 페이지**: 자주 묻는 질문 문서 추가
+- **안정화**: gitignore 정리, 도구 안정성 개선
+
+## v1.3.5 (2026-01-22)
+
+- **PyPI 수정**: license_free.py stub 추가 (배포 오류 수정)
+
 ## v1.3.4 (2026-01-22)
 
 - **템플릿 8종**: web-app, api, cli, chrome-ext, discord-bot, landing-page, saas, generic

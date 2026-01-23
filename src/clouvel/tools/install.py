@@ -53,45 +53,66 @@ def _detect_platform() -> list[str]:
     return available
 
 
+def _get_python_command() -> list[str]:
+    """플랫폼별 Python 명령어 반환"""
+    if sys.platform == "win32":
+        # Windows: py -m clouvel.server
+        return ["py", "-m", "clouvel.server"]
+    else:
+        # Linux/Mac/WSL: python3 -m clouvel.server
+        return ["python3", "-m", "clouvel.server"]
+
+
 def _install_for_code(force: bool = False) -> dict:
     """Claude Code에 MCP 등록"""
     result = {"platform": "code", "success": False, "message": ""}
 
     try:
-        # 기존 등록 확인
+        # 기존 등록 확인 (encoding 명시로 Windows cp949 문제 해결)
         check = subprocess.run(
             ["claude", "mcp", "list"],
             capture_output=True,
             text=True,
+            encoding='utf-8',
+            errors='replace',
             timeout=10
         )
 
-        if "clouvel" in check.stdout and not force:
+        stdout = check.stdout or ""
+
+        if "clouvel" in stdout and not force:
             result["success"] = True
             result["message"] = "이미 등록됨"
             result["skipped"] = True
             return result
 
         # 등록 (force면 기존 것 제거 후 등록)
-        if force and "clouvel" in check.stdout:
+        if force and "clouvel" in stdout:
             subprocess.run(
                 ["claude", "mcp", "remove", "clouvel"],
                 capture_output=True,
+                encoding='utf-8',
+                errors='replace',
                 timeout=10
             )
 
+        # 플랫폼별 Python 명령어 사용
+        python_cmd = _get_python_command()
         add_result = subprocess.run(
-            ["claude", "mcp", "add", "clouvel", "-s", "user", "--", "clouvel"],
+            ["claude", "mcp", "add", "clouvel", "-s", "user", "--"] + python_cmd,
             capture_output=True,
             text=True,
+            encoding='utf-8',
+            errors='replace',
             timeout=30
         )
 
         if add_result.returncode == 0:
             result["success"] = True
-            result["message"] = "등록 완료"
+            result["message"] = f"등록 완료 ({' '.join(python_cmd)})"
         else:
-            result["message"] = f"등록 실패: {add_result.stderr.strip()}"
+            stderr = add_result.stderr or ""
+            result["message"] = f"등록 실패: {stderr.strip()}"
 
     except FileNotFoundError:
         result["message"] = "claude 명령어 없음"
@@ -128,10 +149,11 @@ def _install_for_desktop(force: bool = False) -> dict:
             result["skipped"] = True
             return result
 
-        # clouvel 서버 추가
+        # clouvel 서버 추가 (플랫폼별 Python 명령어)
+        python_cmd = _get_python_command()
         config["mcpServers"]["clouvel"] = {
-            "command": "uvx",
-            "args": ["clouvel"]
+            "command": python_cmd[0],
+            "args": python_cmd[1:]
         }
 
         # 저장
@@ -226,9 +248,12 @@ def _verify_installation(platform: str) -> dict:
                 ["claude", "mcp", "list"],
                 capture_output=True,
                 text=True,
+                encoding='utf-8',
+                errors='replace',
                 timeout=10
             )
-            if "clouvel" in check.stdout:
+            stdout = check.stdout or ""
+            if "clouvel" in stdout:
                 result["success"] = True
                 result["message"] = "MCP 목록에 clouvel 확인됨"
             else:
@@ -288,7 +313,10 @@ def run_install(platform: Platform = "auto", force: bool = False) -> str:
             lines.append("      → 설치 가능한 플랫폼 없음")
             lines.append("")
             lines.append("수동 설치:")
-            lines.append("  Claude Code: claude mcp add clouvel -s user -- clouvel")
+            if sys.platform == "win32":
+                lines.append("  Claude Code: claude mcp add clouvel -s user -- py -m clouvel.server")
+            else:
+                lines.append("  Claude Code: claude mcp add clouvel -s user -- python3 -m clouvel.server")
             lines.append("  Desktop: claude_desktop_config.json에 clouvel 추가")
             return "\n".join(lines)
     elif platform == "all":

@@ -77,6 +77,10 @@ license*.json
 
 # Clouvel 로컬 설정/로그
 .clouvel/
+docs/.clouvel/
+
+# Archive (구버전)
+archive/
 
 # PRD 템플릿 (PyPI 전용, git 비공개)
 src/clouvel/templates/
@@ -87,7 +91,6 @@ src/clouvel/templates/
 
 # 임시/테스트 파일
 nul
-D:test-project/
 
 # 이미지/스크린샷
 *.png

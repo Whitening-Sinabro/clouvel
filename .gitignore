@@ -90,3 +90,4 @@ D:test-project/
 *.jpg
 *.jpeg
 KakaoTalk_*.png
+tests/test_manager.py

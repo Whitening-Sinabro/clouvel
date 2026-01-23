@@ -98,3 +98,4 @@ nul
 *.jpeg
 KakaoTalk_*.png
 tests/test_manager.py
+.env

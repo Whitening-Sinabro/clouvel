@@ -429,14 +429,16 @@ TOOL_DEFINITIONS = [
     # === Manager Tool (Pro, v1.2) ===
     Tool(
         name="manager",
-        description="8명 C-Level 매니저의 컨텍스트 기반 협업 피드백. PM/CTO/QA/CDO/CMO/CFO/CSO/Error. (Pro)",
+        description="8명 C-Level 매니저의 컨텍스트 기반 협업 피드백. PM/CTO/QA/CDO/CMO/CFO/CSO/Error. use_dynamic=true로 자연스러운 회의록 생성. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
                 "context": {"type": "string", "description": "검토할 내용 (플랜, 코드, 질문 등)"},
                 "mode": {"type": "string", "enum": ["auto", "all", "specific"], "description": "매니저 선택 모드"},
                 "managers": {"type": "array", "items": {"type": "string"}, "description": "mode=specific일 때 매니저 목록"},
-                "include_checklist": {"type": "boolean", "description": "체크리스트 포함 여부"}
+                "include_checklist": {"type": "boolean", "description": "체크리스트 포함 여부"},
+                "use_dynamic": {"type": "boolean", "description": "true면 Claude API로 자연스러운 회의록 생성 (ANTHROPIC_API_KEY 필요)"},
+                "topic": {"type": "string", "enum": ["auth", "api", "payment", "ui", "feature", "launch", "error", "security", "performance", "maintenance", "design"], "description": "회의 토픽 힌트 (use_dynamic=true일 때)"}
             },
             "required": ["context"]
         }
@@ -722,6 +724,25 @@ async def _wrap_save_prd(args: dict) -> list[TextContent]:
 
 async def _wrap_manager(args: dict) -> list[TextContent]:
     """manager 도구 래퍼"""
+    use_dynamic = args.get("use_dynamic", False)
+
+    # 동적 회의록 생성 모드
+    if use_dynamic:
+        try:
+            from .tools.manager.generator import generate_meeting_sync
+            meeting_output = generate_meeting_sync(
+                context=args.get("context", ""),
+                topic=args.get("topic", None),
+                auto_log=True
+            )
+            return [TextContent(type="text", text=meeting_output)]
+        except ImportError:
+            return [TextContent(type="text", text="anthropic 패키지가 필요합니다: pip install anthropic")]
+        except Exception as e:
+            # API 키 없거나 에러 시 기존 방식으로 폴백
+            return [TextContent(type="text", text=f"동적 회의록 생성 실패: {e}\n\n기존 방식으로 진행합니다.")]
+
+    # 기존 정적 피드백
     result = manager(
         context=args.get("context", ""),
         mode=args.get("mode", "auto"),

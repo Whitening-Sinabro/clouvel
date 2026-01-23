@@ -4,6 +4,46 @@
 
 ---
 
+## 유지보수 범위
+
+> **결정: 랜딩페이지와 Clouvel MCP 서버는 분리 유지보수**
+
+### C-Level 회의록 (2026-01-23)
+
+**👔 PM**: 유지보수 범위 최종 결정합니다. 랜딩페이지만 할지, Clouvel MCP 서버까지 포함할지. 현재 `docs/landing/`에 독립적으로 있고, MCP 서버는 `src/clouvel/`에 Python 패키지로 있어요.
+
+**🛠️ CTO**: **분리**가 맞아요. 이유는 세 가지:
+
+1. **배포 주기 다름** - 랜딩은 마케팅 이벤트에 맞춰 자주 변경, MCP는 버전 릴리스 주기
+2. **기술 스택 다름** - 랜딩은 HTML/CSS/JS, MCP는 Python
+3. **책임 분리** - 랜딩 깨져도 MCP 동작에 영향 없어야 함
+
+**🧪 QA**: CTO 동의해요. 테스트도 분리해야 해요. 랜딩은 시각적 회귀 테스트 (Playwright), MCP는 pytest. 섞으면 CI 복잡해지고 실패 원인 추적 어려워요.
+
+**🔥 ERROR**: 운영 관점에서도 분리 맞아요. 장애 격리 원칙이에요. 랜딩 CDN 터져도 MCP 서버는 정상 동작해야 하고, 반대도 마찬가지.
+
+**📢 CMO**: 마케팅 관점 추가하면, 랜딩은 빠른 실험이 필요해요. A/B 테스트, 테마 변경, 카피 수정 등. MCP 배포 기다릴 수 없어요.
+
+**👔 PM**: 만장일치네요. 정리하면:
+
+- **랜딩페이지**: `docs/landing/` - 이 문서로 관리
+- **Clouvel MCP**: `src/clouvel/` - 별도 CONTRIBUTING.md로 관리
+- **공통 브랜딩**: 색상/로고는 동기화 유지
+
+---
+
+### 최종 결정 요약
+
+| 항목   | 랜딩페이지               | Clouvel MCP     |
+| ------ | ------------------------ | --------------- |
+| 위치   | `docs/landing/`          | `src/clouvel/`  |
+| 문서   | MAINTENANCE.md (이 문서) | CONTRIBUTING.md |
+| 테스트 | Playwright (시각적)      | pytest          |
+| 배포   | GitHub Pages             | PyPI            |
+| 주기   | 수시 (마케팅 연동)       | 버전 릴리스     |
+
+---
+
 ## 파일 구조
 
 ```
@@ -159,9 +199,10 @@ v{major}.{minor}.{patch}
 
 ### 변경 기록
 
-| 버전   | 날짜       | 변경 내용                              |
-| ------ | ---------- | -------------------------------------- |
-| v1.0.0 | 2026-01-23 | 6개 테마 + 레이아웃 시스템 초기 릴리스 |
+| 버전   | 날짜       | 변경 내용                                          |
+| ------ | ---------- | -------------------------------------------------- |
+| v1.1.0 | 2026-01-23 | 유지보수 범위 결정 (분리), 에러 핸들링 가이드 추가 |
+| v1.0.0 | 2026-01-23 | 6개 테마 + 레이아웃 시스템 초기 릴리스             |
 
 ---
 
@@ -230,6 +271,39 @@ localStorage.getItem("clouvel-mode");
 // 초기화
 localStorage.removeItem("clouvel-theme");
 localStorage.removeItem("clouvel-mode");
+```
+
+### localStorage Fallback (권장 구현)
+
+```javascript
+// theme-switcher.js에 추가 권장
+function getSavedTheme() {
+  try {
+    return localStorage.getItem("clouvel-theme");
+  } catch (e) {
+    console.warn("localStorage 접근 실패, 기본 테마 사용");
+    return null;
+  }
+}
+
+function saveTheme(theme) {
+  try {
+    localStorage.setItem("clouvel-theme", theme);
+  } catch (e) {
+    console.warn("localStorage 저장 실패");
+  }
+}
+```
+
+### CDN 장애 대비
+
+```html
+<!-- Tailwind CDN 실패 시 로컬 폴백 (선택) -->
+<script>
+  if (!window.tailwind) {
+    document.write('<link rel="stylesheet" href="fallback/tailwind.min.css">');
+  }
+</script>
 ```
 
 ---

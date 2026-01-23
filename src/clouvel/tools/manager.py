@@ -323,6 +323,62 @@ CONTEXT_GROUPS = {
 # Phase 우선순위 (정렬용)
 PHASE_ORDER = {"준비": 1, "설계": 2, "구현": 3, "검증": 4}
 
+# Relevance score 임계값
+RELEVANCE_THRESHOLD = 0.3  # 이 값 미만이면 질문 제외
+
+
+def _calculate_relevance_score(question: str, context: str, manager_keywords: List[str]) -> float:
+    """질문과 컨텍스트 간의 관련도 점수를 계산합니다.
+
+    Args:
+        question: 매니저의 질문
+        context: 사용자가 제공한 컨텍스트
+        manager_keywords: 매니저의 키워드 리스트
+
+    Returns:
+        0.0 ~ 1.0 사이의 관련도 점수
+    """
+    context_lower = context.lower()
+    question_lower = question.lower()
+
+    # 불용어 (점수 계산에서 제외)
+    stopwords = {
+        "이", "가", "은", "는", "을", "를", "의", "에", "로", "와", "과", "도", "만",
+        "있", "없", "되", "하", "인", "한", "된", "나요", "가요", "어떻게", "무엇",
+        "the", "a", "an", "is", "are", "was", "were", "be", "been", "being",
+        "have", "has", "had", "do", "does", "did", "will", "would", "could",
+        "should", "may", "might", "must", "shall", "can", "need", "dare",
+        "this", "that", "these", "those", "what", "which", "who", "whom",
+        "how", "when", "where", "why", "if", "then", "else", "for", "of",
+        "to", "in", "on", "at", "by", "with", "about", "into", "through",
+        "and", "or", "but", "nor", "so", "yet", "both", "either", "neither"
+    }
+
+    # 질문에서 의미 있는 키워드 추출
+    question_words = set(question_lower.replace("?", "").replace(".", "").split())
+    question_keywords = question_words - stopwords
+
+    if not question_keywords:
+        return 0.0
+
+    score = 0.0
+    max_score = len(question_keywords)
+
+    # 1. 질문 키워드가 컨텍스트에 포함되어 있는지 체크
+    for keyword in question_keywords:
+        if len(keyword) >= 2 and keyword in context_lower:
+            score += 1.0
+
+    # 2. 매니저 키워드가 컨텍스트에 포함되어 있으면 보너스
+    manager_match_count = sum(1 for kw in manager_keywords if kw.lower() in context_lower)
+    if manager_match_count > 0:
+        score += min(manager_match_count * 0.5, 1.5)  # 최대 1.5 보너스
+
+    # 3. 정규화
+    normalized_score = score / (max_score + 1.5) if max_score > 0 else 0.0
+
+    return min(normalized_score, 1.0)
+
 
 def _generate_action_items(context: str, active_managers: List[str]) -> List[Dict[str, Any]]:
     """컨텍스트 기반으로 모든 활성 매니저의 액션 아이템을 생성합니다.
@@ -483,6 +539,9 @@ def manager(
     result["active_managers"] = active_managers
 
     # 3. 각 매니저의 피드백 생성
+    all_critical_issues = []
+    all_missing_items = []
+
     for manager_key in active_managers:
         manager_info = MANAGERS[manager_key]
         feedback = _generate_feedback(manager_key, manager_info, context)
@@ -498,6 +557,27 @@ def manager(
         # 경고 수집
         if feedback.get("warnings"):
             result["warnings"].extend(feedback["warnings"])
+
+        # 크리티컬 이슈 수집
+        if feedback.get("critical_issues"):
+            for issue in feedback["critical_issues"]:
+                all_critical_issues.append(f"[{manager_info['emoji']} {manager_key}] {issue}")
+
+        # 누락 사항 수집
+        if feedback.get("missing_items"):
+            for item in feedback["missing_items"]:
+                all_missing_items.append(f"[{manager_info['emoji']} {manager_key}] {item}")
+
+    result["critical_issues"] = all_critical_issues
+    result["missing_items"] = all_missing_items
+
+    # 전체 승인 상태 결정
+    if all_critical_issues:
+        result["overall_status"] = "BLOCKED"
+    elif result["warnings"] or all_missing_items:
+        result["overall_status"] = "NEEDS_REVISION"
+    else:
+        result["overall_status"] = "APPROVED"
 
     # 3.5. 액션 아이템 생성 (모든 활성 매니저 기반)
     action_items = _generate_action_items(context, active_managers)
@@ -575,22 +655,30 @@ def _generate_feedback(manager_key: str, manager_info: Dict, context: str) -> Di
         "questions": [],
         "concerns": [],
         "warnings": [],
-        "action_items": [],  # 개별 매니저 액션 아이템
-        "approval_status": "REVIEW_NEEDED"
+        "critical_issues": [],  # 크리티컬 이슈 (반드시 해결 필요)
+        "missing_items": [],    # 누락 사항
+        "action_items": [],     # 개별 매니저 액션 아이템
+        "approval_status": "REVIEW_NEEDED",
+        "relevance_score": 0.0
     }
 
     context_lower = context.lower()
+    manager_keywords = manager_info.get("keywords", [])
 
-    # 관련 질문 선택
+    # 관련 질문 선택 (relevance score 기반)
+    scored_questions = []
     for question in manager_info["questions"]:
-        # 질문이 컨텍스트와 관련있으면 추가
-        question_keywords = question.lower().split()
-        if any(kw in context_lower for kw in question_keywords[:3]):
-            feedback["questions"].append(question)
+        score = _calculate_relevance_score(question, context, manager_keywords)
+        if score >= RELEVANCE_THRESHOLD:
+            scored_questions.append((question, score))
 
-    # 질문이 없으면 처음 2개 질문 추가
-    if not feedback["questions"]:
-        feedback["questions"] = manager_info["questions"][:2]
+    # 점수 높은 순으로 정렬하여 상위 3개만 선택
+    scored_questions.sort(key=lambda x: x[1], reverse=True)
+    feedback["questions"] = [q for q, _ in scored_questions[:3]]
+
+    # 매니저 전체 relevance score 계산 (피드백 제외 판단용)
+    manager_relevance = sum(1 for kw in manager_keywords if kw.lower() in context_lower) / max(len(manager_keywords), 1)
+    feedback["relevance_score"] = manager_relevance
 
     # 개별 매니저 액션 아이템 생성
     templates = manager_info.get("action_templates", [])
@@ -626,7 +714,108 @@ def _generate_feedback(manager_key: str, manager_info: Dict, context: str) -> Di
             feedback["concerns"].append("🔥 에러 처리 로직 검토 필요")
             feedback["questions"].append("5 Whys 분석이 완료되었나요?")
 
+    # ═══════════════════════════════════════════════════════════════
+    # 크리티컬 체크: 컨텍스트에서 실제 문제점/누락사항 검출
+    # ═══════════════════════════════════════════════════════════════
+    _run_critical_checks(manager_key, feedback, context, context_lower)
+
+    # 최종 승인 상태 결정
+    if feedback["critical_issues"]:
+        feedback["approval_status"] = "BLOCKED"
+    elif feedback["warnings"] or feedback["missing_items"]:
+        feedback["approval_status"] = "NEEDS_REVISION"
+    elif feedback["concerns"]:
+        feedback["approval_status"] = "REVIEW_NEEDED"
+    else:
+        feedback["approval_status"] = "APPROVED"
+
     return feedback
+
+
+def _run_critical_checks(manager_key: str, feedback: Dict, context: str, context_lower: str) -> None:
+    """각 매니저별 크리티컬 체크를 실행합니다."""
+
+    # PM: PRD/스코프 관련 체크
+    if manager_key == "PM":
+        # 기능 언급 있는데 PRD 언급 없음
+        if any(kw in context_lower for kw in ["기능", "feature", "구현", "implement"]):
+            if "prd" not in context_lower and "요구사항" not in context_lower:
+                feedback["missing_items"].append("PRD 또는 요구사항 문서 참조 없음")
+        # 우선순위 미정의
+        if any(kw in context_lower for kw in ["추가", "add", "새로운", "new"]):
+            if not any(kw in context_lower for kw in ["p0", "p1", "p2", "우선순위", "priority"]):
+                feedback["concerns"].append("우선순위 미정의 - MVP 범위 확인 필요")
+
+    # CTO: 아키텍처/기술 관련 체크
+    elif manager_key == "CTO":
+        # API 변경인데 스펙 없음
+        if any(kw in context_lower for kw in ["api", "endpoint", "route"]):
+            if not any(kw in context_lower for kw in ["spec", "스펙", "문서", "doc"]):
+                feedback["missing_items"].append("API 스펙 문서화 필요")
+        # DB 변경인데 마이그레이션 언급 없음
+        if any(kw in context_lower for kw in ["schema", "스키마", "table", "테이블", "column"]):
+            if "migration" not in context_lower and "마이그레이션" not in context_lower:
+                feedback["concerns"].append("DB 스키마 변경 시 마이그레이션 계획 필요")
+        # 성능 영향 가능성
+        if any(kw in context_lower for kw in ["loop", "반복", "all", "전체", "bulk"]):
+            feedback["concerns"].append("성능 영향 검토 필요 (대량 처리 가능성)")
+
+    # QA: 테스트 관련 체크
+    elif manager_key == "QA":
+        # 기능 변경인데 테스트 언급 없음
+        if any(kw in context_lower for kw in ["구현", "implement", "변경", "change", "수정", "modify"]):
+            if not any(kw in context_lower for kw in ["test", "테스트", "검증", "verify"]):
+                feedback["missing_items"].append("테스트 계획 누락")
+        # 엣지 케이스 미고려
+        if "input" in context_lower or "입력" in context_lower:
+            if not any(kw in context_lower for kw in ["edge", "엣지", "예외", "exception", "invalid"]):
+                feedback["concerns"].append("엣지 케이스/예외 입력 처리 확인 필요")
+
+    # CSO: 보안 관련 크리티컬 체크
+    elif manager_key == "CSO":
+        # 인증 없이 민감 작업
+        if any(kw in context_lower for kw in ["delete", "삭제", "update", "수정", "admin"]):
+            if not any(kw in context_lower for kw in ["auth", "인증", "권한", "permission"]):
+                feedback["critical_issues"].append("민감 작업에 인증/권한 체크 누락 가능성")
+        # 사용자 입력 직접 사용
+        if any(kw in context_lower for kw in ["user input", "사용자 입력", "request", "req.body"]):
+            if not any(kw in context_lower for kw in ["validate", "검증", "sanitize", "escape"]):
+                feedback["critical_issues"].append("입력값 검증 로직 확인 필요")
+        # SQL/쿼리 관련
+        if "sql" in context_lower or "query" in context_lower:
+            if "parameterized" not in context_lower and "prepared" not in context_lower:
+                feedback["warnings"].append("SQL Injection 방지 확인 필요 (parameterized query 사용)")
+
+    # CDO: UI/UX 관련 체크
+    elif manager_key == "CDO":
+        # 접근성 미고려
+        if any(kw in context_lower for kw in ["button", "버튼", "input", "form", "modal"]):
+            if not any(kw in context_lower for kw in ["aria", "a11y", "접근성", "accessibility"]):
+                feedback["concerns"].append("접근성(a11y) 속성 확인 필요")
+        # 반응형 미고려
+        if any(kw in context_lower for kw in ["layout", "레이아웃", "grid", "flex"]):
+            if not any(kw in context_lower for kw in ["responsive", "반응형", "mobile", "모바일"]):
+                feedback["concerns"].append("반응형 디자인 확인 필요")
+
+    # CFO: 비용 관련 체크
+    elif manager_key == "CFO":
+        # 외부 API 사용
+        if any(kw in context_lower for kw in ["api call", "외부 api", "third party", "서드파티"]):
+            feedback["concerns"].append("외부 API 호출 비용 영향 검토 필요")
+        # 인프라 확장
+        if any(kw in context_lower for kw in ["scale", "확장", "instance", "인스턴스", "storage"]):
+            feedback["warnings"].append("인프라 비용 증가 가능성 - 예산 검토 필요")
+
+    # ERROR: 에러 처리 관련 체크
+    elif manager_key == "ERROR":
+        # try-catch 없이 위험한 작업
+        if any(kw in context_lower for kw in ["async", "await", "fetch", "request", "file"]):
+            if not any(kw in context_lower for kw in ["try", "catch", "except", "error handling"]):
+                feedback["missing_items"].append("비동기/IO 작업에 에러 핸들링 누락 가능성")
+        # 에러 로깅 미설정
+        if "error" in context_lower or "exception" in context_lower:
+            if not any(kw in context_lower for kw in ["log", "로그", "sentry", "monitoring"]):
+                feedback["concerns"].append("에러 로깅/모니터링 설정 확인 필요")
 
 
 def _check_pattern(pattern: str, context: str) -> bool:
@@ -680,6 +869,16 @@ def _format_output(result: Dict) -> str:
     lines.append("=" * 50)
     lines.append("")
 
+    # 전체 승인 상태
+    overall_status = result.get("overall_status", "REVIEW_NEEDED")
+    status_display = {
+        "APPROVED": "✅ APPROVED - 진행 가능",
+        "NEEDS_REVISION": "⚠️ NEEDS_REVISION - 수정 후 진행",
+        "BLOCKED": "🚫 BLOCKED - 크리티컬 이슈 해결 필요"
+    }.get(overall_status, "🔍 REVIEW_NEEDED")
+    lines.append(f"**전체 상태**: {status_display}")
+    lines.append("")
+
     # 활성 매니저
     manager_icons = " ".join([
         f"{MANAGERS[m]['emoji']}" for m in result["active_managers"]
@@ -687,6 +886,20 @@ def _format_output(result: Dict) -> str:
     lines.append(f"**활성 매니저**: {manager_icons}")
     lines.append(f"**감지된 토픽**: {', '.join(result['context_analysis']['detected_topics'])}")
     lines.append("")
+
+    # 크리티컬 이슈 (가장 먼저)
+    if result.get("critical_issues"):
+        lines.append("### 🚨 크리티컬 이슈 (반드시 해결)")
+        for issue in result["critical_issues"]:
+            lines.append(f"  - {issue}")
+        lines.append("")
+
+    # 누락 사항
+    if result.get("missing_items"):
+        lines.append("### 📋 누락 사항")
+        for item in result["missing_items"]:
+            lines.append(f"  - {item}")
+        lines.append("")
 
     # 경고
     if result["warnings"]:
@@ -701,15 +914,38 @@ def _format_output(result: Dict) -> str:
 
     for manager_key in result["active_managers"]:
         feedback = result["feedback"][manager_key]
-        lines.append(f"#### {feedback['emoji']} {feedback['title']}")
 
+        # 승인 상태 아이콘
+        status_icon = {
+            "APPROVED": "✅",
+            "REVIEW_NEEDED": "🔍",
+            "NEEDS_REVISION": "⚠️",
+            "BLOCKED": "🚫"
+        }.get(feedback.get("approval_status", "REVIEW_NEEDED"), "🔍")
+
+        lines.append(f"#### {feedback['emoji']} {feedback['title']} {status_icon}")
+
+        # 크리티컬 이슈 (가장 먼저 표시)
+        if feedback.get("critical_issues"):
+            lines.append("**🚨 크리티컬 이슈 (반드시 해결):**")
+            for issue in feedback["critical_issues"]:
+                lines.append(f"  - {issue}")
+
+        # 누락 사항
+        if feedback.get("missing_items"):
+            lines.append("**📋 누락 사항:**")
+            for item in feedback["missing_items"]:
+                lines.append(f"  - {item}")
+
+        # 질문 (관련도 높은 것만)
         if feedback["questions"]:
-            lines.append("**질문:**")
+            lines.append("**❓ 확인 필요:**")
             for q in feedback["questions"][:3]:
                 lines.append(f"  - {q}")
 
+        # 우려사항
         if feedback["concerns"]:
-            lines.append("**우려사항:**")
+            lines.append("**⚠️ 우려사항:**")
             for c in feedback["concerns"]:
                 lines.append(f"  - {c}")
 

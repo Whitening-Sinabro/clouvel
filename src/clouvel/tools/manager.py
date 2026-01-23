@@ -5,7 +5,7 @@ Clouvel Manager Tool - Pro 전용
 8명의 C-Level 매니저가 컨텍스트 기반 협업 피드백을 제공합니다.
 
 이 기능은 Pro 버전에서만 사용 가능합니다.
-구매: https://clouvel.lemonsqueezy.com
+구매: https://polar.sh/clouvel
 """
 
 from typing import Dict, Any, List
@@ -28,12 +28,12 @@ def manager(
     8명의 C-Level 매니저(PM, CTO, QA, CDO, CMO, CFO, CSO, ERROR)가
     컨텍스트를 분석하고 협업 피드백을 제공합니다.
 
-    구매: https://clouvel.lemonsqueezy.com
+    구매: https://polar.sh/clouvel
     """
     return {
         "error": "Pro 전용 기능입니다",
         "message": "manager 도구는 Pro 버전에서만 사용 가능합니다.",
-        "upgrade_url": "https://clouvel.lemonsqueezy.com",
+        "upgrade_url": "https://polar.sh/clouvel",
         "features": [
             "8명 C-Level 매니저 피드백",
             "컨텍스트 기반 자동 매니저 선택",
@@ -55,7 +55,7 @@ def manager(
 - Phase별 실행 계획 생성
 
 ### 구매
-https://clouvel.lemonsqueezy.com
+https://polar.sh/clouvel
 
 ==================================================
 """
@@ -74,6 +74,6 @@ def list_managers() -> List[Dict[str, str]]:
             "key": "PRO",
             "emoji": "🔒",
             "title": "Pro 전용",
-            "focus": "구매: https://clouvel.lemonsqueezy.com"
+            "focus": "구매: https://polar.sh/clouvel"
         }
     ]

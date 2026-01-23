@@ -5,7 +5,7 @@ Clouvel Ship Tool - Pro 전용
 원클릭 테스트→검증→증거 생성 도구입니다.
 
 이 기능은 Pro 버전에서만 사용 가능합니다.
-구매: https://clouvel.lemonsqueezy.com
+구매: https://polar.sh/clouvel
 """
 
 from typing import Dict, Any, List
@@ -27,12 +27,12 @@ def ship(
     - test: 테스트 실행
     - build: 빌드 검증
 
-    구매: https://clouvel.lemonsqueezy.com
+    구매: https://polar.sh/clouvel
     """
     return {
         "error": "Pro 전용 기능입니다",
         "message": "ship 도구는 Pro 버전에서만 사용 가능합니다.",
-        "upgrade_url": "https://clouvel.lemonsqueezy.com",
+        "upgrade_url": "https://polar.sh/clouvel",
         "features": [
             "lint/typecheck/test/build 자동 실행",
             "프로젝트 타입 자동 감지",
@@ -53,7 +53,7 @@ def ship(
 - 🔧 lint 에러 auto_fix 모드
 
 ### 구매
-https://clouvel.lemonsqueezy.com
+https://polar.sh/clouvel
 
 ==================================================
 """

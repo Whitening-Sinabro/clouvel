@@ -63,7 +63,7 @@ def verify_license(license_key: str = None, check_machine_id: bool = True) -> di
     return {
         "valid": False,
         "tier": None,
-        "message": "Clouvel Pro 라이선스가 필요합니다.\n\n구매: https://clouvel.lemonsqueezy.com"
+        "message": "Clouvel Pro 라이선스가 필요합니다.\n\n구매: https://polar.sh/clouvel"
     }
 
 
@@ -132,7 +132,7 @@ def get_license_status() -> dict:
         }
     return {
         "has_license": False,
-        "message": "라이선스가 없습니다.\n\n구매: https://clouvel.lemonsqueezy.com"
+        "message": "라이선스가 없습니다.\n\n구매: https://polar.sh/clouvel"
     }
 
 
@@ -170,7 +170,7 @@ def require_license(func):
 이 기능은 Pro 라이선스가 필요합니다.
 
 ## 구매
-https://clouvel.lemonsqueezy.com
+https://polar.sh/clouvel
 
 ## 가격
 - Personal: $19.99/월
@@ -189,7 +189,7 @@ def require_license_premium(func):
 이 기능은 Pro 라이선스 + 7일 경과 후 사용 가능합니다.
 
 ## 구매
-https://clouvel.lemonsqueezy.com
+https://polar.sh/clouvel
 
 ## 프리미엄 기능
 - Error Learning (error_record, error_check, error_learn)
@@ -208,7 +208,7 @@ def require_team_license(func):
 이 기능은 Team 라이선스가 필요합니다.
 
 ## 구매
-https://clouvel.lemonsqueezy.com
+https://polar.sh/clouvel
 
 ## Team 기능
 - 팀원 초대/관리

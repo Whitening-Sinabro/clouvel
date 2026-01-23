@@ -788,7 +788,7 @@ async def _wrap_error_record(args: dict) -> list[TextContent]:
 Error Learning은 Pro 라이선스가 필요합니다.
 
 ## 구매
-https://clouvel.lemonsqueezy.com
+https://polar.sh/clouvel
 """)]
     return await error_record(
         path=args.get("path", ""),
@@ -810,7 +810,7 @@ async def _wrap_error_check(args: dict) -> list[TextContent]:
 Error Learning은 Pro 라이선스가 필요합니다.
 
 ## 구매
-https://clouvel.lemonsqueezy.com
+https://polar.sh/clouvel
 """)]
     return await error_check(
         path=args.get("path", ""),
@@ -829,7 +829,7 @@ async def _wrap_error_learn(args: dict) -> list[TextContent]:
 Error Learning은 Pro 라이선스가 필요합니다.
 
 ## 구매
-https://clouvel.lemonsqueezy.com
+https://polar.sh/clouvel
 """)]
     return await error_learn(
         path=args.get("path", ""),
@@ -851,7 +851,7 @@ activate_license(license_key="YOUR-LICENSE-KEY")
 ```
 
 ## 구매
-https://clouvel.lemonsqueezy.com
+https://polar.sh/clouvel
 """)]
 
     result = activate_license_cli(license_key)
@@ -901,7 +901,7 @@ https://clouvel.lemonsqueezy.com
 - 활성화 횟수 제한 확인 (Personal: 1회)
 
 ## 구매
-https://clouvel.lemonsqueezy.com
+https://polar.sh/clouvel
 """)]
 
 
@@ -923,7 +923,7 @@ activate_license(license_key="YOUR-LICENSE-KEY")
 ```
 
 ## 구매
-https://clouvel.lemonsqueezy.com
+https://polar.sh/clouvel
 """)]
 
     tier_info = result.get("tier_info", {})
@@ -981,7 +981,7 @@ async def _upgrade_pro() -> list[TextContent]:
 
 ## 구매
 
-https://clouvel.lemonsqueezy.com
+https://polar.sh/clouvel
 
 ## 설치
 
@@ -1277,7 +1277,7 @@ def main():
 
 {result.get('message', '')}
 
-구매: https://clouvel.lemonsqueezy.com
+구매: https://polar.sh/clouvel
 ================================================================
 """)
     elif args.command == "deactivate":

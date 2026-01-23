@@ -7,6 +7,11 @@
 
 ---
 
+## v1.3.10 (2026-01-23)
+
+- **Polar.sh 연동**: 라이선스 결제/검증 Polar.sh로 이전
+- **상품 6종**: Personal/Team5/Team10 (월간/연간)
+
 ## v1.3.9 (2026-01-23)
 
 - **Pro 배포 인프라**: S3 기반 Pro 모듈 자동 다운로드
@@ -292,7 +297,7 @@ clouvel activate <LICENSE_KEY>
 # 자동으로 Pro 모듈 9개 다운로드 & 설치됨
 ```
 
-**[Clouvel Pro 구매하기](https://clouvel.lemonsqueezy.com)**
+**[Clouvel Pro 구매하기](https://polar.sh/clouvel)**
 
 ---
 

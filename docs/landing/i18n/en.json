@@ -49,7 +49,7 @@
     "problem_2_desc": "No architecture thinking - straight to code - full refactor later.",
     "problem_3_title": "Results vary every time, debugging explodes",
     "problem_3_desc": "Same prompt, different results yesterday vs today - 2-3 days debugging hell.",
-    "conclusion": "That's why PRD should be a 'gate', not an 'option'."
+    "conclusion": "That's why PRD should be a <span class=\"text-accent\">'gate'</span>, not an <span class=\"text-accent\">'option'</span>."
   },
   "how": {
     "title": "How it works",

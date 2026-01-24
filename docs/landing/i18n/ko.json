@@ -49,7 +49,7 @@
     "problem_2_desc": "아키텍처 고민 없이 - 바로 코드 - 나중에 전체 리팩토링.",
     "problem_3_title": "매번 결과가 달라지고 디버깅 폭발",
     "problem_3_desc": "같은 프롬프트인데 어제와 오늘 결과가 다름 - 2-3일 디버깅 지옥.",
-    "conclusion": "그래서 PRD는 '옵션'이 아니라 '게이트'여야 합니다."
+    "conclusion": "그래서 PRD는 <span class=\"text-accent\">'옵션'</span>이 아니라 <span class=\"text-accent\">'게이트'</span>여야 합니다."
   },
   "how": {
     "title": "작동 방식",

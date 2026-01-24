@@ -1,24 +1,53 @@
 // Simple i18n implementation for Clouvel landing page
+const SUPPORTED_LANGS = ['en', 'ko'];
+
 const i18n = {
   currentLang: 'en',
   translations: {},
+
+  getValidLang(lang) {
+    return SUPPORTED_LANGS.includes(lang) ? lang : 'en';
+  },
+
+  getStoredLang() {
+    try {
+      return localStorage.getItem('clouvel-lang');
+    } catch (e) {
+      console.warn('localStorage not available:', e);
+      return null;
+    }
+  },
+
+  setStoredLang(lang) {
+    try {
+      localStorage.setItem('clouvel-lang', lang);
+    } catch (e) {
+      console.warn('localStorage not available:', e);
+    }
+  },
 
   async init() {
     // Detect language from URL or localStorage
     const urlParams = new URLSearchParams(window.location.search);
     const urlLang = urlParams.get('lang');
-    const storedLang = localStorage.getItem('clouvel-lang');
+    const storedLang = this.getStoredLang();
 
-    this.currentLang = urlLang || storedLang || 'en';
+    // Validate and set language
+    this.currentLang = this.getValidLang(urlLang || storedLang || 'en');
 
     await this.loadTranslations(this.currentLang);
     this.applyTranslations();
     this.updateLangToggle();
+
+    // Remove loading state, show content
+    document.documentElement.classList.remove('i18n-loading');
+    document.documentElement.classList.add('i18n-ready');
   },
 
   async loadTranslations(lang) {
     try {
       const response = await fetch(`i18n/${lang}.json`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       this.translations = await response.json();
     } catch (error) {
       console.error('Failed to load translations:', error);
@@ -60,6 +89,9 @@ const i18n = {
       document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', ogTitle);
     }
 
+    // Update html lang attribute
+    document.documentElement.lang = this.currentLang;
+
     // Apply to elements with data-i18n attribute
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
@@ -96,15 +128,17 @@ const i18n = {
   },
 
   async switchLang(lang) {
-    this.currentLang = lang;
-    localStorage.setItem('clouvel-lang', lang);
-    await this.loadTranslations(lang);
+    // Validate language
+    this.currentLang = this.getValidLang(lang);
+    this.setStoredLang(this.currentLang);
+
+    await this.loadTranslations(this.currentLang);
     this.applyTranslations();
     this.updateLangToggle();
 
     // Update URL without reload
     const url = new URL(window.location);
-    url.searchParams.set('lang', lang);
+    url.searchParams.set('lang', this.currentLang);
     window.history.replaceState({}, '', url);
   },
 

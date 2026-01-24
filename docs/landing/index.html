@@ -40,6 +40,28 @@
       name="twitter:image"
       content="https://whitening-sinabro.github.io/clouvel/og-image.png"
     />
+
+    <!-- i18n: hreflang for SEO -->
+    <link rel="alternate" hreflang="en" href="https://whitening-sinabro.github.io/clouvel/?lang=en">
+    <link rel="alternate" hreflang="ko" href="https://whitening-sinabro.github.io/clouvel/?lang=ko">
+    <link rel="alternate" hreflang="x-default" href="https://whitening-sinabro.github.io/clouvel/">
+
+    <!-- i18n: Prevent flash of untranslated content -->
+    <script>
+      (function() {
+        var SUPPORTED = ['en', 'ko'];
+        var params = new URLSearchParams(window.location.search);
+        var urlLang = params.get('lang');
+        var storedLang = null;
+        try { storedLang = localStorage.getItem('clouvel-lang'); } catch(e) {}
+        var lang = urlLang || storedLang || 'en';
+        if (SUPPORTED.indexOf(lang) === -1) lang = 'en';
+        document.documentElement.lang = lang;
+        document.documentElement.className = 'i18n-loading';
+      })();
+    </script>
+    <style>.i18n-loading { opacity: 0; } .i18n-ready { opacity: 1; transition: opacity 0.1s; }</style>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link

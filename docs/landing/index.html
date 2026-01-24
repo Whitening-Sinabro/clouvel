@@ -257,13 +257,9 @@
         <p class="text-lg md:text-xl text-slate-600 mb-3 leading-relaxed" data-i18n="hero.subtitle">
           AI가 맥락을 "멋대로 압축"해서 중요한 요구사항을 생략하는 순간이 있다.
         </p>
-        <p class="text-base md:text-lg text-slate-500 mb-4">
-          <strong class="text-dark-slate" data-i18n="hero.desc_solo">개인 개발자:</strong>
-          <span data-i18n="hero.desc_solo_text">"거의 맞는" 코드 디버깅 그만.</span>
-        </p>
         <p class="text-base md:text-lg text-slate-500 mb-8">
-          <strong class="text-dark-slate" data-i18n="hero.desc_team">팀 리드:</strong>
-          <span data-i18n="hero.desc_team_text">주니어의 망가진 AI 코드 리뷰 그만.</span>
+          <span data-i18n="hero.desc_solo_text">"거의 맞는" 코드 디버깅 그만.</span>
+          <strong class="text-dark-slate" data-i18n="hero.desc_solo">솔로 개발자 & 인디 해커를 위한 도구.</strong>
         </p>
         <div class="flex flex-wrap gap-3 md:gap-4 justify-center">
           <a
@@ -1061,9 +1057,13 @@
             </a>
           </div>
           <!-- Personal Pro -->
-          <div
-            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 relative"
-          >
+          <div class="border-2 border-accent p-6 md:p-8 rounded-2xl relative">
+            <div
+              class="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-medium px-3 py-1 rounded-full"
+              data-i18n="pricing.recommended"
+            >
+              추천
+            </div>
             <h3 class="font-semibold text-lg mb-1" data-i18n="pricing.personal">Personal Pro</h3>
             <p class="text-slate-500 text-sm mb-6" data-i18n="pricing.personal_desc">개인 개발자 (1명)</p>
             <div
@@ -1163,235 +1163,31 @@
               구독하기
             </a>
           </div>
-          <!-- Team 5 -->
+          <!-- Team Coming Soon -->
           <div
-            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 relative"
+            class="bg-slate-50 p-6 md:p-8 rounded-2xl border border-dashed border-slate-300 relative flex flex-col items-center justify-center text-center"
           >
-            <h3 class="font-semibold text-lg mb-1" data-i18n="pricing.team_5">Team 5</h3>
-            <p class="text-slate-500 text-sm mb-6" data-i18n="pricing.team_5_desc">소규모 팀 (5명)</p>
-            <div
-              class="price-display monthly-price flex items-baseline gap-1 mb-1"
-            >
-              <span class="text-4xl font-bold">$29.99</span>
-              <span class="text-slate-500" data-i18n="pricing.per_month">/ month</span>
+            <div class="text-slate-400 mb-4">
+              <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
             </div>
-            <div
-              class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
-            >
-              <span class="text-4xl font-bold">$299</span>
-              <span class="text-slate-500" data-i18n="pricing.per_year">/ year</span>
-            </div>
-            <p class="monthly-price text-slate-400 text-sm font-medium mb-6" data-i18n="pricing.yearly_note">
-              17% off with yearly
-            </p>
-            <p class="yearly-price hidden text-accent text-sm font-medium mb-6" data-i18n="pricing.yearly_applied">
-              17% off applied
-            </p>
-            <ul class="space-y-3 mb-8 text-sm">
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span data-i18n="pricing.team_f1">All Personal Pro features</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-accent font-medium" data-i18n="pricing.team_f2">Team invite/manage</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-accent font-medium" data-i18n="pricing.team_f3">Error pattern team sharing</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-slate-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="monthly-price text-slate-400" data-i18n="pricing.team_5_price_note">$6/seat/month</span>
-                <span class="yearly-price hidden text-slate-400" data-i18n="pricing.team_5_price_yearly"
-                  >$59.80/seat/year</span
-                >
-              </li>
-            </ul>
-            <a
-              href="https://buy.polar.sh/polar_cl_bslCeBjmd1LqsPQFYdoSBELlEVNmPslRXYcoA4G6FB2"
-              target="_blank"
-              class="checkout-link monthly-link block w-full py-3 rounded-full text-center font-medium border border-slate-300 hover:border-slate-400 transition"
-              data-yearly="https://buy.polar.sh/polar_cl_EuBpxAUTQtUkmYunAfmRRtTFowyqunzX6ZfdI0ILhJu"
-              data-i18n="pricing.subscribe"
-              onclick="trackCTA('subscribe', 'team_5')"
-            >
-              구독하기
-            </a>
-          </div>
-          <!-- Team 10 -->
-          <div class="border-2 border-accent p-6 md:p-8 rounded-2xl relative">
-            <div
-              class="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-medium px-3 py-1 rounded-full"
-              data-i18n="pricing.recommended"
-            >
-              추천
-            </div>
-            <h3 class="font-semibold text-lg mb-1" data-i18n="pricing.team_10">Team 10</h3>
-            <p class="text-slate-500 text-sm mb-6" data-i18n="pricing.team_10_desc">중규모 팀 (10명)</p>
-            <div
-              class="price-display monthly-price flex items-baseline gap-1 mb-1"
-            >
-              <span class="text-4xl font-bold">$49.99</span>
-              <span class="text-slate-500" data-i18n="pricing.per_month">/ month</span>
-            </div>
-            <div
-              class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
-            >
-              <span class="text-4xl font-bold">$499</span>
-              <span class="text-slate-500" data-i18n="pricing.per_year">/ year</span>
-            </div>
-            <p class="monthly-price text-slate-400 text-sm font-medium mb-6" data-i18n="pricing.yearly_note">
-              17% off with yearly
-            </p>
-            <p class="yearly-price hidden text-accent text-sm font-medium mb-6" data-i18n="pricing.yearly_applied">
-              17% off applied
-            </p>
-            <ul class="space-y-3 mb-8 text-sm">
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span data-i18n="pricing.team_f1">All Personal Pro features</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-accent font-medium" data-i18n="pricing.team_f2">Team invite/manage</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-accent font-medium" data-i18n="pricing.team_10_f3"
-                  >Project context sync</span
-                >
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-slate-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="monthly-price text-slate-400" data-i18n="pricing.team_10_price_note"
-                  >$5/seat/month (lowest)</span
-                >
-                <span class="yearly-price hidden text-slate-400" data-i18n="pricing.team_10_price_yearly"
-                  >$49.90/seat/year (lowest)</span
-                >
-              </li>
-            </ul>
-            <a
-              href="https://buy.polar.sh/polar_cl_5lXwX80w9mDXjuyFwfESffz3NVlO23KBlHIk01uhNeu"
-              target="_blank"
-              class="checkout-link monthly-link block w-full py-3 rounded-full text-center font-medium bg-accent text-white hover:bg-accent-dark transition"
-              data-yearly="https://buy.polar.sh/polar_cl_yPL1jce45w36DGUVCI2JTY1Q8VokaqEtDvnEY43Ft4c"
-              data-i18n="pricing.subscribe"
-              onclick="trackCTA('subscribe', 'team_10')"
-            >
-              구독하기
-            </a>
+            <h3 class="font-semibold text-lg mb-2 text-slate-600" data-i18n="pricing.team_coming_soon">Team Plans</h3>
+            <p class="text-slate-500 text-sm" data-i18n="pricing.team_coming_soon_desc">Coming Soon</p>
           </div>
         </div>
-        <!-- Enterprise -->
+        <!-- Team Interest -->
         <div class="mt-8 text-center">
           <p class="text-slate-600">
-            <strong data-i18n="pricing.enterprise">10명 이상?</strong>
+            <span data-i18n="pricing.team_interest">Need team features?</span>
             <a
               href="https://github.com/Whitening-Sinabro/clouvel/issues"
               target="_blank"
               class="text-accent hover:underline"
-              data-i18n="pricing.enterprise_link"
-              >Enterprise 문의</a
+              data-i18n="pricing.team_interest_link"
+              >Let us know</a
             >
-            <span data-i18n="pricing.enterprise_desc">- 맞춤 견적, 라이선스 무제한, 우선 지원</span>
+            <span data-i18n="pricing.team_interest_desc">- We're building based on your feedback</span>
           </p>
         </div>
       </div>

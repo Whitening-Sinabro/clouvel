@@ -18,10 +18,8 @@
     "title_1": "No spec,",
     "title_2": "no code.",
     "subtitle": "Vibe coding without specs? Debugging hell awaits.",
-    "desc_solo": "For solo devs:",
     "desc_solo_text": "Stop debugging \"almost right\" code.",
-    "desc_team": "For team leads:",
-    "desc_team_text": "Stop reviewing broken AI code from juniors.",
+    "desc_solo": "A tool for solo devs & indie hackers.",
     "cta_start": "Get started",
     "cta_demo": "See demo"
   },
@@ -140,9 +138,11 @@
     "recommended": "Recommended",
     "subscribe": "Subscribe",
     "start_github": "Start on GitHub",
-    "enterprise": "10+ seats?",
-    "enterprise_link": "Contact Enterprise",
-    "enterprise_desc": "- Custom pricing, unlimited seats, priority support"
+    "team_coming_soon": "Team Plans",
+    "team_coming_soon_desc": "Coming Soon",
+    "team_interest": "Need team features?",
+    "team_interest_link": "Let us know",
+    "team_interest_desc": "- We're building based on your feedback"
   },
   "faq": {
     "title": "FAQ",

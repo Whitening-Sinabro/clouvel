@@ -205,7 +205,24 @@ file:///D:/Clouvel/docs/landing/index.html?lang=ko
 ## 다음 할 일
 
 - [x] **i18n 완료** ✅
-- [ ] i18n 테스트 (`?lang=en` / `?lang=ko`)
+- [x] **글로벌 런칭 Phase 1 완료** ✅
+  - [x] hreflang 태그 추가 (SEO)
+  - [x] Flash 방지 인라인 스크립트
+  - [x] SUPPORTED_LANGS 유효성 검증
+  - [x] localStorage 에러 핸들링
+- [x] **GA4 언어별 전환율 추적 완료** ✅
+  - [x] GA4 ID: G-17L1X6CZ4W
+  - [x] trackCTA 함수 (CTA 클릭 추적)
+  - [x] language_switch 이벤트 (언어 변경 추적)
+- [x] **Solo-first 랜딩페이지 전환** ✅
+  - [x] Hero 섹션: Solo devs & indie hackers 타겟팅
+  - [x] Team 5/Team 10 플랜 숨김 → "Coming Soon"
+  - [x] Personal Pro에 "추천" 배지 이동
+  - [x] Enterprise 섹션 → "Need team features? Let us know"
+  - [x] i18n 파일 업데이트 (en.json, ko.json)
+  - [x] 영어 페이지(index-en.html) 동기화
+- [ ] i18n 테스트 (`?lang=en` / `?lang=ko` / `?lang=jp` → fallback)
+- [ ] Product Hunt 재런칭 준비 (Phase 3)
 - [ ] Threads/X 포스트 올리기
 - [ ] Windows CI 추가 (GitHub Actions)
 - [ ] 템플릿 2개 추가 (블로그/CMS, E-commerce)

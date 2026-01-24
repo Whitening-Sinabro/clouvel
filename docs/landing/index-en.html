@@ -87,7 +87,7 @@
             >How it works</a
           >
           <a
-            href="docs.html"
+            href="docs-en.html"
             class="text-sm text-slate-600 hover:text-dark-slate transition"
             >Docs</a
           >
@@ -149,7 +149,7 @@
           >How it works</a
         >
         <a
-          href="docs.html"
+          href="docs-en.html"
           class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
           >Docs</a
         >
@@ -209,8 +209,8 @@
           Vibe coding without specs? Debugging hell awaits.
         </p>
         <p class="text-base md:text-lg text-slate-500 mb-8">
-          <strong class="text-dark-slate">For solo devs:</strong> Stop debugging "almost right" code.<br />
-          <strong class="text-dark-slate">For team leads:</strong> Stop reviewing broken AI code from juniors.
+          Stop debugging "almost right" code.
+          <strong class="text-dark-slate">A tool for solo devs & indie hackers.</strong>
         </p>
         <div class="flex flex-wrap gap-3 md:gap-4 justify-center">
           <a
@@ -950,9 +950,12 @@
             </a>
           </div>
           <!-- Personal Pro -->
-          <div
-            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 relative"
-          >
+          <div class="border-2 border-accent p-6 md:p-8 rounded-2xl relative">
+            <div
+              class="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-medium px-3 py-1 rounded-full"
+            >
+              Recommended
+            </div>
             <h3 class="font-semibold text-lg mb-1">Personal Pro</h3>
             <p class="text-slate-500 text-sm mb-6">Solo developer (1 seat)</p>
             <div
@@ -1050,229 +1053,30 @@
               Subscribe
             </a>
           </div>
-          <!-- Team 5 -->
+          <!-- Team Coming Soon -->
           <div
-            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 relative"
+            class="bg-slate-50 p-6 md:p-8 rounded-2xl border border-dashed border-slate-300 relative flex flex-col items-center justify-center text-center"
           >
-            <h3 class="font-semibold text-lg mb-1">Team 5</h3>
-            <p class="text-slate-500 text-sm mb-6">Small team (5 seats)</p>
-            <div
-              class="price-display monthly-price flex items-baseline gap-1 mb-1"
-            >
-              <span class="text-4xl font-bold">$29.99</span>
-              <span class="text-slate-500">/ mo</span>
+            <div class="text-slate-400 mb-4">
+              <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
             </div>
-            <div
-              class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
-            >
-              <span class="text-4xl font-bold">$299</span>
-              <span class="text-slate-500">/ yr</span>
-            </div>
-            <p class="monthly-price text-slate-400 text-sm font-medium mb-6">
-              17% off with yearly billing
-            </p>
-            <p class="yearly-price hidden text-accent text-sm font-medium mb-6">
-              17% saved ($359.88 - $299)
-            </p>
-            <ul class="space-y-3 mb-8 text-sm">
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Everything in Personal Pro
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-accent font-medium">Team invite/manage</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-accent font-medium">Shared error patterns</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-slate-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="monthly-price text-slate-400">$6/seat/mo</span>
-                <span class="yearly-price hidden text-slate-400"
-                  >$59.80/seat/yr</span
-                >
-              </li>
-            </ul>
-            <a
-              href="https://buy.polar.sh/polar_cl_bslCeBjmd1LqsPQFYdoSBELlEVNmPslRXYcoA4G6FB2"
-              target="_blank"
-              class="checkout-link monthly-link block w-full py-3 rounded-full text-center font-medium border border-slate-300 hover:border-slate-400 transition"
-              data-yearly="https://buy.polar.sh/polar_cl_EuBpxAUTQtUkmYunAfmRRtTFowyqunzX6ZfdI0ILhJu"
-            >
-              Subscribe
-            </a>
-          </div>
-          <!-- Team 10 -->
-          <div class="border-2 border-accent p-6 md:p-8 rounded-2xl relative">
-            <div
-              class="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-medium px-3 py-1 rounded-full"
-            >
-              Recommended
-            </div>
-            <h3 class="font-semibold text-lg mb-1">Team 10</h3>
-            <p class="text-slate-500 text-sm mb-6">Mid-size team (10 seats)</p>
-            <div
-              class="price-display monthly-price flex items-baseline gap-1 mb-1"
-            >
-              <span class="text-4xl font-bold">$49.99</span>
-              <span class="text-slate-500">/ mo</span>
-            </div>
-            <div
-              class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
-            >
-              <span class="text-4xl font-bold">$499</span>
-              <span class="text-slate-500">/ yr</span>
-            </div>
-            <p class="monthly-price text-slate-400 text-sm font-medium mb-6">
-              17% off with yearly billing
-            </p>
-            <p class="yearly-price hidden text-accent text-sm font-medium mb-6">
-              17% saved ($599.88 - $499)
-            </p>
-            <ul class="space-y-3 mb-8 text-sm">
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Everything in Personal Pro
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-accent font-medium">Team invite/manage</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-accent font-medium"
-                  >Project context sync</span
-                >
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-slate-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="monthly-price text-slate-400"
-                  >$5/seat/mo (lowest)</span
-                >
-                <span class="yearly-price hidden text-slate-400"
-                  >$49.90/seat/yr (lowest)</span
-                >
-              </li>
-            </ul>
-            <a
-              href="https://buy.polar.sh/polar_cl_5lXwX80w9mDXjuyFwfESffz3NVlO23KBlHIk01uhNeu"
-              target="_blank"
-              class="checkout-link monthly-link block w-full py-3 rounded-full text-center font-medium bg-accent text-white hover:bg-accent-dark transition"
-              data-yearly="https://buy.polar.sh/polar_cl_yPL1jce45w36DGUVCI2JTY1Q8VokaqEtDvnEY43Ft4c"
-            >
-              Subscribe
-            </a>
+            <h3 class="font-semibold text-lg mb-2 text-slate-600">Team Plans</h3>
+            <p class="text-slate-500 text-sm">Coming Soon</p>
           </div>
         </div>
-        <!-- Enterprise -->
+        <!-- Team Interest -->
         <div class="mt-8 text-center">
           <p class="text-slate-600">
-            <strong>10+ seats?</strong>
+            Need team features?
             <a
               href="https://github.com/Whitening-Sinabro/clouvel/issues"
               target="_blank"
               class="text-accent hover:underline"
-              >Contact Enterprise</a
+              >Let us know</a
             >
-            - Custom pricing, unlimited seats, priority support
+            - We're building based on your feedback
           </p>
         </div>
       </div>

@@ -18,10 +18,8 @@
     "title_1": "PRD 없으면,",
     "title_2": "코딩 없다.",
     "subtitle": "AI가 컨텍스트를 \"압축\"하고 중요한 요구사항을 생략합니다.",
-    "desc_solo": "개인 개발자:",
     "desc_solo_text": "\"거의 맞는\" 코드 디버깅 그만.",
-    "desc_team": "팀 리드:",
-    "desc_team_text": "주니어의 망가진 AI 코드 리뷰 그만.",
+    "desc_solo": "솔로 개발자 & 인디 해커를 위한 도구.",
     "cta_start": "시작하기",
     "cta_demo": "데모 보기"
   },
@@ -140,9 +138,11 @@
     "recommended": "추천",
     "subscribe": "구독하기",
     "start_github": "GitHub에서 시작",
-    "enterprise": "10명 이상?",
-    "enterprise_link": "엔터프라이즈 문의",
-    "enterprise_desc": "- 맞춤 가격, 무제한 인원, 우선 지원"
+    "team_coming_soon": "Team 플랜",
+    "team_coming_soon_desc": "준비 중",
+    "team_interest": "팀 기능이 필요하신가요?",
+    "team_interest_link": "알려주세요",
+    "team_interest_desc": "- 피드백 기반으로 개발 중입니다"
   },
   "faq": {
     "title": "FAQ",

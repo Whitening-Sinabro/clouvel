@@ -59,6 +59,10 @@ document
       if (response.ok) {
         formSuccess.classList.remove("hidden");
         document.getElementById("contactForm").reset();
+        // Track successful contact form submission
+        if (typeof trackCTA === 'function') {
+          trackCTA('submit', 'contact_form_' + issueType);
+        }
       } else {
         formError.classList.remove("hidden");
       }
@@ -115,6 +119,11 @@ function toggleBilling(type) {
   const monthlyPrices = document.querySelectorAll(".monthly-price");
   const yearlyPrices = document.querySelectorAll(".yearly-price");
   const checkoutLinks = document.querySelectorAll(".checkout-link");
+
+  // Track billing toggle in GA4
+  if (typeof trackCTA === 'function') {
+    trackCTA('toggle', 'billing_' + type);
+  }
 
   if (type === "monthly") {
     // Update button styles

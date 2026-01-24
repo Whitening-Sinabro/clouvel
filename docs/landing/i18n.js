@@ -140,6 +140,14 @@ const i18n = {
     const url = new URL(window.location);
     url.searchParams.set('lang', this.currentLang);
     window.history.replaceState({}, '', url);
+
+    // Track language switch in GA4
+    if (typeof gtag === 'function') {
+      gtag('event', 'language_switch', {
+        'event_category': 'i18n',
+        'event_label': this.currentLang
+      });
+    }
   },
 
   toggle() {

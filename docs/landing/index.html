@@ -41,6 +41,27 @@
       content="https://whitening-sinabro.github.io/clouvel/og-image.png"
     />
 
+    <!-- GA4: Replace YOUR_GA4_ID with your Measurement ID (G-XXXXXXXXXX) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR_GA4_ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'YOUR_GA4_ID', {
+        'custom_map': {'dimension1': 'language'}
+      });
+
+      // Track CTA clicks with language
+      window.trackCTA = function(action, label) {
+        var lang = document.documentElement.lang || 'en';
+        gtag('event', action, {
+          'event_category': 'CTA',
+          'event_label': label,
+          'language': lang
+        });
+      };
+    </script>
+
     <!-- i18n: hreflang for SEO -->
     <link rel="alternate" hreflang="en" href="https://whitening-sinabro.github.io/clouvel/?lang=en">
     <link rel="alternate" hreflang="ko" href="https://whitening-sinabro.github.io/clouvel/?lang=ko">
@@ -248,6 +269,7 @@
           <a
             href="#getting-started"
             class="cta-pulse inline-flex items-center gap-2 bg-accent text-white px-6 py-3 md:px-8 md:py-4 rounded-full font-medium hover:bg-accent-dark transition text-base md:text-lg"
+            onclick="trackCTA('click', 'hero_get_started')"
           >
             <span data-i18n="hero.cta_start">Get started</span>
             <svg
@@ -268,6 +290,7 @@
             href="#demo"
             class="inline-flex items-center gap-2 border-2 border-dark-slate/20 px-6 py-3 md:px-8 md:py-4 rounded-full font-medium hover:border-dark-slate/40 transition text-base md:text-lg"
             data-i18n="hero.cta_demo"
+            onclick="trackCTA('click', 'hero_see_demo')"
           >
             See demo
           </a>
@@ -1032,6 +1055,7 @@
               target="_blank"
               class="block w-full py-3 rounded-full text-center font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition"
               data-i18n="pricing.start_github"
+              onclick="trackCTA('click', 'pricing_free_github')"
             >
               GitHub에서 시작
             </a>
@@ -1134,6 +1158,7 @@
               class="checkout-link monthly-link block w-full py-3 rounded-full text-center font-medium border border-slate-300 hover:border-slate-400 transition"
               data-yearly="https://buy.polar.sh/polar_cl_gbyXvdUeXsKDnIgUssiv7ptFuSc0FNms8Iafs31ftjD"
               data-i18n="pricing.subscribe"
+              onclick="trackCTA('subscribe', 'personal_pro')"
             >
               구독하기
             </a>
@@ -1237,6 +1262,7 @@
               class="checkout-link monthly-link block w-full py-3 rounded-full text-center font-medium border border-slate-300 hover:border-slate-400 transition"
               data-yearly="https://buy.polar.sh/polar_cl_EuBpxAUTQtUkmYunAfmRRtTFowyqunzX6ZfdI0ILhJu"
               data-i18n="pricing.subscribe"
+              onclick="trackCTA('subscribe', 'team_5')"
             >
               구독하기
             </a>
@@ -1348,6 +1374,7 @@
               class="checkout-link monthly-link block w-full py-3 rounded-full text-center font-medium bg-accent text-white hover:bg-accent-dark transition"
               data-yearly="https://buy.polar.sh/polar_cl_yPL1jce45w36DGUVCI2JTY1Q8VokaqEtDvnEY43Ft4c"
               data-i18n="pricing.subscribe"
+              onclick="trackCTA('subscribe', 'team_10')"
             >
               구독하기
             </a>

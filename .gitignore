@@ -90,6 +90,8 @@ src/clouvel/templates/
 .claude/settings.local.json
 .claude/plan.md
 .claude/planning/error-system-v2.md
+.claude/planning/internal_roadmap.md
+.claude/planning/*internal*.md
 
 # 임시/테스트 파일
 nul

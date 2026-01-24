@@ -1,87 +1,124 @@
 # Clouvel
 
-> **PRD 없으면 코딩 없다.**
+> **No spec, no code.** PRD-First gate for AI coding.
 
-바이브코딩 프로세스를 강제하는 MCP 서버.
-문서 없이 코딩 시작? 차단됩니다.
+[![PyPI](https://img.shields.io/pypi/v/clouvel)](https://pypi.org/project/clouvel/)
+[![Python](https://img.shields.io/pypi/pyversions/clouvel)](https://pypi.org/project/clouvel/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
----
-
-## v1.3.13 (2026-01-24)
-
-- **Import 수정**: manager 모듈 조건부 import (Free 버전 호환)
-
-## v1.3.12 (2026-01-24)
-
-- **Windows 지원**: cp949 인코딩 이슈 수정
-- **플랫폼별 Python**: Windows는 `py`, Linux/Mac은 `python3` 자동 선택
-
-## v1.3.11 (2026-01-23)
-
-- **동적 회의록**: manager에 Claude API 연동 회의록 생성 추가
-
-## v1.3.10 (2026-01-23)
-
-- **Polar.sh 연동**: 라이선스 결제/검증 Polar.sh로 이전
-- **상품 6종**: Personal/Team5/Team10 (월간/연간)
-
-## v1.3.9 (2026-01-23)
-
-- **Pro 배포 인프라**: S3 기반 Pro 모듈 자동 다운로드
-- **activate 개선**: 라이선스 활성화 시 Pro 자동 설치
-- **에러 처리 강화**: 네트워크 재시도, 지수 백오프
-
-## v1.3.8 (2026-01-23)
-
-- **manager 개선**: relevance score 기반 질문 필터링 (삼천포 방지)
-- **크리티컬 체크**: 각 매니저별 누락 사항/보안 이슈 자동 검출
-- **승인 상태**: BLOCKED / NEEDS_REVISION / APPROVED 표시
-
-## v1.3.7 (2026-01-22)
-
-- **Antigravity 지원**: Google Antigravity 연동 가이드 추가
-- **Pro 안정화**: 도구 안정성 개선
-
-## v1.3.6 (2026-01-22)
-
-- **FAQ 페이지**: 자주 묻는 질문 문서 추가
-- **안정화**: gitignore 정리, 도구 안정성 개선
-
-## v1.3.5 (2026-01-22)
-
-- **PyPI 수정**: license_free.py stub 추가 (배포 오류 수정)
-
-## v1.3.4 (2026-01-22)
-
-- **템플릿 8종**: web-app, api, cli, chrome-ext, discord-bot, landing-page, saas, generic
-- **start 개선**: 프로젝트 타입 자동 감지 + 대화형 PRD 가이드
-- **save_prd**: PRD 저장 도구 추가
-- **버전 체크**: PyPI 최신 버전 알림 (24시간 캐싱)
+<!-- TODO: Add demo GIF -->
+<!-- ![Demo](docs/assets/demo.gif) -->
 
 ---
 
-## 설치
+## The Problem
+
+You ask AI to "build login" and it:
+- Skips password reset
+- Forgets social auth
+- Ignores error handling
+- Builds something different every time
+
+**Result**: Hours of debugging "almost right" code.
+
+## The Solution
+
+Clouvel blocks AI coding until you write a spec (PRD).
+
+```
+You: "Build login"
+AI:  ❌ BLOCKED - No PRD found. Write a spec first.
+
+You: *writes PRD with requirements*
+AI:  ✅ PASS - PRD found. Coding allowed.
+```
+
+**Same input → Same output. Every time.**
+
+---
+
+## Quick Start
+
+```bash
+# Install
+pip install clouvel
+
+# Add to Claude Code (auto-detects your platform)
+clouvel install
+
+# Start coding - can_code check runs automatically
+claude
+```
+
+That's it. No config needed.
+
+---
+
+## How It Works
+
+1. **You ask AI to code something**
+2. **Clouvel checks for PRD** (Product Requirements Document)
+3. **No PRD? Blocked.** Write the spec first.
+4. **PRD exists? Allowed.** AI codes with clear requirements.
+
+### Before & After
+
+| Without Clouvel | With Clouvel |
+|-----------------|--------------|
+| "Build login" → AI guesses | "Build login" → AI reads PRD |
+| Missing features | All requirements included |
+| Different results each time | Consistent output |
+| Debug for hours | Works as specified |
+
+---
+
+## Features
+
+### Free (Open Source)
+
+| Feature | Description |
+|---------|-------------|
+| `can_code` | PRD gate - blocks coding without specs |
+| `start` | Project onboarding with PRD templates |
+| `plan` | Detailed execution planning |
+| `save_prd` | Save PRD from conversation |
+| Progress tracking | Track what's done and what's next |
+| 8 project templates | web-app, api, cli, chrome-ext, discord-bot, landing-page, saas, generic |
+
+### Pro ($9.99/mo)
+
+| Feature | Description |
+|---------|-------------|
+| `manager` | 8 C-Level managers review your code (PM, CTO, QA, CDO, CMO, CFO, CSO, Error) |
+| `ship` | One-click test → verify → evidence generation |
+| Error Learning | Learn from mistakes, auto-generate NEVER/ALWAYS rules |
+| Dynamic meetings | AI-powered team discussions with Claude API |
+
+**[Get Pro →](https://polar.sh/clouvel)**
+
+---
+
+## Installation
+
+### Requirements
+
+- Python 3.10+
+- Claude Code, Claude Desktop, or VS Code with Claude extension
+
+### Install
 
 ```bash
 pip install clouvel
 ```
 
-> **Windows 완벽 지원** - v1.3.12부터 Windows cp949 인코딩 이슈 해결
+### Connect to Claude
 
----
-
-## Claude Code 연동
-
-### 자동 설치 (권장)
-
+**Automatic (recommended):**
 ```bash
-# clouvel이 자동으로 플랫폼 감지
 clouvel install
 ```
 
-### 수동 설치
-
-**Windows:**
+**Manual - Windows:**
 ```json
 {
   "mcpServers": {
@@ -93,7 +130,7 @@ clouvel install
 }
 ```
 
-**Mac/Linux:**
+**Manual - Mac/Linux:**
 ```json
 {
   "mcpServers": {
@@ -107,243 +144,83 @@ clouvel install
 
 ---
 
-## 도구 목록 (23개)
+## Usage Examples
 
-### Core (4개)
-
-| 도구           | 설명                       |
-| -------------- | -------------------------- |
-| `can_code`     | 코딩 가능? PRD 있어야 허용 |
-| `scan_docs`    | docs 폴더 파일 목록        |
-| `analyze_docs` | 필수 문서 체크             |
-| `init_docs`    | docs 폴더 + 템플릿 생성    |
-
-**예시: can_code**
+### Block coding without PRD
 
 ```
-You: "로그인 기능 만들어줘"
-Claude: can_code 호출...
+You: "Build a user authentication system"
 
-❌ 코딩 차단
-- PRD.md 없음
-- Architecture.md 없음
-💡 먼저 PRD를 작성하세요.
+Clouvel: ❌ BLOCKED
+- PRD.md not found
+- Architecture.md not found
+
+💡 Write a PRD first. Use `start` to begin.
 ```
 
----
-
-### Docs (6개)
-
-| 도구                   | 설명                 |
-| ---------------------- | -------------------- |
-| `get_prd_template`     | PRD 템플릿 생성      |
-| `write_prd_section`    | PRD 섹션별 가이드    |
-| `get_prd_guide`        | PRD 작성 전체 가이드 |
-| `get_verify_checklist` | 검증 체크리스트      |
-| `get_setup_guide`      | 플랫폼별 설정 가이드 |
-| `get_analytics`        | 사용량 통계          |
-
-**예시: get_analytics**
+### Start a new project
 
 ```
-📊 최근 7일 사용 통계
-- can_code: 23회
-- gate: 8회
-- Gate 통과율: 85%
+You: "Start a new project"
+
+Clouvel: 🚀 Project detected: web-app
+
+Questions:
+1. What's the main goal?
+2. Who are the users?
+3. What are the core features?
+
+→ Generates PRD from your answers
+```
+
+### Get manager feedback (Pro)
+
+```
+You: "Review my login implementation"
+
+👔 PM: User story covers happy path, but what about failed attempts?
+🛠️ CTO: Consider rate limiting for brute force protection.
+🧪 QA: Need tests for edge cases - empty password, SQL injection.
+🔒 CSO: ⚠️ CRITICAL - Password hashing not implemented.
+
+Status: NEEDS_REVISION
 ```
 
 ---
 
-### Setup (2개)
+## Documentation
 
-| 도구           | 설명                 |
-| -------------- | -------------------- |
-| `init_clouvel` | 온보딩 (플랫폼 선택) |
-| `setup_cli`    | CLI 환경 설정        |
-
-**예시: setup_cli**
-
-```
-You: "strict 모드로 설정해줘"
-
-⚙️ CLI 설정 완료
-- CLAUDE.md 생성됨
-- pre-commit 훅 설치됨
-- PRD 없으면 커밋 차단
-```
+- [Full Documentation](https://whitening-sinabro.github.io/clouvel/)
+- [PRD Templates](https://whitening-sinabro.github.io/clouvel/templates)
+- [FAQ](https://whitening-sinabro.github.io/clouvel/faq)
 
 ---
 
-### Rules - v0.5 (3개)
+## Contributing
 
-| 도구         | 설명                  |
-| ------------ | --------------------- |
-| `init_rules` | 규칙 파일 생성        |
-| `get_rule`   | 파일별 적용 규칙 조회 |
-| `add_rule`   | 새 규칙 추가          |
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-**예시: get_rule**
-
-```
-You: "auth.ts 수정하려는데 규칙 뭐야?"
-
-📜 auth.ts 적용 규칙
-NEVER:
-- 비밀번호 평문 저장
-- JWT 시크릿 하드코딩
-ALWAYS:
-- bcrypt로 해싱
-```
+- [Report bugs](https://github.com/Whitening-Sinabro/clouvel/issues)
+- [Request features](https://github.com/Whitening-Sinabro/clouvel/issues)
+- [Join discussions](https://github.com/Whitening-Sinabro/clouvel/discussions)
 
 ---
 
-### Verify - v0.5 (3개)
+## Changelog
 
-| 도구      | 설명                       |
-| --------- | -------------------------- |
-| `verify`  | Context Bias 제거 검증     |
-| `gate`    | lint → test → build 자동화 |
-| `handoff` | 의도 기록 (다음 세션용)    |
-
-**예시: gate**
-
-```
-You: "gate 돌려줘"
-
-🚦 Gate 실행
-1. Lint... ✅
-2. Test... ✅ (12/12)
-3. Build.. ✅
-🎉 Gate PASS - 커밋 가능!
-```
-
-**예시: handoff**
-
-```
-You: "로그인 기능 끝났어"
-
-📋 핸드오프 저장됨
-- 기능: 로그인
-- 결정: JWT 선택
-- 주의: refresh token 미구현
-- 다음: 회원가입
-```
+See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ---
 
-### Planning - v0.6 (4개)
+## License
 
-| 도구              | 설명               |
-| ----------------- | ------------------ |
-| `init_planning`   | 작업 목표 설정     |
-| `save_finding`    | 조사 결과 저장     |
-| `refresh_goals`   | 목표 리마인드      |
-| `update_progress` | 진행 상황 업데이트 |
-
-**예시: refresh_goals**
-
-```
-You: "지금 뭐하고 있었지?"
-
-🎯 현재 목표
-작업: 결제 시스템
-
-✅ Stripe 연동
-🔄 웹훅 처리 (진행 중)
-⬚ 영수증 발송
-
-진행률: 33%
-```
+MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-### Agents - v0.7 (2개)
-
-| 도구              | 설명               |
-| ----------------- | ------------------ |
-| `spawn_explore`   | 코드베이스 탐색    |
-| `spawn_librarian` | 외부 문서/API 조사 |
-
-**예시: spawn_explore**
-
-```
-You: "인증 로직 어디있어?"
-
-🔍 탐색 결과
-- src/lib/auth.ts (메인)
-- src/middleware/auth.ts
-- src/api/auth/route.ts
-```
-
-**예시: spawn_librarian**
-
-```
-You: "Next.js 15 바뀐거 조사해줘"
-
-📚 조사 결과
-- async/await 서버 컴포넌트 기본
-- 새 캐싱 전략
-- Turbopack 안정화
-출처: Next.js 공식 문서
-```
-
----
-
-### Hooks - v0.8 (2개)
-
-| 도구          | 설명              |
-| ------------- | ----------------- |
-| `hook_design` | 코딩 전 자동 체크 |
-| `hook_verify` | 코딩 후 자동 검증 |
-
-**예시: hook_verify**
-
-```
-You: "커밋 전에 자동으로 검사하게 해줘"
-
-🪝 검증 훅 생성됨
-트리거: pre_commit
-단계: lint, test
-실패 시: 커밋 차단
-```
-
----
-
-## Pro 버전
-
-더 강력한 기능이 필요하다면 **Clouvel Pro**를 확인하세요.
-
-### Pro 기능
-
-- **Manager**: 8명 C-Level 매니저 피드백 (PM, CTO, QA, CDO, CMO, CFO, CSO, Error)
-- **Ship**: 원클릭 테스트→검증→증거 생성
-- **Error Learning**: 에러 패턴 학습 + NEVER/ALWAYS 규칙 자동 생성
-- **Shovel 워크플로우** 자동 설치
-
-### Pro 활성화
-
-```bash
-# 1. 설치
-pip install clouvel
-
-# 2. 라이선스 활성화
-clouvel activate <LICENSE_KEY>
-
-# 자동으로 Pro 모듈 9개 다운로드 & 설치됨
-```
-
-**[Clouvel Pro 구매하기](https://polar.sh/clouvel)**
-
----
-
-## 링크
-
-- [GitHub](https://github.com/Whitening-Sinabro/clouvel)
-- [Landing Page](https://whitening-sinabro.github.io/clouvel/)
-- [Issues](https://github.com/Whitening-Sinabro/clouvel/issues)
-
----
-
-## 라이선스
-
-MIT
+<p align="center">
+  <b>Stop debugging AI code. Start with a spec.</b><br>
+  <a href="https://whitening-sinabro.github.io/clouvel/">Website</a> •
+  <a href="https://github.com/Whitening-Sinabro/clouvel/issues">Issues</a> •
+  <a href="https://polar.sh/clouvel">Get Pro</a>
+</p>

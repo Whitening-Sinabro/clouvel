@@ -221,9 +221,22 @@ file:///D:/Clouvel/docs/landing/index.html?lang=ko
   - [x] Enterprise 섹션 → "Need team features? Let us know"
   - [x] i18n 파일 업데이트 (en.json, ko.json)
   - [x] 영어 페이지(index-en.html) 동기화
+- [x] **Week 1-2: GitHub 프로젝트 정비** ✅
+  - [x] README.md 영문 재작성
+  - [x] Demo GIF 생성 (docs/assets/demo.gif)
+  - [x] CONTRIBUTING.md 확인 (영문 완료)
+  - [x] CODE_OF_CONDUCT.md 확인 (영문 완료)
+  - [x] Issue 템플릿 3개 확인 (bug, feature, question)
+  - [x] PR 템플릿 확인
+  - [x] GitHub Discussions 활성화
+  - [x] 에러 메시지 영어 전환 (errors.py, planning.py)
+  - [x] Reddit 포스트 초안 작성 (.claude/planning/reddit-posts.md)
+- [ ] **Week 3: 커뮤니티 활동 시작**
+  - [ ] r/ClaudeAI 포스팅
+  - [ ] r/SideProject 포스팅
+  - [ ] X/Threads 소개 쓰레드
 - [ ] i18n 테스트 (`?lang=en` / `?lang=ko` / `?lang=jp` → fallback)
 - [ ] Product Hunt 재런칭 준비 (Phase 3)
-- [ ] Threads/X 포스트 올리기
 - [ ] Windows CI 추가 (GitHub Actions)
 - [ ] 템플릿 2개 추가 (블로그/CMS, E-commerce)
 - [ ] Cursor 디렉토리 제출

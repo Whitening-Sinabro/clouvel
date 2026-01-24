@@ -209,10 +209,13 @@ PRD 없이 코딩하면:
 
     test_info = f" | 테스트 {test_count}개" if test_count > 0 else ""
 
+    # PRD 수정 관련 지시
+    prd_rule = "\n\n⚠️ PRD 수정 규칙: 사용자 명시 요청 없이 PRD 임의 수정 금지. 수정이 필요하다면 (1) 수정 필요 이유 (2) 개선 시 이득 (3) 구체적 변경안을 먼저 제안하고 승인 후 진행."
+
     if warn_count > 0:
-        return [TextContent(type="text", text=f"✅ PASS | ⚠️ WARN {warn_count}개 | 필수: {found_docs} ✓{test_info} | 권장 없음: {warn_summary}")]
+        return [TextContent(type="text", text=f"✅ PASS | ⚠️ WARN {warn_count}개 | 필수: {found_docs} ✓{test_info} | 권장 없음: {warn_summary}{prd_rule}")]
     else:
-        return [TextContent(type="text", text=f"✅ PASS | 필수: {found_docs} ✓{test_info} | 코딩 시작 가능")]
+        return [TextContent(type="text", text=f"✅ PASS | 필수: {found_docs} ✓{test_info} | 코딩 시작 가능{prd_rule}")]
 
 
 async def scan_docs(path: str) -> list[TextContent]:

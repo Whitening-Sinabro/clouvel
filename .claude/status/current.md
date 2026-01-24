@@ -156,9 +156,57 @@
 
 ---
 
+## ✅ 완료: i18n 랜딩페이지
+
+> **완료 시점**: 2026-01-24
+
+### 완료 항목
+
+- [x] `docs/landing/i18n/en.json` - 영문 번역 전체
+- [x] `docs/landing/i18n/ko.json` - 한글 번역 전체
+- [x] `docs/landing/i18n.js` - 언어 전환 스크립트
+- [x] `index.html` - `<html lang="en">` 변경
+- [x] `index.html` - i18n.js 스크립트 추가
+- [x] `index.html` - 언어 토글 버튼 추가 (nav)
+- [x] `index.html` - nav 링크 data-i18n 속성 추가
+- [x] Hero 섹션 data-i18n 추가
+- [x] Works with 섹션 data-i18n 추가
+- [x] PRD 설명 섹션 data-i18n 추가
+- [x] Problem 섹션 data-i18n 추가
+- [x] How it works 섹션 data-i18n 추가
+- [x] Demo 섹션 data-i18n 추가
+- [x] Features 섹션 data-i18n 추가
+- [x] Getting Started 섹션 data-i18n 추가
+- [x] Pricing 섹션 data-i18n 추가
+- [x] FAQ 섹션 data-i18n 추가
+- [x] Contact 섹션 data-i18n 추가
+- [x] Footer data-i18n 추가
+- [x] 모바일 메뉴 data-i18n 추가
+
+### 테스트 방법
+
+```
+# 영문
+file:///D:/Clouvel/docs/landing/index.html?lang=en
+
+# 한글
+file:///D:/Clouvel/docs/landing/index.html?lang=ko
+```
+
+### 컨텍스트
+
+- **목표**: 국제 indie hackers 타겟 영문 랜딩
+- **결정**: 별도 영문 페이지 대신 i18n 단일 페이지
+- **Threads/X**: Build in Public, 팀 리드 타겟
+- **로드맵**: 18개월 후 $120K ARR, 10K 사용자
+
+---
+
 ## 다음 할 일
 
-- [ ] Windows CI 추가 (GitHub Actions) - 인코딩 이슈 사전 차단
-- [ ] Free/Pro 모듈 경계 문서화 - 빌드 제외 파일 명확화
+- [x] **i18n 완료** ✅
+- [ ] i18n 테스트 (`?lang=en` / `?lang=ko`)
+- [ ] Threads/X 포스트 올리기
+- [ ] Windows CI 추가 (GitHub Actions)
 - [ ] 템플릿 2개 추가 (블로그/CMS, E-commerce)
 - [ ] Cursor 디렉토리 제출

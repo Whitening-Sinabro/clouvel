@@ -6,8 +6,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/clouvel)](https://pypi.org/project/clouvel/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-<!-- TODO: Add demo GIF -->
-<!-- ![Demo](docs/assets/demo.gif) -->
+![Demo](docs/assets/demo.gif)
 
 ---
 

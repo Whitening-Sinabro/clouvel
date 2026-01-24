@@ -82,8 +82,8 @@
     "f2_desc": "Same input = same output. Consistent results every time.",
     "f3_title": "Gap Detection",
     "f3_desc": "Missing requirements? Instant alert. Catch issues before coding.",
-    "f4_title": "Context Recovery",
-    "f4_desc": "Session ends? Context preserved. Auto-recovery after compaction."
+    "f4_title": "Progress Tracking",
+    "f4_desc": "PRD and status files persist across sessions. Smart recovery coming soon."
   },
   "getting_started": {
     "title": "Getting Started",

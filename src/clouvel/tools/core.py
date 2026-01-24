@@ -6,6 +6,18 @@ from pathlib import Path
 from datetime import datetime
 from mcp.types import TextContent
 
+# Knowledge Base integration (optional - graceful fallback if not available)
+try:
+    from clouvel.db.knowledge import (
+        get_recent_decisions,
+        get_recent_locations,
+        get_or_create_project,
+        KNOWLEDGE_DB_PATH,
+    )
+    _HAS_KNOWLEDGE = KNOWLEDGE_DB_PATH.exists()
+except ImportError:
+    _HAS_KNOWLEDGE = False
+
 from clouvel.messages import (
     DOC_NAMES,
     CAN_CODE_BLOCK_NO_DOCS,
@@ -51,6 +63,43 @@ REQUIRED_PRD_SECTIONS = [
     {"name": "scope", "patterns": [r"##\s*(scope|범위|목표)"], "priority": "warn"},
     {"name": "non_goals", "patterns": [r"##\s*(non.?goals?|하지\s*않을|제외|out\s*of\s*scope)"], "priority": "warn"},
 ]
+
+
+def _get_context_summary(project_path: Path) -> str:
+    """Get recent context from Knowledge Base for session recovery."""
+    if not _HAS_KNOWLEDGE:
+        return ""
+
+    try:
+        # Get or create project
+        project_name = project_path.name
+        project_id = get_or_create_project(project_name, str(project_path))
+
+        decisions = get_recent_decisions(project_id=project_id, limit=5)
+        locations = get_recent_locations(project_id=project_id, limit=5)
+
+        if not decisions and not locations:
+            return ""
+
+        lines = ["\n---\n## 📋 Recent Context (auto-loaded)\n"]
+
+        if decisions:
+            lines.append("### Decisions")
+            for d in decisions:
+                lines.append(f"- **[{d.get('category', 'general')}]** {d.get('decision', '')[:80]}")
+            lines.append("")
+
+        if locations:
+            lines.append("### Code Locations")
+            for loc in locations:
+                lines.append(f"- **{loc.get('name', '')}**: `{loc.get('repo', '')}/{loc.get('path', '')}`")
+            lines.append("")
+
+        lines.append("_Use `search_knowledge` for more context._")
+        return "\n".join(lines)
+
+    except Exception:
+        return ""
 
 
 def _find_prd_file(docs_path: Path) -> Path | None:
@@ -202,6 +251,9 @@ async def can_code(path: str) -> list[TextContent]:
     # PRD edit rule
     prd_rule = PRD_RULE_WARNING
 
+    # Get context from Knowledge Base (session recovery)
+    context_summary = _get_context_summary(project_path)
+
     if warn_count > 0:
         return [TextContent(type="text", text=CAN_CODE_PASS_WITH_WARN.format(
             warn_count=warn_count,
@@ -209,13 +261,13 @@ async def can_code(path: str) -> list[TextContent]:
             test_info=test_info,
             warn_summary=warn_summary,
             prd_rule=prd_rule
-        ))]
+        ) + context_summary)]
     else:
         return [TextContent(type="text", text=CAN_CODE_PASS.format(
             found_docs=found_docs,
             test_info=test_info,
             prd_rule=prd_rule
-        ))]
+        ) + context_summary)]
 
 
 async def scan_docs(path: str) -> list[TextContent]:

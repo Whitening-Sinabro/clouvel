@@ -5,6 +5,41 @@ All notable changes to Clouvel will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-01-24
+
+### Changed
+- **Manager v2: Augmentation Model** - Complete redesign from "answer-giving" to "question-asking"
+  - 8 managers now ask probing questions instead of giving recommendations
+  - New output format: "Decisions for YOU" and "Key Questions to Answer"
+  - Philosophy: Help solo devs THINK from 8 perspectives, not think FOR them
+  - Each manager has 4 categories of probing questions (scope, tradeoffs, risks, etc.)
+  - Knowledge Base integration: managers now reference past decisions
+  - Automatic context injection from project history
+
+### Added
+- **Knowledge Base**: SQLite-based persistent storage for decisions, meetings, and code locations
+  - `record_decision` - Save architectural decisions with reasoning
+  - `record_location` - Track important code locations
+  - `search_knowledge` - FTS5 full-text search across all knowledge
+  - `get_context` - Session recovery with recent decisions and locations
+  - `init_knowledge` - Initialize/reset the knowledge database
+  - `rebuild_index` - Rebuild FTS5 search index
+- **Session Auto-load**: `can_code` now shows recent context from Knowledge Base
+- **50MB Limit + Auto-archive**: Automatic archival of 30+ day old data when DB exceeds 40MB
+- **API Key Fallback**: Manager works in static mode without ANTHROPIC_API_KEY
+- **Meeting Auto-record**: Manager calls automatically record decisions to Knowledge Base
+- **SQLite Encryption**: Optional field-level encryption via `CLOUVEL_KB_KEY` environment variable
+- **Quick Perspectives**: Lightweight pre-coding check (`quick_perspectives`)
+  - 3-4 relevant managers provide key probing questions
+  - Topic-based manager selection (auth → CSO, UI → CDO)
+  - References past decisions from Knowledge Base
+
+### Changed
+- Landing page: "Context Recovery" → "Progress Tracking" (honest messaging)
+
+### Security
+- Optional encryption for sensitive decision data using Fernet (cryptography library)
+
 ## [1.3.13] - 2026-01-24
 
 ### Fixed

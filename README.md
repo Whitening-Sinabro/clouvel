@@ -81,6 +81,7 @@ That's it. No config needed.
 | `start` | Project onboarding with PRD templates |
 | `plan` | Detailed execution planning |
 | `save_prd` | Save PRD from conversation |
+| Knowledge Base | SQLite-based decision tracking + FTS5 search |
 | Progress tracking | Track what's done and what's next |
 | 8 project templates | web-app, api, cli, chrome-ext, discord-bot, landing-page, saas, generic |
 

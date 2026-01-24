@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 Clouvel MCP Server v1.3.0
-바이브코딩 프로세스를 강제하는 MCP 서버
+MCP server that enforces vibe coding process
 
-v1.2 신규 도구:
-- start: 프로젝트 온보딩 + PRD 강제 (Free)
-- manager: 8명 C-Level 매니저 협업 피드백 (Pro)
-- ship: 원클릭 테스트→검증→증거 생성 (Pro)
+v1.2 new tools:
+- start: Project onboarding + PRD enforcement (Free)
+- manager: 8 C-Level managers collaborative feedback (Pro)
+- ship: One-click test→verify→evidence generation (Pro)
 
-Free 버전 - Pro 기능은 clouvel-pro 패키지 참조
+Free version - For Pro features, see clouvel-pro package
 """
 
 from mcp.server import Server
@@ -35,13 +35,15 @@ from .tools import (
     hook_design, hook_verify,
     # start (Free, v1.2)
     start, quick_start, save_prd,
+    # knowledge (Free, v1.4)
+    record_decision, record_location, search_knowledge, get_context, init_knowledge, rebuild_index,
     # manager (Pro, v1.2)
     manager, ask_manager, list_managers, MANAGERS,
     # ship (Pro, v1.2)
     ship, quick_ship, full_ship,
 )
 
-# Error Learning 도구 (Pro 기능 - 별도 import)
+# Error Learning tools (Pro feature - separate import)
 try:
     from .tools.errors import error_record, error_check, error_learn
     _HAS_ERROR_TOOLS = True
@@ -50,7 +52,7 @@ except ImportError:
     error_record = None
     error_check = None
     error_learn = None
-# 라이선스 모듈 import (Pro 버전이 없으면 Free stub 사용)
+# License module import (use Free stub if Pro version not available)
 try:
     from .license import activate_license_cli, get_license_status
 except ImportError:
@@ -59,51 +61,51 @@ from .version_check import init_version_check, get_cached_update_info, get_updat
 
 server = Server("clouvel")
 
-# 서버 시작 시 버전 체크 (비동기적으로 처리)
+# Version check on server start (processed asynchronously)
 _version_check_done = False
 
 
 # ============================================================
-# Tool Definitions (Free - v0.8까지)
+# Tool Definitions (Free - up to v0.8)
 # ============================================================
 
 TOOL_DEFINITIONS = [
     # === Core Tools ===
     Tool(
         name="can_code",
-        description="코드 작성 전 반드시 호출. 문서 상태 확인 후 코딩 가능 여부 판단.",
+        description="Must call before writing code. Checks document status and determines if coding is allowed.",
         inputSchema={
             "type": "object",
-            "properties": {"path": {"type": "string", "description": "프로젝트 docs 폴더 경로"}},
+            "properties": {"path": {"type": "string", "description": "Project docs folder path"}},
             "required": ["path"]
         }
     ),
     Tool(
         name="scan_docs",
-        description="프로젝트 docs 폴더 스캔. 파일 목록 반환.",
+        description="Scan project docs folder. Returns file list.",
         inputSchema={
             "type": "object",
-            "properties": {"path": {"type": "string", "description": "docs 폴더 경로"}},
+            "properties": {"path": {"type": "string", "description": "docs folder path"}},
             "required": ["path"]
         }
     ),
     Tool(
         name="analyze_docs",
-        description="docs 폴더 분석. 필수 문서 체크.",
+        description="Analyze docs folder. Check required documents.",
         inputSchema={
             "type": "object",
-            "properties": {"path": {"type": "string", "description": "docs 폴더 경로"}},
+            "properties": {"path": {"type": "string", "description": "docs folder path"}},
             "required": ["path"]
         }
     ),
     Tool(
         name="init_docs",
-        description="docs 폴더 초기화 + 템플릿 생성.",
+        description="Initialize docs folder + generate templates.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "project_name": {"type": "string", "description": "프로젝트 이름"}
+                "path": {"type": "string", "description": "Project root path"},
+                "project_name": {"type": "string", "description": "Project name"}
             },
             "required": ["path", "project_name"]
         }
@@ -112,40 +114,40 @@ TOOL_DEFINITIONS = [
     # === Docs Tools ===
     Tool(
         name="get_prd_template",
-        description="PRD 템플릿 생성. 템플릿과 레이아웃 선택 가능.",
+        description="Generate PRD template. Choose template and layout.",
         inputSchema={
             "type": "object",
             "properties": {
-                "project_name": {"type": "string", "description": "프로젝트 이름"},
-                "output_path": {"type": "string", "description": "출력 경로"},
-                "template": {"type": "string", "enum": ["web-app", "api", "cli", "generic"], "description": "템플릿 종류"},
-                "layout": {"type": "string", "enum": ["lite", "standard", "detailed"], "description": "레이아웃 (분량)"}
+                "project_name": {"type": "string", "description": "Project name"},
+                "output_path": {"type": "string", "description": "Output path"},
+                "template": {"type": "string", "enum": ["web-app", "api", "cli", "generic"], "description": "Template type"},
+                "layout": {"type": "string", "enum": ["lite", "standard", "detailed"], "description": "Layout (content amount)"}
             },
             "required": ["project_name", "output_path"]
         }
     ),
     Tool(
         name="list_templates",
-        description="사용 가능한 PRD 템플릿 목록 조회.",
+        description="List available PRD templates.",
         inputSchema={"type": "object", "properties": {}}
     ),
     Tool(
         name="write_prd_section",
-        description="PRD 섹션별 작성 가이드.",
+        description="PRD section writing guide.",
         inputSchema={
             "type": "object",
             "properties": {
                 "section": {"type": "string", "enum": ["summary", "principles", "input_spec", "output_spec", "errors", "state_machine", "api_endpoints", "db_schema"]},
-                "content": {"type": "string", "description": "섹션 내용"}
+                "content": {"type": "string", "description": "Section content"}
             },
             "required": ["section"]
         }
     ),
-    Tool(name="get_prd_guide", description="PRD 작성 가이드.", inputSchema={"type": "object", "properties": {}}),
-    Tool(name="get_verify_checklist", description="검증 체크리스트.", inputSchema={"type": "object", "properties": {}}),
+    Tool(name="get_prd_guide", description="PRD writing guide.", inputSchema={"type": "object", "properties": {}}),
+    Tool(name="get_verify_checklist", description="Verification checklist.", inputSchema={"type": "object", "properties": {}}),
     Tool(
         name="get_setup_guide",
-        description="설치/설정 가이드.",
+        description="Installation/setup guide.",
         inputSchema={
             "type": "object",
             "properties": {"platform": {"type": "string", "enum": ["desktop", "code", "vscode", "cursor", "all"]}}
@@ -153,12 +155,12 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="get_analytics",
-        description="도구 사용량 통계.",
+        description="Tool usage statistics.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 경로"},
-                "days": {"type": "integer", "description": "조회 기간 (기본: 30일)"}
+                "path": {"type": "string", "description": "Project path"},
+                "days": {"type": "integer", "description": "Query period (default: 30 days)"}
             }
         }
     ),
@@ -166,7 +168,7 @@ TOOL_DEFINITIONS = [
     # === Setup Tools ===
     Tool(
         name="init_clouvel",
-        description="Clouvel 온보딩. 플랫폼 선택 후 맞춤 설정.",
+        description="Clouvel onboarding. Custom setup after platform selection.",
         inputSchema={
             "type": "object",
             "properties": {"platform": {"type": "string", "enum": ["desktop", "vscode", "cli", "ask"]}}
@@ -174,11 +176,11 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="setup_cli",
-        description="CLI 환경 설정. hooks, CLAUDE.md, pre-commit 생성.",
+        description="CLI environment setup. Generate hooks, CLAUDE.md, pre-commit.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "path": {"type": "string", "description": "Project root path"},
                 "level": {"type": "string", "enum": ["remind", "strict", "full"]}
             },
             "required": ["path"]
@@ -188,11 +190,11 @@ TOOL_DEFINITIONS = [
     # === Rules Tools (v0.5) ===
     Tool(
         name="init_rules",
-        description="v0.5: 규칙 모듈화 초기화.",
+        description="v0.5: Initialize rules modularization.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "path": {"type": "string", "description": "Project root path"},
                 "template": {"type": "string", "enum": ["web", "api", "fullstack", "minimal"]}
             },
             "required": ["path"]
@@ -200,11 +202,11 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="get_rule",
-        description="v0.5: 경로 기반 규칙 로딩.",
+        description="v0.5: Load rules based on path.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "파일 경로"},
+                "path": {"type": "string", "description": "File path"},
                 "context": {"type": "string", "enum": ["coding", "review", "debug", "test"]}
             },
             "required": ["path"]
@@ -212,13 +214,13 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="add_rule",
-        description="v0.5: 새 규칙 추가.",
+        description="v0.5: Add new rule.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "path": {"type": "string", "description": "Project root path"},
                 "rule_type": {"type": "string", "enum": ["never", "always", "prefer"]},
-                "content": {"type": "string", "description": "규칙 내용"},
+                "content": {"type": "string", "description": "Rule content"},
                 "category": {"type": "string", "enum": ["api", "frontend", "database", "security", "general"]}
             },
             "required": ["path", "rule_type", "content"]
@@ -228,11 +230,11 @@ TOOL_DEFINITIONS = [
     # === Verify Tools (v0.5) ===
     Tool(
         name="verify",
-        description="v0.5: Context Bias 제거 검증.",
+        description="v0.5: Context Bias removal verification.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "검증 대상 경로"},
+                "path": {"type": "string", "description": "Verification target path"},
                 "scope": {"type": "string", "enum": ["file", "feature", "full"]},
                 "checklist": {"type": "array", "items": {"type": "string"}}
             },
@@ -241,11 +243,11 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="gate",
-        description="v0.5: lint → test → build 자동화.",
+        description="v0.5: lint -> test -> build automation.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "path": {"type": "string", "description": "Project root path"},
                 "steps": {"type": "array", "items": {"type": "string"}},
                 "fix": {"type": "boolean"}
             },
@@ -254,12 +256,12 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="handoff",
-        description="v0.5: 의도 기록.",
+        description="v0.5: Record intent.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "feature": {"type": "string", "description": "완료한 기능"},
+                "path": {"type": "string", "description": "Project root path"},
+                "feature": {"type": "string", "description": "Completed feature"},
                 "decisions": {"type": "string"},
                 "warnings": {"type": "string"},
                 "next_steps": {"type": "string"}
@@ -271,12 +273,12 @@ TOOL_DEFINITIONS = [
     # === Planning Tools (v0.6, v1.3) ===
     Tool(
         name="init_planning",
-        description="v0.6: 영속적 컨텍스트 초기화.",
+        description="v0.6: Initialize persistent context.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "task": {"type": "string", "description": "현재 작업"},
+                "path": {"type": "string", "description": "Project root path"},
+                "task": {"type": "string", "description": "Current task"},
                 "goals": {"type": "array", "items": {"type": "string"}}
             },
             "required": ["path", "task"]
@@ -284,25 +286,25 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="plan",
-        description="v1.3: 상세 실행 계획 생성. manager 피드백을 종합하여 단계별 액션 아이템, 의존성, 검증 포인트를 포함한 계획 생성. meeting_file로 이전 회의 결과를 참조 가능. (Pro)",
+        description="v1.3: Generate detailed execution plan. Synthesize manager feedback to create plan with step-by-step action items, dependencies, and verification points. Can reference previous meeting results via meeting_file. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "task": {"type": "string", "description": "수행할 작업"},
-                "goals": {"type": "array", "items": {"type": "string"}, "description": "달성 목표"},
-                "meeting_file": {"type": "string", "description": "이전 회의록 파일명 (예: 2026-01-24_14-00_feature.md). 있으면 회의 결과 기반으로 계획 생성"}
+                "path": {"type": "string", "description": "Project root path"},
+                "task": {"type": "string", "description": "Task to perform"},
+                "goals": {"type": "array", "items": {"type": "string"}, "description": "Goals to achieve"},
+                "meeting_file": {"type": "string", "description": "Previous meeting file name (e.g., 2026-01-24_14-00_feature.md). If provided, generates plan based on meeting results"}
             },
             "required": ["path", "task"]
         }
     ),
     Tool(
         name="save_finding",
-        description="v0.6: 조사 결과 저장.",
+        description="v0.6: Save research findings.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "path": {"type": "string", "description": "Project root path"},
                 "topic": {"type": "string"},
                 "question": {"type": "string"},
                 "findings": {"type": "string"},
@@ -314,20 +316,20 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="refresh_goals",
-        description="v0.6: 목표 리마인드.",
+        description="v0.6: Goals reminder.",
         inputSchema={
             "type": "object",
-            "properties": {"path": {"type": "string", "description": "프로젝트 루트 경로"}},
+            "properties": {"path": {"type": "string", "description": "Project root path"}},
             "required": ["path"]
         }
     ),
     Tool(
         name="update_progress",
-        description="v0.6: 진행 상황 업데이트.",
+        description="v0.6: Update progress status.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "path": {"type": "string", "description": "Project root path"},
                 "completed": {"type": "array", "items": {"type": "string"}},
                 "in_progress": {"type": "string"},
                 "blockers": {"type": "array", "items": {"type": "string"}},
@@ -340,12 +342,12 @@ TOOL_DEFINITIONS = [
     # === Agent Tools (v0.7) ===
     Tool(
         name="spawn_explore",
-        description="v0.7: 탐색 전문 에이전트.",
+        description="v0.7: Exploration specialist agent.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "query": {"type": "string", "description": "탐색 질문"},
+                "path": {"type": "string", "description": "Project root path"},
+                "query": {"type": "string", "description": "Exploration question"},
                 "scope": {"type": "string", "enum": ["file", "folder", "project", "deep"]},
                 "save_findings": {"type": "boolean"}
             },
@@ -354,12 +356,12 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="spawn_librarian",
-        description="v0.7: 라이브러리언 에이전트.",
+        description="v0.7: Librarian agent.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "topic": {"type": "string", "description": "조사 주제"},
+                "path": {"type": "string", "description": "Project root path"},
+                "topic": {"type": "string", "description": "Research topic"},
                 "type": {"type": "string", "enum": ["library", "api", "migration", "best_practice"]},
                 "depth": {"type": "string", "enum": ["quick", "standard", "thorough"]}
             },
@@ -370,11 +372,11 @@ TOOL_DEFINITIONS = [
     # === Hook Tools (v0.8) ===
     Tool(
         name="hook_design",
-        description="v0.8: 설계 훅 생성.",
+        description="v0.8: Create design hook.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "path": {"type": "string", "description": "Project root path"},
                 "trigger": {"type": "string", "enum": ["pre_code", "pre_feature", "pre_refactor", "pre_api"]},
                 "checks": {"type": "array", "items": {"type": "string"}},
                 "block_on_fail": {"type": "boolean"}
@@ -384,11 +386,11 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="hook_verify",
-        description="v0.8: 검증 훅 생성.",
+        description="v0.8: Create verification hook.",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
+                "path": {"type": "string", "description": "Project root path"},
                 "trigger": {"type": "string", "enum": ["post_code", "post_feature", "pre_commit", "pre_push"]},
                 "steps": {"type": "array", "items": {"type": "string"}},
                 "parallel": {"type": "boolean"},
@@ -401,91 +403,181 @@ TOOL_DEFINITIONS = [
     # === Start Tool (Free, v1.2) ===
     Tool(
         name="start",
-        description="프로젝트 온보딩. PRD 체크, 프로젝트 타입 자동 감지, 대화형 PRD 작성 가이드. (Free)",
+        description="Project onboarding. PRD check, auto-detect project type, interactive PRD writing guide. (Free)",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "project_name": {"type": "string", "description": "프로젝트 이름 (선택)"},
-                "project_type": {"type": "string", "description": "프로젝트 타입 강제 지정 (선택)", "enum": ["web-app", "api", "cli", "chrome-ext", "discord-bot", "landing-page", "generic"]}
+                "path": {"type": "string", "description": "Project root path"},
+                "project_name": {"type": "string", "description": "Project name (optional)"},
+                "project_type": {"type": "string", "description": "Force project type (optional)", "enum": ["web-app", "api", "cli", "chrome-ext", "discord-bot", "landing-page", "generic"]}
             },
             "required": ["path"]
         }
     ),
     Tool(
         name="save_prd",
-        description="PRD 내용 저장. Claude가 사용자와 대화하며 작성한 PRD를 저장. (Free)",
+        description="Save PRD content. Save PRD written through conversation with Claude. (Free)",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "content": {"type": "string", "description": "PRD 내용 (마크다운)"},
-                "project_name": {"type": "string", "description": "프로젝트 이름 (선택)"},
-                "project_type": {"type": "string", "description": "프로젝트 타입 (선택)"}
+                "path": {"type": "string", "description": "Project root path"},
+                "content": {"type": "string", "description": "PRD content (markdown)"},
+                "project_name": {"type": "string", "description": "Project name (optional)"},
+                "project_type": {"type": "string", "description": "Project type (optional)"}
             },
             "required": ["path", "content"]
+        }
+    ),
+
+    # === Knowledge Base Tools (Free, v1.4) ===
+    Tool(
+        name="record_decision",
+        description="Record a decision to the knowledge base. Persists across sessions for context recovery. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "category": {"type": "string", "description": "Decision category (architecture, pricing, security, feature, etc.)"},
+                "decision": {"type": "string", "description": "The actual decision made"},
+                "reasoning": {"type": "string", "description": "Why this decision was made"},
+                "alternatives": {"type": "array", "items": {"type": "string"}, "description": "Other options that were considered"},
+                "project_name": {"type": "string", "description": "Project name (optional)"},
+                "project_path": {"type": "string", "description": "Project path (optional)"}
+            },
+            "required": ["category", "decision"]
+        }
+    ),
+    Tool(
+        name="record_location",
+        description="Record a code location to the knowledge base. Track where important code lives. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "name": {"type": "string", "description": "Descriptive name (e.g., 'License validation endpoint')"},
+                "repo": {"type": "string", "description": "Repository name (e.g., 'clouvel-workers')"},
+                "path": {"type": "string", "description": "File path within repo (e.g., 'src/index.js:42')"},
+                "description": {"type": "string", "description": "What this code does"},
+                "project_name": {"type": "string", "description": "Project name (optional)"},
+                "project_path": {"type": "string", "description": "Project path (optional)"}
+            },
+            "required": ["name", "repo", "path"]
+        }
+    ),
+    Tool(
+        name="search_knowledge",
+        description="Search the knowledge base. Find past decisions, locations, and context. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "Search query (FTS5 syntax supported)"},
+                "project_name": {"type": "string", "description": "Filter by project (optional)"},
+                "limit": {"type": "integer", "description": "Max results (default 20)"}
+            },
+            "required": ["query"]
+        }
+    ),
+    Tool(
+        name="get_context",
+        description="Get recent context for a project. Returns recent decisions and code locations. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_name": {"type": "string", "description": "Project name"},
+                "project_path": {"type": "string", "description": "Project path"},
+                "include_decisions": {"type": "boolean", "description": "Include recent decisions (default true)"},
+                "include_locations": {"type": "boolean", "description": "Include code locations (default true)"},
+                "limit": {"type": "integer", "description": "Max items per category (default 10)"}
+            }
+        }
+    ),
+    Tool(
+        name="init_knowledge",
+        description="Initialize the knowledge base. Creates SQLite database at ~/.clouvel/knowledge.db. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {}
+        }
+    ),
+    Tool(
+        name="rebuild_index",
+        description="Rebuild the knowledge base search index. Use if search results seem incomplete. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {}
         }
     ),
 
     # === Manager Tool (Pro, v1.2) ===
     Tool(
         name="manager",
-        description="8명 C-Level 매니저의 컨텍스트 기반 협업 피드백. PM/CTO/QA/CDO/CMO/CFO/CSO/Error. use_dynamic=true로 자연스러운 회의록 생성. (Pro)",
+        description="Context-based collaborative feedback from 8 C-Level managers. PM/CTO/QA/CDO/CMO/CFO/CSO/Error. Set use_dynamic=true for natural meeting transcript generation. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
-                "context": {"type": "string", "description": "검토할 내용 (플랜, 코드, 질문 등)"},
-                "mode": {"type": "string", "enum": ["auto", "all", "specific"], "description": "매니저 선택 모드"},
-                "managers": {"type": "array", "items": {"type": "string"}, "description": "mode=specific일 때 매니저 목록"},
-                "include_checklist": {"type": "boolean", "description": "체크리스트 포함 여부"},
-                "use_dynamic": {"type": "boolean", "description": "true면 Claude API로 자연스러운 회의록 생성 (ANTHROPIC_API_KEY 필요)"},
-                "topic": {"type": "string", "enum": ["auth", "api", "payment", "ui", "feature", "launch", "error", "security", "performance", "maintenance", "design"], "description": "회의 토픽 힌트 (use_dynamic=true일 때)"}
+                "context": {"type": "string", "description": "Content to review (plan, code, questions, etc.)"},
+                "mode": {"type": "string", "enum": ["auto", "all", "specific"], "description": "Manager selection mode"},
+                "managers": {"type": "array", "items": {"type": "string"}, "description": "Manager list when mode=specific"},
+                "include_checklist": {"type": "boolean", "description": "Include checklist"},
+                "use_dynamic": {"type": "boolean", "description": "If true, generate natural meeting transcript via Claude API (ANTHROPIC_API_KEY required)"},
+                "topic": {"type": "string", "enum": ["auth", "api", "payment", "ui", "feature", "launch", "error", "security", "performance", "maintenance", "design"], "description": "Meeting topic hint (when use_dynamic=true)"}
             },
             "required": ["context"]
         }
     ),
     Tool(
         name="list_managers",
-        description="사용 가능한 매니저 목록 조회. (Pro)",
+        description="List available managers. (Pro)",
         inputSchema={"type": "object", "properties": {}}
+    ),
+    Tool(
+        name="quick_perspectives",
+        description="Quick, lightweight perspective check before coding. Returns key questions from 3-4 relevant managers. Call this BEFORE starting any coding task to surface blind spots. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "context": {"type": "string", "description": "What you're about to build/do"},
+                "max_managers": {"type": "integer", "description": "Max managers to include (default 4)"},
+                "questions_per_manager": {"type": "integer", "description": "Questions per manager (default 2)"}
+            },
+            "required": ["context"]
+        }
     ),
 
     # === Ship Tool (Pro, v1.2) ===
     Tool(
         name="ship",
-        description="원클릭 테스트→검증→증거 생성. lint/typecheck/test/build 순차 실행. (Pro)",
+        description="One-click test->verify->evidence generation. Sequential execution of lint/typecheck/test/build. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "feature": {"type": "string", "description": "검증할 기능명 (선택)"},
-                "steps": {"type": "array", "items": {"type": "string"}, "description": "실행할 단계 ['lint', 'typecheck', 'test', 'build']"},
-                "generate_evidence": {"type": "boolean", "description": "증거 파일 생성 여부"},
-                "auto_fix": {"type": "boolean", "description": "lint 에러 자동 수정 시도"}
+                "path": {"type": "string", "description": "Project root path"},
+                "feature": {"type": "string", "description": "Feature name to verify (optional)"},
+                "steps": {"type": "array", "items": {"type": "string"}, "description": "Steps to execute ['lint', 'typecheck', 'test', 'build']"},
+                "generate_evidence": {"type": "boolean", "description": "Generate evidence file"},
+                "auto_fix": {"type": "boolean", "description": "Attempt auto-fix for lint errors"}
             },
             "required": ["path"]
         }
     ),
     Tool(
         name="quick_ship",
-        description="빠른 ship - lint와 test만 실행. (Pro)",
+        description="Quick ship - run lint and test only. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "feature": {"type": "string", "description": "검증할 기능명 (선택)"}
+                "path": {"type": "string", "description": "Project root path"},
+                "feature": {"type": "string", "description": "Feature name to verify (optional)"}
             },
             "required": ["path"]
         }
     ),
     Tool(
         name="full_ship",
-        description="전체 ship - 모든 검증 단계 + 자동 수정. (Pro)",
+        description="Full ship - all verification steps + auto fix. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "feature": {"type": "string", "description": "검증할 기능명 (선택)"}
+                "path": {"type": "string", "description": "Project root path"},
+                "feature": {"type": "string", "description": "Feature name to verify (optional)"}
             },
             "required": ["path"]
         }
@@ -494,44 +586,44 @@ TOOL_DEFINITIONS = [
     # === Error Learning Tools (Pro, v1.4) ===
     Tool(
         name="error_record",
-        description="5 Whys 구조화된 에러 기록 + MD 파일 생성. 에러 발생 시 근본 원인 분석. (Pro)",
+        description="5 Whys structured error recording + MD file generation. Root cause analysis when errors occur. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "error_text": {"type": "string", "description": "에러 메시지"},
-                "context": {"type": "string", "description": "에러 발생 상황 설명"},
-                "five_whys": {"type": "array", "items": {"type": "string"}, "description": "5 Whys 분석 결과"},
-                "root_cause": {"type": "string", "description": "근본 원인"},
-                "solution": {"type": "string", "description": "해결 방법"},
-                "prevention": {"type": "string", "description": "재발 방지 대책"}
+                "path": {"type": "string", "description": "Project root path"},
+                "error_text": {"type": "string", "description": "Error message"},
+                "context": {"type": "string", "description": "Error context description"},
+                "five_whys": {"type": "array", "items": {"type": "string"}, "description": "5 Whys analysis results"},
+                "root_cause": {"type": "string", "description": "Root cause"},
+                "solution": {"type": "string", "description": "Solution"},
+                "prevention": {"type": "string", "description": "Prevention measures"}
             },
             "required": ["path", "error_text"]
         }
     ),
     Tool(
         name="error_check",
-        description="컨텍스트 기반 선제적 경고. 코드 수정 전 과거 에러 패턴 체크. (Pro)",
+        description="Context-based proactive warning. Check past error patterns before code modification. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "context": {"type": "string", "description": "현재 작업 컨텍스트"},
-                "file_path": {"type": "string", "description": "수정하려는 파일 경로"},
-                "operation": {"type": "string", "description": "수행하려는 작업"}
+                "path": {"type": "string", "description": "Project root path"},
+                "context": {"type": "string", "description": "Current work context"},
+                "file_path": {"type": "string", "description": "File path to modify"},
+                "operation": {"type": "string", "description": "Operation to perform"}
             },
             "required": ["path", "context"]
         }
     ),
     Tool(
         name="error_learn",
-        description="세션 분석 + CLAUDE.md 자동 업데이트. 에러 패턴에서 NEVER/ALWAYS 규칙 학습. (Pro)",
+        description="Session analysis + CLAUDE.md auto update. Learn NEVER/ALWAYS rules from error patterns. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "프로젝트 루트 경로"},
-                "auto_update_claude_md": {"type": "boolean", "description": "CLAUDE.md 자동 업데이트 여부"},
-                "min_count": {"type": "integer", "description": "NEVER 규칙 생성 최소 에러 횟수"}
+                "path": {"type": "string", "description": "Project root path"},
+                "auto_update_claude_md": {"type": "boolean", "description": "Auto update CLAUDE.md"},
+                "min_count": {"type": "integer", "description": "Minimum error count for NEVER rule generation"}
             },
             "required": ["path"]
         }
@@ -540,25 +632,25 @@ TOOL_DEFINITIONS = [
     # === License Tools ===
     Tool(
         name="activate_license",
-        description="라이선스 활성화. Polar.sh 또는 테스트 라이선스 지원.",
+        description="Activate license. Supports Polar.sh or test license.",
         inputSchema={
             "type": "object",
             "properties": {
-                "license_key": {"type": "string", "description": "라이선스 키"}
+                "license_key": {"type": "string", "description": "License key"}
             },
             "required": ["license_key"]
         }
     ),
     Tool(
         name="license_status",
-        description="현재 라이선스 상태 확인.",
+        description="Check current license status.",
         inputSchema={"type": "object", "properties": {}}
     ),
 
-    # === Pro 안내 ===
+    # === Pro Guide ===
     Tool(
         name="upgrade_pro",
-        description="Clouvel Pro 안내. Shovel 자동 설치, Error Learning 등.",
+        description="Clouvel Pro guide. Shovel auto-install, Error Learning, etc.",
         inputSchema={"type": "object", "properties": {}}
     ),
 ]
@@ -621,9 +713,18 @@ TOOL_HANDLERS = {
     "start": lambda args: _wrap_start(args),
     "save_prd": lambda args: _wrap_save_prd(args),
 
+    # Knowledge (Free, v1.4)
+    "record_decision": lambda args: _wrap_record_decision(args),
+    "record_location": lambda args: _wrap_record_location(args),
+    "search_knowledge": lambda args: _wrap_search_knowledge(args),
+    "get_context": lambda args: _wrap_get_context(args),
+    "init_knowledge": lambda args: _wrap_init_knowledge(),
+    "rebuild_index": lambda args: _wrap_rebuild_index(),
+
     # Manager (Pro, v1.2)
     "manager": lambda args: _wrap_manager(args),
     "list_managers": lambda args: _wrap_list_managers(),
+    "quick_perspectives": lambda args: _wrap_quick_perspectives(args),
 
     # Ship (Pro, v1.2)
     "ship": lambda args: _wrap_ship(args),
@@ -645,7 +746,7 @@ TOOL_HANDLERS = {
 
 
 def _check_version_once():
-    """첫 호출 시 버전 체크 (lazy initialization)"""
+    """Check version on first call (lazy initialization)"""
     global _version_check_done
     if not _version_check_done:
         try:
@@ -656,7 +757,7 @@ def _check_version_once():
 
 
 async def _wrap_start(args: dict) -> list[TextContent]:
-    """start 도구 래퍼"""
+    """start tool wrapper"""
     result = start(
         args.get("path", ""),
         args.get("project_name", ""),
@@ -664,32 +765,32 @@ async def _wrap_start(args: dict) -> list[TextContent]:
     )
 
     if isinstance(result, dict):
-        # 프로젝트 타입 정보
+        # Project type info
         ptype = result.get("project_type", {})
-        type_info = f"**타입**: {ptype.get('description', 'N/A')} ({ptype.get('type', 'generic')}) - 신뢰도 {ptype.get('confidence', 0)}%"
+        type_info = f"**Type**: {ptype.get('description', 'N/A')} ({ptype.get('type', 'generic')}) - Confidence {ptype.get('confidence', 0)}%"
 
         output = f"""# 🚀 Start
 
-**상태**: {result.get('status', 'UNKNOWN')}
-**프로젝트**: {result.get('project_name', 'N/A')}
+**Status**: {result.get('status', 'UNKNOWN')}
+**Project**: {result.get('project_name', 'N/A')}
 {type_info}
 
 {result.get('message', '')}
 """
 
-        # PRD 작성 가이드 (NEED_PRD 상태일 때)
+        # PRD writing guide (when status is NEED_PRD)
         if result.get("status") == "NEED_PRD" and result.get("prd_guide"):
             guide = result["prd_guide"]
             output += guide.get("instruction", "")
 
-        # 다음 단계
-        output += "\n## 다음 단계\n"
+        # Next steps
+        output += "\n## Next Steps\n"
         for step in result.get('next_steps', []):
             output += f"- {step}\n"
 
-        # 생성된 파일
+        # Created files
         if result.get('created_files'):
-            output += "\n## 생성된 파일\n"
+            output += "\n## Created Files\n"
             for f in result['created_files']:
                 output += f"- {f}\n"
 
@@ -698,7 +799,7 @@ async def _wrap_start(args: dict) -> list[TextContent]:
 
 
 async def _wrap_save_prd(args: dict) -> list[TextContent]:
-    """save_prd 도구 래퍼"""
+    """save_prd tool wrapper"""
     result = save_prd(
         args.get("path", ""),
         args.get("content", ""),
@@ -709,13 +810,13 @@ async def _wrap_save_prd(args: dict) -> list[TextContent]:
     if isinstance(result, dict):
         output = f"""# 📝 Save PRD
 
-**상태**: {result.get('status', 'UNKNOWN')}
-**경로**: {result.get('prd_path', 'N/A')}
+**Status**: {result.get('status', 'UNKNOWN')}
+**Path**: {result.get('prd_path', 'N/A')}
 
 {result.get('message', '')}
 """
         if result.get('next_steps'):
-            output += "\n## 다음 단계\n"
+            output += "\n## Next Steps\n"
             for step in result['next_steps']:
                 output += f"- {step}\n"
 
@@ -723,56 +824,311 @@ async def _wrap_save_prd(args: dict) -> list[TextContent]:
     return [TextContent(type="text", text=str(result))]
 
 
-async def _wrap_manager(args: dict) -> list[TextContent]:
-    """manager 도구 래퍼"""
-    use_dynamic = args.get("use_dynamic", False)
+# === Knowledge Base Wrappers (Free, v1.4) ===
 
-    # 동적 회의록 생성 모드
+async def _wrap_record_decision(args: dict) -> list[TextContent]:
+    """record_decision tool wrapper"""
+    result = await record_decision(
+        category=args.get("category", "general"),
+        decision=args.get("decision", ""),
+        reasoning=args.get("reasoning"),
+        alternatives=args.get("alternatives"),
+        project_name=args.get("project_name"),
+        project_path=args.get("project_path")
+    )
+
+    if result.get("status") == "recorded":
+        output = f"""# ✅ Decision Recorded
+
+**ID**: {result.get('decision_id')}
+**Category**: {result.get('category')}
+**Project**: {result.get('project_id', 'global')}
+
+Decision saved to knowledge base. Use `search_knowledge` to retrieve later.
+"""
+    else:
+        output = f"""# ❌ Error Recording Decision
+
+{result.get('error', 'Unknown error')}
+"""
+    return [TextContent(type="text", text=output)]
+
+
+async def _wrap_record_location(args: dict) -> list[TextContent]:
+    """record_location tool wrapper"""
+    result = await record_location(
+        name=args.get("name", ""),
+        repo=args.get("repo", ""),
+        path=args.get("path", ""),
+        description=args.get("description"),
+        project_name=args.get("project_name"),
+        project_path=args.get("project_path")
+    )
+
+    if result.get("status") == "recorded":
+        output = f"""# ✅ Location Recorded
+
+**ID**: {result.get('location_id')}
+**Name**: {result.get('name')}
+**Repo**: {result.get('repo')}
+**Path**: {result.get('path')}
+
+Location saved to knowledge base.
+"""
+    else:
+        output = f"""# ❌ Error Recording Location
+
+{result.get('error', 'Unknown error')}
+"""
+    return [TextContent(type="text", text=output)]
+
+
+async def _wrap_search_knowledge(args: dict) -> list[TextContent]:
+    """search_knowledge tool wrapper"""
+    result = await search_knowledge(
+        query=args.get("query", ""),
+        project_name=args.get("project_name"),
+        limit=args.get("limit", 20)
+    )
+
+    if result.get("status") == "success":
+        output = f"""# 🔍 Knowledge Search Results
+
+**Query**: {result.get('query')}
+**Found**: {result.get('count')} results
+
+"""
+        for item in result.get("results", []):
+            output += f"""## [{item['type'].upper()}] ID: {item['id']}
+{item['content'][:200]}{'...' if len(item['content']) > 200 else ''}
+
+---
+"""
+        if not result.get("results"):
+            output += "_No results found._\n"
+    else:
+        output = f"""# ❌ Search Error
+
+{result.get('error', 'Unknown error')}
+"""
+    return [TextContent(type="text", text=output)]
+
+
+async def _wrap_get_context(args: dict) -> list[TextContent]:
+    """get_context tool wrapper"""
+    result = await get_context(
+        project_name=args.get("project_name"),
+        project_path=args.get("project_path"),
+        include_decisions=args.get("include_decisions", True),
+        include_locations=args.get("include_locations", True),
+        limit=args.get("limit", 10)
+    )
+
+    if result.get("status") == "success":
+        output = f"""# 📋 Project Context
+
+**Project ID**: {result.get('project_id', 'global')}
+
+"""
+        if result.get("decisions"):
+            output += "## Recent Decisions\n\n"
+            for d in result["decisions"]:
+                output += f"- **[{d.get('category', 'general')}]** {d.get('decision', '')[:100]}\n"
+            output += "\n"
+
+        if result.get("locations"):
+            output += "## Code Locations\n\n"
+            for loc in result["locations"]:
+                output += f"- **{loc.get('name', '')}**: `{loc.get('repo', '')}/{loc.get('path', '')}`\n"
+            output += "\n"
+
+        if not result.get("decisions") and not result.get("locations"):
+            output += "_No context recorded yet. Use `record_decision` and `record_location` to add context._\n"
+    else:
+        output = f"""# ❌ Error Getting Context
+
+{result.get('error', 'Unknown error')}
+"""
+    return [TextContent(type="text", text=output)]
+
+
+async def _wrap_init_knowledge() -> list[TextContent]:
+    """init_knowledge tool wrapper"""
+    result = await init_knowledge()
+
+    if result.get("status") == "initialized":
+        output = f"""# ✅ Knowledge Base Initialized
+
+**Database**: {result.get('db_path')}
+
+{result.get('message', '')}
+
+## Available Commands
+- `record_decision` - Record a decision
+- `record_location` - Record a code location
+- `search_knowledge` - Search past knowledge
+- `get_context` - Get recent context
+"""
+    else:
+        output = f"""# ❌ Initialization Error
+
+{result.get('error', 'Unknown error')}
+"""
+    return [TextContent(type="text", text=output)]
+
+
+async def _wrap_rebuild_index() -> list[TextContent]:
+    """rebuild_index tool wrapper"""
+    result = await rebuild_index()
+
+    if result.get("status") == "rebuilt":
+        output = f"""# ✅ Search Index Rebuilt
+
+**Indexed Items**: {result.get('indexed_count')}
+
+{result.get('message', '')}
+"""
+    else:
+        output = f"""# ❌ Rebuild Error
+
+{result.get('error', 'Unknown error')}
+"""
+    return [TextContent(type="text", text=output)]
+
+
+async def _wrap_manager(args: dict) -> list[TextContent]:
+    """manager tool wrapper"""
+    use_dynamic = args.get("use_dynamic", False)
+    context = args.get("context", "")
+    topic = args.get("topic", None)
+
+    meeting_output = None
+    participants = []
+
+    # Dynamic meeting transcript generation mode
     if use_dynamic:
         try:
             from .tools.manager.generator import generate_meeting_sync
             import os
 
-            # 프로젝트 경로 추측 (현재 작업 디렉토리 사용)
+            # Guess project path (use current working directory)
             project_path = os.getcwd()
 
             meeting_output = generate_meeting_sync(
-                context=args.get("context", ""),
-                topic=args.get("topic", None),
+                context=context,
+                topic=topic,
                 project_path=project_path,
                 auto_log=True
             )
-            return [TextContent(type="text", text=meeting_output)]
+            participants = ["PM", "CTO", "QA", "CDO", "CMO", "CFO", "CSO"]  # Dynamic uses all
         except ImportError:
-            return [TextContent(type="text", text="anthropic 패키지가 필요합니다: pip install anthropic")]
+            return [TextContent(type="text", text="anthropic package required: pip install anthropic")]
         except Exception as e:
-            # API 키 없거나 에러 시 기존 방식으로 폴백
-            return [TextContent(type="text", text=f"동적 회의록 생성 실패: {e}\n\n기존 방식으로 진행합니다.")]
+            # Fallback to existing method if API key missing or error
+            meeting_output = f"Dynamic meeting generation failed: {e}\n\nProceeding with existing method."
 
-    # 기존 정적 피드백
-    result = manager(
-        context=args.get("context", ""),
-        mode=args.get("mode", "auto"),
-        managers=args.get("managers", None),
-        include_checklist=args.get("include_checklist", True)
-    )
-    # formatted_output 사용
-    if isinstance(result, dict) and result.get("formatted_output"):
-        return [TextContent(type="text", text=result["formatted_output"])]
-    return [TextContent(type="text", text=str(result))]
+    # Existing static feedback (if dynamic failed or not requested)
+    if meeting_output is None or "failed" in meeting_output:
+        result = manager(
+            context=context,
+            mode=args.get("mode", "auto"),
+            managers=args.get("managers", None),
+            include_checklist=args.get("include_checklist", True)
+        )
+        if isinstance(result, dict) and result.get("formatted_output"):
+            meeting_output = result["formatted_output"]
+            participants = result.get("selected_managers", ["PM", "CTO", "QA"])
+        else:
+            meeting_output = str(result)
+
+    # Auto-record meeting to Knowledge Base
+    _auto_record_meeting(context, topic, participants, meeting_output)
+
+    return [TextContent(type="text", text=meeting_output)]
+
+
+def _auto_record_meeting(context: str, topic: str, participants: list, output: str):
+    """Automatically record meeting to Knowledge Base."""
+    try:
+        from .db.knowledge import record_meeting, record_decision, get_or_create_project
+        import os
+
+        # Get project from current directory
+        project_path = os.getcwd()
+        project_name = os.path.basename(project_path)
+        project_id = get_or_create_project(project_name, project_path)
+
+        # Record meeting
+        contributions = {}
+        for p in participants:
+            # Extract contribution from output if possible
+            contributions[p] = f"Participated in {topic or 'general'} discussion"
+
+        meeting_id = record_meeting(
+            topic=topic or "manager_review",
+            participants=participants,
+            contributions=contributions,
+            project_id=project_id
+        )
+
+        # Try to extract and record decisions from output
+        _extract_and_record_decisions(output, project_id, meeting_id)
+
+    except Exception:
+        # Silently fail - don't break manager output
+        pass
+
+
+def _extract_and_record_decisions(output: str, project_id: str, meeting_id: str):
+    """Extract decisions from meeting output and record them."""
+    try:
+        from .db.knowledge import record_decision
+        import re
+
+        # Look for action items or decisions in output
+        # Pattern: "| # | 담당 | 작업 |" table or "- **[category]** decision" format
+        lines = output.split('\n')
+        for line in lines:
+            # Match action item table rows: "| 1 | PM | Task description |"
+            table_match = re.match(r'\|\s*\d+\s*\|\s*[^\|]+\s*\|\s*([^\|]+)\s*\|', line)
+            if table_match:
+                decision_text = table_match.group(1).strip()
+                if decision_text and len(decision_text) > 10:
+                    record_decision(
+                        category="action_item",
+                        decision=decision_text[:200],
+                        project_id=project_id,
+                        meeting_id=meeting_id
+                    )
+
+    except Exception:
+        pass
 
 
 async def _wrap_list_managers() -> list[TextContent]:
-    """list_managers 도구 래퍼"""
+    """list_managers tool wrapper"""
     managers_list = list_managers()
-    output = "# 👔 사용 가능한 매니저 (8명)\n\n"
+    output = "# 👔 Available Managers (8)\n\n"
     for m in managers_list:
         output += f"- **{m['emoji']} {m['key']}** ({m['title']}): {m['focus']}\n"
     return [TextContent(type="text", text=output)]
 
 
+async def _wrap_quick_perspectives(args: dict) -> list[TextContent]:
+    """quick_perspectives tool wrapper"""
+    from .tools.manager import quick_perspectives
+    result = quick_perspectives(
+        context=args.get("context", ""),
+        max_managers=args.get("max_managers", 4),
+        questions_per_manager=args.get("questions_per_manager", 2)
+    )
+    if isinstance(result, dict) and result.get("formatted_output"):
+        return [TextContent(type="text", text=result["formatted_output"])]
+    return [TextContent(type="text", text=str(result))]
+
+
 async def _wrap_ship(args: dict) -> list[TextContent]:
-    """ship 도구 래퍼"""
+    """ship tool wrapper"""
     result = ship(
         path=args.get("path", ""),
         feature=args.get("feature", ""),
@@ -786,7 +1142,7 @@ async def _wrap_ship(args: dict) -> list[TextContent]:
 
 
 async def _wrap_quick_ship(args: dict) -> list[TextContent]:
-    """quick_ship 도구 래퍼"""
+    """quick_ship tool wrapper"""
     result = quick_ship(
         path=args.get("path", ""),
         feature=args.get("feature", "")
@@ -797,7 +1153,7 @@ async def _wrap_quick_ship(args: dict) -> list[TextContent]:
 
 
 async def _wrap_full_ship(args: dict) -> list[TextContent]:
-    """full_ship 도구 래퍼"""
+    """full_ship tool wrapper"""
     result = full_ship(
         path=args.get("path", ""),
         feature=args.get("feature", "")
@@ -808,14 +1164,14 @@ async def _wrap_full_ship(args: dict) -> list[TextContent]:
 
 
 async def _wrap_error_record(args: dict) -> list[TextContent]:
-    """error_record 도구 래퍼"""
+    """error_record tool wrapper"""
     if not _HAS_ERROR_TOOLS or error_record is None:
         return [TextContent(type="text", text="""
-# Clouvel Pro 기능
+# Clouvel Pro Feature
 
-Error Learning은 Pro 라이선스가 필요합니다.
+Error Learning requires a Pro license.
 
-## 구매
+## Purchase
 https://polar.sh/clouvel
 """)]
     return await error_record(
@@ -830,14 +1186,14 @@ https://polar.sh/clouvel
 
 
 async def _wrap_error_check(args: dict) -> list[TextContent]:
-    """error_check 도구 래퍼"""
+    """error_check tool wrapper"""
     if not _HAS_ERROR_TOOLS or error_check is None:
         return [TextContent(type="text", text="""
-# Clouvel Pro 기능
+# Clouvel Pro Feature
 
-Error Learning은 Pro 라이선스가 필요합니다.
+Error Learning requires a Pro license.
 
-## 구매
+## Purchase
 https://polar.sh/clouvel
 """)]
     return await error_check(
@@ -849,14 +1205,14 @@ https://polar.sh/clouvel
 
 
 async def _wrap_error_learn(args: dict) -> list[TextContent]:
-    """error_learn 도구 래퍼"""
+    """error_learn tool wrapper"""
     if not _HAS_ERROR_TOOLS or error_learn is None:
         return [TextContent(type="text", text="""
-# Clouvel Pro 기능
+# Clouvel Pro Feature
 
-Error Learning은 Pro 라이선스가 필요합니다.
+Error Learning requires a Pro license.
 
-## 구매
+## Purchase
 https://polar.sh/clouvel
 """)]
     return await error_learn(
@@ -867,18 +1223,18 @@ https://polar.sh/clouvel
 
 
 async def _wrap_activate_license(args: dict) -> list[TextContent]:
-    """activate_license 도구 래퍼"""
+    """activate_license tool wrapper"""
     license_key = args.get("license_key", "")
     if not license_key:
         return [TextContent(type="text", text="""
-# ❌ 라이선스 키를 입력하세요
+# ❌ Please enter license key
 
-## 사용법
+## Usage
 ```
 activate_license(license_key="YOUR-LICENSE-KEY")
 ```
 
-## 구매
+## Purchase
 https://polar.sh/clouvel
 """)]
 
@@ -889,68 +1245,68 @@ https://polar.sh/clouvel
         machine_id = result.get("machine_id", "unknown")
         product = result.get("product", "Clouvel Pro")
 
-        # 테스트 라이선스 추가 정보
+        # Test license extra info
         extra_info = ""
         if result.get("test_license"):
             expires_at = result.get("expires_at", "")
             expires_in_days = result.get("expires_in_days", 7)
             extra_info = f"""
-## ⚠️ 테스트 라이선스
-- **만료일**: {expires_at}
-- **남은 기간**: {expires_in_days}일
+## ⚠️ Test License
+- **Expires**: {expires_at}
+- **Days remaining**: {expires_in_days}
 """
 
         return [TextContent(type="text", text=f"""
-# ✅ 라이선스 활성화 완료
+# ✅ License Activated
 
-## 정보
-- **티어**: {tier_info.get('name', 'Unknown')}
-- **상품**: {product}
-- **기기**: `{machine_id[:8]}...`
+## Info
+- **Tier**: {tier_info.get('name', 'Unknown')}
+- **Product**: {product}
+- **Machine**: `{machine_id[:8]}...`
 {extra_info}
-## 🔒 기기 바인딩
+## 🔒 Machine Binding
 
-이 라이선스는 현재 기기에 바인딩됩니다.
-- Personal: 1대의 기기에서만 사용 가능
-- Team: 최대 10대 기기에서 사용 가능
-- Enterprise: 무제한 기기
+This license is bound to the current machine.
+- Personal: Can only be used on 1 machine
+- Team: Can be used on up to 10 machines
+- Enterprise: Unlimited machines
 
-다른 기기에서 사용하려면 기존 기기를 해제하거나 상위 티어로 업그레이드하세요.
+To use on another machine, deactivate the existing machine or upgrade to a higher tier.
 """)]
     else:
         return [TextContent(type="text", text=f"""
-# ❌ 라이선스 활성화 실패
+# ❌ License Activation Failed
 
-{result.get('message', '알 수 없는 오류')}
+{result.get('message', 'Unknown error')}
 
-## 확인사항
-- 라이선스 키가 정확한지 확인
-- 네트워크 연결 확인
-- 활성화 횟수 제한 확인 (Personal: 1회)
+## Checklist
+- Verify license key is correct
+- Check network connection
+- Check activation limit (Personal: 1)
 
-## 구매
+## Purchase
 https://polar.sh/clouvel
 """)]
 
 
 async def _wrap_license_status() -> list[TextContent]:
-    """license_status 도구 래퍼"""
+    """license_status tool wrapper"""
     result = get_license_status()
 
     if not result.get("has_license"):
         return [TextContent(type="text", text=f"""
-# 📋 라이선스 상태
+# 📋 License Status
 
-**상태**: ❌ 미활성화
+**Status**: ❌ Not activated
 
 {result.get('message', '')}
 
-## 활성화 방법
+## How to activate
 ```
 activate_license(license_key="YOUR-LICENSE-KEY")
 ```
 
-## 구매
+## Purchase
 https://polar.sh/clouvel
 """)]
 
@@ -961,57 +1317,57 @@ https://polar.sh/clouvel
     premium_unlocked = result.get("premium_unlocked", False)
     remaining = result.get("premium_unlock_remaining", 0)
 
-    unlock_status = "✅ 해제됨" if premium_unlocked else f"⏳ {remaining}일 남음"
+    unlock_status = "✅ Unlocked" if premium_unlocked else f"⏳ {remaining} days remaining"
 
     return [TextContent(type="text", text=f"""
-# 📋 라이선스 상태
+# 📋 License Status
 
-**상태**: ✅ 활성화됨
+**Status**: ✅ Activated
 
-## 정보
-- **티어**: {tier_info.get('name', 'Unknown')} ({tier_info.get('price', '?')})
-- **기기**: `{machine_id[:8]}...`
-- **활성화 일시**: {activated_at[:19] if len(activated_at) > 19 else activated_at}
-- **경과 일수**: {days}일
-- **프리미엄 기능**: {unlock_status}
+## Info
+- **Tier**: {tier_info.get('name', 'Unknown')} ({tier_info.get('price', '?')})
+- **Machine**: `{machine_id[:8]}...`
+- **Activated at**: {activated_at[:19] if len(activated_at) > 19 else activated_at}
+- **Days since activation**: {days}
+- **Premium features**: {unlock_status}
 """)]
 
 
 async def _upgrade_pro() -> list[TextContent]:
-    """Pro 업그레이드 안내"""
+    """Pro upgrade guide"""
     return [TextContent(type="text", text="""
 # Clouvel Pro
 
-더 강력한 기능이 필요하다면 Clouvel Pro를 확인하세요.
+For more powerful features, check out Clouvel Pro.
 
-## Pro 기능
+## Pro Features
 
-### Shovel 자동 설치
-- `.claude/` 워크플로우 구조 자동 생성
-- 슬래시 커맨드 (/start, /plan, /gate...)
-- 설정 파일 + 템플릿
+### Shovel Auto-Install
+- Auto-generate `.claude/` workflow structure
+- Slash commands (/start, /plan, /gate...)
+- Config files + templates
 
 ### Error Learning
-- 에러 패턴 자동 분류
-- 방지 규칙 자동 생성
-- 로그 파일 모니터링
+- Auto-classify error patterns
+- Auto-generate prevention rules
+- Log file monitoring
 
-### 커맨드 동기화
-- Shovel 커맨드 업데이트
+### Command Sync
+- Shovel command updates
 
-## 가격
+## Pricing
 
-| 티어 | 가격 | 인원 |
-|------|------|------|
-| Personal | $29 | 1명 |
-| Team | $79 | 10명 |
-| Enterprise | $199 | 무제한 |
+| Tier | Price | Users |
+|------|-------|-------|
+| Personal | $29 | 1 |
+| Team | $79 | 10 |
+| Enterprise | $199 | Unlimited |
 
-## 구매
+## Purchase
 
 https://polar.sh/clouvel
 
-## 설치
+## Install
 
 ```bash
 pip install clouvel-pro
@@ -1061,7 +1417,7 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
 
 
 async def _get_analytics(path: str, days: int) -> list[TextContent]:
-    """도구 사용량 통계"""
+    """Tool usage statistics"""
     stats = get_stats(days=days, project_path=path)
     return [TextContent(type="text", text=format_stats(stats))]
 
@@ -1076,14 +1432,14 @@ async def run_server():
 
 
 def _run_setup(global_only: bool = False) -> str:
-    """B0: clouvel setup - 강제 호출 메커니즘 설치"""
+    """B0: clouvel setup - install forced invocation mechanism"""
     import subprocess
     import os
     from pathlib import Path
 
     results = []
 
-    # 1. 글로벌 CLAUDE.md에 규칙 추가
+    # 1. Add rules to global CLAUDE.md
     if os.name == 'nt':  # Windows
         claude_dir = Path.home() / ".claude"
     else:  # Mac/Linux
@@ -1093,39 +1449,40 @@ def _run_setup(global_only: bool = False) -> str:
     claude_md_path = claude_dir / "CLAUDE.md"
 
     clouvel_rule = """
-## Clouvel 규칙 (자동 생성)
+## Clouvel Rules (Auto-generated)
 
-**코드 작성 전 반드시 clouvel의 `can_code` 도구 호출 필수.**
+**Must call clouvel's `can_code` tool before writing code.**
 
-- 코드를 작성(Edit/Write)하기 전에 항상 `can_code` 도구를 먼저 호출하세요
-- path 인자로 프로젝트의 docs 폴더 경로를 전달하세요
-- BLOCK이 뜨면 코드 작성 금지, 사용자에게 문서 작성 안내
-- PASS가 뜨면 코딩 진행 가능
-- WARN은 권장 사항, 진행 가능하지만 권장 문서 추가 안내
+- Always call `can_code` tool before writing code (Edit/Write)
+- Pass the project's docs folder path as the path argument
+- If BLOCK appears, do not write code, guide user to write documentation
+- If PASS appears, proceed with coding
+- WARN is a recommendation, can proceed but suggest adding recommended docs
 
 """
 
-    marker = "## Clouvel 규칙"
+    marker = "## Clouvel Rules"
+    marker_ko = "## Clouvel 규칙"
 
     if claude_md_path.exists():
         content = claude_md_path.read_text(encoding='utf-8')
-        if marker in content:
-            results.append("[OK] 글로벌 CLAUDE.md: 이미 Clouvel 규칙 있음")
+        if marker in content or marker_ko in content:
+            results.append("[OK] Global CLAUDE.md: Clouvel rules already exist")
         else:
-            # 기존 내용 끝에 추가
+            # Append to existing content
             new_content = content.rstrip() + "\n\n---\n" + clouvel_rule
             claude_md_path.write_text(new_content, encoding='utf-8')
-            results.append(f"[OK] 글로벌 CLAUDE.md: 규칙 추가됨 ({claude_md_path})")
+            results.append(f"[OK] Global CLAUDE.md: Rules added ({claude_md_path})")
     else:
-        # 새로 생성
-        initial_content = f"# Claude Code 글로벌 설정\n\n> 자동 생성됨 by clouvel setup\n\n---\n{clouvel_rule}"
+        # Create new
+        initial_content = f"# Claude Code Global Settings\n\n> Auto-generated by clouvel setup\n\n---\n{clouvel_rule}"
         claude_md_path.write_text(initial_content, encoding='utf-8')
-        results.append(f"[OK] 글로벌 CLAUDE.md: 생성됨 ({claude_md_path})")
+        results.append(f"[OK] Global CLAUDE.md: Created ({claude_md_path})")
 
-    # 2. MCP 서버 등록 (global_only가 아닐 때만)
+    # 2. Register MCP server (only when not global_only)
     if not global_only:
         try:
-            # 먼저 기존 등록 확인
+            # First check existing registration
             check_result = subprocess.run(
                 ["claude", "mcp", "list"],
                 capture_output=True,
@@ -1134,9 +1491,9 @@ def _run_setup(global_only: bool = False) -> str:
             )
 
             if "clouvel" in check_result.stdout:
-                results.append("[OK] MCP 서버: 이미 등록됨")
+                results.append("[OK] MCP Server: Already registered")
             else:
-                # 등록
+                # Register
                 add_result = subprocess.run(
                     ["claude", "mcp", "add", "clouvel", "-s", "user", "--", "clouvel"],
                     capture_output=True,
@@ -1145,24 +1502,24 @@ def _run_setup(global_only: bool = False) -> str:
                 )
 
                 if add_result.returncode == 0:
-                    results.append("[OK] MCP 서버: 등록 완료")
+                    results.append("[OK] MCP Server: Registration complete")
                 else:
-                    results.append(f"[WARN] MCP 서버: 등록 실패 - {add_result.stderr.strip()}")
-                    results.append("   수동 등록: claude mcp add clouvel -s user -- clouvel")
+                    results.append(f"[WARN] MCP Server: Registration failed - {add_result.stderr.strip()}")
+                    results.append("   Manual registration: claude mcp add clouvel -s user -- clouvel")
         except FileNotFoundError:
-            results.append("[WARN] MCP 서버: claude 명령어 없음")
-            results.append("   Claude Code 설치 후 다시 실행하세요")
+            results.append("[WARN] MCP Server: claude command not found")
+            results.append("   Please install Claude Code and try again")
         except subprocess.TimeoutExpired:
-            results.append("[WARN] MCP 서버: 타임아웃")
-            results.append("   수동 등록: claude mcp add clouvel -s user -- clouvel")
+            results.append("[WARN] MCP Server: Timeout")
+            results.append("   Manual registration: claude mcp add clouvel -s user -- clouvel")
         except Exception as e:
-            results.append(f"[WARN] MCP 서버: 오류 - {str(e)}")
-            results.append("   수동 등록: claude mcp add clouvel -s user -- clouvel")
+            results.append(f"[WARN] MCP Server: Error - {str(e)}")
+            results.append("   Manual registration: claude mcp add clouvel -s user -- clouvel")
 
-    # 결과 출력
+    # Output results
     output = """
 ================================================================
-                    Clouvel Setup 완료
+                    Clouvel Setup Complete
 ================================================================
 
 """
@@ -1171,22 +1528,22 @@ def _run_setup(global_only: bool = False) -> str:
 
 ----------------------------------------------------------------
 
-## 작동 방식
+## How It Works
 
-1. Claude Code 실행
-2. "로그인 기능 만들어줘" 요청
-3. Claude가 자동으로 can_code 먼저 호출
-4. PRD 없으면 → [BLOCK] BLOCK (코딩 금지)
-5. PRD 있으면 → [OK] PASS (코딩 진행)
+1. Run Claude Code
+2. Request "Build a login feature"
+3. Claude automatically calls can_code first
+4. No PRD -> [BLOCK] BLOCK (coding blocked)
+5. PRD exists -> [OK] PASS (proceed with coding)
 
-## 테스트
+## Test
 
 ```bash
-# PRD 없는 폴더에서 테스트
+# Test in a folder without PRD
 mkdir test-project && cd test-project
 claude
-> "코드 짜줘"
-# → BLOCK 메시지 확인
+> "Write some code"
+# -> Verify BLOCK message
 ```
 
 ----------------------------------------------------------------
@@ -1201,32 +1558,32 @@ def main():
     import argparse
     from pathlib import Path
 
-    parser = argparse.ArgumentParser(description="Clouvel - 바이브코딩 프로세스 강제 도구")
+    parser = argparse.ArgumentParser(description="Clouvel - Vibe coding process enforcement tool")
     subparsers = parser.add_subparsers(dest="command")
 
-    # init 명령
-    init_parser = subparsers.add_parser("init", help="프로젝트 초기화")
-    init_parser.add_argument("-p", "--path", default=".", help="프로젝트 경로")
+    # init command
+    init_parser = subparsers.add_parser("init", help="Initialize project")
+    init_parser.add_argument("-p", "--path", default=".", help="Project path")
     init_parser.add_argument("-l", "--level", choices=["remind", "strict", "full"], default="strict")
 
-    # setup 명령 (B0) - 레거시, install 권장
-    setup_parser = subparsers.add_parser("setup", help="Clouvel 강제 호출 메커니즘 설치 (글로벌)")
-    setup_parser.add_argument("--global-only", action="store_true", help="CLAUDE.md만 설정 (MCP 등록 제외)")
+    # setup command (B0) - legacy, install recommended
+    setup_parser = subparsers.add_parser("setup", help="Install Clouvel forced invocation mechanism (global)")
+    setup_parser.add_argument("--global-only", action="store_true", help="Configure CLAUDE.md only (exclude MCP registration)")
 
-    # install 명령 (신규, 권장)
-    install_parser = subparsers.add_parser("install", help="Clouvel MCP 서버 설치 (권장)")
-    install_parser.add_argument("--platform", choices=["auto", "code", "desktop", "cursor", "all"], default="auto", help="설치 대상 플랫폼")
-    install_parser.add_argument("--force", action="store_true", help="이미 설치되어 있어도 재설치")
+    # install command (new, recommended)
+    install_parser = subparsers.add_parser("install", help="Install Clouvel MCP server (recommended)")
+    install_parser.add_argument("--platform", choices=["auto", "code", "desktop", "cursor", "all"], default="auto", help="Target platform for installation")
+    install_parser.add_argument("--force", action="store_true", help="Reinstall even if already installed")
 
-    # activate 명령 (라이센스 활성화)
-    activate_parser = subparsers.add_parser("activate", help="라이선스 활성화")
-    activate_parser.add_argument("license_key", help="라이선스 키")
+    # activate command (license activation)
+    activate_parser = subparsers.add_parser("activate", help="Activate license")
+    activate_parser.add_argument("license_key", help="License key")
 
-    # status 명령 (라이센스 상태)
-    status_parser = subparsers.add_parser("status", help="라이선스 상태 확인")
+    # status command (license status)
+    status_parser = subparsers.add_parser("status", help="Check license status")
 
-    # deactivate 명령 (라이센스 비활성화)
-    deactivate_parser = subparsers.add_parser("deactivate", help="라이선스 비활성화 (로컬 캐시 삭제)")
+    # deactivate command (license deactivation)
+    deactivate_parser = subparsers.add_parser("deactivate", help="Deactivate license (delete local cache)")
 
     args = parser.parse_args()
 
@@ -1254,18 +1611,18 @@ def main():
         if result["success"]:
             print(f"""
 ================================================================
-              Clouvel Pro 라이선스 활성화 완료
+              Clouvel Pro License Activated
 ================================================================
 
 {result['message']}
 
-티어: {result.get('tier_info', {}).get('name', 'Unknown')}
-기기: {result.get('machine_id', 'Unknown')[:8]}...
-상품: {result.get('product', 'Clouvel Pro')}
+Tier: {result.get('tier_info', {}).get('name', 'Unknown')}
+Machine: {result.get('machine_id', 'Unknown')[:8]}...
+Product: {result.get('product', 'Clouvel Pro')}
 
 ----------------------------------------------------------------
-프리미엄 기능은 활성화 후 7일이 지나야 사용할 수 있습니다.
-'clouvel status'로 상태를 확인하세요.
+Premium features will be available 7 days after activation.
+Check status with 'clouvel status'.
 ================================================================
 """)
         else:
@@ -1279,33 +1636,33 @@ def main():
         result = get_license_status()
         if result.get("has_license"):
             tier_info = result.get("tier_info", {})
-            unlock_status = "✅ 해제됨" if result.get("premium_unlocked") else f"⏳ {result.get('premium_unlock_remaining', '?')}일 남음"
+            unlock_status = "✅ Unlocked" if result.get("premium_unlocked") else f"⏳ {result.get('premium_unlock_remaining', '?')} days remaining"
             print(f"""
 ================================================================
-                   Clouvel 라이선스 상태
+                   Clouvel License Status
 ================================================================
 
-상태: ✅ 활성화됨
-티어: {tier_info.get('name', 'Unknown')} ({tier_info.get('price', '?')})
-기기: {result.get('machine_id', 'Unknown')[:8]}...
+Status: ✅ Activated
+Tier: {tier_info.get('name', 'Unknown')} ({tier_info.get('price', '?')})
+Machine: {result.get('machine_id', 'Unknown')[:8]}...
 
-활성화 일시: {result.get('activated_at', 'N/A')[:19]}
-경과 일수: {result.get('days_since_activation', 0)}일
-프리미엄 기능: {unlock_status}
+Activated at: {result.get('activated_at', 'N/A')[:19]}
+Days since activation: {result.get('days_since_activation', 0)}
+Premium features: {unlock_status}
 
 ================================================================
 """)
         else:
             print(f"""
 ================================================================
-                   Clouvel 라이선스 상태
+                   Clouvel License Status
 ================================================================
 
-상태: ❌ 미활성화
+Status: ❌ Not activated
 
 {result.get('message', '')}
 
-구매: https://polar.sh/clouvel
+Purchase: https://polar.sh/clouvel
 ================================================================
 """)
     elif args.command == "deactivate":

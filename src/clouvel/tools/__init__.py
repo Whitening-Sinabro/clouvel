@@ -64,6 +64,16 @@ from .start import (
     save_prd,
 )
 
+# Knowledge Base 도구 (Free, v1.4)
+from .knowledge import (
+    record_decision,
+    record_location,
+    search_knowledge,
+    get_context,
+    init_knowledge,
+    rebuild_index,
+)
+
 # Manager 도구 (Pro 기능 - 폴더가 없으면 스킵)
 try:
     from .manager import (
@@ -139,6 +149,8 @@ __all__ = [
     "run_install",
     # start (Free, v1.2)
     "start", "quick_start", "save_prd",
+    # knowledge (Free, v1.4)
+    "record_decision", "record_location", "search_knowledge", "get_context", "init_knowledge", "rebuild_index",
     # manager (Pro, v1.2)
     "manager", "ask_manager", "list_managers", "MANAGERS",
     # ship (Pro, v1.2)

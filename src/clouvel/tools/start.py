@@ -1,43 +1,43 @@
 # Clouvel Start Tool (Free)
-# 프로젝트 온보딩 + PRD 강제 + 대화형 가이드
+# Project onboarding + PRD enforcement + interactive guide
 
 import os
 import json
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
-# 프로젝트 타입 감지 패턴
+# Project type detection patterns
 PROJECT_TYPE_PATTERNS = {
     "chrome-ext": {
         "files": ["manifest.json"],
         "content_check": {"manifest.json": ["manifest_version", "permissions"]},
-        "description": "Chrome 확장프로그램"
+        "description": "Chrome Extension"
     },
     "discord-bot": {
         "dependencies": ["discord.js", "discord.py", "discordpy", "nextcord", "pycord"],
         "files": ["bot.py", "bot.js", "cogs/"],
-        "description": "디스코드 봇"
+        "description": "Discord Bot"
     },
     "cli": {
         "files": ["bin/", "cli.py", "cli.js", "__main__.py"],
         "dependencies": ["commander", "yargs", "click", "typer", "argparse"],
         "pyproject_check": ["[project.scripts]"],
-        "description": "CLI 도구"
+        "description": "CLI Tool"
     },
     "landing-page": {
         "files": ["index.html"],
         "no_backend": True,
-        "description": "랜딩 페이지"
+        "description": "Landing Page"
     },
     "api": {
         "files": ["server.py", "server.js", "app.py", "main.py", "index.js"],
         "dependencies": ["express", "fastapi", "flask", "django", "koa", "hono", "gin"],
-        "description": "API 서버"
+        "description": "API Server"
     },
     "web-app": {
         "files": ["src/App.tsx", "src/App.jsx", "src/main.tsx", "pages/", "app/"],
         "dependencies": ["react", "vue", "svelte", "next", "nuxt", "angular"],
-        "description": "웹 애플리케이션"
+        "description": "Web Application"
     },
     "saas": {
         "files": ["src/App.tsx", "pages/pricing", "app/pricing", "stripe.ts", "checkout"],
@@ -46,134 +46,134 @@ PROJECT_TYPE_PATTERNS = {
     }
 }
 
-# 타입별 PRD 작성 질문
+# PRD questions by project type
 PRD_QUESTIONS = {
     "chrome-ext": [
-        {"section": "summary", "question": "이 확장프로그램이 해결하려는 문제는 무엇인가요?", "example": "예: 유튜브 광고 스킵이 번거로움"},
-        {"section": "target", "question": "주요 사용자는 누구인가요?", "example": "예: 유튜브 헤비 유저, 직장인"},
-        {"section": "features", "question": "핵심 기능 3가지를 알려주세요", "example": "예: 1. 광고 자동 스킵 2. 스폰서 구간 건너뛰기 3. 통계 표시"},
-        {"section": "permissions", "question": "필요한 권한은 무엇인가요?", "example": "예: activeTab, storage"},
-        {"section": "side_effects", "question": "이 기능이 기존 기능이나 다른 확장에 영향을 줄 수 있는 부분은?", "example": "예: 다른 광고 차단 확장과 충돌 가능, 사이트 로딩 속도 영향"},
-        {"section": "out_of_scope", "question": "이번 버전에서 제외할 기능은?", "example": "예: Firefox 지원, 다크모드"}
+        {"section": "summary", "question": "What problem does this extension solve?", "example": "e.g., Skipping YouTube ads is tedious"},
+        {"section": "target", "question": "Who are the main users?", "example": "e.g., Heavy YouTube users, office workers"},
+        {"section": "features", "question": "What are the 3 core features?", "example": "e.g., 1. Auto-skip ads 2. Skip sponsor segments 3. Show stats"},
+        {"section": "permissions", "question": "What permissions are required?", "example": "e.g., activeTab, storage"},
+        {"section": "side_effects", "question": "What could affect existing features or other extensions?", "example": "e.g., Conflict with other ad blockers, site loading speed impact"},
+        {"section": "out_of_scope", "question": "What features are excluded from this version?", "example": "e.g., Firefox support, dark mode"}
     ],
     "discord-bot": [
-        {"section": "summary", "question": "이 봇이 해결하려는 문제는 무엇인가요?", "example": "예: 서버 관리가 번거로움"},
-        {"section": "target", "question": "주요 사용 서버 유형과 규모는?", "example": "예: 게임 커뮤니티, 100-500명"},
-        {"section": "commands", "question": "핵심 명령어 3-5개를 알려주세요", "example": "예: /경고, /뮤트, /전적, /매칭"},
-        {"section": "permissions", "question": "필요한 봇 권한은?", "example": "예: 메시지 관리, 멤버 관리"},
-        {"section": "side_effects", "question": "이 봇이 서버나 다른 봇에 영향을 줄 수 있는 부분은?", "example": "예: 다른 관리 봇과 권한 충돌, 메시지 삭제 시 로그 손실"},
-        {"section": "out_of_scope", "question": "이번 버전에서 제외할 기능은?", "example": "예: 음성 기능, 대시보드"}
+        {"section": "summary", "question": "What problem does this bot solve?", "example": "e.g., Server management is tedious"},
+        {"section": "target", "question": "What type and size of servers will use this?", "example": "e.g., Gaming community, 100-500 members"},
+        {"section": "commands", "question": "What are the 3-5 core commands?", "example": "e.g., /warn, /mute, /stats, /match"},
+        {"section": "permissions", "question": "What bot permissions are required?", "example": "e.g., Manage Messages, Manage Members"},
+        {"section": "side_effects", "question": "What could affect the server or other bots?", "example": "e.g., Permission conflict with other admin bots, log loss on message deletion"},
+        {"section": "out_of_scope", "question": "What features are excluded from this version?", "example": "e.g., Voice features, dashboard"}
     ],
     "cli": [
-        {"section": "summary", "question": "이 CLI가 해결하려는 문제는 무엇인가요?", "example": "예: 프로젝트 초기화가 반복적임"},
-        {"section": "target", "question": "주요 사용자는 누구인가요?", "example": "예: 백엔드 개발자"},
-        {"section": "commands", "question": "핵심 명령어 3-5개를 알려주세요", "example": "예: init, run, build, deploy"},
-        {"section": "options", "question": "주요 옵션/플래그는?", "example": "예: --verbose, --config, --dry-run"},
-        {"section": "side_effects", "question": "이 CLI가 시스템이나 기존 파일에 영향을 줄 수 있는 부분은?", "example": "예: 기존 설정 파일 덮어쓰기, 전역 패키지 설치"},
-        {"section": "out_of_scope", "question": "이번 버전에서 제외할 기능은?", "example": "예: GUI, 자동 업데이트"}
+        {"section": "summary", "question": "What problem does this CLI solve?", "example": "e.g., Project initialization is repetitive"},
+        {"section": "target", "question": "Who are the main users?", "example": "e.g., Backend developers"},
+        {"section": "commands", "question": "What are the 3-5 core commands?", "example": "e.g., init, run, build, deploy"},
+        {"section": "options", "question": "What are the main options/flags?", "example": "e.g., --verbose, --config, --dry-run"},
+        {"section": "side_effects", "question": "What could affect the system or existing files?", "example": "e.g., Overwriting config files, installing global packages"},
+        {"section": "out_of_scope", "question": "What features are excluded from this version?", "example": "e.g., GUI, auto-update"}
     ],
     "landing-page": [
-        {"section": "summary", "question": "이 랜딩 페이지의 목표는 무엇인가요?", "example": "예: SaaS 제품 얼리버드 가입 유도"},
-        {"section": "target", "question": "타겟 방문자는 누구인가요?", "example": "예: 스타트업 창업자, 개발자"},
-        {"section": "cta", "question": "Primary CTA(전환 목표)는?", "example": "예: 얼리버드 가입, 데모 신청"},
-        {"section": "sections", "question": "필요한 섹션들을 나열해주세요", "example": "예: Hero, Problem, Solution, Features, Pricing, FAQ"},
-        {"section": "side_effects", "question": "이 페이지가 기존 마케팅이나 브랜딩에 영향을 줄 수 있는 부분은?", "example": "예: 기존 홈페이지와 디자인 불일치, SEO 키워드 충돌"},
-        {"section": "metrics", "question": "목표 지표는?", "example": "예: 전환율 5%, 이탈률 40% 미만"}
+        {"section": "summary", "question": "What is the goal of this landing page?", "example": "e.g., Drive early bird signups for SaaS product"},
+        {"section": "target", "question": "Who are the target visitors?", "example": "e.g., Startup founders, developers"},
+        {"section": "cta", "question": "What is the primary CTA (conversion goal)?", "example": "e.g., Early bird signup, request demo"},
+        {"section": "sections", "question": "What sections are needed?", "example": "e.g., Hero, Problem, Solution, Features, Pricing, FAQ"},
+        {"section": "side_effects", "question": "What could affect existing marketing or branding?", "example": "e.g., Design inconsistency with existing homepage, SEO keyword conflict"},
+        {"section": "metrics", "question": "What are the target metrics?", "example": "e.g., 5% conversion rate, bounce rate under 40%"}
     ],
     "api": [
-        {"section": "summary", "question": "이 API가 해결하려는 문제는 무엇인가요?", "example": "예: 프론트엔드에서 데이터 접근이 필요함"},
-        {"section": "clients", "question": "주요 API 소비자는?", "example": "예: 웹 프론트엔드, 모바일 앱"},
-        {"section": "endpoints", "question": "핵심 엔드포인트 5개를 알려주세요", "example": "예: POST /auth/login, GET /users, POST /orders"},
-        {"section": "auth", "question": "인증 방식은?", "example": "예: JWT Bearer Token"},
-        {"section": "side_effects", "question": "이 API가 기존 시스템이나 데이터에 영향을 줄 수 있는 부분은?", "example": "예: 기존 API 버전과 호환성, DB 스키마 변경, 캐시 무효화"},
-        {"section": "out_of_scope", "question": "이번 버전에서 제외할 것은?", "example": "예: GraphQL, WebSocket"}
+        {"section": "summary", "question": "What problem does this API solve?", "example": "e.g., Frontend needs data access"},
+        {"section": "clients", "question": "Who are the main API consumers?", "example": "e.g., Web frontend, mobile app"},
+        {"section": "endpoints", "question": "What are the 5 core endpoints?", "example": "e.g., POST /auth/login, GET /users, POST /orders"},
+        {"section": "auth", "question": "What is the authentication method?", "example": "e.g., JWT Bearer Token"},
+        {"section": "side_effects", "question": "What could affect existing systems or data?", "example": "e.g., API version compatibility, DB schema changes, cache invalidation"},
+        {"section": "out_of_scope", "question": "What is excluded from this version?", "example": "e.g., GraphQL, WebSocket"}
     ],
     "web-app": [
-        {"section": "summary", "question": "이 앱이 해결하려는 문제는 무엇인가요?", "example": "예: 식단 관리가 번거로움"},
-        {"section": "target", "question": "주요 사용자는 누구인가요?", "example": "예: 20-30대 직장인, 다이어터"},
-        {"section": "features", "question": "핵심 기능 3-5개를 알려주세요", "example": "예: 1. 식단 기록 2. 칼로리 계산 3. 주간 리포트"},
-        {"section": "pages", "question": "주요 페이지/화면은?", "example": "예: 로그인, 대시보드, 기록 입력, 통계"},
-        {"section": "side_effects", "question": "이 기능이 기존 화면이나 사용자 경험에 영향을 줄 수 있는 부분은?", "example": "예: 기존 UI 레이아웃 변경, 로딩 속도 영향, 기존 데이터 마이그레이션"},
-        {"section": "out_of_scope", "question": "이번 버전에서 제외할 기능은?", "example": "예: 소셜 기능, 다국어"}
+        {"section": "summary", "question": "What problem does this app solve?", "example": "e.g., Diet management is tedious"},
+        {"section": "target", "question": "Who are the main users?", "example": "e.g., Office workers in their 20s-30s, dieters"},
+        {"section": "features", "question": "What are the 3-5 core features?", "example": "e.g., 1. Diet logging 2. Calorie calculation 3. Weekly report"},
+        {"section": "pages", "question": "What are the main pages/screens?", "example": "e.g., Login, Dashboard, Input, Stats"},
+        {"section": "side_effects", "question": "What could affect existing screens or user experience?", "example": "e.g., UI layout changes, loading speed impact, existing data migration"},
+        {"section": "out_of_scope", "question": "What features are excluded from this version?", "example": "e.g., Social features, i18n"}
     ],
     "saas": [
-        {"section": "summary", "question": "이 SaaS가 해결하려는 문제는 무엇인가요?", "example": "예: 랜딩 페이지 만들기가 어려움"},
-        {"section": "target", "question": "주요 타겟 사용자는?", "example": "예: 1인 창업자, 소규모 팀"},
-        {"section": "features", "question": "핵심 기능 3-5개를 알려주세요", "example": "예: 1. 드래그앤드롭 빌더 2. 템플릿 3. 커스텀 도메인"},
-        {"section": "pricing", "question": "가격 구조는? (Free/Pro 등)", "example": "예: Free $0 (3개 제한), Pro $15/월 (무제한)"},
-        {"section": "payment", "question": "결제 방식은?", "example": "예: Stripe 구독, 연/월 결제"},
-        {"section": "side_effects", "question": "이 기능이 기존 사용자나 결제에 영향을 줄 수 있는 부분은?", "example": "예: 기존 요금제 사용자 영향, 기존 데이터 마이그레이션, 결제 플로우 변경"},
-        {"section": "out_of_scope", "question": "이번 버전에서 제외할 기능은?", "example": "예: 팀 기능, 모바일 앱"}
+        {"section": "summary", "question": "What problem does this SaaS solve?", "example": "e.g., Building landing pages is difficult"},
+        {"section": "target", "question": "Who are the target users?", "example": "e.g., Solo founders, small teams"},
+        {"section": "features", "question": "What are the 3-5 core features?", "example": "e.g., 1. Drag-and-drop builder 2. Templates 3. Custom domain"},
+        {"section": "pricing", "question": "What is the pricing structure? (Free/Pro etc.)", "example": "e.g., Free $0 (3 limit), Pro $15/mo (unlimited)"},
+        {"section": "payment", "question": "What is the payment method?", "example": "e.g., Stripe subscription, annual/monthly billing"},
+        {"section": "side_effects", "question": "What could affect existing users or payments?", "example": "e.g., Impact on existing plan users, data migration, payment flow changes"},
+        {"section": "out_of_scope", "question": "What features are excluded from this version?", "example": "e.g., Team features, mobile app"}
     ],
     "generic": [
-        {"section": "summary", "question": "이 프로젝트가 해결하려는 문제는 무엇인가요?"},
-        {"section": "target", "question": "주요 사용자/대상은 누구인가요?"},
-        {"section": "features", "question": "핵심 기능 3-5개를 알려주세요"},
-        {"section": "tech", "question": "사용할 기술 스택은?"},
-        {"section": "side_effects", "question": "이 기능이 기존 시스템에 영향을 줄 수 있는 부분은?", "example": "예: 기존 API 호환성, DB 변경, 성능 영향"},
-        {"section": "out_of_scope", "question": "이번 버전에서 제외할 것은?"}
+        {"section": "summary", "question": "What problem does this project solve?"},
+        {"section": "target", "question": "Who are the main users/audience?"},
+        {"section": "features", "question": "What are the 3-5 core features?"},
+        {"section": "tech", "question": "What tech stack will you use?"},
+        {"section": "side_effects", "question": "What could affect existing systems?", "example": "e.g., API compatibility, DB changes, performance impact"},
+        {"section": "out_of_scope", "question": "What is excluded from this version?"}
     ]
 }
 
-# PRD 템플릿 (generic fallback)
+# PRD template (generic fallback)
 PRD_TEMPLATE = """# {project_name} PRD
 
-> 작성일: {date}
+> Created: {date}
 
 ---
 
-## 1. 프로젝트 개요
+## 1. Project Overview
 
-### 1.1 목적
-[이 프로젝트가 해결하려는 문제를 작성하세요]
+### 1.1 Purpose
+[Describe the problem this project solves]
 
-### 1.2 목표
-- [ ] 핵심 목표 1
-- [ ] 핵심 목표 2
-- [ ] 핵심 목표 3
+### 1.2 Goals
+- [ ] Core goal 1
+- [ ] Core goal 2
+- [ ] Core goal 3
 
-### 1.3 성공 지표
-| 지표 | 목표값 | 측정 방법 |
-|------|--------|-----------|
+### 1.3 Success Metrics
+| Metric | Target | Measurement |
+|--------|--------|-------------|
 | ... | ... | ... |
 
 ---
 
-## 2. 기능 요구사항
+## 2. Functional Requirements
 
-### 2.1 핵심 기능 (Must Have)
-1. **기능 1**: 설명
-2. **기능 2**: 설명
+### 2.1 Core Features (Must Have)
+1. **Feature 1**: Description
+2. **Feature 2**: Description
 
-### 2.2 부가 기능 (Nice to Have)
-1. **기능 1**: 설명
+### 2.2 Additional Features (Nice to Have)
+1. **Feature 1**: Description
 
-### 2.3 제외 범위 (Out of Scope)
-- 이번 버전에서 제외할 것들
+### 2.3 Out of Scope
+- Items excluded from this version
 
 ---
 
-## 3. 기술 스펙
+## 3. Technical Spec
 
-### 3.1 기술 스택
+### 3.1 Tech Stack
 - Frontend:
 - Backend:
 - Database:
 - Infra:
 
-### 3.2 아키텍처
-[아키텍처 다이어그램 또는 설명]
+### 3.2 Architecture
+[Architecture diagram or description]
 
-### 3.3 API 엔드포인트
-| Method | Endpoint | 설명 |
-|--------|----------|------|
+### 3.3 API Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | GET | /api/... | ... |
 
 ---
 
-## 4. 데이터 모델
+## 4. Data Model
 
-### 4.1 주요 엔티티
+### 4.1 Main Entities
 ```
 Entity1:
   - field1: type
@@ -183,88 +183,88 @@ Entity2:
   - field1: type
 ```
 
-### 4.2 관계도
-[ERD 또는 관계 설명]
+### 4.2 Relationships
+[ERD or relationship description]
 
 ---
 
 ## 5. UI/UX
 
-### 5.1 주요 화면
-1. **화면 1**: 설명
-2. **화면 2**: 설명
+### 5.1 Main Screens
+1. **Screen 1**: Description
+2. **Screen 2**: Description
 
-### 5.2 사용자 플로우
-1. 사용자가 ...
-2. 시스템이 ...
+### 5.2 User Flow
+1. User does ...
+2. System does ...
 
 ---
 
-## 6. 에러 처리
+## 6. Error Handling
 
-### 6.1 예상 에러 시나리오
-| 시나리오 | 에러 코드 | 사용자 메시지 |
-|----------|-----------|---------------|
+### 6.1 Expected Error Scenarios
+| Scenario | Error Code | User Message |
+|----------|------------|--------------|
 | ... | ... | ... |
 
-### 6.2 복구 전략
-- 전략 1: ...
+### 6.2 Recovery Strategy
+- Strategy 1: ...
 
 ---
 
-## 7. 보안 요구사항
+## 7. Security Requirements
 
-### 7.1 인증/인가
-- 인증 방식:
-- 권한 체계:
+### 7.1 Authentication/Authorization
+- Auth method:
+- Permission structure:
 
-### 7.2 데이터 보호
-- 암호화:
-- 민감 정보 처리:
+### 7.2 Data Protection
+- Encryption:
+- Sensitive data handling:
 
 ---
 
-## 8. 테스트 계획
+## 8. Test Plan
 
-### 8.1 테스트 범위
+### 8.1 Test Scope
 - [ ] Unit Test
 - [ ] Integration Test
 - [ ] E2E Test
 
-### 8.2 테스트 시나리오
-| 시나리오 | 예상 결과 | 우선순위 |
-|----------|-----------|----------|
+### 8.2 Test Scenarios
+| Scenario | Expected Result | Priority |
+|----------|-----------------|----------|
 | ... | ... | ... |
 
 ---
 
-## 9. 일정
+## 9. Timeline
 
-### 9.1 마일스톤
-| 단계 | 내용 | 예상 완료일 |
-|------|------|-------------|
+### 9.1 Milestones
+| Phase | Content | Expected Completion |
+|-------|---------|---------------------|
 | Phase 1 | ... | ... |
 
 ---
 
-## 10. 변경 이력
+## 10. Change History
 
-| 버전 | 날짜 | 작성자 | 변경 내용 |
-|------|------|--------|-----------|
-| 0.1 | {date} | ... | 초안 작성 |
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 0.1 | {date} | ... | Initial draft |
 """
 
 
 def _detect_project_type(project_path: Path) -> Dict[str, Any]:
     """
-    프로젝트 타입을 자동 감지합니다.
-    파일 구조, 의존성, 설정 파일을 분석합니다.
+    Auto-detect project type.
+    Analyzes file structure, dependencies, and config files.
     """
     detected = {
         "type": "generic",
         "confidence": 0,
         "signals": [],
-        "description": "범용 프로젝트"
+        "description": "Generic Project"
     }
 
     # 의존성 파일 읽기
@@ -313,21 +313,21 @@ def _detect_project_type(project_path: Path) -> Dict[str, Any]:
         score = 0
         signals = []
 
-        # 파일 존재 체크
+        # File existence check
         if "files" in patterns:
             for f in patterns["files"]:
                 if (project_path / f).exists():
                     score += 30
-                    signals.append(f"파일 발견: {f}")
+                    signals.append(f"File found: {f}")
 
-        # 의존성 체크
+        # Dependency check
         if "dependencies" in patterns:
             for dep in patterns["dependencies"]:
                 if dep.lower() in dependencies:
                     score += 40
-                    signals.append(f"의존성 발견: {dep}")
+                    signals.append(f"Dependency found: {dep}")
 
-        # manifest.json 내용 체크 (Chrome Extension)
+        # manifest.json content check (Chrome Extension)
         if "content_check" in patterns:
             for file, keywords in patterns["content_check"].items():
                 file_path = project_path / file
@@ -337,16 +337,16 @@ def _detect_project_type(project_path: Path) -> Dict[str, Any]:
                         for kw in keywords:
                             if kw in content:
                                 score += 25
-                                signals.append(f"{file}에서 '{kw}' 발견")
+                                signals.append(f"Found '{kw}' in {file}")
                     except:
                         pass
 
-        # landing-page: 백엔드 없음 체크
+        # landing-page: no backend check
         if patterns.get("no_backend"):
             has_backend = any((project_path / f).exists() for f in ["server.py", "server.js", "app.py", "main.py"])
             if not has_backend and (project_path / "index.html").exists():
                 score += 20
-                signals.append("백엔드 파일 없음, index.html만 존재")
+                signals.append("No backend files, only index.html exists")
 
         if score > 0:
             scores[ptype] = {"score": score, "signals": signals}
@@ -367,22 +367,22 @@ def _detect_project_type(project_path: Path) -> Dict[str, Any]:
 
 def start(path: str, project_name: str = "", project_type: str = "") -> Dict[str, Any]:
     """
-    프로젝트 온보딩을 시작합니다.
+    Start project onboarding.
 
-    흐름:
-    1. 프로젝트 타입 자동 감지 (또는 사용자 지정)
-    2. docs 폴더 확인/생성
-    3. PRD.md 존재 여부 체크
-    4. 없으면 → 타입별 질문 목록 반환 (대화형 PRD 작성 가이드)
-    5. 있으면 → 구조 검증 + 다음 단계 안내
+    Flow:
+    1. Auto-detect project type (or user-specified)
+    2. Check/create docs folder
+    3. Check if PRD.md exists
+    4. If not -> Return type-specific questions (interactive PRD writing guide)
+    5. If yes -> Validate structure + guide next steps
 
     Args:
-        path: 프로젝트 루트 경로
-        project_name: 프로젝트 이름 (옵션)
-        project_type: 프로젝트 타입 강제 지정 (옵션)
+        path: Project root path
+        project_name: Project name (optional)
+        project_type: Force project type (optional)
 
     Returns:
-        온보딩 결과 및 다음 단계 안내 (또는 PRD 작성 질문)
+        Onboarding result and next step guide (or PRD writing questions)
     """
     from datetime import datetime
 
@@ -401,18 +401,18 @@ def start(path: str, project_name: str = "", project_type: str = "") -> Dict[str
         "message": ""
     }
 
-    # 프로젝트 이름 추론
+    # Infer project name
     if not project_name:
         project_name = project_path.name
 
     result["project_name"] = project_name
 
-    # 프로젝트 타입 감지
+    # Detect project type
     if project_type and project_type in PRD_QUESTIONS:
         detected = {
             "type": project_type,
             "confidence": 100,
-            "signals": ["사용자 지정"],
+            "signals": ["User specified"],
             "description": PROJECT_TYPE_PATTERNS.get(project_type, {}).get("description", project_type)
         }
     else:
@@ -420,50 +420,50 @@ def start(path: str, project_name: str = "", project_type: str = "") -> Dict[str
 
     result["project_type"] = detected
 
-    # 1. docs 폴더 확인/생성
+    # 1. Check/create docs folder
     if not docs_path.exists():
         try:
             docs_path.mkdir(parents=True)
             result["created_files"].append("docs/")
         except Exception as e:
             result["status"] = "ERROR"
-            result["message"] = f"docs 폴더 생성 실패: {e}"
+            result["message"] = f"Failed to create docs folder: {e}"
             return result
 
     result["docs_exists"] = True
 
-    # 2. PRD.md 확인
+    # 2. Check PRD.md
     if prd_path.exists():
         result["prd_exists"] = True
 
-        # PRD 내용 검증
+        # Validate PRD content
         prd_content = prd_path.read_text(encoding="utf-8")
         validation = _validate_prd(prd_content)
 
         if validation["is_valid"]:
             result["status"] = "READY"
             result["prd_valid"] = True
-            result["message"] = "✅ PRD가 준비되었습니다. 코딩을 시작할 수 있습니다."
+            result["message"] = "✅ PRD is ready. You can start coding."
             result["next_steps"] = [
-                "1. `can_code` 도구로 코딩 가능 여부 확인",
-                "2. 필요시 `plan` 도구로 상세 실행 계획 수립",
-                "3. 코딩 시작!"
+                "1. Check coding eligibility with `can_code` tool",
+                "2. If needed, create detailed execution plan with `plan` tool",
+                "3. Start coding!"
             ]
             result["prd_summary"] = validation["summary"]
         else:
             result["status"] = "INCOMPLETE"
-            result["message"] = "⚠️ PRD가 있지만 일부 섹션이 비어있습니다."
+            result["message"] = "⚠️ PRD exists but some sections are empty."
             result["missing_sections"] = validation["missing_sections"]
             result["next_steps"] = [
-                f"1. PRD의 다음 섹션을 작성하세요: {', '.join(validation['missing_sections'])}",
-                "2. 작성 후 다시 `start` 실행"
+                f"1. Write the following PRD sections: {', '.join(validation['missing_sections'])}",
+                "2. Run `start` again after completion"
             ]
     else:
-        # PRD가 없음 → 대화형 PRD 작성 가이드 시작
+        # No PRD -> Start interactive PRD writing guide
         result["status"] = "NEED_PRD"
-        result["message"] = f"📝 PRD 작성이 필요합니다. {detected['description']} 프로젝트로 감지되었습니다."
+        result["message"] = f"📝 PRD is required. Detected as {detected['description']} project."
 
-        # 타입별 질문 목록 반환
+        # Return type-specific questions
         questions = PRD_QUESTIONS.get(detected["type"], PRD_QUESTIONS["generic"])
         result["prd_guide"] = {
             "detected_type": detected["type"],
@@ -472,28 +472,28 @@ def start(path: str, project_name: str = "", project_type: str = "") -> Dict[str
             "template": detected["type"],
             "questions": questions,
             "instruction": f"""
-## 🎯 PRD 작성 가이드
+## 🎯 PRD Writing Guide
 
-**감지된 프로젝트 타입**: {detected['description']} ({detected['type']})
-**신뢰도**: {detected['confidence']}%
+**Detected project type**: {detected['description']} ({detected['type']})
+**Confidence**: {detected['confidence']}%
 
-### Claude에게 지시사항
+### Instructions for Claude
 
-아래 질문들을 사용자에게 **대화형으로** 진행하세요:
+Ask the user the following questions **interactively**:
 
 {chr(10).join([f"{i+1}. **{q['section']}**: {q['question']}" + (f" ({q.get('example', '')})" if q.get('example') else "") for i, q in enumerate(questions)])}
 
-### 진행 방법
+### How to proceed
 
-1. 질문을 하나씩 또는 관련된 것끼리 묶어서 질문
-2. 사용자 답변을 수집
-3. 모든 답변을 받으면 `save_prd` 도구로 PRD 저장
-4. 템플릿: `{detected['type']}` / 레이아웃: `standard` 권장
+1. Ask questions one at a time or group related ones
+2. Collect user answers
+3. When all answers are collected, save PRD with `save_prd` tool
+4. Template: `{detected['type']}` / Layout: `standard` recommended
 
-### 예시 대화
+### Example conversation
 
-"안녕하세요! {detected['description']} 프로젝트시네요.
-PRD를 같이 작성해볼까요? 먼저 몇 가지 질문드릴게요.
+"Hello! Looks like a {detected['description']} project.
+Let's write the PRD together. I'll ask a few questions.
 
 **{questions[0]['question']}**
 {questions[0].get('example', '')}"
@@ -501,16 +501,16 @@ PRD를 같이 작성해볼까요? 먼저 몇 가지 질문드릴게요.
         }
 
         result["next_steps"] = [
-            "1. 위 질문들에 답변하여 PRD 작성",
-            "2. 완료 후 `save_prd` 도구로 저장",
-            "3. 다시 `start` 실행하여 검증"
+            "1. Answer the questions above to write PRD",
+            "2. Save with `save_prd` tool when complete",
+            "3. Run `start` again to validate"
         ]
 
-    # 추가 docs 파일 체크
+    # Check additional docs files
     optional_docs = {
-        "ARCHITECTURE.md": "아키텍처 문서",
-        "API.md": "API 문서",
-        "CHANGELOG.md": "변경 이력"
+        "ARCHITECTURE.md": "Architecture document",
+        "API.md": "API document",
+        "CHANGELOG.md": "Change history"
     }
 
     result["optional_docs"] = {}
@@ -526,26 +526,27 @@ PRD를 같이 작성해볼까요? 먼저 몇 가지 질문드릴게요.
 
 def _validate_prd(content: str) -> Dict[str, Any]:
     """
-    PRD 내용을 검증합니다.
+    Validate PRD content.
 
-    필수 섹션:
-    - 프로젝트 개요 (목적, 목표)
-    - 기능 요구사항
+    Required sections:
+    - Project Overview (Purpose, Goals)
+    - Functional Requirements
 
-    권장 섹션:
-    - 기술 스펙
-    - 데이터 모델
-    - 테스트 계획
+    Recommended sections:
+    - Technical Spec
+    - Data Model
+    - Test Plan
     """
+    # Check for both Korean and English section names
     required_sections = [
-        ("프로젝트 개요", ["목적", "목표"]),
-        ("기능 요구사항", ["핵심 기능"]),
+        (["Project Overview", "프로젝트 개요"], ["Purpose", "Goals", "목적", "목표"]),
+        (["Functional Requirements", "기능 요구사항"], ["Core Features", "핵심 기능"]),
     ]
 
     recommended_sections = [
-        "기술 스펙",
-        "데이터 모델",
-        "테스트 계획"
+        ["Technical Spec", "기술 스펙"],
+        ["Data Model", "데이터 모델"],
+        ["Test Plan", "테스트 계획"]
     ]
 
     missing_sections = []
@@ -555,34 +556,35 @@ def _validate_prd(content: str) -> Dict[str, Any]:
         "has_features": False
     }
 
-    # 필수 섹션 체크
-    for section, subsections in required_sections:
-        if section not in content:
-            missing_sections.append(section)
+    # Required section check
+    for section_names, subsection_names in required_sections:
+        section_found = any(name in content for name in section_names)
+        if not section_found:
+            missing_sections.append(section_names[0])  # Use English name
         else:
-            summary["sections_found"].append(section)
+            summary["sections_found"].append(section_names[0])
 
-            # 내용이 있는지 체크 (템플릿 플레이스홀더가 아닌지)
-            for sub in subsections:
+            # Check if content exists (not just template placeholder)
+            for sub in subsection_names:
                 if sub in content:
-                    # 플레이스홀더 체크
-                    if sub == "목적" and "[이 프로젝트가 해결하려는 문제를 작성하세요]" in content:
-                        missing_sections.append(f"{section} > {sub}")
-                    elif sub == "목표" and "핵심 목표 1" in content:
-                        pass  # 목표가 있으면 OK
+                    # Placeholder check
+                    if sub in ["Purpose", "목적"] and ("[Describe the problem" in content or "[이 프로젝트가 해결하려는 문제를 작성하세요]" in content):
+                        missing_sections.append(f"{section_names[0]} > {sub}")
+                    elif sub in ["Goals", "목표"] and ("Core goal 1" in content or "핵심 목표 1" in content):
+                        pass  # Goals exist, OK
                     else:
-                        if section == "프로젝트 개요":
+                        if section_names[0] in ["Project Overview", "프로젝트 개요"]:
                             summary["has_goals"] = True
 
-    # 기능 요구사항 체크
-    if "기능 요구사항" in content:
-        if "**기능 1**: 설명" not in content:
+    # Functional requirements check
+    if any(name in content for name in ["Functional Requirements", "기능 요구사항"]):
+        if "**Feature 1**: Description" not in content and "**기능 1**: 설명" not in content:
             summary["has_features"] = True
 
-    # 권장 섹션 체크
-    for section in recommended_sections:
-        if section in content:
-            summary["sections_found"].append(section)
+    # Recommended section check
+    for section_names in recommended_sections:
+        if any(name in content for name in section_names):
+            summary["sections_found"].append(section_names[0])
 
     is_valid = len(missing_sections) == 0 and summary["has_goals"]
 
@@ -600,19 +602,18 @@ def save_prd(
     project_type: str = ""
 ) -> Dict[str, Any]:
     """
-    PRD 내용을 저장합니다.
+    Save PRD content.
 
-    Claude가 사용자와 대화하며 수집한 정보를 바탕으로
-    PRD를 작성한 후 이 도구로 저장합니다.
+    Save PRD written by Claude through conversation with user.
 
     Args:
-        path: 프로젝트 루트 경로
-        content: PRD 내용 (마크다운)
-        project_name: 프로젝트 이름 (옵션, 헤더에 사용)
-        project_type: 프로젝트 타입 (옵션, 메타데이터용)
+        path: Project root path
+        content: PRD content (markdown)
+        project_name: Project name (optional, used in header)
+        project_type: Project type (optional, for metadata)
 
     Returns:
-        저장 결과
+        Save result
     """
     from datetime import datetime
 
@@ -626,59 +627,59 @@ def save_prd(
         "message": ""
     }
 
-    # docs 폴더 생성
+    # Create docs folder
     if not docs_path.exists():
         try:
             docs_path.mkdir(parents=True)
         except Exception as e:
             result["status"] = "ERROR"
-            result["message"] = f"docs 폴더 생성 실패: {e}"
+            result["message"] = f"Failed to create docs folder: {e}"
             return result
 
-    # PRD 헤더 추가 (없으면)
+    # Add PRD header (if missing)
     if not content.strip().startswith("#"):
         today = datetime.now().strftime("%Y-%m-%d")
         name = project_name or project_path.name
-        header = f"# {name} PRD\n\n> 작성일: {today}\n\n---\n\n"
+        header = f"# {name} PRD\n\n> Created: {today}\n\n---\n\n"
         content = header + content
 
-    # 저장
+    # Save
     try:
         prd_path.write_text(content, encoding="utf-8")
         result["status"] = "SAVED"
-        result["message"] = f"✅ PRD가 저장되었습니다: {prd_path}"
+        result["message"] = f"✅ PRD saved: {prd_path}"
 
-        # 검증
+        # Validate
         validation = _validate_prd(content)
         result["validation"] = validation
 
         if validation["is_valid"]:
             result["next_steps"] = [
-                "PRD 저장 완료! 이제 코딩을 시작할 수 있습니다.",
-                "`can_code` 도구로 확인하거나 바로 코딩을 시작하세요."
+                "PRD saved! You can start coding now.",
+                "Check with `can_code` tool or start coding directly."
             ]
         else:
             result["next_steps"] = [
-                f"PRD가 저장되었지만 일부 섹션이 부족합니다: {', '.join(validation['missing_sections'])}",
-                "필요시 PRD를 보완하세요."
+                f"PRD saved but some sections are incomplete: {', '.join(validation['missing_sections'])}",
+                "Consider completing the PRD if needed."
             ]
 
     except Exception as e:
         result["status"] = "ERROR"
-        result["message"] = f"PRD 저장 실패: {e}"
+        result["message"] = f"Failed to save PRD: {e}"
 
     return result
 
 
 def get_prd_questions(project_type: str = "generic") -> Dict[str, Any]:
     """
-    특정 프로젝트 타입의 PRD 작성 질문 목록을 반환합니다.
+    Return PRD writing questions for a specific project type.
 
     Args:
-        project_type: 프로젝트 타입 (web-app, api, cli, chrome-ext, discord-bot, landing-page, generic)
+        project_type: Project type (web-app, api, cli, chrome-ext, discord-bot, landing-page, generic)
 
     Returns:
-        질문 목록 및 가이드
+        Questions list and guide
     """
     if project_type not in PRD_QUESTIONS:
         project_type = "generic"
@@ -691,30 +692,30 @@ def get_prd_questions(project_type: str = "generic") -> Dict[str, Any]:
         "description": description,
         "questions": questions,
         "usage": f"""
-## PRD 작성 질문 ({description})
+## PRD Writing Questions ({description})
 
-아래 질문들을 사용자에게 진행하세요:
+Ask the user the following questions:
 
 {chr(10).join([f"{i+1}. **{q['section']}**: {q['question']}" for i, q in enumerate(questions)])}
 
-답변을 모두 수집한 후 PRD를 작성하고 `save_prd` 도구로 저장하세요.
+After collecting all answers, write the PRD and save it with `save_prd` tool.
 """
     }
 
 
-# 간단한 버전 (can_code 대신 사용 가능)
+# Simple version (can be used instead of can_code)
 def quick_start(path: str) -> str:
     """
-    빠른 시작 - PRD 유무만 체크하고 안내 메시지 반환
+    Quick start - Check PRD existence and return guidance message
     """
     result = start(path)
 
     if result["status"] == "READY":
-        return f"✅ {result['project_name']} 프로젝트 준비 완료!\n\n코딩을 시작하세요."
+        return f"✅ {result['project_name']} project ready!\n\nStart coding."
     elif result["status"] == "NEED_PRD":
         guide = result.get("prd_guide", {})
-        return f"📝 PRD 작성이 필요합니다.\n\n{guide.get('instruction', '')}"
+        return f"📝 PRD is required.\n\n{guide.get('instruction', '')}"
     elif result["status"] == "INCOMPLETE":
-        return f"⚠️ PRD 작성 미완료\n\n누락된 섹션: {', '.join(result.get('missing_sections', []))}\n\n다음 단계:\n" + "\n".join(result["next_steps"])
+        return f"⚠️ PRD incomplete\n\nMissing sections: {', '.join(result.get('missing_sections', []))}\n\nNext steps:\n" + "\n".join(result["next_steps"])
     else:
-        return f"❌ 오류: {result['message']}"
+        return f"❌ Error: {result['message']}"

@@ -8,10 +8,10 @@
 
 | 항목              | 상태                          |
 | ----------------- | ----------------------------- |
-| **clouvel**       | v1.3.13 배포 완료             |
+| **clouvel**       | v1.4.0 배포 준비 (Knowledge Base) |
 | **clouvel-pro**   | clouvel에 통합됨              |
 | **랜딩 페이지**   | 배포 완료                     |
-| **라이선스 서버** | ✅ 동작 중 (Polar.sh)         |
+| **라이선스 서버** | ✅ 동작 중 (Polar.sh + Worker API) |
 | **결제**          | ✅ Polar.sh 연동 완료         |
 | **보안**          | ✅ 민감 파일 커밋 차단 자동화 |
 
@@ -19,22 +19,60 @@
 
 ## 오늘 완료 (2026-01-24)
 
-### v1.3.11 ~ v1.3.13 핫픽스
+### 동적 회의 4회 진행 📋
 
-- [x] **v1.3.11**: manager 동적 회의록 생성 (Claude API 연동)
-- [x] **v1.3.12**: Windows cp949 인코딩 수정 + 플랫폼별 Python 명령어
-- [x] **v1.3.13**: manager import 조건부 처리 (Free 버전 호환)
+> 상세 기록: `.claude/planning/meetings/2026-01-24-decisions.md`
 
-### 문서 업데이트
+#### 회의 1: 팀 라이선스 아키텍처
+- [x] Worker KV 유지 (Supabase 추가 안 함)
+- [x] MVP: Phase 1만 (rate limiting, team license validation)
+- [x] 연기: PostgreSQL, 대시보드, Linear/Jira
 
-- [x] README.md - v1.3.11~13 changelog 추가
-- [x] README.md - Windows 완벽 지원 명시 + 플랫폼별 MCP 설정 예시
+#### 회의 2: 가격 책정
+- [x] Personal Pro: $9.99/mo
+- [x] Team 10: $129/mo ($12.9/user)
+- [x] 프리미엄 근거: 주니어 성장 메트릭 (lock-in)
+- [x] LAUNCH70: 70% off → $38.7/10석
 
-### 검증 완료
+#### 회의 3-4: Knowledge Base 설계
+- [x] 저장소: SQLite (`~/.clouvel/knowledge.db`)
+- [x] 50MB 제한, 40MB 아카이브 트리거
+- [x] 5개 테이블 + FTS5 스키마 설계
+- [x] 4개 신규 도구 API 설계
+- [x] 8주 로드맵 수립
 
+### 마케팅 런칭 🚀
+
+- [x] **Twitter 쓰레드** 7개 올림 (@ShovelMaker91)
+- [x] **Threads 포스트** 3개 올림 (@sinabrocoding)
+- [x] **Reddit 워밍업** 시작 - r/ClaudeAI, r/SideProject 답글 각 1개
+- [x] **LAUNCH70 쿠폰** 생성 (70% off, 50개 한정, Polar.sh)
+- [x] **Demo GIF** GitHub Pages 배포 완료
+
+### 마케팅 자동화 설정
+
+- [x] Typefully 가입
+- [x] Make.com 가입
+- [x] Week 1 콘텐츠 예약 (월/화/수)
+- [x] 2주치 콘텐츠 초안 작성 (`.claude/planning/content-drafts.md`)
+- [x] 마케팅 일정표 작성 (`.claude/planning/marketing-schedule.md`)
+- [x] Reddit 포스트 초안 v3 (`.claude/planning/reddit-posts.md`)
+
+### 테스트 라이선스 발급
+
+- [x] Worker API로 테스트 라이선스 발급 확인
+- [x] 내 테스트 키: `TEST-0BM6-E8N6-L0V9` (Personal, 30일)
+- [x] 배포용 Personal 키 5개 (14일 만료)
+- [x] 배포용 Team 키 2개 (1/30 만료)
+  - `TEST-E737-2CG1-I188`
+  - `TEST-04Q2-5DY5-MSTH`
+
+### 이전 완료 (v1.3.11~13)
+
+- [x] manager 동적 회의록 생성 (Claude API 연동)
+- [x] Windows cp949 인코딩 수정
+- [x] manager import 조건부 처리 (Free 버전 호환)
 - [x] PyPI 배포 성공 (v1.3.13)
-- [x] `pip install clouvel==1.3.13` 테스트 통과
-- [x] MCP 재시작 후 도구 정상 작동 확인 (can_code, manager, license_status)
 
 ---
 
@@ -203,6 +241,93 @@ file:///D:/Clouvel/docs/landing/index.html?lang=ko
 ---
 
 ## 다음 할 일
+
+### ✅ Manager v2: Augmentation 모델 (2026-01-24)
+
+**핵심 변경**: 답변형 → 질문형 전환
+
+| Before | After |
+|--------|-------|
+| "OAuth 쓰세요" | "유저가 소셜 로그인 선호하나요?" |
+| 매니저가 결정 | 개발자가 결정 (매니저는 관점 제시) |
+| Action Items | Decisions for YOU |
+
+**구현 내용:**
+- 8명 매니저 각각 4개 카테고리 probing questions 추가
+- 시스템 프롬프트에 "AUGMENTATION, NOT AUTOMATION" 철학 명시
+- 출력 형식: "Decisions for YOU", "Key Questions to Answer" 섹션
+
+**파일 변경:**
+- `src/clouvel/tools/manager/prompts/personas.py` - probing_questions 추가
+- `src/clouvel/tools/manager/prompts/templates.py` - 질문 중심 템플릿
+
+### ✅ Knowledge Base 연동 강화 (2026-01-24)
+
+**Manager가 과거 결정을 참조:**
+- `_get_kb_context()` - 관련 과거 결정 조회
+- 토픽 기반 검색 + 최근 결정 포함
+- 매니저 프롬프트에 자동 주입
+
+**파일 변경:**
+- `src/clouvel/tools/manager/core.py` - `_get_kb_context()` 추가
+- `src/clouvel/tools/manager/generator/conversation.py` - KB 컨텍스트 전달
+
+### ✅ Quick Perspectives 도구 추가 (2026-01-24)
+
+**코딩 전 빠른 관점 체크:**
+- `quick_perspectives(context)` - 3-4명 매니저가 핵심 질문 제시
+- 토픽 기반 자동 매니저 선택 (auth → CSO 포함, UI → CDO 포함)
+- 매니저당 2개 probing questions
+- KB에서 관련 과거 결정 참조
+
+**출력 예시:**
+```
+## 💡 Quick Perspectives
+
+_Before building: **Adding user authentication with JWT tokens**_
+
+**👔 PM**:
+  - Is this MVP scope or post-launch?
+  - What's the ONE thing this feature must do?
+
+**🔒 CSO**:
+  - How do you verify the user is who they claim?
+  - How do you verify they're allowed to do this action?
+
+💡 _Related past decision: auth Use JWT with refresh token..._
+```
+
+**파일 변경:**
+- `src/clouvel/tools/manager/core.py` - `quick_perspectives()` 함수 추가
+- `src/clouvel/tools/manager/__init__.py` - export 추가
+- `src/clouvel/server.py` - Tool 정의 및 핸들러 추가
+
+---
+
+### ✅ Knowledge Base 구현 완료 (8주 → 1일)
+
+| 주차 | 목표 | 상태 |
+|------|------|------|
+| 1-2 | SQLite 기반 구축 | ✅ 완료 |
+| 3-4 | 도구 통합 (record_decision, record_location) | ✅ 완료 |
+| 5-6 | 자동화 (회의 후 자동 기록) | ✅ 완료 |
+| 7-8 | FTS5 검색 + CLI | ✅ FTS5 완료, CLI 미정 |
+
+**v1.4 Knowledge Base MVP 완료** (2026-01-24)
+- `~/.clouvel/knowledge.db` SQLite 저장소
+- 5개 테이블: projects, meetings, decisions, locations, events
+- FTS5 전문 검색 지원 (category 포함)
+- 6개 신규 도구: record_decision, record_location, search_knowledge, get_context, init_knowledge, rebuild_index
+- **세션 시작 자동 컨텍스트 로딩**: can_code 호출 시 최근 결정/위치 표시
+- **50MB 제한 + 자동 아카이브**: 40MB 초과 시 30일 이상 데이터 아카이브
+- **API 키 fallback**: ANTHROPIC_API_KEY 없어도 manager 동작 (static mode)
+- **회의 자동 기록**: manager 호출 시 결정사항 자동 추출 및 KB 저장
+- **SQLite 암호화**: `CLOUVEL_KB_KEY` 환경변수로 선택적 Fernet 암호화
+
+### 랜딩페이지 수정
+- [x] "context preserved" → "Progress Tracking" + "Smart recovery coming soon" 변경 완료
+
+---
 
 - [x] **i18n 완료** ✅
 - [x] **글로벌 런칭 Phase 1 완료** ✅

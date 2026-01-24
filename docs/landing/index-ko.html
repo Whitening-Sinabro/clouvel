@@ -3,22 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Clouvel - Stop Reviewing Broken AI Code</title>
+    <title>Clouvel - No Spec, No Code</title>
     <meta
       name="description"
-      content="Your juniors vibe code without specs. You review broken code. Clouvel blocks coding until specs exist. For team leads who are tired of AI-generated mess."
+      content="Stop AI from compressing your requirements. PRD-First gate blocks coding without specs. Integrates with Claude Code."
     />
 
     <!-- Open Graph / Social -->
     <meta property="og:type" content="website" />
     <meta
       property="og:url"
-      content="https://whitening-sinabro.github.io/clouvel/index-en.html"
+      content="https://whitening-sinabro.github.io/clouvel/"
     />
-    <meta property="og:title" content="Clouvel - Stop Reviewing Broken AI Code" />
+    <meta property="og:title" content="Clouvel - No Spec, No Code" />
     <meta
       property="og:description"
-      content="Your juniors vibe code without specs. You review broken code. Clouvel blocks coding until specs exist."
+      content="Stop AI from compressing your requirements. PRD-First gate blocks coding without specs."
     />
     <meta
       property="og:image"
@@ -29,17 +29,60 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:url"
-      content="https://whitening-sinabro.github.io/clouvel/index-en.html"
+      content="https://whitening-sinabro.github.io/clouvel/"
     />
-    <meta name="twitter:title" content="Clouvel - Stop Reviewing Broken AI Code" />
+    <meta name="twitter:title" content="Clouvel - No Spec, No Code" />
     <meta
       name="twitter:description"
-      content="Your juniors vibe code without specs. You review broken code. Clouvel blocks coding until specs exist."
+      content="Stop AI from compressing your requirements. PRD-First gate blocks coding without specs."
     />
     <meta
       name="twitter:image"
       content="https://whitening-sinabro.github.io/clouvel/og-image.png"
     />
+
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-17L1X6CZ4W"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-17L1X6CZ4W', {
+        'custom_map': {'dimension1': 'language'}
+      });
+
+      // Track CTA clicks with language
+      window.trackCTA = function(action, label) {
+        var lang = document.documentElement.lang || 'en';
+        gtag('event', action, {
+          'event_category': 'CTA',
+          'event_label': label,
+          'language': lang
+        });
+      };
+    </script>
+
+    <!-- i18n: hreflang for SEO -->
+    <link rel="alternate" hreflang="en" href="https://whitening-sinabro.github.io/clouvel/?lang=en">
+    <link rel="alternate" hreflang="ko" href="https://whitening-sinabro.github.io/clouvel/?lang=ko">
+    <link rel="alternate" hreflang="x-default" href="https://whitening-sinabro.github.io/clouvel/">
+
+    <!-- i18n: Prevent flash of untranslated content -->
+    <script>
+      (function() {
+        var SUPPORTED = ['en', 'ko'];
+        var params = new URLSearchParams(window.location.search);
+        var urlLang = params.get('lang');
+        var storedLang = null;
+        try { storedLang = localStorage.getItem('clouvel-lang'); } catch(e) {}
+        var lang = urlLang || storedLang || 'en';
+        if (SUPPORTED.indexOf(lang) === -1) lang = 'en';
+        document.documentElement.lang = lang;
+        document.documentElement.className = 'i18n-loading';
+      })();
+    </script>
+    <style>.i18n-loading { opacity: 0; } .i18n-ready { opacity: 1; transition: opacity 0.1s; }</style>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
@@ -84,21 +127,25 @@
           <a
             href="#how-it-works"
             class="text-sm text-slate-600 hover:text-dark-slate transition"
+            data-i18n="nav.how_it_works"
             >How it works</a
           >
           <a
-            href="docs-en.html"
+            href="docs.html"
             class="text-sm text-slate-600 hover:text-dark-slate transition"
+            data-i18n="nav.docs"
             >Docs</a
           >
           <a
             href="#pricing"
             class="text-sm text-slate-600 hover:text-dark-slate transition"
+            data-i18n="nav.pricing"
             >Pricing</a
           >
           <a
             href="#faq"
             class="text-sm text-slate-600 hover:text-dark-slate transition"
+            data-i18n="nav.faq"
             >FAQ</a
           >
           <a
@@ -108,14 +155,15 @@
             >GitHub</a
           >
           <a
-            href="index.html"
-            class="text-sm text-slate-600 hover:text-dark-slate transition"
-            >Korean</a
-          >
-          <a
             href="#getting-started"
             class="text-sm bg-accent text-white px-4 py-2 rounded-full hover:bg-accent-dark transition"
+            data-i18n="nav.get_started"
             >Get Started</a
+          >
+          <a
+            href="index.html"
+            class="text-sm text-slate-600 hover:text-dark-slate transition px-3 py-1 border border-slate-300 rounded-full"
+            >English</a
           >
         </div>
         <!-- Mobile Menu Button -->
@@ -146,21 +194,25 @@
         <a
           href="#how-it-works"
           class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
+          data-i18n="nav.how_it_works"
           >How it works</a
         >
         <a
-          href="docs-en.html"
+          href="docs.html"
           class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
+          data-i18n="nav.docs"
           >Docs</a
         >
         <a
           href="#pricing"
           class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
+          data-i18n="nav.pricing"
           >Pricing</a
         >
         <a
           href="#faq"
           class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
+          data-i18n="nav.faq"
           >FAQ</a
         >
         <a
@@ -170,13 +222,9 @@
           >GitHub</a
         >
         <a
-          href="index.html"
-          class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
-          >Korean</a
-        >
-        <a
           href="#getting-started"
           class="block text-sm bg-accent text-white px-4 py-3 rounded-xl text-center hover:bg-accent-dark transition mt-2"
+          data-i18n="nav.get_started"
           >Get Started</a
         >
       </div>
@@ -190,34 +238,35 @@
             class="inline-flex items-center gap-2 bg-accent/10 text-accent text-sm px-4 py-2 rounded-full"
           >
             <span class="w-2 h-2 bg-accent rounded-full animate-pulse"></span>
-            MCP Server for Claude Code
+            <span data-i18n="hero.badge">MCP Server for Claude Code</span>
           </div>
           <div
             class="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-600 text-sm px-4 py-2 rounded-full"
           >
-            <span class="font-semibold">NEW</span>
-            v1.3.8 - Manager critical checks + focus guard
+            <span class="font-semibold" data-i18n="hero.badge_new">NEW</span>
+            <span data-i18n="hero.badge_version">v1.3.8 - Manager 크리티컬 체크 + 삼천포 방지</span>
           </div>
         </div>
         <h1
           class="text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.1] mb-6"
         >
-          No spec,<br />
-          <span class="accent-text">no code.</span>
+          <span data-i18n="hero.title_1">PRD 없으면,</span><br />
+          <span class="accent-text" data-i18n="hero.title_2">코딩 없다.</span>
         </h1>
-        <p class="text-lg md:text-xl text-slate-600 mb-3 leading-relaxed">
-          Vibe coding without specs? Debugging hell awaits.
+        <p class="text-lg md:text-xl text-slate-600 mb-3 leading-relaxed" data-i18n="hero.subtitle">
+          AI가 맥락을 "멋대로 압축"해서 중요한 요구사항을 생략하는 순간이 있다.
         </p>
         <p class="text-base md:text-lg text-slate-500 mb-8">
-          Stop debugging "almost right" code.
-          <strong class="text-dark-slate">A tool for solo devs & indie hackers.</strong>
+          <span data-i18n="hero.desc_solo_text">"거의 맞는" 코드 디버깅 그만.</span>
+          <strong class="text-dark-slate" data-i18n="hero.desc_solo">솔로 개발자 & 인디 해커를 위한 도구.</strong>
         </p>
         <div class="flex flex-wrap gap-3 md:gap-4 justify-center">
           <a
             href="#getting-started"
             class="cta-pulse inline-flex items-center gap-2 bg-accent text-white px-6 py-3 md:px-8 md:py-4 rounded-full font-medium hover:bg-accent-dark transition text-base md:text-lg"
+            onclick="trackCTA('click', 'hero_get_started')"
           >
-            Get started
+            <span data-i18n="hero.cta_start">Get started</span>
             <svg
               class="w-5 h-5"
               fill="none"
@@ -235,6 +284,8 @@
           <a
             href="#demo"
             class="inline-flex items-center gap-2 border-2 border-dark-slate/20 px-6 py-3 md:px-8 md:py-4 rounded-full font-medium hover:border-dark-slate/40 transition text-base md:text-lg"
+            data-i18n="hero.cta_demo"
+            onclick="trackCTA('click', 'hero_see_demo')"
           >
             See demo
           </a>
@@ -246,7 +297,7 @@
     <section class="py-8 px-6 border-t border-b border-slate-200/50 bg-white">
       <div class="max-w-4xl mx-auto">
         <div class="flex flex-wrap items-center justify-center gap-6">
-          <span class="text-slate-500 text-sm font-medium">Works with:</span>
+          <span class="text-slate-500 text-sm font-medium" data-i18n="works_with.title">Works with:</span>
           <div class="flex flex-wrap items-center gap-4">
             <span
               class="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full text-sm font-medium"
@@ -290,67 +341,64 @@
             </span>
           </div>
         </div>
-        <p class="text-center text-slate-500 text-sm mt-4">
-          Install once, enforce everywhere
+        <p class="text-center text-slate-500 text-sm mt-4" data-i18n="works_with.subtitle">
+          한 번 설치하면 어디서든 같은 정책
         </p>
       </div>
     </section>
 
-    <!-- 2.5 What is PRD (for beginners) -->
+    <!-- 2.5 PRD 설명 (비개발자/초보자용) -->
     <section class="py-16 md:py-20 px-6">
       <div class="max-w-4xl mx-auto">
         <div class="text-center mb-8 md:mb-12">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4">What is a PRD?</h2>
+          <h2 class="text-2xl md:text-3xl font-bold mb-4" data-i18n="prd.title">PRD가 뭔가요?</h2>
           <p class="text-slate-600 text-base md:text-lg max-w-2xl mx-auto">
-            <strong class="text-dark-slate"
-              >A spec document that AI reads before coding.</strong
-            ><br />
-            With a PRD, AI knows exactly "what to build" and helps you accurately.
+            <strong class="text-dark-slate" data-i18n="prd.desc">AI가 코딩 전에 읽는 스펙 문서입니다.</strong><br />
+            <span data-i18n="prd.desc_2">PRD가 있으면 AI가 정확히 "무엇을 만들지" 알고 정확하게 도와줍니다.</span>
           </p>
         </div>
-        <!-- Before / After comparison -->
+        <!-- Before / After 비교 -->
         <div class="grid md:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-12">
           <div class="bg-red-50 border border-red-200 rounded-xl p-5 md:p-6">
             <div class="flex items-center gap-2 mb-3">
-              <span class="text-red-500 text-lg font-bold">Without PRD</span>
+              <span class="text-red-500 text-lg font-bold" data-i18n="prd.without">PRD 없이</span>
             </div>
-            <p class="text-slate-700 text-sm md:text-base mb-3">
-              "Build a login feature"
+            <p class="text-slate-700 text-sm md:text-base mb-3" data-i18n="prd.without_example">
+              "로그인 기능 만들어줘"
             </p>
-            <p class="text-slate-500 text-xs md:text-sm">
-              AI guesses and builds something. Password reset? Social login? Skipped.
+            <p class="text-slate-500 text-xs md:text-sm" data-i18n="prd.without_desc">
+              → AI가 대충 추측해서 만듦. 비번 찾기? 소셜 로그인? 알아서 생략.
             </p>
           </div>
           <div
             class="bg-emerald-50 border border-emerald-200 rounded-xl p-5 md:p-6"
           >
             <div class="flex items-center gap-2 mb-3">
-              <span class="text-emerald-600 text-lg font-bold">With PRD</span>
+              <span class="text-emerald-600 text-lg font-bold" data-i18n="prd.with">PRD 있으면</span>
             </div>
-            <p class="text-slate-700 text-sm md:text-base mb-3">
-              AI reads PRD and implements exactly
+            <p class="text-slate-700 text-sm md:text-base mb-3" data-i18n="prd.with_example">
+              AI가 PRD를 읽고 정확히 구현
             </p>
-            <p class="text-slate-500 text-xs md:text-sm">
-              "Email login, password reset, Google OAuth" - all included. Nothing missed.
+            <p class="text-slate-500 text-xs md:text-sm" data-i18n="prd.with_desc">
+              → "이메일 로그인, 비번 찾기, 구글 소셜" 다 들어감. 빠뜨릴 수 없음.
             </p>
           </div>
         </div>
-        <!-- Key point -->
+        <!-- 핵심 포인트 -->
         <div class="text-center">
-          <p class="text-slate-600 text-sm md:text-base">
-            PRD = <strong class="text-dark-slate">AI's work order</strong>.
-            Clear instructions, clear results.
+          <p class="text-slate-600 text-sm md:text-base" data-i18n="prd.key_point">
+            PRD = AI의 작업 지시서. 명확한 지시, 명확한 결과.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- 3. Problem -->
+    <!-- 3. Problem (What problem) -->
     <section class="py-16 md:py-20 px-6 bg-white">
       <div class="max-w-4xl mx-auto">
         <div class="text-center mb-8 md:mb-12">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4">
-            Why does AI coding keep going wrong?
+          <h2 class="text-2xl md:text-3xl font-bold mb-4" data-i18n="problem.title">
+            AI 코딩, 왜 자꾸 어긋나는가?
           </h2>
         </div>
         <div class="space-y-4 md:space-y-6">
@@ -359,11 +407,12 @@
           >
             <span class="text-red-500 text-xl md:text-2xl mt-0.5">1</span>
             <div>
-              <h3 class="font-semibold text-base md:text-lg mb-1">
-                AI arbitrarily skips requirements
+              <h3 class="font-semibold text-base md:text-lg mb-1" data-i18n="problem.problem_1_title">
+                AI가 요구사항 일부를 임의로 생략해서 구현이 어긋남
               </h3>
-              <p class="text-slate-600 text-sm md:text-base">
-                "Build login" - Password reset? Social login? Silently omitted.
+              <p class="text-slate-600 text-sm md:text-base" data-i18n="problem.problem_1_desc">
+                "로그인 기능 만들어줘" → 비밀번호 재설정? 소셜 로그인? 알아서
+                생략됨
               </p>
             </div>
           </div>
@@ -372,11 +421,11 @@
           >
             <span class="text-red-500 text-xl md:text-2xl mt-0.5">2</span>
             <div>
-              <h3 class="font-semibold text-base md:text-lg mb-1">
-                Jumps straight to coding, skipping design
+              <h3 class="font-semibold text-base md:text-lg mb-1" data-i18n="problem.problem_2_title">
+                중간에 코딩부터 시작해버려서 설계/검증이 뒤늦음
               </h3>
-              <p class="text-slate-600 text-sm md:text-base">
-                No architecture thinking - straight to code - full refactor later.
+              <p class="text-slate-600 text-sm md:text-base" data-i18n="problem.problem_2_desc">
+                아키텍처 고민 없이 바로 코드 → 나중에 전체 리팩토링
               </p>
             </div>
           </div>
@@ -385,30 +434,29 @@
           >
             <span class="text-red-500 text-xl md:text-2xl mt-0.5">3</span>
             <div>
-              <h3 class="font-semibold text-base md:text-lg mb-1">
-                Results vary every time, debugging explodes
+              <h3 class="font-semibold text-base md:text-lg mb-1" data-i18n="problem.problem_3_title">
+                결과가 매번 달라져서 디버깅 시간이 폭발
               </h3>
-              <p class="text-slate-600 text-sm md:text-base">
-                Same prompt, different results yesterday vs today - 2-3 days debugging hell.
+              <p class="text-slate-600 text-sm md:text-base" data-i18n="problem.problem_3_desc">
+                같은 요청인데 어제랑 오늘 결과가 다름 → 2-3일 디버깅 지옥
               </p>
             </div>
           </div>
         </div>
         <div class="mt-8 md:mt-10 text-center">
-          <p class="text-lg md:text-xl font-semibold text-dark-slate">
-            That's why PRD should be a <span class="text-accent">'gate'</span>, not an
-            <span class="text-accent">'option'</span>.
+          <p class="text-lg md:text-xl font-semibold text-dark-slate" data-i18n-html="problem.conclusion">
+            That's why PRD should be a <span class="text-accent">'gate'</span>, not an <span class="text-accent">'option'</span>.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- 4. How it works -->
+    <!-- 4. How it works (3-step) -->
     <section id="how-it-works" class="py-16 md:py-20 px-6 bg-white">
       <div class="max-w-4xl mx-auto">
         <div class="text-center mb-10 md:mb-16">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4">How it works</h2>
-          <p class="text-slate-600 text-base md:text-lg">3 simple steps</p>
+          <h2 class="text-2xl md:text-3xl font-bold mb-4" data-i18n="how.title">How it works</h2>
+          <p class="text-slate-600 text-base md:text-lg" data-i18n="how.subtitle">3단계로 끝</p>
         </div>
         <div class="grid md:grid-cols-3 gap-6 md:gap-8">
           <div class="text-center">
@@ -417,9 +465,9 @@
             >
               1
             </div>
-            <h3 class="font-semibold text-lg md:text-xl mb-2">Write PRD</h3>
-            <p class="text-slate-600 text-sm md:text-base">
-              No PRD? Can't proceed. Write the spec first.
+            <h3 class="font-semibold text-lg md:text-xl mb-2" data-i18n="how.step_1_title">PRD 제공</h3>
+            <p class="text-slate-600 text-sm md:text-base" data-i18n="how.step_1_desc">
+              없으면 진행 불가. 문서부터 작성해야 시작됨.
             </p>
           </div>
           <div class="text-center">
@@ -428,9 +476,9 @@
             >
               2
             </div>
-            <h3 class="font-semibold text-lg md:text-xl mb-2">Gate Check</h3>
-            <p class="text-slate-600 text-sm md:text-base">
-              Required sections, format, determinism checks must pass.
+            <h3 class="font-semibold text-lg md:text-xl mb-2" data-i18n="how.step_2_title">Gate 체크</h3>
+            <p class="text-slate-600 text-sm md:text-base" data-i18n="how.step_2_desc">
+              필수 섹션, 형식, 결정론 검사를 통과해야 함.
             </p>
           </div>
           <div class="text-center">
@@ -439,31 +487,31 @@
             >
               3
             </div>
-            <h3 class="font-semibold text-lg md:text-xl mb-2">Code Allowed</h3>
-            <p class="text-slate-600 text-sm md:text-base">
-              Only after passing the gate. Structured development.
+            <h3 class="font-semibold text-lg md:text-xl mb-2" data-i18n="how.step_3_title">코딩 허용</h3>
+            <p class="text-slate-600 text-sm md:text-base" data-i18n="how.step_3_desc">
+              통과한 경우에만 코딩 시작. 체계적 개발.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 5. Demo -->
+    <!-- 5. Demo / Proof -->
     <section id="demo" class="py-16 md:py-20 px-6 bg-dark-slate text-white">
       <div class="max-w-6xl mx-auto">
         <div class="text-center mb-8 md:mb-12">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4">
-            See it actually block
+          <h2 class="text-2xl md:text-3xl font-bold mb-4" data-i18n="demo.title">
+            진짜 막히는지 보세요
           </h2>
-          <p class="text-slate-400 text-base md:text-lg">
-            3-tier quality gate: BLOCK - WARN - PASS
+          <p class="text-slate-400 text-base md:text-lg" data-i18n="demo.subtitle">
+            3단계 품질 게이트: BLOCK → WARN → PASS
           </p>
         </div>
         <div class="grid md:grid-cols-3 gap-4 md:gap-6">
-          <!-- No PRD - BLOCK -->
+          <!-- PRD 없음 → BLOCK -->
           <div class="bg-slate-800/50 rounded-2xl p-5 border border-red-500/30">
             <div class="flex items-center gap-2 mb-4">
-              <span class="text-red-400 text-lg font-bold">No PRD</span>
+              <span class="text-red-400 text-lg font-bold" data-i18n="demo.no_prd">PRD 없음</span>
               <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded"
                 >BLOCK</span
               >
@@ -475,20 +523,20 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
               </div>
               <div class="space-y-2 text-slate-300">
-                <p>
-                  <span class="text-slate-500">$</span> claude "build login"
+                <p data-i18n="demo.no_prd_cmd">
+                  <span class="text-slate-500">$</span> claude "로그인 만들어줘"
                 </p>
-                <p class="text-red-400 font-semibold">BLOCK: Coding forbidden</p>
-                <p class="text-slate-500 text-xs">No PRD - write docs first</p>
+                <p class="text-red-400 font-semibold" data-i18n="demo.no_prd_result">BLOCK: 코딩 금지</p>
+                <p class="text-slate-500 text-xs" data-i18n="demo.no_prd_desc">PRD 없음 → 문서 먼저</p>
               </div>
             </div>
           </div>
-          <!-- Incomplete PRD - WARN -->
+          <!-- PRD 있지만 불완전 → WARN -->
           <div
             class="bg-slate-800/50 rounded-2xl p-5 border border-yellow-500/30"
           >
             <div class="flex items-center gap-2 mb-4">
-              <span class="text-yellow-400 text-lg font-bold">Incomplete PRD</span>
+              <span class="text-yellow-400 text-lg font-bold" data-i18n="demo.incomplete">PRD 불완전</span>
               <span
                 class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded"
                 >WARN</span
@@ -501,22 +549,22 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
               </div>
               <div class="space-y-2 text-slate-300">
-                <p>
-                  <span class="text-slate-500">$</span> claude "build login"
+                <p data-i18n="demo.no_prd_cmd">
+                  <span class="text-slate-500">$</span> claude "로그인 만들어줘"
                 </p>
-                <p class="text-yellow-400 font-semibold">PASS | WARN 2</p>
-                <p class="text-slate-500 text-xs">
-                  Missing: architecture, tests
+                <p class="text-yellow-400 font-semibold" data-i18n="demo.incomplete_result">PASS | WARN 2개</p>
+                <p class="text-slate-500 text-xs" data-i18n="demo.incomplete_desc">
+                  권장 없음: 아키텍처, 테스트
                 </p>
               </div>
             </div>
           </div>
-          <!-- Complete PRD - PASS -->
+          <!-- PRD 완전 → PASS -->
           <div
             class="bg-slate-800/50 rounded-2xl p-5 border border-emerald-500/30"
           >
             <div class="flex items-center gap-2 mb-4">
-              <span class="text-emerald-400 text-lg font-bold">Complete PRD</span>
+              <span class="text-emerald-400 text-lg font-bold" data-i18n="demo.complete">PRD 완전</span>
               <span
                 class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded"
                 >PASS</span
@@ -529,13 +577,13 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
               </div>
               <div class="space-y-2 text-slate-300">
-                <p>
-                  <span class="text-slate-500">$</span> claude "build login"
+                <p data-i18n="demo.no_prd_cmd">
+                  <span class="text-slate-500">$</span> claude "로그인 만들어줘"
                 </p>
-                <p class="text-emerald-400 font-semibold">
-                  PASS | Ready to code
+                <p class="text-emerald-400 font-semibold" data-i18n="demo.complete_result">
+                  PASS | 코딩 시작 가능
                 </p>
-                <p class="text-slate-500 text-xs">Required: PRD OK | 3 tests</p>
+                <p class="text-slate-500 text-xs" data-i18n="demo.complete_desc">필수: PRD ✓ | 테스트 3개</p>
               </div>
             </div>
           </div>
@@ -543,12 +591,12 @@
       </div>
     </section>
 
-    <!-- 6. Features -->
+    <!-- 6. Features (4개로 축소, 결과 중심) -->
     <section id="features" class="py-16 md:py-20 px-6">
       <div class="max-w-6xl mx-auto">
         <div class="text-center mb-10 md:mb-16">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4">Just what you need</h2>
-          <p class="text-slate-600 text-base md:text-lg">4 core features</p>
+          <h2 class="text-2xl md:text-3xl font-bold mb-4" data-i18n="features.title">딱 필요한 것만</h2>
+          <p class="text-slate-600 text-base md:text-lg" data-i18n="features.subtitle">핵심 기능 4가지</p>
         </div>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           <div
@@ -571,11 +619,11 @@
                 />
               </svg>
             </div>
-            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2">
-              PRD-First Enforcement
+            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2" data-i18n="features.f1_title">
+              PRD-First 강제
             </h3>
-            <p class="text-slate-600 text-sm md:text-base">
-              No docs? No coding. Prevent requirement gaps at the source.
+            <p class="text-slate-600 text-sm md:text-base" data-i18n="features.f1_desc">
+              문서 없으면 코딩 차단. 요구사항 누락 원천 방지.
             </p>
           </div>
           <div
@@ -598,11 +646,11 @@
                 />
               </svg>
             </div>
-            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2">
-              Deterministic Output
+            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2" data-i18n="features.f2_title">
+              결정론 보장
             </h3>
-            <p class="text-slate-600 text-sm md:text-base">
-              Same input = same output. Consistent results every time.
+            <p class="text-slate-600 text-sm md:text-base" data-i18n="features.f2_desc">
+              동일 입력 = 동일 출력. 결과 일관성 확보.
             </p>
           </div>
           <div
@@ -625,11 +673,11 @@
                 />
               </svg>
             </div>
-            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2">
-              Gap Detection
+            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2" data-i18n="features.f3_title">
+              누락 감지
             </h3>
-            <p class="text-slate-600 text-sm md:text-base">
-              Missing requirements? Instant alert. Catch issues before coding.
+            <p class="text-slate-600 text-sm md:text-base" data-i18n="features.f3_desc">
+              요구사항 빠뜨리면 즉시 알림. 사후가 아닌 사전에.
             </p>
           </div>
           <div
@@ -652,24 +700,24 @@
                 />
               </svg>
             </div>
-            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2">
-              Context Recovery
+            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2" data-i18n="features.f4_title">
+              컨텍스트 복구
             </h3>
-            <p class="text-slate-600 text-sm md:text-base">
-              Session ends? Context preserved. Auto-recovery after compaction.
+            <p class="text-slate-600 text-sm md:text-base" data-i18n="features.f4_desc">
+              세션 끊겨도 맥락 유지. 컴팩션 후에도 자동 복구.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 7. Getting Started -->
+    <!-- 7. Getting Started (환경별 탭) -->
     <section id="getting-started" class="py-20 px-6 bg-dark-slate text-white">
       <div class="max-w-4xl mx-auto">
         <div class="text-center mb-12">
-          <h2 class="text-3xl font-bold mb-4">Getting Started</h2>
-          <p class="text-slate-400 text-lg">
-            Free: 3 steps. Pro: 4 steps (+ activate)
+          <h2 class="text-3xl font-bold mb-4" data-i18n="getting_started.title">Getting Started</h2>
+          <p class="text-slate-400 text-lg" data-i18n="getting_started.subtitle">
+            Free는 3단계, Pro는 4단계 (activate 추가)
           </p>
         </div>
         <!-- Tabs -->
@@ -700,6 +748,12 @@
           >
             Cursor
           </button>
+          <button
+            class="tab-btn px-4 py-3 md:px-6 md:py-2 rounded-xl md:rounded-full font-medium text-sm md:text-base bg-slate-700 hover:bg-slate-600 transition"
+            data-tab="antigravity"
+          >
+            Antigravity
+          </button>
         </div>
         <!-- Tab Contents -->
         <div id="tab-cli" class="tab-content active">
@@ -711,22 +765,22 @@
             <div>
               <p class="text-slate-400 mb-2">
                 # 2. Activate
-                <span class="text-accent">(Pro only)</span>
+                <span class="text-accent">(Pro만)</span>
               </p>
-              <p class="text-emerald-400">clouvel activate YOUR_LICENSE_KEY</p>
+              <p class="text-emerald-400">clouvel activate 라이선스키</p>
             </div>
             <div>
-              <p class="text-slate-400 mb-2"># 3. Setup (auto-config)</p>
+              <p class="text-slate-400 mb-2"># 3. Setup (자동 설정)</p>
               <p class="text-emerald-400">clouvel setup</p>
               <p class="text-slate-500 text-xs mt-1">
-                # Adds CLAUDE.md rules + registers MCP server
+                # CLAUDE.md 규칙 + MCP 서버 자동 등록
               </p>
             </div>
             <div>
               <p class="text-slate-400 mb-2"># 4. Run</p>
               <p class="text-slate-300">claude</p>
               <p class="text-slate-500 text-xs mt-1">
-                # can_code check runs automatically on code requests
+                # 코드 작성 요청 시 자동으로 can_code 검사
               </p>
             </div>
           </div>
@@ -740,20 +794,20 @@
             <div>
               <p class="text-slate-400 mb-2">
                 # 2. Activate
-                <span class="text-accent">(Pro only)</span>
+                <span class="text-accent">(Pro만)</span>
               </p>
-              <p class="text-emerald-400">clouvel activate YOUR_LICENSE_KEY</p>
+              <p class="text-emerald-400">clouvel activate 라이선스키</p>
             </div>
             <div>
-              <p class="text-slate-400 mb-2"># 3. Setup (auto-config)</p>
+              <p class="text-slate-400 mb-2"># 3. Setup (자동 설정)</p>
               <p class="text-emerald-400">clouvel setup</p>
               <p class="text-slate-500 text-xs mt-1">
-                # Auto-modifies config.json + adds global rules
+                # config.json 자동 수정 + 글로벌 규칙 추가
               </p>
             </div>
             <div>
               <p class="text-slate-400 mb-2"># 4. Run</p>
-              <p class="text-slate-300">Restart Claude Desktop - auto-connected</p>
+              <p class="text-slate-300">Claude Desktop 재시작 후 자동 연동</p>
             </div>
           </div>
         </div>
@@ -766,20 +820,20 @@
             <div>
               <p class="text-slate-400 mb-2">
                 # 2. Activate
-                <span class="text-accent">(Pro only)</span>
+                <span class="text-accent">(Pro만)</span>
               </p>
-              <p class="text-emerald-400">clouvel activate YOUR_LICENSE_KEY</p>
+              <p class="text-emerald-400">clouvel activate 라이선스키</p>
             </div>
             <div>
-              <p class="text-slate-400 mb-2"># 3. Setup (auto-config)</p>
+              <p class="text-slate-400 mb-2"># 3. Setup (자동 설정)</p>
               <p class="text-emerald-400">clouvel setup</p>
               <p class="text-slate-500 text-xs mt-1">
-                # Auto-modifies settings.json + adds global rules
+                # settings.json 자동 수정 + 글로벌 규칙 추가
               </p>
             </div>
             <div>
               <p class="text-slate-400 mb-2"># 4. Run</p>
-              <p class="text-slate-300">Use with Claude extension in VS Code</p>
+              <p class="text-slate-300">VS Code에서 Claude 확장과 함께 사용</p>
             </div>
           </div>
         </div>
@@ -792,20 +846,68 @@
             <div>
               <p class="text-slate-400 mb-2">
                 # 2. Activate
-                <span class="text-accent">(Pro only)</span>
+                <span class="text-accent">(Pro만)</span>
               </p>
-              <p class="text-emerald-400">clouvel activate YOUR_LICENSE_KEY</p>
+              <p class="text-emerald-400">clouvel activate 라이선스키</p>
             </div>
             <div>
-              <p class="text-slate-400 mb-2"># 3. Setup (auto-config)</p>
+              <p class="text-slate-400 mb-2"># 3. Setup (자동 설정)</p>
               <p class="text-emerald-400">clouvel setup</p>
               <p class="text-slate-500 text-xs mt-1">
-                # Adds MCP config + global rules
+                # MCP 설정 자동 추가 + 글로벌 규칙 추가
               </p>
             </div>
             <div>
               <p class="text-slate-400 mb-2"># 4. Run</p>
-              <p class="text-slate-300">Use with Claude extension in Cursor</p>
+              <p class="text-slate-300">Cursor에서 Claude 확장과 함께 사용</p>
+            </div>
+          </div>
+        </div>
+        <div id="tab-antigravity" class="tab-content">
+          <div class="bg-slate-800 rounded-xl p-6 font-mono text-sm space-y-4">
+            <div>
+              <p class="text-slate-400 mb-2"># 1. Install</p>
+              <p class="text-emerald-400">pip install clouvel</p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2">
+                # 2. Activate
+                <span class="text-accent">(Pro만)</span>
+              </p>
+              <p class="text-emerald-400">clouvel activate 라이선스키</p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2"># 3. MCP 설정 파일 열기</p>
+              <p class="text-slate-300">
+                Antigravity → Agent → "..." → MCP Servers
+              </p>
+              <p class="text-slate-300">
+                → Manage MCP Servers → View raw config
+              </p>
+              <p class="text-slate-500 text-xs mt-1">
+                # 또는 직접: ~/.gemini/antigravity/mcp_config.json
+              </p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2"># 4. 설정 추가</p>
+              <pre
+                class="text-emerald-400 bg-slate-900 p-3 rounded-lg overflow-x-auto"
+              >
+{
+  "mcpServers": {
+    "clouvel": {
+      "command": "clouvel"
+    }
+  }
+}</pre
+              >
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2"># 5. Run</p>
+              <p class="text-slate-300">Antigravity 재시작 후 자동 연동</p>
+              <p class="text-slate-500 text-xs mt-1">
+                # Gemini/Claude 모델 모두 지원
+              </p>
             </div>
           </div>
         </div>
@@ -816,13 +918,13 @@
     <section id="pricing" class="py-20 px-6">
       <div class="max-w-6xl mx-auto">
         <div class="text-center mb-8">
-          <h2 class="text-3xl font-bold mb-4">Simple Pricing</h2>
-          <p class="text-slate-600 text-lg mb-4">
-            Start free, upgrade when you need more
+          <h2 class="text-3xl font-bold mb-4" data-i18n="pricing.title">심플한 가격</h2>
+          <p class="text-slate-600 text-lg mb-4" data-i18n="pricing.subtitle">
+            Free로 시작하고, 필요하면 Pro로 업그레이드
           </p>
-          <p class="text-slate-500 text-sm max-w-2xl mx-auto mb-6">
-            If your team uses AI coding but keeps losing time to requirement gaps and debugging,
-            this pays for itself.
+          <p class="text-slate-500 text-sm max-w-2xl mx-auto mb-6" data-i18n="pricing.desc">
+            팀/프로젝트에서 AI 코딩을 쓰는데, 요구사항 누락으로 디버깅이 잦다면
+            이게 이득입니다.
           </p>
           <!-- Billing Toggle -->
           <div class="inline-flex items-center bg-slate-100 rounded-full p-1">
@@ -830,15 +932,16 @@
               id="monthly-btn"
               onclick="toggleBilling('monthly')"
               class="px-6 py-2 rounded-full text-sm font-medium transition bg-white text-dark-slate shadow-sm"
+              data-i18n="pricing.monthly"
             >
-              Monthly
+              월간
             </button>
             <button
               id="yearly-btn"
               onclick="toggleBilling('yearly')"
               class="px-6 py-2 rounded-full text-sm font-medium transition text-slate-500 hover:text-slate-700"
             >
-              Yearly <span class="text-accent text-xs ml-1">17% off</span>
+              <span data-i18n="pricing.yearly">연간</span> <span class="text-accent text-xs ml-1" data-i18n="pricing.yearly_discount">17% 할인</span>
             </button>
           </div>
         </div>
@@ -847,11 +950,11 @@
           <div
             class="bg-emerald-50 p-6 md:p-8 rounded-2xl border-2 border-emerald-200"
           >
-            <h3 class="font-semibold text-lg mb-1">Free</h3>
-            <p class="text-slate-500 text-sm mb-6">Open Source</p>
+            <h3 class="font-semibold text-lg mb-1" data-i18n="pricing.free">Free</h3>
+            <p class="text-slate-500 text-sm mb-6" data-i18n="pricing.free_desc">오픈소스</p>
             <div class="flex items-baseline gap-1 mb-6">
-              <span class="text-4xl font-bold text-emerald-600">$0</span>
-              <span class="text-slate-500">/ forever</span>
+              <span class="text-4xl font-bold text-emerald-600" data-i18n="pricing.free_price">$0</span>
+              <span class="text-slate-500" data-i18n="pricing.free_period">/ 영원히</span>
             </div>
             <ul class="space-y-3 mb-8 text-sm">
               <li class="flex items-center gap-2">
@@ -868,7 +971,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-emerald-700 font-medium">Onboarding (start)</span>
+                <span class="text-emerald-700 font-medium" data-i18n="pricing.free_f1">Onboarding (start)</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -884,7 +987,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                Doc enforcement (can_code)
+                <span data-i18n="pricing.free_f2">Doc enforcement (can_code)</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -900,10 +1003,11 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-emerald-700 font-medium"
-                  >Detailed planning (plan)
+                <span class="text-emerald-700 font-medium">
+                  <span data-i18n="pricing.free_f3">Detailed planning (plan)</span>
                   <span
                     class="text-xs bg-emerald-100 text-emerald-600 px-1.5 py-0.5 rounded ml-1"
+                    data-i18n="pricing.free_f3_new"
                     >NEW</span
                   ></span
                 >
@@ -922,7 +1026,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                Progress tracking
+                <span data-i18n="pricing.free_f4">Progress tracking</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -938,43 +1042,46 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                Goal reminder
+                <span data-i18n="pricing.free_f5">Goal reminder</span>
               </li>
             </ul>
             <a
               href="https://github.com/Whitening-Sinabro/clouvel"
               target="_blank"
               class="block w-full py-3 rounded-full text-center font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition"
+              data-i18n="pricing.start_github"
+              onclick="trackCTA('click', 'pricing_free_github')"
             >
-              Start on GitHub
+              GitHub에서 시작
             </a>
           </div>
           <!-- Personal Pro -->
           <div class="border-2 border-accent p-6 md:p-8 rounded-2xl relative">
             <div
               class="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-medium px-3 py-1 rounded-full"
+              data-i18n="pricing.recommended"
             >
-              Recommended
+              추천
             </div>
-            <h3 class="font-semibold text-lg mb-1">Personal Pro</h3>
-            <p class="text-slate-500 text-sm mb-6">Solo developer (1 seat)</p>
+            <h3 class="font-semibold text-lg mb-1" data-i18n="pricing.personal">Personal Pro</h3>
+            <p class="text-slate-500 text-sm mb-6" data-i18n="pricing.personal_desc">개인 개발자 (1명)</p>
             <div
               class="price-display monthly-price flex items-baseline gap-1 mb-1"
             >
               <span class="text-4xl font-bold">$9.99</span>
-              <span class="text-slate-500">/ mo</span>
+              <span class="text-slate-500" data-i18n="pricing.per_month">/ month</span>
             </div>
             <div
               class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
             >
               <span class="text-4xl font-bold">$99</span>
-              <span class="text-slate-500">/ yr</span>
+              <span class="text-slate-500" data-i18n="pricing.per_year">/ year</span>
             </div>
-            <p class="monthly-price text-slate-400 text-sm font-medium mb-6">
-              17% off with yearly billing
+            <p class="monthly-price text-slate-400 text-sm font-medium mb-6" data-i18n="pricing.yearly_note">
+              17% off with yearly
             </p>
-            <p class="yearly-price hidden text-accent text-sm font-medium mb-6">
-              17% saved ($119.88 - $99)
+            <p class="yearly-price hidden text-accent text-sm font-medium mb-6" data-i18n="pricing.yearly_applied">
+              17% off applied
             </p>
             <ul class="space-y-3 mb-8 text-sm">
               <li class="flex items-center gap-2">
@@ -991,7 +1098,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                Everything in Free
+                <span data-i18n="pricing.personal_f1">All Free features</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -1007,7 +1114,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-accent font-medium">8 C-Level Managers</span>
+                <span class="text-accent font-medium" data-i18n="pricing.personal_f2">8 C-Level managers</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -1023,7 +1130,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-accent font-medium"
+                <span class="text-accent font-medium" data-i18n="pricing.personal_f3"
                   >One-click Ship (verify+evidence)</span
                 >
               </li>
@@ -1041,7 +1148,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-accent font-medium">Error Learning</span>
+                <span class="text-accent font-medium" data-i18n="pricing.personal_f4">Error Learning</span>
               </li>
             </ul>
             <a
@@ -1049,8 +1156,10 @@
               target="_blank"
               class="checkout-link monthly-link block w-full py-3 rounded-full text-center font-medium border border-slate-300 hover:border-slate-400 transition"
               data-yearly="https://buy.polar.sh/polar_cl_gbyXvdUeXsKDnIgUssiv7ptFuSc0FNms8Iafs31ftjD"
+              data-i18n="pricing.subscribe"
+              onclick="trackCTA('subscribe', 'personal_pro')"
             >
-              Subscribe
+              구독하기
             </a>
           </div>
           <!-- Team Coming Soon -->
@@ -1062,21 +1171,22 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
               </svg>
             </div>
-            <h3 class="font-semibold text-lg mb-2 text-slate-600">Team Plans</h3>
-            <p class="text-slate-500 text-sm">Coming Soon</p>
+            <h3 class="font-semibold text-lg mb-2 text-slate-600" data-i18n="pricing.team_coming_soon">Team Plans</h3>
+            <p class="text-slate-500 text-sm" data-i18n="pricing.team_coming_soon_desc">Coming Soon</p>
           </div>
         </div>
         <!-- Team Interest -->
         <div class="mt-8 text-center">
           <p class="text-slate-600">
-            Need team features?
+            <span data-i18n="pricing.team_interest">Need team features?</span>
             <a
               href="https://github.com/Whitening-Sinabro/clouvel/issues"
               target="_blank"
               class="text-accent hover:underline"
+              data-i18n="pricing.team_interest_link"
               >Let us know</a
             >
-            - We're building based on your feedback
+            <span data-i18n="pricing.team_interest_desc">- We're building based on your feedback</span>
           </p>
         </div>
       </div>
@@ -1086,8 +1196,8 @@
     <section id="faq" class="py-16 md:py-20 px-6 bg-white">
       <div class="max-w-3xl mx-auto">
         <div class="text-center mb-8 md:mb-12">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4">FAQ</h2>
-          <p class="text-slate-600 text-base md:text-lg">Frequently Asked Questions</p>
+          <h2 class="text-2xl md:text-3xl font-bold mb-4" data-i18n="faq.title">FAQ</h2>
+          <p class="text-slate-600 text-base md:text-lg" data-i18n="faq.subtitle">자주 묻는 질문</p>
         </div>
         <div class="space-y-3 md:space-y-4">
           <details
@@ -1096,7 +1206,7 @@
             <summary
               class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
             >
-              <span>Does it force a specific PRD format?</span>
+              <span data-i18n="faq.q1">PRD 형식 강제함?</span>
               <svg
                 class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
                 fill="none"
@@ -1111,9 +1221,9 @@
                 />
               </svg>
             </summary>
-            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
-              We provide templates, but don't force them. Just need required sections
-              (goals, scope, requirements).
+            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base" data-i18n="faq.a1">
+              기본 템플릿을 제공하지만, 강제하지는 않습니다. 필수 섹션(목표,
+              범위, 요구사항)만 있으면 됩니다.
             </p>
           </details>
           <details
@@ -1122,7 +1232,7 @@
             <summary
               class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
             >
-              <span>Can I use my own PRD template?</span>
+              <span data-i18n="faq.q2">내 PRD 템플릿 써도 됨?</span>
               <svg
                 class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
                 fill="none"
@@ -1137,9 +1247,9 @@
                 />
               </svg>
             </summary>
-            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
-              Yes. Use your existing template as-is. Clouvel just gates on document
-              "existence", not specific format.
+            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base" data-i18n="faq.a2">
+              네. 기존 템플릿 그대로 사용 가능합니다. Clouvel은 문서 "존재
+              여부"를 체크하는 게이트입니다.
             </p>
           </details>
           <details
@@ -1148,7 +1258,7 @@
             <summary
               class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
             >
-              <span>Does it work offline/locally?</span>
+              <span data-i18n="faq.q3">오프라인/로컬에서 되나?</span>
               <svg
                 class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
                 fill="none"
@@ -1163,8 +1273,9 @@
                 />
               </svg>
             </summary>
-            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
-              License activation needs internet once. After that, works fully offline.
+            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base" data-i18n="faq.a3">
+              라이선스 활성화 시 최초 1회 인터넷 연결이 필요합니다. 이후에는
+              오프라인에서도 사용 가능합니다.
             </p>
           </details>
           <details
@@ -1173,7 +1284,7 @@
             <summary
               class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
             >
-              <span>How does it fit my existing workflow?</span>
+              <span data-i18n="faq.q4">기존 워크플로에 어떻게 끼움?</span>
               <svg
                 class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
                 fill="none"
@@ -1188,9 +1299,9 @@
                 />
               </svg>
             </summary>
-            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
-              It's an MCP server - just add config to Claude Code/Desktop.
-              Doesn't touch your code or project structure.
+            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base" data-i18n="faq.a4">
+              MCP 서버로 동작하므로, Claude Code/Desktop에 설정만 추가하면
+              됩니다. 기존 코드나 프로젝트 구조는 건드리지 않습니다.
             </p>
           </details>
           <details
@@ -1199,7 +1310,7 @@
             <summary
               class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
             >
-              <span>Why not just use a prompt or CLAUDE.md?</span>
+              <span data-i18n="faq.q5">왜 그냥 프롬프트로 해결 안 함?</span>
               <svg
                 class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
                 fill="none"
@@ -1214,9 +1325,10 @@
                 />
               </svg>
             </summary>
-            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
-              <strong>A prompt is a "request". A gate is a "rule".</strong>
-              Requests can be ignored. Gates either pass or block. Rules create consistency.
+            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base" data-i18n="faq.a5">
+              프롬프트는 '요청'이고, 게이트는 '규칙'입니다.
+              요청은 무시될 수 있지만, 게이트는 통과 아니면 차단입니다. 규칙이
+              있어야 일관성이 생깁니다.
             </p>
           </details>
         </div>
@@ -1227,9 +1339,9 @@
     <section id="contact" class="py-16 md:py-20 px-6">
       <div class="max-w-2xl mx-auto">
         <div class="text-center mb-8 md:mb-12">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4">Contact Us</h2>
-          <p class="text-slate-600 text-base md:text-lg">
-            Machine reset, license issues - we'll help you quickly
+          <h2 class="text-2xl md:text-3xl font-bold mb-4" data-i18n="contact.title">문의하기</h2>
+          <p class="text-slate-600 text-base md:text-lg" data-i18n="contact.subtitle">
+            PC 교체, 라이선스 문제 등 빠르게 도와드립니다
           </p>
         </div>
         <form id="contactForm" class="space-y-4 md:space-y-6">
@@ -1237,7 +1349,8 @@
             <label
               for="email"
               class="block text-sm font-medium text-slate-700 mb-2"
-              >Email (required)</label
+              data-i18n="contact.email_label"
+              >이메일 (필수)</label
             >
             <input
               type="email"
@@ -1245,39 +1358,43 @@
               name="email"
               required
               class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition"
-              placeholder="Email used for purchase"
+              data-i18n-placeholder="contact.email_placeholder"
+              placeholder="구매 시 사용한 이메일"
             />
           </div>
           <div>
             <label
               for="issueType"
               class="block text-sm font-medium text-slate-700 mb-2"
-              >Issue Type</label
+              data-i18n="contact.issue_label"
+              >문의 유형</label
             >
             <select
               id="issueType"
               name="issueType"
               class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition"
             >
-              <option value="machine_reset">Machine Reset / New PC</option>
-              <option value="license_issue">License Issue</option>
-              <option value="bug_report">Bug Report</option>
-              <option value="feature_request">Feature Request</option>
-              <option value="other">Other</option>
+              <option value="machine_reset" data-i18n="contact.issue_machine">PC 교체 / 머신 리셋</option>
+              <option value="license_issue" data-i18n="contact.issue_license">라이선스 문제</option>
+              <option value="bug_report" data-i18n="contact.issue_bug">버그 리포트</option>
+              <option value="feature_request" data-i18n="contact.issue_feature">기능 요청</option>
+              <option value="other" data-i18n="contact.issue_other">기타</option>
             </select>
           </div>
           <div>
             <label
               for="message"
               class="block text-sm font-medium text-slate-700 mb-2"
-              >Details (optional)</label
+              data-i18n="contact.details_label"
+              >상세 내용 (선택)</label
             >
             <textarea
               id="message"
               name="message"
               rows="4"
               class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition resize-none"
-              placeholder="Describe the issue"
+              data-i18n-placeholder="contact.details_placeholder"
+              placeholder="문제 상황을 설명해주세요"
             ></textarea>
           </div>
           <button
@@ -1285,7 +1402,7 @@
             id="submitBtn"
             class="w-full py-4 rounded-full font-medium bg-accent text-white hover:bg-accent-dark transition flex items-center justify-center gap-2"
           >
-            <span>Send Inquiry</span>
+            <span data-i18n="contact.submit">문의 보내기</span>
             <svg
               class="w-5 h-5"
               fill="none"
@@ -1305,20 +1422,20 @@
           id="formSuccess"
           class="hidden mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-center"
         >
-          <p class="text-emerald-700 font-medium">
-            Inquiry received! We'll get back to you soon.
+          <p class="text-emerald-700 font-medium" data-i18n="contact.success">
+            문의가 접수되었습니다! 빠르게 확인 후 답변드리겠습니다.
           </p>
         </div>
         <div
           id="formError"
           class="hidden mt-6 p-4 bg-red-50 border border-red-200 rounded-xl text-center"
         >
-          <p class="text-red-700 font-medium">
-            Failed to send. Try again later or use GitHub Issues.
+          <p class="text-red-700 font-medium" data-i18n="contact.error">
+            전송 실패. 잠시 후 다시 시도하거나 GitHub Issues를 이용해주세요.
           </p>
         </div>
         <p class="text-center text-slate-500 text-sm mt-6">
-          Or reach us at
+          <span data-i18n="contact.github_note">또는 여기로 문의</span>
           <a
             href="https://github.com/Whitening-Sinabro/clouvel/issues"
             target="_blank"
@@ -1337,7 +1454,7 @@
         <div
           class="flex flex-col md:flex-row justify-between items-center gap-4 mb-4 md:mb-6"
         >
-          <div class="text-sm text-slate-500">
+          <div class="text-sm text-slate-500" data-i18n="footer.copyright">
             &copy; 2026 Clouvel. Made by SINABRO.
           </div>
           <div class="flex gap-4 md:gap-6 text-sm text-slate-500">
@@ -1351,20 +1468,27 @@
               href="https://github.com/Whitening-Sinabro/clouvel/issues"
               target="_blank"
               class="hover:text-dark-slate transition"
+              data-i18n="footer.support"
               >Support</a
             >
             <a href="terms.html" class="hover:text-dark-slate transition"
+              data-i18n="footer.terms"
               >Terms</a
             >
           </div>
         </div>
-        <p class="text-center text-slate-400 text-xs px-4">
-          Disclaimer: Results may vary depending on usage environment.
-          Clouvel does not guarantee specific outcomes.
+        <p class="text-center text-slate-400 text-xs px-4" data-i18n="footer.disclaimer">
+          면책: 본 서비스의 효과는 사용 환경에 따라 다를 수 있으며, Clouvel은
+          특정 결과를 보장하지 않습니다.
         </p>
       </div>
     </footer>
 
     <script src="index.js"></script>
+    <script src="i18n.js"></script>
+    <!-- Theme & Layout Switcher -->
+    <div id="theme-switcher-container"></div>
+    <script src="layouts.js"></script>
+    <script src="theme-switcher.js"></script>
   </body>
 </html>

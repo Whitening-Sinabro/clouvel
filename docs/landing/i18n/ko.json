@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Clouvel - PRD 없으면 코딩 없다",
-    "description": "AI가 요구사항을 멋대로 압축하는 순간, PRD-First 게이트로 막는다."
+    "title": "Clouvel - 질문하는 AI 팀",
+    "description": "8명의 AI 매니저가 코딩 전에 모든 각도에서 생각하게 도와줍니다. 자동화가 아닌 증강."
   },
   "nav": {
     "how_it_works": "작동 방식",
@@ -14,12 +14,12 @@
   "hero": {
     "badge": "Claude Code용 MCP 서버",
     "badge_new": "NEW",
-    "badge_version": "v1.3.8 - 매니저 크리티컬 체크 + 포커스 가드",
-    "title_1": "PRD 없으면,",
-    "title_2": "코딩 없다.",
-    "subtitle": "AI가 컨텍스트를 \"압축\"하고 중요한 요구사항을 생략합니다.",
-    "desc_solo_text": "\"거의 맞는\" 코드 디버깅 그만.",
-    "desc_solo": "솔로 개발자 & 인디 해커를 위한 도구.",
+    "badge_version": "v1.4.0 - 답 주는 AI 말고, 질문하는 AI",
+    "title_1": "어려운 질문을",
+    "title_2": "던지는 AI.",
+    "subtitle": "8명의 AI 매니저가 코딩 전에 모든 각도에서 생각하게 도와줍니다.",
+    "desc_solo_text": "쉬운 답 주는 AI는 이미 많다.",
+    "desc_solo": "생각하게 만드는 AI 팀.",
     "cta_start": "시작하기",
     "cta_demo": "데모 보기"
   },
@@ -74,16 +74,16 @@
     "complete_desc": "필수: PRD OK | 테스트 3개"
   },
   "features": {
-    "title": "필요한 것만",
-    "subtitle": "4가지 핵심 기능",
-    "f1_title": "PRD-First 강제",
-    "f1_desc": "문서 없으면 코딩 없음. 요구사항 누락을 원천 차단.",
-    "f2_title": "결정론적 출력",
-    "f2_desc": "같은 입력 = 같은 출력. 매번 일관된 결과.",
-    "f3_title": "누락 감지",
-    "f3_desc": "요구사항 누락? 즉시 알림. 코딩 전에 잡아냄.",
-    "f4_title": "진행 상황 추적",
-    "f4_desc": "PRD와 상태 파일이 세션 간 유지됩니다. 스마트 복구 준비 중."
+    "title": "자동화가 아닌 증강",
+    "subtitle": "생각해주는 게 아니라 생각하게 도와주는 AI",
+    "f1_title": "Quick Perspectives",
+    "f1_desc": "코딩 전 3초 체크. 놓친 관점을 즉시 발견.",
+    "f2_title": "8명 AI 매니저",
+    "f2_desc": "PM, CTO, QA, 보안... 당신이 놓친 질문을 던집니다.",
+    "f3_title": "Knowledge Base",
+    "f3_desc": "모든 결정을 기억. 같은 실수 두 번 하지 않기.",
+    "f4_title": "PRD 강제",
+    "f4_desc": "스펙 없으면 코드 없음. 타이핑 전에 생각하게 강제."
   },
   "getting_started": {
     "title": "시작하기",
@@ -120,9 +120,9 @@
     "personal": "Personal Pro",
     "personal_desc": "솔로 개발자 (1명)",
     "personal_f1": "Free 기능 전체",
-    "personal_f2": "8명 C-Level 매니저",
-    "personal_f3": "원클릭 Ship (검증+증거)",
-    "personal_f4": "Error Learning",
+    "personal_f2": "8명 AI 매니저 (어려운 질문)",
+    "personal_f3": "Knowledge Base (결정 기억)",
+    "personal_f4": "원클릭 Ship + Error Learning",
     "team_5": "Team 5",
     "team_5_desc": "소규모 팀 (5명)",
     "team_f1": "Personal Pro 전체",

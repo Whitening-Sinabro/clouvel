@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Clouvel - No Spec, No Code",
-    "description": "Stop AI from compressing your requirements. PRD-First gate blocks coding without specs."
+    "title": "Clouvel - AI Team That Asks Tough Questions",
+    "description": "8 AI managers help you think from every angle before you code. Augmentation, not automation."
   },
   "nav": {
     "how_it_works": "How it works",
@@ -14,12 +14,12 @@
   "hero": {
     "badge": "MCP Server for Claude Code",
     "badge_new": "NEW",
-    "badge_version": "v1.3.8 - Manager critical checks + focus guard",
-    "title_1": "No spec,",
-    "title_2": "no code.",
-    "subtitle": "Vibe coding without specs? Debugging hell awaits.",
-    "desc_solo_text": "Stop debugging \"almost right\" code.",
-    "desc_solo": "A tool for solo devs & indie hackers.",
+    "badge_version": "v1.4.0 - AI that asks questions, not gives answers",
+    "title_1": "AI that asks",
+    "title_2": "tough questions.",
+    "subtitle": "8 AI managers help you think from every angle before you code.",
+    "desc_solo_text": "Not another AI that gives easy answers.",
+    "desc_solo": "An AI team that makes you think.",
     "cta_start": "Get started",
     "cta_demo": "See demo"
   },
@@ -74,16 +74,16 @@
     "complete_desc": "Required: PRD OK | 3 tests"
   },
   "features": {
-    "title": "Just what you need",
-    "subtitle": "4 core features",
-    "f1_title": "PRD-First Enforcement",
-    "f1_desc": "No docs? No coding. Prevent requirement gaps at the source.",
-    "f2_title": "Deterministic Output",
-    "f2_desc": "Same input = same output. Consistent results every time.",
-    "f3_title": "Gap Detection",
-    "f3_desc": "Missing requirements? Instant alert. Catch issues before coding.",
-    "f4_title": "Progress Tracking",
-    "f4_desc": "PRD and status files persist across sessions. Smart recovery coming soon."
+    "title": "Augmentation, not Automation",
+    "subtitle": "AI that helps you think, not thinks for you",
+    "f1_title": "Quick Perspectives",
+    "f1_desc": "3-second sanity check before coding. Surface blind spots instantly.",
+    "f2_title": "8 AI Managers",
+    "f2_desc": "PM, CTO, QA, Security... They ask the questions you forgot to ask.",
+    "f3_title": "Knowledge Base",
+    "f3_desc": "Remembers every decision. Stop making the same mistakes twice.",
+    "f4_title": "PRD Enforcement",
+    "f4_desc": "No spec? No code. Forces thinking before typing."
   },
   "getting_started": {
     "title": "Getting Started",
@@ -120,9 +120,9 @@
     "personal": "Personal Pro",
     "personal_desc": "Solo developer (1 seat)",
     "personal_f1": "All Free features",
-    "personal_f2": "8 C-Level managers",
-    "personal_f3": "One-click Ship (verify+evidence)",
-    "personal_f4": "Error Learning",
+    "personal_f2": "8 AI Managers (ask tough questions)",
+    "personal_f3": "Knowledge Base (remembers decisions)",
+    "personal_f4": "One-click Ship + Error Learning",
     "team_5": "Team 5",
     "team_5_desc": "Small team (5 seats)",
     "team_f1": "All Personal Pro features",

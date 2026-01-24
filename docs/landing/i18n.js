@@ -39,6 +39,27 @@ const i18n = {
   },
 
   applyTranslations() {
+    // Update page title
+    const title = this.get('meta.title');
+    if (title && title !== 'meta.title') {
+      document.title = title;
+    }
+
+    // Update meta description
+    const desc = this.get('meta.description');
+    if (desc && desc !== 'meta.description') {
+      document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
+      document.querySelector('meta[property="og:description"]')?.setAttribute('content', desc);
+      document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', desc);
+    }
+
+    // Update meta titles
+    const ogTitle = this.get('meta.title');
+    if (ogTitle && ogTitle !== 'meta.title') {
+      document.querySelector('meta[property="og:title"]')?.setAttribute('content', ogTitle);
+      document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', ogTitle);
+    }
+
     // Apply to elements with data-i18n attribute
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');

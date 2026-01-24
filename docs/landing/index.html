@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Clouvel - PRD 없으면 코딩 없다</title>
+    <title>Clouvel - No Spec, No Code</title>
     <meta
       name="description"
-      content="AI가 요구사항을 멋대로 압축하는 순간, PRD-First 게이트로 막는다. Claude Code와 통합하여 문서 기반 개발을 자동화합니다."
+      content="Stop AI from compressing your requirements. PRD-First gate blocks coding without specs. Integrates with Claude Code."
     />
 
     <!-- Open Graph / Social -->
@@ -15,10 +15,10 @@
       property="og:url"
       content="https://whitening-sinabro.github.io/clouvel/"
     />
-    <meta property="og:title" content="Clouvel - PRD 없으면 코딩 없다" />
+    <meta property="og:title" content="Clouvel - No Spec, No Code" />
     <meta
       property="og:description"
-      content="AI가 요구사항을 멋대로 압축하는 순간, PRD-First 게이트로 막는다."
+      content="Stop AI from compressing your requirements. PRD-First gate blocks coding without specs."
     />
     <meta
       property="og:image"
@@ -31,10 +31,10 @@
       name="twitter:url"
       content="https://whitening-sinabro.github.io/clouvel/"
     />
-    <meta name="twitter:title" content="Clouvel - PRD 없으면 코딩 없다" />
+    <meta name="twitter:title" content="Clouvel - No Spec, No Code" />
     <meta
       name="twitter:description"
-      content="AI가 요구사항을 멋대로 압축하는 순간, PRD-First 게이트로 막는다."
+      content="Stop AI from compressing your requirements. PRD-First gate blocks coding without specs."
     />
     <meta
       name="twitter:image"
@@ -931,7 +931,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-emerald-700 font-medium">온보딩 (start)</span>
+                <span class="text-emerald-700 font-medium" data-i18n="pricing.free_f1">Onboarding (start)</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -947,7 +947,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                문서 강제 (can_code)
+                <span data-i18n="pricing.free_f2">Doc enforcement (can_code)</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -963,10 +963,11 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-emerald-700 font-medium"
-                  >상세 계획 (plan)
+                <span class="text-emerald-700 font-medium">
+                  <span data-i18n="pricing.free_f3">Detailed planning (plan)</span>
                   <span
                     class="text-xs bg-emerald-100 text-emerald-600 px-1.5 py-0.5 rounded ml-1"
+                    data-i18n="pricing.free_f3_new"
                     >NEW</span
                   ></span
                 >
@@ -985,7 +986,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                진행 상황 추적
+                <span data-i18n="pricing.free_f4">Progress tracking</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -1001,7 +1002,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                목표 리마인드
+                <span data-i18n="pricing.free_f5">Goal reminder</span>
               </li>
             </ul>
             <a
@@ -1023,19 +1024,19 @@
               class="price-display monthly-price flex items-baseline gap-1 mb-1"
             >
               <span class="text-4xl font-bold">$9.99</span>
-              <span class="text-slate-500">/ 월</span>
+              <span class="text-slate-500" data-i18n="pricing.per_month">/ month</span>
             </div>
             <div
               class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
             >
               <span class="text-4xl font-bold">$99</span>
-              <span class="text-slate-500">/ 년</span>
+              <span class="text-slate-500" data-i18n="pricing.per_year">/ year</span>
             </div>
-            <p class="monthly-price text-slate-400 text-sm font-medium mb-6">
-              연간 결제 시 17% 할인
+            <p class="monthly-price text-slate-400 text-sm font-medium mb-6" data-i18n="pricing.yearly_note">
+              17% off with yearly
             </p>
-            <p class="yearly-price hidden text-accent text-sm font-medium mb-6">
-              17% 할인 적용 ($119.88 → $99)
+            <p class="yearly-price hidden text-accent text-sm font-medium mb-6" data-i18n="pricing.yearly_applied">
+              17% off applied
             </p>
             <ul class="space-y-3 mb-8 text-sm">
               <li class="flex items-center gap-2">
@@ -1052,7 +1053,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                Free 기능 전체
+                <span data-i18n="pricing.personal_f1">All Free features</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -1068,7 +1069,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-accent font-medium">8명 C-Level 매니저</span>
+                <span class="text-accent font-medium" data-i18n="pricing.personal_f2">8 C-Level managers</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -1084,8 +1085,8 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-accent font-medium"
-                  >원클릭 Ship (검증+증거)</span
+                <span class="text-accent font-medium" data-i18n="pricing.personal_f3"
+                  >One-click Ship (verify+evidence)</span
                 >
               </li>
               <li class="flex items-center gap-2">
@@ -1102,7 +1103,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-accent font-medium">Error Learning</span>
+                <span class="text-accent font-medium" data-i18n="pricing.personal_f4">Error Learning</span>
               </li>
             </ul>
             <a
@@ -1125,19 +1126,19 @@
               class="price-display monthly-price flex items-baseline gap-1 mb-1"
             >
               <span class="text-4xl font-bold">$29.99</span>
-              <span class="text-slate-500">/ 월</span>
+              <span class="text-slate-500" data-i18n="pricing.per_month">/ month</span>
             </div>
             <div
               class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
             >
               <span class="text-4xl font-bold">$299</span>
-              <span class="text-slate-500">/ 년</span>
+              <span class="text-slate-500" data-i18n="pricing.per_year">/ year</span>
             </div>
-            <p class="monthly-price text-slate-400 text-sm font-medium mb-6">
-              연간 결제 시 17% 할인
+            <p class="monthly-price text-slate-400 text-sm font-medium mb-6" data-i18n="pricing.yearly_note">
+              17% off with yearly
             </p>
-            <p class="yearly-price hidden text-accent text-sm font-medium mb-6">
-              17% 할인 적용 ($359.88 → $299)
+            <p class="yearly-price hidden text-accent text-sm font-medium mb-6" data-i18n="pricing.yearly_applied">
+              17% off applied
             </p>
             <ul class="space-y-3 mb-8 text-sm">
               <li class="flex items-center gap-2">
@@ -1154,7 +1155,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                Personal Pro 전체
+                <span data-i18n="pricing.team_f1">All Personal Pro features</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -1170,7 +1171,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-accent font-medium">팀원 초대/관리</span>
+                <span class="text-accent font-medium" data-i18n="pricing.team_f2">Team invite/manage</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -1186,7 +1187,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-accent font-medium">에러 패턴 팀 공유</span>
+                <span class="text-accent font-medium" data-i18n="pricing.team_f3">Error pattern team sharing</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -1202,9 +1203,9 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="monthly-price text-slate-400">인당 $6/월</span>
-                <span class="yearly-price hidden text-slate-400"
-                  >인당 $59.80/년</span
+                <span class="monthly-price text-slate-400" data-i18n="pricing.team_5_price_note">$6/seat/month</span>
+                <span class="yearly-price hidden text-slate-400" data-i18n="pricing.team_5_price_yearly"
+                  >$59.80/seat/year</span
                 >
               </li>
             </ul>
@@ -1232,19 +1233,19 @@
               class="price-display monthly-price flex items-baseline gap-1 mb-1"
             >
               <span class="text-4xl font-bold">$49.99</span>
-              <span class="text-slate-500">/ 월</span>
+              <span class="text-slate-500" data-i18n="pricing.per_month">/ month</span>
             </div>
             <div
               class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
             >
               <span class="text-4xl font-bold">$499</span>
-              <span class="text-slate-500">/ 년</span>
+              <span class="text-slate-500" data-i18n="pricing.per_year">/ year</span>
             </div>
-            <p class="monthly-price text-slate-400 text-sm font-medium mb-6">
-              연간 결제 시 17% 할인
+            <p class="monthly-price text-slate-400 text-sm font-medium mb-6" data-i18n="pricing.yearly_note">
+              17% off with yearly
             </p>
-            <p class="yearly-price hidden text-accent text-sm font-medium mb-6">
-              17% 할인 적용 ($599.88 → $499)
+            <p class="yearly-price hidden text-accent text-sm font-medium mb-6" data-i18n="pricing.yearly_applied">
+              17% off applied
             </p>
             <ul class="space-y-3 mb-8 text-sm">
               <li class="flex items-center gap-2">
@@ -1261,7 +1262,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                Personal Pro 전체
+                <span data-i18n="pricing.team_f1">All Personal Pro features</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -1277,7 +1278,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-accent font-medium">팀원 초대/관리</span>
+                <span class="text-accent font-medium" data-i18n="pricing.team_f2">Team invite/manage</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -1293,8 +1294,8 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-accent font-medium"
-                  >프로젝트 컨텍스트 동기화</span
+                <span class="text-accent font-medium" data-i18n="pricing.team_10_f3"
+                  >Project context sync</span
                 >
               </li>
               <li class="flex items-center gap-2">
@@ -1311,11 +1312,11 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="monthly-price text-slate-400"
-                  >인당 $5/월 (최저가)</span
+                <span class="monthly-price text-slate-400" data-i18n="pricing.team_10_price_note"
+                  >$5/seat/month (lowest)</span
                 >
-                <span class="yearly-price hidden text-slate-400"
-                  >인당 $49.90/년 (최저가)</span
+                <span class="yearly-price hidden text-slate-400" data-i18n="pricing.team_10_price_yearly"
+                  >$49.90/seat/year (lowest)</span
                 >
               </li>
             </ul>

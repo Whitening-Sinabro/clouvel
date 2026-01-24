@@ -1,0 +1,1566 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clouvel - No Spec, No Code</title>
+    <meta
+      name="description"
+      content="AI compresses your context and skips requirements. Clouvel gates your coding until PRD exists. Stop debugging, start shipping."
+    />
+
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://whitening-sinabro.github.io/clouvel/index-en.html"
+    />
+    <meta property="og:title" content="Clouvel - No Spec, No Code" />
+    <meta
+      property="og:description"
+      content="AI compresses your context and skips requirements. Clouvel gates your coding until PRD exists."
+    />
+    <meta
+      property="og:image"
+      content="https://whitening-sinabro.github.io/clouvel/og-image.png"
+    />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:url"
+      content="https://whitening-sinabro.github.io/clouvel/index-en.html"
+    />
+    <meta name="twitter:title" content="Clouvel - No Spec, No Code" />
+    <meta
+      name="twitter:description"
+      content="AI compresses your context and skips requirements. Clouvel gates your coding until PRD exists."
+    />
+    <meta
+      name="twitter:image"
+      content="https://whitening-sinabro.github.io/clouvel/og-image.png"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Space Grotesk", "system-ui", "sans-serif"],
+            },
+            colors: {
+              "warm-white": "#F8FAFC",
+              "dark-slate": "#0F172A",
+              accent: "#0EA5E9",
+              "accent-dark": "#0284C7",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="themes/default.css"
+      id="theme-stylesheet-preload"
+    />
+  </head>
+  <body class="bg-warm-white text-dark-slate font-sans antialiased">
+    <!-- Nav -->
+    <nav
+      class="fixed top-0 left-0 right-0 z-50 bg-warm-white/90 backdrop-blur-md border-b border-slate-200/50"
+    >
+      <div
+        class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center"
+      >
+        <div class="text-xl font-bold text-dark-slate">Clouvel</div>
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center gap-6">
+          <a
+            href="#how-it-works"
+            class="text-sm text-slate-600 hover:text-dark-slate transition"
+            >How it works</a
+          >
+          <a
+            href="docs.html"
+            class="text-sm text-slate-600 hover:text-dark-slate transition"
+            >Docs</a
+          >
+          <a
+            href="#pricing"
+            class="text-sm text-slate-600 hover:text-dark-slate transition"
+            >Pricing</a
+          >
+          <a
+            href="#faq"
+            class="text-sm text-slate-600 hover:text-dark-slate transition"
+            >FAQ</a
+          >
+          <a
+            href="https://github.com/Whitening-Sinabro/clouvel"
+            target="_blank"
+            class="text-sm text-slate-600 hover:text-dark-slate transition"
+            >GitHub</a
+          >
+          <a
+            href="index.html"
+            class="text-sm text-slate-600 hover:text-dark-slate transition"
+            >Korean</a
+          >
+          <a
+            href="#getting-started"
+            class="text-sm bg-accent text-white px-4 py-2 rounded-full hover:bg-accent-dark transition"
+            >Get Started</a
+          >
+        </div>
+        <!-- Mobile Menu Button -->
+        <button
+          id="mobileMenuBtn"
+          class="md:hidden p-2 text-slate-600 hover:text-dark-slate"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
+      <!-- Mobile Menu -->
+      <div
+        id="mobileMenu"
+        class="hidden md:hidden bg-warm-white border-t border-slate-200/50 px-6 py-4 space-y-3"
+      >
+        <a
+          href="#how-it-works"
+          class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
+          >How it works</a
+        >
+        <a
+          href="docs.html"
+          class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
+          >Docs</a
+        >
+        <a
+          href="#pricing"
+          class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
+          >Pricing</a
+        >
+        <a
+          href="#faq"
+          class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
+          >FAQ</a
+        >
+        <a
+          href="https://github.com/Whitening-Sinabro/clouvel"
+          target="_blank"
+          class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
+          >GitHub</a
+        >
+        <a
+          href="index.html"
+          class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
+          >Korean</a
+        >
+        <a
+          href="#getting-started"
+          class="block text-sm bg-accent text-white px-4 py-3 rounded-xl text-center hover:bg-accent-dark transition mt-2"
+          >Get Started</a
+        >
+      </div>
+    </nav>
+
+    <!-- 1. Hero -->
+    <section class="pt-32 pb-12 px-6">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="flex flex-wrap items-center justify-center gap-3 mb-6">
+          <div
+            class="inline-flex items-center gap-2 bg-accent/10 text-accent text-sm px-4 py-2 rounded-full"
+          >
+            <span class="w-2 h-2 bg-accent rounded-full animate-pulse"></span>
+            MCP Server for Claude Code
+          </div>
+          <div
+            class="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-600 text-sm px-4 py-2 rounded-full"
+          >
+            <span class="font-semibold">NEW</span>
+            v1.3.8 - Manager critical checks + focus guard
+          </div>
+        </div>
+        <h1
+          class="text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.1] mb-6"
+        >
+          No spec,<br />
+          <span class="accent-text">no code.</span>
+        </h1>
+        <p class="text-lg md:text-xl text-slate-600 mb-3 leading-relaxed">
+          AI "compresses" your context and skips important requirements.
+        </p>
+        <p class="text-base md:text-lg text-slate-500 mb-8">
+          Clouvel <strong class="text-dark-slate">gates your coding</strong> until PRD exists.
+          No PRD? Blocked. PRD ready? Code.
+        </p>
+        <div class="flex flex-wrap gap-3 md:gap-4 justify-center">
+          <a
+            href="#getting-started"
+            class="cta-pulse inline-flex items-center gap-2 bg-accent text-white px-6 py-3 md:px-8 md:py-4 rounded-full font-medium hover:bg-accent-dark transition text-base md:text-lg"
+          >
+            Get started
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </a>
+          <a
+            href="#demo"
+            class="inline-flex items-center gap-2 border-2 border-dark-slate/20 px-6 py-3 md:px-8 md:py-4 rounded-full font-medium hover:border-dark-slate/40 transition text-base md:text-lg"
+          >
+            See demo
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Works with -->
+    <section class="py-8 px-6 border-t border-b border-slate-200/50 bg-white">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex flex-wrap items-center justify-center gap-6">
+          <span class="text-slate-500 text-sm font-medium">Works with:</span>
+          <div class="flex flex-wrap items-center gap-4">
+            <span
+              class="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full text-sm font-medium"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                />
+              </svg>
+              CLI
+            </span>
+            <span
+              class="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full text-sm font-medium"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M20 3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14H4v-2h7v2zm9-4H4v-2h16v2zm0-4H4V7h16v2z"
+                />
+              </svg>
+              Claude Desktop
+            </span>
+            <span
+              class="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full text-sm font-medium"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479L1.65 17.94a.999.999 0 0 0 1.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 20.06V3.939a1.5 1.5 0 0 0-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z"
+                />
+              </svg>
+              VS Code
+            </span>
+            <span
+              class="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full text-sm font-medium"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm-1-6h2v2h-2v-2zm0-10h2v8h-2V6z"
+                />
+              </svg>
+              Cursor
+            </span>
+          </div>
+        </div>
+        <p class="text-center text-slate-500 text-sm mt-4">
+          Install once, enforce everywhere
+        </p>
+      </div>
+    </section>
+
+    <!-- 2.5 What is PRD (for beginners) -->
+    <section class="py-16 md:py-20 px-6">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-8 md:mb-12">
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">What is a PRD?</h2>
+          <p class="text-slate-600 text-base md:text-lg max-w-2xl mx-auto">
+            <strong class="text-dark-slate"
+              >A spec document that AI reads before coding.</strong
+            ><br />
+            With a PRD, AI knows exactly "what to build" and helps you accurately.
+          </p>
+        </div>
+        <!-- Before / After comparison -->
+        <div class="grid md:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-12">
+          <div class="bg-red-50 border border-red-200 rounded-xl p-5 md:p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-red-500 text-lg font-bold">Without PRD</span>
+            </div>
+            <p class="text-slate-700 text-sm md:text-base mb-3">
+              "Build a login feature"
+            </p>
+            <p class="text-slate-500 text-xs md:text-sm">
+              AI guesses and builds something. Password reset? Social login? Skipped.
+            </p>
+          </div>
+          <div
+            class="bg-emerald-50 border border-emerald-200 rounded-xl p-5 md:p-6"
+          >
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-emerald-600 text-lg font-bold">With PRD</span>
+            </div>
+            <p class="text-slate-700 text-sm md:text-base mb-3">
+              AI reads PRD and implements exactly
+            </p>
+            <p class="text-slate-500 text-xs md:text-sm">
+              "Email login, password reset, Google OAuth" - all included. Nothing missed.
+            </p>
+          </div>
+        </div>
+        <!-- Key point -->
+        <div class="text-center">
+          <p class="text-slate-600 text-sm md:text-base">
+            PRD = <strong class="text-dark-slate">AI's work order</strong>.
+            Clear instructions, clear results.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Problem -->
+    <section class="py-16 md:py-20 px-6 bg-white">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-8 md:mb-12">
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">
+            Why does AI coding keep going wrong?
+          </h2>
+        </div>
+        <div class="space-y-4 md:space-y-6">
+          <div
+            class="flex items-start gap-3 md:gap-4 p-4 md:p-6 bg-red-50 border border-red-200 rounded-xl"
+          >
+            <span class="text-red-500 text-xl md:text-2xl mt-0.5">1</span>
+            <div>
+              <h3 class="font-semibold text-base md:text-lg mb-1">
+                AI arbitrarily skips requirements
+              </h3>
+              <p class="text-slate-600 text-sm md:text-base">
+                "Build login" - Password reset? Social login? Silently omitted.
+              </p>
+            </div>
+          </div>
+          <div
+            class="flex items-start gap-3 md:gap-4 p-4 md:p-6 bg-red-50 border border-red-200 rounded-xl"
+          >
+            <span class="text-red-500 text-xl md:text-2xl mt-0.5">2</span>
+            <div>
+              <h3 class="font-semibold text-base md:text-lg mb-1">
+                Jumps straight to coding, skipping design
+              </h3>
+              <p class="text-slate-600 text-sm md:text-base">
+                No architecture thinking - straight to code - full refactor later.
+              </p>
+            </div>
+          </div>
+          <div
+            class="flex items-start gap-3 md:gap-4 p-4 md:p-6 bg-red-50 border border-red-200 rounded-xl"
+          >
+            <span class="text-red-500 text-xl md:text-2xl mt-0.5">3</span>
+            <div>
+              <h3 class="font-semibold text-base md:text-lg mb-1">
+                Results vary every time, debugging explodes
+              </h3>
+              <p class="text-slate-600 text-sm md:text-base">
+                Same prompt, different results yesterday vs today - 2-3 days debugging hell.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-8 md:mt-10 text-center">
+          <p class="text-lg md:text-xl font-semibold text-dark-slate">
+            That's why PRD should be a <span class="text-accent">'gate'</span>, not an
+            <span class="text-accent">'option'</span>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. How it works -->
+    <section id="how-it-works" class="py-16 md:py-20 px-6 bg-white">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-10 md:mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">How it works</h2>
+          <p class="text-slate-600 text-base md:text-lg">3 simple steps</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+          <div class="text-center">
+            <div
+              class="w-14 h-14 md:w-16 md:h-16 bg-accent text-white rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4"
+            >
+              1
+            </div>
+            <h3 class="font-semibold text-lg md:text-xl mb-2">Write PRD</h3>
+            <p class="text-slate-600 text-sm md:text-base">
+              No PRD? Can't proceed. Write the spec first.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-14 h-14 md:w-16 md:h-16 bg-accent text-white rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4"
+            >
+              2
+            </div>
+            <h3 class="font-semibold text-lg md:text-xl mb-2">Gate Check</h3>
+            <p class="text-slate-600 text-sm md:text-base">
+              Required sections, format, determinism checks must pass.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-14 h-14 md:w-16 md:h-16 bg-accent text-white rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4"
+            >
+              3
+            </div>
+            <h3 class="font-semibold text-lg md:text-xl mb-2">Code Allowed</h3>
+            <p class="text-slate-600 text-sm md:text-base">
+              Only after passing the gate. Structured development.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Demo -->
+    <section id="demo" class="py-16 md:py-20 px-6 bg-dark-slate text-white">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-8 md:mb-12">
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">
+            See it actually block
+          </h2>
+          <p class="text-slate-400 text-base md:text-lg">
+            3-tier quality gate: BLOCK - WARN - PASS
+          </p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-4 md:gap-6">
+          <!-- No PRD - BLOCK -->
+          <div class="bg-slate-800/50 rounded-2xl p-5 border border-red-500/30">
+            <div class="flex items-center gap-2 mb-4">
+              <span class="text-red-400 text-lg font-bold">No PRD</span>
+              <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded"
+                >BLOCK</span
+              >
+            </div>
+            <div class="code-block rounded-xl p-4 font-mono text-xs">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+              </div>
+              <div class="space-y-2 text-slate-300">
+                <p>
+                  <span class="text-slate-500">$</span> claude "build login"
+                </p>
+                <p class="text-red-400 font-semibold">BLOCK: Coding forbidden</p>
+                <p class="text-slate-500 text-xs">No PRD - write docs first</p>
+              </div>
+            </div>
+          </div>
+          <!-- Incomplete PRD - WARN -->
+          <div
+            class="bg-slate-800/50 rounded-2xl p-5 border border-yellow-500/30"
+          >
+            <div class="flex items-center gap-2 mb-4">
+              <span class="text-yellow-400 text-lg font-bold">Incomplete PRD</span>
+              <span
+                class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded"
+                >WARN</span
+              >
+            </div>
+            <div class="code-block rounded-xl p-4 font-mono text-xs">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+              </div>
+              <div class="space-y-2 text-slate-300">
+                <p>
+                  <span class="text-slate-500">$</span> claude "build login"
+                </p>
+                <p class="text-yellow-400 font-semibold">PASS | WARN 2</p>
+                <p class="text-slate-500 text-xs">
+                  Missing: architecture, tests
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Complete PRD - PASS -->
+          <div
+            class="bg-slate-800/50 rounded-2xl p-5 border border-emerald-500/30"
+          >
+            <div class="flex items-center gap-2 mb-4">
+              <span class="text-emerald-400 text-lg font-bold">Complete PRD</span>
+              <span
+                class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded"
+                >PASS</span
+              >
+            </div>
+            <div class="code-block rounded-xl p-4 font-mono text-xs">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+              </div>
+              <div class="space-y-2 text-slate-300">
+                <p>
+                  <span class="text-slate-500">$</span> claude "build login"
+                </p>
+                <p class="text-emerald-400 font-semibold">
+                  PASS | Ready to code
+                </p>
+                <p class="text-slate-500 text-xs">Required: PRD OK | 3 tests</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Features -->
+    <section id="features" class="py-16 md:py-20 px-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-10 md:mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">Just what you need</h2>
+          <p class="text-slate-600 text-base md:text-lg">4 core features</p>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <div
+            class="bg-white p-5 md:p-8 rounded-xl border border-slate-200/80 hover:border-accent hover:shadow-lg transition-all"
+          >
+            <div
+              class="w-10 h-10 md:w-12 md:h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4 md:mb-6"
+            >
+              <svg
+                class="w-5 h-5 md:w-6 md:h-6 text-accent"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+            </div>
+            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2">
+              PRD-First Enforcement
+            </h3>
+            <p class="text-slate-600 text-sm md:text-base">
+              No docs? No coding. Prevent requirement gaps at the source.
+            </p>
+          </div>
+          <div
+            class="bg-white p-5 md:p-8 rounded-xl border border-slate-200/80 hover:border-accent hover:shadow-lg transition-all"
+          >
+            <div
+              class="w-10 h-10 md:w-12 md:h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center mb-4 md:mb-6"
+            >
+              <svg
+                class="w-5 h-5 md:w-6 md:h-6 text-emerald-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2">
+              Deterministic Output
+            </h3>
+            <p class="text-slate-600 text-sm md:text-base">
+              Same input = same output. Consistent results every time.
+            </p>
+          </div>
+          <div
+            class="bg-white p-5 md:p-8 rounded-xl border border-slate-200/80 hover:border-accent hover:shadow-lg transition-all"
+          >
+            <div
+              class="w-10 h-10 md:w-12 md:h-12 bg-violet-500/10 rounded-lg flex items-center justify-center mb-4 md:mb-6"
+            >
+              <svg
+                class="w-5 h-5 md:w-6 md:h-6 text-violet-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+            </div>
+            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2">
+              Gap Detection
+            </h3>
+            <p class="text-slate-600 text-sm md:text-base">
+              Missing requirements? Instant alert. Catch issues before coding.
+            </p>
+          </div>
+          <div
+            class="bg-white p-5 md:p-8 rounded-xl border border-slate-200/80 hover:border-accent hover:shadow-lg transition-all"
+          >
+            <div
+              class="w-10 h-10 md:w-12 md:h-12 bg-orange-500/10 rounded-lg flex items-center justify-center mb-4 md:mb-6"
+            >
+              <svg
+                class="w-5 h-5 md:w-6 md:h-6 text-orange-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+            </div>
+            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2">
+              Context Recovery
+            </h3>
+            <p class="text-slate-600 text-sm md:text-base">
+              Session ends? Context preserved. Auto-recovery after compaction.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Getting Started -->
+    <section id="getting-started" class="py-20 px-6 bg-dark-slate text-white">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Getting Started</h2>
+          <p class="text-slate-400 text-lg">
+            Free: 3 steps. Pro: 4 steps (+ activate)
+          </p>
+        </div>
+        <!-- Tabs -->
+        <div
+          class="grid grid-cols-2 md:flex md:flex-wrap md:justify-center gap-2 mb-8"
+        >
+          <button
+            class="tab-btn active px-4 py-3 md:px-6 md:py-2 rounded-xl md:rounded-full font-medium text-sm md:text-base transition"
+            data-tab="cli"
+          >
+            CLI
+          </button>
+          <button
+            class="tab-btn px-4 py-3 md:px-6 md:py-2 rounded-xl md:rounded-full font-medium text-sm md:text-base bg-slate-700 hover:bg-slate-600 transition"
+            data-tab="claude-desktop"
+          >
+            Claude Desktop
+          </button>
+          <button
+            class="tab-btn px-4 py-3 md:px-6 md:py-2 rounded-xl md:rounded-full font-medium text-sm md:text-base bg-slate-700 hover:bg-slate-600 transition"
+            data-tab="vscode"
+          >
+            VS Code
+          </button>
+          <button
+            class="tab-btn px-4 py-3 md:px-6 md:py-2 rounded-xl md:rounded-full font-medium text-sm md:text-base bg-slate-700 hover:bg-slate-600 transition"
+            data-tab="cursor"
+          >
+            Cursor
+          </button>
+        </div>
+        <!-- Tab Contents -->
+        <div id="tab-cli" class="tab-content active">
+          <div class="bg-slate-800 rounded-xl p-6 font-mono text-sm space-y-4">
+            <div>
+              <p class="text-slate-400 mb-2"># 1. Install</p>
+              <p class="text-emerald-400">pip install clouvel</p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2">
+                # 2. Activate
+                <span class="text-accent">(Pro only)</span>
+              </p>
+              <p class="text-emerald-400">clouvel activate YOUR_LICENSE_KEY</p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2"># 3. Setup (auto-config)</p>
+              <p class="text-emerald-400">clouvel setup</p>
+              <p class="text-slate-500 text-xs mt-1">
+                # Adds CLAUDE.md rules + registers MCP server
+              </p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2"># 4. Run</p>
+              <p class="text-slate-300">claude</p>
+              <p class="text-slate-500 text-xs mt-1">
+                # can_code check runs automatically on code requests
+              </p>
+            </div>
+          </div>
+        </div>
+        <div id="tab-claude-desktop" class="tab-content">
+          <div class="bg-slate-800 rounded-xl p-6 font-mono text-sm space-y-4">
+            <div>
+              <p class="text-slate-400 mb-2"># 1. Install</p>
+              <p class="text-emerald-400">pip install clouvel</p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2">
+                # 2. Activate
+                <span class="text-accent">(Pro only)</span>
+              </p>
+              <p class="text-emerald-400">clouvel activate YOUR_LICENSE_KEY</p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2"># 3. Setup (auto-config)</p>
+              <p class="text-emerald-400">clouvel setup</p>
+              <p class="text-slate-500 text-xs mt-1">
+                # Auto-modifies config.json + adds global rules
+              </p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2"># 4. Run</p>
+              <p class="text-slate-300">Restart Claude Desktop - auto-connected</p>
+            </div>
+          </div>
+        </div>
+        <div id="tab-vscode" class="tab-content">
+          <div class="bg-slate-800 rounded-xl p-6 font-mono text-sm space-y-4">
+            <div>
+              <p class="text-slate-400 mb-2"># 1. Install</p>
+              <p class="text-emerald-400">pip install clouvel</p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2">
+                # 2. Activate
+                <span class="text-accent">(Pro only)</span>
+              </p>
+              <p class="text-emerald-400">clouvel activate YOUR_LICENSE_KEY</p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2"># 3. Setup (auto-config)</p>
+              <p class="text-emerald-400">clouvel setup</p>
+              <p class="text-slate-500 text-xs mt-1">
+                # Auto-modifies settings.json + adds global rules
+              </p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2"># 4. Run</p>
+              <p class="text-slate-300">Use with Claude extension in VS Code</p>
+            </div>
+          </div>
+        </div>
+        <div id="tab-cursor" class="tab-content">
+          <div class="bg-slate-800 rounded-xl p-6 font-mono text-sm space-y-4">
+            <div>
+              <p class="text-slate-400 mb-2"># 1. Install</p>
+              <p class="text-emerald-400">pip install clouvel</p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2">
+                # 2. Activate
+                <span class="text-accent">(Pro only)</span>
+              </p>
+              <p class="text-emerald-400">clouvel activate YOUR_LICENSE_KEY</p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2"># 3. Setup (auto-config)</p>
+              <p class="text-emerald-400">clouvel setup</p>
+              <p class="text-slate-500 text-xs mt-1">
+                # Adds MCP config + global rules
+              </p>
+            </div>
+            <div>
+              <p class="text-slate-400 mb-2"># 4. Run</p>
+              <p class="text-slate-300">Use with Claude extension in Cursor</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Pricing -->
+    <section id="pricing" class="py-20 px-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold mb-4">Simple Pricing</h2>
+          <p class="text-slate-600 text-lg mb-4">
+            Start free, upgrade when you need more
+          </p>
+          <p class="text-slate-500 text-sm max-w-2xl mx-auto mb-6">
+            If your team uses AI coding but keeps losing time to requirement gaps and debugging,
+            this pays for itself.
+          </p>
+          <!-- Billing Toggle -->
+          <div class="inline-flex items-center bg-slate-100 rounded-full p-1">
+            <button
+              id="monthly-btn"
+              onclick="toggleBilling('monthly')"
+              class="px-6 py-2 rounded-full text-sm font-medium transition bg-white text-dark-slate shadow-sm"
+            >
+              Monthly
+            </button>
+            <button
+              id="yearly-btn"
+              onclick="toggleBilling('yearly')"
+              class="px-6 py-2 rounded-full text-sm font-medium transition text-slate-500 hover:text-slate-700"
+            >
+              Yearly <span class="text-accent text-xs ml-1">17% off</span>
+            </button>
+          </div>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <!-- Free -->
+          <div
+            class="bg-emerald-50 p-6 md:p-8 rounded-2xl border-2 border-emerald-200"
+          >
+            <h3 class="font-semibold text-lg mb-1">Free</h3>
+            <p class="text-slate-500 text-sm mb-6">Open Source</p>
+            <div class="flex items-baseline gap-1 mb-6">
+              <span class="text-4xl font-bold text-emerald-600">$0</span>
+              <span class="text-slate-500">/ forever</span>
+            </div>
+            <ul class="space-y-3 mb-8 text-sm">
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-emerald-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span class="text-emerald-700 font-medium">Onboarding (start)</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-emerald-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Doc enforcement (can_code)
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-emerald-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span class="text-emerald-700 font-medium"
+                  >Detailed planning (plan)
+                  <span
+                    class="text-xs bg-emerald-100 text-emerald-600 px-1.5 py-0.5 rounded ml-1"
+                    >NEW</span
+                  ></span
+                >
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-emerald-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Progress tracking
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-emerald-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Goal reminder
+              </li>
+            </ul>
+            <a
+              href="https://github.com/Whitening-Sinabro/clouvel"
+              target="_blank"
+              class="block w-full py-3 rounded-full text-center font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition"
+            >
+              Start on GitHub
+            </a>
+          </div>
+          <!-- Personal Pro -->
+          <div
+            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 relative"
+          >
+            <h3 class="font-semibold text-lg mb-1">Personal Pro</h3>
+            <p class="text-slate-500 text-sm mb-6">Solo developer (1 seat)</p>
+            <div
+              class="price-display monthly-price flex items-baseline gap-1 mb-1"
+            >
+              <span class="text-4xl font-bold">$9.99</span>
+              <span class="text-slate-500">/ mo</span>
+            </div>
+            <div
+              class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
+            >
+              <span class="text-4xl font-bold">$99</span>
+              <span class="text-slate-500">/ yr</span>
+            </div>
+            <p class="monthly-price text-slate-400 text-sm font-medium mb-6">
+              17% off with yearly billing
+            </p>
+            <p class="yearly-price hidden text-accent text-sm font-medium mb-6">
+              17% saved ($119.88 - $99)
+            </p>
+            <ul class="space-y-3 mb-8 text-sm">
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Everything in Free
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-accent"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span class="text-accent font-medium">8 C-Level Managers</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-accent"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span class="text-accent font-medium"
+                  >One-click Ship (verify+evidence)</span
+                >
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-accent"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span class="text-accent font-medium">Error Learning</span>
+              </li>
+            </ul>
+            <a
+              href="https://buy.polar.sh/polar_cl_YVVTx0UOobHJOTG9FinmAJyg7ZrfClSHdNYg51F5mzf"
+              target="_blank"
+              class="checkout-link monthly-link block w-full py-3 rounded-full text-center font-medium border border-slate-300 hover:border-slate-400 transition"
+              data-yearly="https://buy.polar.sh/polar_cl_gbyXvdUeXsKDnIgUssiv7ptFuSc0FNms8Iafs31ftjD"
+            >
+              Subscribe
+            </a>
+          </div>
+          <!-- Team 5 -->
+          <div
+            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 relative"
+          >
+            <h3 class="font-semibold text-lg mb-1">Team 5</h3>
+            <p class="text-slate-500 text-sm mb-6">Small team (5 seats)</p>
+            <div
+              class="price-display monthly-price flex items-baseline gap-1 mb-1"
+            >
+              <span class="text-4xl font-bold">$29.99</span>
+              <span class="text-slate-500">/ mo</span>
+            </div>
+            <div
+              class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
+            >
+              <span class="text-4xl font-bold">$299</span>
+              <span class="text-slate-500">/ yr</span>
+            </div>
+            <p class="monthly-price text-slate-400 text-sm font-medium mb-6">
+              17% off with yearly billing
+            </p>
+            <p class="yearly-price hidden text-accent text-sm font-medium mb-6">
+              17% saved ($359.88 - $299)
+            </p>
+            <ul class="space-y-3 mb-8 text-sm">
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Everything in Personal Pro
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-accent"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span class="text-accent font-medium">Team invite/manage</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-accent"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span class="text-accent font-medium">Shared error patterns</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-slate-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span class="monthly-price text-slate-400">$6/seat/mo</span>
+                <span class="yearly-price hidden text-slate-400"
+                  >$59.80/seat/yr</span
+                >
+              </li>
+            </ul>
+            <a
+              href="https://buy.polar.sh/polar_cl_bslCeBjmd1LqsPQFYdoSBELlEVNmPslRXYcoA4G6FB2"
+              target="_blank"
+              class="checkout-link monthly-link block w-full py-3 rounded-full text-center font-medium border border-slate-300 hover:border-slate-400 transition"
+              data-yearly="https://buy.polar.sh/polar_cl_EuBpxAUTQtUkmYunAfmRRtTFowyqunzX6ZfdI0ILhJu"
+            >
+              Subscribe
+            </a>
+          </div>
+          <!-- Team 10 -->
+          <div class="border-2 border-accent p-6 md:p-8 rounded-2xl relative">
+            <div
+              class="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-medium px-3 py-1 rounded-full"
+            >
+              Recommended
+            </div>
+            <h3 class="font-semibold text-lg mb-1">Team 10</h3>
+            <p class="text-slate-500 text-sm mb-6">Mid-size team (10 seats)</p>
+            <div
+              class="price-display monthly-price flex items-baseline gap-1 mb-1"
+            >
+              <span class="text-4xl font-bold">$49.99</span>
+              <span class="text-slate-500">/ mo</span>
+            </div>
+            <div
+              class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
+            >
+              <span class="text-4xl font-bold">$499</span>
+              <span class="text-slate-500">/ yr</span>
+            </div>
+            <p class="monthly-price text-slate-400 text-sm font-medium mb-6">
+              17% off with yearly billing
+            </p>
+            <p class="yearly-price hidden text-accent text-sm font-medium mb-6">
+              17% saved ($599.88 - $499)
+            </p>
+            <ul class="space-y-3 mb-8 text-sm">
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Everything in Personal Pro
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-accent"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span class="text-accent font-medium">Team invite/manage</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-accent"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span class="text-accent font-medium"
+                  >Project context sync</span
+                >
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-slate-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span class="monthly-price text-slate-400"
+                  >$5/seat/mo (lowest)</span
+                >
+                <span class="yearly-price hidden text-slate-400"
+                  >$49.90/seat/yr (lowest)</span
+                >
+              </li>
+            </ul>
+            <a
+              href="https://buy.polar.sh/polar_cl_5lXwX80w9mDXjuyFwfESffz3NVlO23KBlHIk01uhNeu"
+              target="_blank"
+              class="checkout-link monthly-link block w-full py-3 rounded-full text-center font-medium bg-accent text-white hover:bg-accent-dark transition"
+              data-yearly="https://buy.polar.sh/polar_cl_yPL1jce45w36DGUVCI2JTY1Q8VokaqEtDvnEY43Ft4c"
+            >
+              Subscribe
+            </a>
+          </div>
+        </div>
+        <!-- Enterprise -->
+        <div class="mt-8 text-center">
+          <p class="text-slate-600">
+            <strong>10+ seats?</strong>
+            <a
+              href="https://github.com/Whitening-Sinabro/clouvel/issues"
+              target="_blank"
+              class="text-accent hover:underline"
+              >Contact Enterprise</a
+            >
+            - Custom pricing, unlimited seats, priority support
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. FAQ -->
+    <section id="faq" class="py-16 md:py-20 px-6 bg-white">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-8 md:mb-12">
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">FAQ</h2>
+          <p class="text-slate-600 text-base md:text-lg">Frequently Asked Questions</p>
+        </div>
+        <div class="space-y-3 md:space-y-4">
+          <details
+            class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group"
+          >
+            <summary
+              class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
+            >
+              <span>Does it force a specific PRD format?</span>
+              <svg
+                class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </summary>
+            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
+              We provide templates, but don't force them. Just need required sections
+              (goals, scope, requirements).
+            </p>
+          </details>
+          <details
+            class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group"
+          >
+            <summary
+              class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
+            >
+              <span>Can I use my own PRD template?</span>
+              <svg
+                class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </summary>
+            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
+              Yes. Use your existing template as-is. Clouvel just gates on document
+              "existence", not specific format.
+            </p>
+          </details>
+          <details
+            class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group"
+          >
+            <summary
+              class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
+            >
+              <span>Does it work offline/locally?</span>
+              <svg
+                class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </summary>
+            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
+              License activation needs internet once. After that, works fully offline.
+            </p>
+          </details>
+          <details
+            class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group"
+          >
+            <summary
+              class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
+            >
+              <span>How does it fit my existing workflow?</span>
+              <svg
+                class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </summary>
+            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
+              It's an MCP server - just add config to Claude Code/Desktop.
+              Doesn't touch your code or project structure.
+            </p>
+          </details>
+          <details
+            class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group"
+          >
+            <summary
+              class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
+            >
+              <span>Why not just use a prompt or CLAUDE.md?</span>
+              <svg
+                class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </summary>
+            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
+              <strong>A prompt is a "request". A gate is a "rule".</strong>
+              Requests can be ignored. Gates either pass or block. Rules create consistency.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Contact -->
+    <section id="contact" class="py-16 md:py-20 px-6">
+      <div class="max-w-2xl mx-auto">
+        <div class="text-center mb-8 md:mb-12">
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">Contact Us</h2>
+          <p class="text-slate-600 text-base md:text-lg">
+            Machine reset, license issues - we'll help you quickly
+          </p>
+        </div>
+        <form id="contactForm" class="space-y-4 md:space-y-6">
+          <div>
+            <label
+              for="email"
+              class="block text-sm font-medium text-slate-700 mb-2"
+              >Email (required)</label
+            >
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition"
+              placeholder="Email used for purchase"
+            />
+          </div>
+          <div>
+            <label
+              for="issueType"
+              class="block text-sm font-medium text-slate-700 mb-2"
+              >Issue Type</label
+            >
+            <select
+              id="issueType"
+              name="issueType"
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition"
+            >
+              <option value="machine_reset">Machine Reset / New PC</option>
+              <option value="license_issue">License Issue</option>
+              <option value="bug_report">Bug Report</option>
+              <option value="feature_request">Feature Request</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label
+              for="message"
+              class="block text-sm font-medium text-slate-700 mb-2"
+              >Details (optional)</label
+            >
+            <textarea
+              id="message"
+              name="message"
+              rows="4"
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition resize-none"
+              placeholder="Describe the issue"
+            ></textarea>
+          </div>
+          <button
+            type="submit"
+            id="submitBtn"
+            class="w-full py-4 rounded-full font-medium bg-accent text-white hover:bg-accent-dark transition flex items-center justify-center gap-2"
+          >
+            <span>Send Inquiry</span>
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
+            </svg>
+          </button>
+        </form>
+        <div
+          id="formSuccess"
+          class="hidden mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-center"
+        >
+          <p class="text-emerald-700 font-medium">
+            Inquiry received! We'll get back to you soon.
+          </p>
+        </div>
+        <div
+          id="formError"
+          class="hidden mt-6 p-4 bg-red-50 border border-red-200 rounded-xl text-center"
+        >
+          <p class="text-red-700 font-medium">
+            Failed to send. Try again later or use GitHub Issues.
+          </p>
+        </div>
+        <p class="text-center text-slate-500 text-sm mt-6">
+          Or reach us at
+          <a
+            href="https://github.com/Whitening-Sinabro/clouvel/issues"
+            target="_blank"
+            class="text-accent hover:underline"
+            >GitHub Issues</a
+          >
+        </p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer
+      class="py-8 md:py-12 px-6 border-t border-slate-200/50 bg-warm-white"
+    >
+      <div class="max-w-6xl mx-auto">
+        <div
+          class="flex flex-col md:flex-row justify-between items-center gap-4 mb-4 md:mb-6"
+        >
+          <div class="text-sm text-slate-500">
+            &copy; 2026 Clouvel. Made by SINABRO.
+          </div>
+          <div class="flex gap-4 md:gap-6 text-sm text-slate-500">
+            <a
+              href="https://github.com/Whitening-Sinabro/clouvel"
+              target="_blank"
+              class="hover:text-dark-slate transition"
+              >GitHub</a
+            >
+            <a
+              href="https://github.com/Whitening-Sinabro/clouvel/issues"
+              target="_blank"
+              class="hover:text-dark-slate transition"
+              >Support</a
+            >
+            <a href="terms.html" class="hover:text-dark-slate transition"
+              >Terms</a
+            >
+          </div>
+        </div>
+        <p class="text-center text-slate-400 text-xs px-4">
+          Disclaimer: Results may vary depending on usage environment.
+          Clouvel does not guarantee specific outcomes.
+        </p>
+      </div>
+    </footer>
+
+    <script src="index.js"></script>
+  </body>
+</html>

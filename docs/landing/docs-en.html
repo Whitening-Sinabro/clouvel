@@ -180,7 +180,7 @@
           <a
             href="#api-pro"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Pro Tools (12)</a
+            >Pro Tools (15+)</a
           >
           <a
             href="#api-team"
@@ -1190,10 +1190,38 @@
         <!-- API Reference: Pro -->
         <section id="api-pro" class="mb-16">
           <h2 class="text-2xl font-bold mb-6">API Reference: Pro Tools</h2>
-          <p class="text-slate-600 mb-6">clouvel 패키지에 포함된 도구 (12개)</p>
+          <p class="text-slate-600 mb-6">clouvel Pro features (15+ tools) - Augmentation, not Automation</p>
 
           <div class="space-y-4">
-            <!-- manager (NEW) -->
+            <!-- quick_perspectives (NEW v1.4) -->
+            <div class="bg-white border border-emerald-500/30 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-4">
+                <code
+                  class="bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded font-mono text-sm"
+                  >quick_perspectives</code
+                >
+                <span class="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded"
+                  >NEW v1.4</span
+                >
+              </div>
+              <p class="text-slate-600 text-sm mb-3">
+                코딩 전 3초 관점 체크. 3-4명 매니저가 핵심 질문을 던집니다.
+              </p>
+              <div
+                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
+              >
+                <p class="text-slate-500"># Parameters</p>
+                <p>context: str - 무엇을 만들려는지</p>
+                <p>max_managers: int - 최대 매니저 수 (기본 4)</p>
+                <p class="text-slate-500 mt-2"># Output</p>
+                <p class="text-emerald-400">## 💡 Quick Perspectives</p>
+                <p class="text-slate-400">**👔 PM**: Is this MVP scope?</p>
+                <p class="text-slate-400">**🔒 CSO**: How do you verify the user?</p>
+                <p class="text-slate-500">💡 Related past decision: auth...</p>
+              </div>
+            </div>
+
+            <!-- manager (v1.4 Augmentation) -->
             <div class="bg-white border border-accent/30 rounded-xl p-6">
               <div class="flex items-center gap-3 mb-4">
                 <code
@@ -1201,28 +1229,61 @@
                   >manager</code
                 >
                 <span class="bg-accent text-white text-xs px-2 py-0.5 rounded"
-                  >NEW v1.2</span
+                  >v1.4 Augmentation</span
                 >
               </div>
               <p class="text-slate-600 text-sm mb-3">
-                8명의 C-Level 매니저가 컨텍스트 기반으로 협업 피드백을
-                제공합니다.
+                8명의 AI 매니저가 <strong>답을 주는 대신 질문을 던집니다</strong>.
+                당신이 놓친 관점을 발견하게 도와줍니다.
               </p>
               <div
                 class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
               >
-                <p class="text-slate-500"># Parameters</p>
-                <p>context: str - 검토할 내용 (플랜, 코드, 질문)</p>
-                <p>mode: "auto" | "all" | "specific" - 매니저 선택 모드</p>
-                <p class="text-slate-500 mt-2"># 8명의 매니저</p>
-                <p class="text-accent">PM: PRD, features, priorities, scope</p>
-                <p class="text-accent">CTO: 아키텍처, 기술스택, 성능</p>
-                <p class="text-accent">QA: tests, 엣지케이스, 검증</p>
-                <p class="text-accent">CDO: UI/UX, AI패턴방지, 접근성</p>
-                <p class="text-accent">CMO: GTM, 포지셔닝, 경쟁사</p>
-                <p class="text-accent">CFO: 비용, 수익화, ROI</p>
-                <p class="text-accent">CSO: 보안, 인증, 권한, 취약점</p>
-                <p class="text-accent">Error: 에러패턴, 5 Whys, 예방규칙</p>
+                <p class="text-slate-500"># Philosophy: Augmentation, not Automation</p>
+                <p class="text-red-400">❌ "Use OAuth for auth"</p>
+                <p class="text-emerald-400">✅ "What's your user base? Social login or email?"</p>
+                <p class="text-slate-500 mt-2"># 8 Managers ask tough questions</p>
+                <p class="text-accent">PM: Scope, priorities, user value</p>
+                <p class="text-accent">CTO: Architecture, tradeoffs, tech debt</p>
+                <p class="text-accent">QA: Edge cases, failure modes, testing</p>
+                <p class="text-accent">CSO: Auth, permissions, vulnerabilities</p>
+                <p class="text-accent">CDO: UX, accessibility, design patterns</p>
+                <p class="text-accent">CMO: Positioning, competition, GTM</p>
+                <p class="text-accent">CFO: Costs, monetization, ROI</p>
+                <p class="text-accent">Error: Past mistakes, prevention rules</p>
+                <p class="text-slate-500 mt-2"># Output Format</p>
+                <p class="text-slate-400">## 🤔 Decisions for YOU</p>
+                <p class="text-slate-400">| Auth | OAuth / Email / Magic Link | _____ |</p>
+              </div>
+            </div>
+
+            <!-- knowledge_base (NEW v1.4) -->
+            <div class="bg-white border border-violet-500/30 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-4">
+                <code
+                  class="bg-violet-500/10 text-violet-600 px-3 py-1 rounded font-mono text-sm"
+                  >record_decision / search_knowledge</code
+                >
+                <span class="bg-violet-500 text-white text-xs px-2 py-0.5 rounded"
+                  >NEW v1.4</span
+                >
+              </div>
+              <p class="text-slate-600 text-sm mb-3">
+                Knowledge Base: 모든 결정을 기억합니다. 같은 실수 두 번 하지 않기.
+              </p>
+              <div
+                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
+              >
+                <p class="text-slate-500"># 6 Knowledge Base Tools</p>
+                <p class="text-accent">record_decision - 결정 저장</p>
+                <p class="text-accent">record_location - 중요 코드 위치 저장</p>
+                <p class="text-accent">search_knowledge - FTS5 전문 검색</p>
+                <p class="text-accent">get_context - 세션 복구 컨텍스트</p>
+                <p class="text-accent">init_knowledge - DB 초기화</p>
+                <p class="text-accent">rebuild_index - 검색 인덱스 재구축</p>
+                <p class="text-slate-500 mt-2"># Storage</p>
+                <p class="text-slate-400">~/.clouvel/knowledge.db (SQLite)</p>
+                <p class="text-slate-400">50MB limit, auto-archive 30+ day data</p>
               </div>
             </div>
 

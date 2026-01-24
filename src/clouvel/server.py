@@ -284,13 +284,14 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="plan",
-        description="v1.3: 상세 실행 계획 생성. manager 피드백을 종합하여 단계별 액션 아이템, 의존성, 검증 포인트를 포함한 계획 생성. (Pro)",
+        description="v1.3: 상세 실행 계획 생성. manager 피드백을 종합하여 단계별 액션 아이템, 의존성, 검증 포인트를 포함한 계획 생성. meeting_file로 이전 회의 결과를 참조 가능. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
                 "path": {"type": "string", "description": "프로젝트 루트 경로"},
                 "task": {"type": "string", "description": "수행할 작업"},
-                "goals": {"type": "array", "items": {"type": "string"}, "description": "달성 목표"}
+                "goals": {"type": "array", "items": {"type": "string"}, "description": "달성 목표"},
+                "meeting_file": {"type": "string", "description": "이전 회의록 파일명 (예: 2026-01-24_14-00_feature.md). 있으면 회의 결과 기반으로 계획 생성"}
             },
             "required": ["path", "task"]
         }
@@ -603,7 +604,7 @@ TOOL_HANDLERS = {
 
     # Planning (v0.6, v1.3)
     "init_planning": lambda args: init_planning(args.get("path", ""), args.get("task", ""), args.get("goals", [])),
-    "plan": lambda args: create_detailed_plan(args.get("path", ""), args.get("task", ""), args.get("goals", [])),
+    "plan": lambda args: create_detailed_plan(args.get("path", ""), args.get("task", ""), args.get("goals", []), meeting_file=args.get("meeting_file")),
     "save_finding": lambda args: save_finding(args.get("path", ""), args.get("topic", ""), args.get("question", ""), args.get("findings", ""), args.get("source", ""), args.get("conclusion", "")),
     "refresh_goals": lambda args: refresh_goals(args.get("path", "")),
     "update_progress": lambda args: update_progress(args.get("path", ""), args.get("completed", []), args.get("in_progress", ""), args.get("blockers", []), args.get("next", "")),
@@ -730,9 +731,15 @@ async def _wrap_manager(args: dict) -> list[TextContent]:
     if use_dynamic:
         try:
             from .tools.manager.generator import generate_meeting_sync
+            import os
+
+            # 프로젝트 경로 추측 (현재 작업 디렉토리 사용)
+            project_path = os.getcwd()
+
             meeting_output = generate_meeting_sync(
                 context=args.get("context", ""),
                 topic=args.get("topic", None),
+                project_path=project_path,
                 auto_log=True
             )
             return [TextContent(type="text", text=meeting_output)]

@@ -324,7 +324,8 @@ async def create_detailed_plan(
     path: str,
     task: str,
     goals: list = None,
-    auto_manager_feedback: bool = True
+    auto_manager_feedback: bool = True,
+    meeting_file: str = None
 ) -> list[TextContent]:
     """상세 실행 계획을 생성합니다.
 
@@ -336,6 +337,7 @@ async def create_detailed_plan(
         task: 수행할 작업
         goals: 달성 목표 리스트
         auto_manager_feedback: manager 피드백 자동 호출 여부
+        meeting_file: 이전 회의록 파일 경로 (있으면 이를 기반으로 계획 생성)
 
     Returns:
         상세 계획이 포함된 TextContent
@@ -349,10 +351,27 @@ async def create_detailed_plan(
     planning_dir = project_path / ".claude" / "planning"
     planning_dir.mkdir(parents=True, exist_ok=True)
 
+    # 회의록 파일이 있으면 읽어서 컨텍스트로 사용
+    meeting_context = None
+    if meeting_file:
+        meeting_path = Path(meeting_file)
+        if not meeting_path.is_absolute():
+            # 상대 경로면 planning/meetings 폴더에서 찾기
+            meeting_path = planning_dir / "meetings" / meeting_file
+        if meeting_path.exists():
+            try:
+                meeting_context = meeting_path.read_text(encoding='utf-8')
+            except Exception:
+                pass
+
     # Manager 피드백 수집
     context = f"Task: {task}"
     if goals:
         context += f"\nGoals: {', '.join(goals)}"
+
+    # 회의록 컨텍스트가 있으면 추가
+    if meeting_context:
+        context += f"\n\n## 이전 회의 결과\n\n{meeting_context}"
 
     manager_result = manager(context=context, mode="auto", include_checklist=True)
 

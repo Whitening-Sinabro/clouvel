@@ -1497,10 +1497,11 @@ def _run_setup(global_only: bool = False, hooks: bool = False) -> str:
         if git_hooks_dir.exists():
             pre_commit = git_hooks_dir / "pre-commit"
             pre_commit_content = '''#!/bin/bash
-# Clouvel pre-commit hook (v1.5)
+# Clouvel pre-commit hook (v1.6)
 # 1. PRD check
 # 2. Record files check (files/created.md, status/current.md)
-# 3. Sensitive files check
+# 3. New files tracking check
+# 4. Sensitive files check
 
 # === PRD Check ===
 DOCS_DIR="./docs"
@@ -1533,6 +1534,44 @@ if [ ! -f ".claude/status/current.md" ]; then
     echo "Fix: Create .claude/status/current.md before commit"
     echo ""
     exit 1
+fi
+
+# === New Files Tracking Check (v1.6) ===
+# Check if newly added files are recorded in created.md
+CREATED_MD=".claude/files/created.md"
+NEW_FILES=$(git diff --cached --name-only --diff-filter=A 2>/dev/null)
+
+# Skip certain files/patterns from tracking requirement
+SKIP_PATTERNS="(\.md$|\.txt$|\.json$|\.yml$|\.yaml$|\.gitignore|\.env|__pycache__|\.pyc$|node_modules|\.git)"
+
+if [ -n "$NEW_FILES" ] && [ -f "$CREATED_MD" ]; then
+    UNTRACKED=""
+    while IFS= read -r file; do
+        # Skip files matching skip patterns
+        if echo "$file" | grep -qE "$SKIP_PATTERNS"; then
+            continue
+        fi
+        # Check if file is recorded in created.md
+        if ! grep -qF "$file" "$CREATED_MD" 2>/dev/null; then
+            UNTRACKED="$UNTRACKED$file\n"
+        fi
+    done <<< "$NEW_FILES"
+
+    if [ -n "$UNTRACKED" ]; then
+        echo ""
+        echo "========================================"
+        echo "[Clouvel] WARNING: Untracked new files"
+        echo "========================================"
+        echo ""
+        echo "These files are not recorded in .claude/files/created.md:"
+        echo -e "$UNTRACKED" | while read -r file; do
+            [ -n "$file" ] && echo "  📁 $file"
+        done
+        echo ""
+        echo "Recommended: Use record_file tool to track important files"
+        echo "Continuing commit... (this is a warning, not a block)"
+        echo ""
+    fi
 fi
 
 # === Security Check (sensitive files) ===

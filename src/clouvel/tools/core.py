@@ -90,7 +90,14 @@ def _get_context_summary(project_path: Path) -> str:
         if decisions:
             lines.append("### Decisions")
             for d in decisions:
-                lines.append(f"- **[{d.get('category', 'general')}]** {d.get('decision', '')[:80]}")
+                category = d.get('category', 'general')
+                decision_text = d.get('decision', '')[:80]
+                # Check if locked (category starts with "locked:")
+                if category.startswith("locked:"):
+                    actual_category = category[7:]  # Remove "locked:" prefix
+                    lines.append(f"- 🔒 **[{actual_category}]** {decision_text} *(LOCKED - do not change)*")
+                else:
+                    lines.append(f"- **[{category}]** {decision_text}")
             lines.append("")
 
         if locations:

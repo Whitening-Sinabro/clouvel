@@ -38,7 +38,8 @@ async def record_decision(
     reasoning: Optional[str] = None,
     alternatives: Optional[List[str]] = None,
     project_name: Optional[str] = None,
-    project_path: Optional[str] = None
+    project_path: Optional[str] = None,
+    locked: bool = False
 ) -> dict:
     """
     Record a decision to the knowledge base.
@@ -50,6 +51,7 @@ async def record_decision(
         alternatives: Other options that were considered
         project_name: Project name (optional, for grouping)
         project_path: Project path (optional, for auto-detection)
+        locked: If True, decision is locked and should not be changed without explicit unlock
 
     Returns:
         dict with decision_id and status
@@ -67,8 +69,11 @@ async def record_decision(
                 path=project_path
             )
 
+        # Prefix category with "locked:" if locked=True
+        stored_category = f"locked:{category}" if locked else category
+
         decision_id = db_record_decision(
-            category=category,
+            category=stored_category,
             decision=decision,
             reasoning=reasoning,
             alternatives=alternatives,
@@ -79,6 +84,7 @@ async def record_decision(
             "status": "recorded",
             "decision_id": decision_id,
             "category": category,
+            "locked": locked,
             "project_id": project_id
         }
 

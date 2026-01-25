@@ -446,7 +446,8 @@ TOOL_DEFINITIONS = [
                 "reasoning": {"type": "string", "description": "Why this decision was made"},
                 "alternatives": {"type": "array", "items": {"type": "string"}, "description": "Other options that were considered"},
                 "project_name": {"type": "string", "description": "Project name (optional)"},
-                "project_path": {"type": "string", "description": "Project path (optional)"}
+                "project_path": {"type": "string", "description": "Project path (optional)"},
+                "locked": {"type": "boolean", "description": "If true, decision is LOCKED and should not be changed without explicit unlock"}
             },
             "required": ["category", "decision"]
         }
@@ -871,17 +872,20 @@ async def _wrap_record_decision(args: dict) -> list[TextContent]:
         reasoning=args.get("reasoning"),
         alternatives=args.get("alternatives"),
         project_name=args.get("project_name"),
-        project_path=args.get("project_path")
+        project_path=args.get("project_path"),
+        locked=args.get("locked", False)
     )
 
     if result.get("status") == "recorded":
-        output = f"""# ✅ Decision Recorded
+        locked_badge = "🔒 **LOCKED**" if result.get("locked") else ""
+        output = f"""# ✅ Decision Recorded {locked_badge}
 
 **ID**: {result.get('decision_id')}
 **Category**: {result.get('category')}
 **Project**: {result.get('project_id', 'global')}
 
 Decision saved to knowledge base. Use `search_knowledge` to retrieve later.
+{"⚠️ This decision is LOCKED. Do not change without explicit user approval." if result.get("locked") else ""}
 """
     else:
         output = f"""# ❌ Error Recording Decision

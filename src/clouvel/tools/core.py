@@ -57,9 +57,13 @@ REQUIRED_DOCS = [
     {"type": "verification", "name": DOC_NAMES["verification"], "patterns": [r"verif", r"test.?plan"], "priority": "warn"},
 ]
 
-# PRD required sections (acceptance is critical)
+# PRD required sections (acceptance/DoD is critical)
 REQUIRED_PRD_SECTIONS = [
-    {"name": "acceptance", "patterns": [r"##\s*(acceptance|완료\s*기준|수락\s*조건|done\s*when)"], "priority": "critical"},
+    {"name": "acceptance", "patterns": [
+        r"##\s*(acceptance|완료\s*기준|수락\s*조건|done\s*when)",
+        r"##\s*(dod|definition\s*of\s*done|완료\s*정의)",
+        r"##\s*(criteria|기준)",
+    ], "priority": "critical"},
     {"name": "scope", "patterns": [r"##\s*(scope|범위|목표)"], "priority": "warn"},
     {"name": "non_goals", "patterns": [r"##\s*(non.?goals?|하지\s*않을|제외|out\s*of\s*scope)"], "priority": "warn"},
 ]

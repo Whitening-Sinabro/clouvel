@@ -1,22 +1,35 @@
 """Knowledge Base tools for Clouvel.
 
 Tools for recording and retrieving decisions, code locations, and context.
+Requires Pro license - db module not included in Free version.
 """
 
 from typing import Optional, List
-from ..db.knowledge import (
-    init_knowledge_db,
-    get_or_create_project,
-    record_decision as db_record_decision,
-    record_location as db_record_location,
-    record_meeting as db_record_meeting,
-    record_event as db_record_event,
-    search_knowledge as db_search_knowledge,
-    get_recent_decisions,
-    get_recent_locations,
-    get_project_summary,
-    rebuild_search_index as db_rebuild_search_index,
-)
+
+# Pro feature - conditional import
+try:
+    from ..db.knowledge import (
+        init_knowledge_db,
+        get_or_create_project,
+        record_decision as db_record_decision,
+        record_location as db_record_location,
+        record_meeting as db_record_meeting,
+        record_event as db_record_event,
+        search_knowledge as db_search_knowledge,
+        get_recent_decisions,
+        get_recent_locations,
+        get_project_summary,
+        rebuild_search_index as db_rebuild_search_index,
+    )
+    _HAS_KNOWLEDGE_DB = True
+except ImportError:
+    _HAS_KNOWLEDGE_DB = False
+
+PRO_MESSAGE = {
+    "status": "pro_required",
+    "error": "Knowledge Base requires Clouvel Pro license.",
+    "purchase": "https://polar.sh/clouvel"
+}
 
 
 async def record_decision(
@@ -41,6 +54,9 @@ async def record_decision(
     Returns:
         dict with decision_id and status
     """
+    if not _HAS_KNOWLEDGE_DB:
+        return PRO_MESSAGE
+
     try:
         init_knowledge_db()
 
@@ -95,6 +111,9 @@ async def record_location(
     Returns:
         dict with location_id and status
     """
+    if not _HAS_KNOWLEDGE_DB:
+        return PRO_MESSAGE
+
     try:
         init_knowledge_db()
 
@@ -145,6 +164,9 @@ async def search_knowledge(
     Returns:
         dict with search results
     """
+    if not _HAS_KNOWLEDGE_DB:
+        return PRO_MESSAGE
+
     try:
         init_knowledge_db()
 
@@ -192,6 +214,9 @@ async def get_context(
     Returns:
         dict with recent decisions and locations
     """
+    if not _HAS_KNOWLEDGE_DB:
+        return PRO_MESSAGE
+
     try:
         init_knowledge_db()
 
@@ -235,6 +260,9 @@ async def init_knowledge() -> dict:
     Returns:
         dict with database path and status
     """
+    if not _HAS_KNOWLEDGE_DB:
+        return PRO_MESSAGE
+
     try:
         db_path = init_knowledge_db()
         return {
@@ -258,6 +286,9 @@ async def rebuild_index() -> dict:
     Returns:
         dict with count of indexed items
     """
+    if not _HAS_KNOWLEDGE_DB:
+        return PRO_MESSAGE
+
     try:
         count = db_rebuild_search_index()
         return {

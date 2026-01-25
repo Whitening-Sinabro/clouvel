@@ -35,6 +35,8 @@ from .tools import (
     hook_design, hook_verify,
     # start (Free, v1.2)
     start, quick_start, save_prd,
+    # tracking (v1.5)
+    record_file, list_files,
     # knowledge (Free, v1.4)
     record_decision, record_location, search_knowledge, get_context, init_knowledge, rebuild_index,
     # manager (Pro, v1.2)
@@ -429,10 +431,10 @@ TOOL_DEFINITIONS = [
         }
     ),
 
-    # === Knowledge Base Tools (Free, v1.4) ===
+    # === Knowledge Base Tools (Pro, v1.4) ===
     Tool(
         name="record_decision",
-        description="Record a decision to the knowledge base. Persists across sessions for context recovery. (Free)",
+        description="Record a decision to the knowledge base. Persists across sessions for context recovery. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
@@ -448,7 +450,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="record_location",
-        description="Record a code location to the knowledge base. Track where important code lives. (Free)",
+        description="Record a code location to the knowledge base. Track where important code lives. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
@@ -464,7 +466,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="search_knowledge",
-        description="Search the knowledge base. Find past decisions, locations, and context. (Free)",
+        description="Search the knowledge base. Find past decisions, locations, and context. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
@@ -477,7 +479,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="get_context",
-        description="Get recent context for a project. Returns recent decisions and code locations. (Free)",
+        description="Get recent context for a project. Returns recent decisions and code locations. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
@@ -491,7 +493,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="init_knowledge",
-        description="Initialize the knowledge base. Creates SQLite database at ~/.clouvel/knowledge.db. (Free)",
+        description="Initialize the knowledge base. Creates SQLite database at ~/.clouvel/knowledge.db. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {}
@@ -499,10 +501,38 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="rebuild_index",
-        description="Rebuild the knowledge base search index. Use if search results seem incomplete. (Free)",
+        description="Rebuild the knowledge base search index. Use if search results seem incomplete. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {}
+        }
+    ),
+
+    # === Tracking Tools (v1.5) ===
+    Tool(
+        name="record_file",
+        description="Record a file creation to .claude/files/created.md. Use this when creating important files that should not be deleted.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project root path"},
+                "file_path": {"type": "string", "description": "Relative path of the created file"},
+                "purpose": {"type": "string", "description": "What this file does"},
+                "deletable": {"type": "boolean", "description": "Whether this file can be deleted (default: false)"},
+                "session": {"type": "string", "description": "Session name for grouping (optional)"}
+            },
+            "required": ["path", "file_path", "purpose"]
+        }
+    ),
+    Tool(
+        name="list_files",
+        description="List all recorded files from .claude/files/created.md.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project root path"}
+            },
+            "required": ["path"]
         }
     ),
 
@@ -720,6 +750,10 @@ TOOL_HANDLERS = {
     "get_context": lambda args: _wrap_get_context(args),
     "init_knowledge": lambda args: _wrap_init_knowledge(),
     "rebuild_index": lambda args: _wrap_rebuild_index(),
+
+    # Tracking (v1.5)
+    "record_file": lambda args: _wrap_record_file(args),
+    "list_files": lambda args: _wrap_list_files(args),
 
     # Manager (Pro, v1.2)
     "manager": lambda args: _wrap_manager(args),
@@ -994,6 +1028,24 @@ async def _wrap_rebuild_index() -> list[TextContent]:
 {result.get('error', 'Unknown error')}
 """
     return [TextContent(type="text", text=output)]
+
+
+# === Tracking Wrappers (v1.5) ===
+
+async def _wrap_record_file(args: dict) -> list[TextContent]:
+    """record_file tool wrapper"""
+    return await record_file(
+        path=args.get("path", "."),
+        file_path=args.get("file_path", ""),
+        purpose=args.get("purpose", ""),
+        deletable=args.get("deletable", False),
+        session=args.get("session", None)
+    )
+
+
+async def _wrap_list_files(args: dict) -> list[TextContent]:
+    """list_files tool wrapper"""
+    return await list_files(path=args.get("path", "."))
 
 
 async def _wrap_manager(args: dict) -> list[TextContent]:
@@ -1431,13 +1483,91 @@ async def run_server():
         await server.run(read_stream, write_stream, server.create_initialization_options())
 
 
-def _run_setup(global_only: bool = False) -> str:
+def _run_setup(global_only: bool = False, hooks: bool = False) -> str:
     """B0: clouvel setup - install forced invocation mechanism"""
     import subprocess
     import os
     from pathlib import Path
 
     results = []
+
+    # --hooks: Install pre-commit hooks in current project
+    if hooks:
+        git_hooks_dir = Path(".git/hooks")
+        if git_hooks_dir.exists():
+            pre_commit = git_hooks_dir / "pre-commit"
+            pre_commit_content = '''#!/bin/bash
+# Clouvel pre-commit hook (v1.5)
+# 1. PRD check
+# 2. Record files check (files/created.md, status/current.md)
+# 3. Sensitive files check
+
+# === PRD Check ===
+DOCS_DIR="./docs"
+if ! ls "$DOCS_DIR"/*[Pp][Rr][Dd]* 1> /dev/null 2>&1; then
+    echo "[Clouvel] BLOCKED: No PRD document found."
+    echo "Please create docs/PRD.md first."
+    exit 1
+fi
+
+# === Record Files Check (v1.5) ===
+if [ ! -f ".claude/files/created.md" ]; then
+    echo ""
+    echo "========================================"
+    echo "[Clouvel] BLOCKED: files/created.md missing"
+    echo "========================================"
+    echo ""
+    echo "No file creation record found."
+    echo "Fix: Create .claude/files/created.md before commit"
+    echo ""
+    exit 1
+fi
+
+if [ ! -f ".claude/status/current.md" ]; then
+    echo ""
+    echo "========================================"
+    echo "[Clouvel] BLOCKED: status/current.md missing"
+    echo "========================================"
+    echo ""
+    echo "No work status record found."
+    echo "Fix: Create .claude/status/current.md before commit"
+    echo ""
+    exit 1
+fi
+
+# === Security Check (sensitive files) ===
+SENSITIVE_PATTERNS="(marketing|strategy|pricing|server_pro|_pro\\.py|\\.key$|\\.secret$|credentials|password)"
+
+SENSITIVE_FILES=$(git diff --cached --name-only | grep -iE "$SENSITIVE_PATTERNS" 2>/dev/null)
+
+if [ -n "$SENSITIVE_FILES" ]; then
+    echo ""
+    echo "========================================"
+    echo "[Clouvel] SECURITY BLOCK: Sensitive files detected!"
+    echo "========================================"
+    echo ""
+    echo "Cannot commit these files:"
+    echo "$SENSITIVE_FILES" | while read -r file; do
+        echo "  ❌ $file"
+    done
+    echo ""
+    echo "Fix: git reset HEAD <filename>"
+    echo "Skip: git commit --no-verify (not recommended)"
+    echo ""
+    exit 1
+fi
+
+echo "[Clouvel] All checks passed. ✓"
+'''
+            pre_commit.write_text(pre_commit_content, encoding='utf-8')
+            try:
+                os.chmod(pre_commit, 0o755)
+            except:
+                pass
+            results.append(f"[OK] Pre-commit hook installed: {pre_commit}")
+            return "\n".join(results)
+        else:
+            return "[ERROR] .git/hooks not found. Run from git repository root."
 
     # 1. Add rules to global CLAUDE.md
     if os.name == 'nt':  # Windows
@@ -1569,6 +1699,7 @@ def main():
     # setup command (B0) - legacy, install recommended
     setup_parser = subparsers.add_parser("setup", help="Install Clouvel forced invocation mechanism (global)")
     setup_parser.add_argument("--global-only", action="store_true", help="Configure CLAUDE.md only (exclude MCP registration)")
+    setup_parser.add_argument("--hooks", action="store_true", help="Install pre-commit hooks for record enforcement")
 
     # install command (new, recommended)
     install_parser = subparsers.add_parser("install", help="Install Clouvel MCP server (recommended)")
@@ -1593,7 +1724,10 @@ def main():
         result = asyncio.run(sync_setup(args.path, args.level))
         print(result[0].text)
     elif args.command == "setup":
-        result = _run_setup(global_only=args.global_only if hasattr(args, 'global_only') else False)
+        result = _run_setup(
+            global_only=args.global_only if hasattr(args, 'global_only') else False,
+            hooks=args.hooks if hasattr(args, 'hooks') else False
+        )
         print(result)
     elif args.command == "install":
         from .tools.install import run_install

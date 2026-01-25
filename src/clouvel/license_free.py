@@ -6,58 +6,32 @@ Pro 기능은 라이선스 활성화 후 사용 가능합니다.
 
 실제 라이선스 검증 로직은 license.py에 있으며,
 해당 파일이 없으면 이 stub이 사용됩니다.
+
+NOTE: 공통 로직은 license_common.py에서 가져옴.
+      인터페이스 변경 시 license.py와 동기화 필수.
 """
 
-import os
-import hashlib
-import platform
-import uuid
-from pathlib import Path
-from datetime import datetime
 from mcp.types import TextContent
 
-
-# 라이선스 파일 경로
-LICENSE_FILE = Path.home() / ".clouvel-license"
-
-
-def _get_machine_id() -> str:
-    """고유 머신 ID 생성"""
-    components = []
-    computer_name = os.environ.get("COMPUTERNAME") or platform.node() or "unknown"
-    components.append(computer_name)
-    components.append(platform.system())
-    components.append(platform.machine())
-
-    mac = uuid.getnode()
-    # MAC 주소가 유효한지 확인 (랜덤 생성된 경우 40번째 비트가 1)
-    # 또한 0이 아닌지 확인
-    if mac and (mac >> 40) % 2 == 0:
-        mac_str = ':'.join(f'{(mac >> i) & 0xff:02x}' for i in range(0, 48, 8))
-        components.append(mac_str)
-
-    username = os.environ.get("USERNAME") or os.environ.get("USER") or ""
-    if username:
-        components.append(username)
-
-    combined = "|".join(components)
-    return hashlib.sha256(combined.encode()).hexdigest()[:16]
-
-
-def get_machine_id() -> str:
-    """외부에서 사용할 수 있는 머신 ID 조회"""
-    return _get_machine_id()
+# 공통 모듈에서 import
+from .license_common import (
+    get_license_path,
+    get_machine_id,
+    get_tier_info,
+    guess_tier_from_key,
+    load_license_cache,
+    save_license_cache,
+    delete_license_cache,
+    calculate_license_status,
+    create_license_data,
+    DEFAULT_TIER,
+    TIER_INFO,
+)
 
 
 def get_cached_license() -> dict:
-    """캐시된 라이선스 조회"""
-    import json
-    if LICENSE_FILE.exists():
-        try:
-            return json.loads(LICENSE_FILE.read_text(encoding="utf-8"))
-        except Exception:
-            pass
-    return None
+    """캐시된 라이선스 조회 (하위 호환성)"""
+    return load_license_cache()
 
 
 def verify_license(license_key: str = None, check_machine_id: bool = True) -> dict:
@@ -71,22 +45,20 @@ def verify_license(license_key: str = None, check_machine_id: bool = True) -> di
 
 def activate_license_cli(license_key: str) -> dict:
     """CLI용 라이선스 활성화 (Free 버전 → Pro 다운로드)"""
-    import json
-
     if not license_key:
         return {
             "success": False,
             "message": "라이선스 키를 입력하세요."
         }
 
-    # 1. 라이선스 키 저장
+    # 1. 라이선스 키 저장 (공통 모듈 사용)
     try:
-        license_data = {
-            "license_key": license_key,
-            "activated_at": datetime.now().isoformat(),
-            "machine_id": _get_machine_id()
-        }
-        LICENSE_FILE.write_text(json.dumps(license_data, indent=2), encoding="utf-8")
+        license_data = create_license_data(license_key)
+        if not save_license_cache(license_data):
+            return {
+                "success": False,
+                "message": "라이선스 저장 실패"
+            }
     except Exception as e:
         return {
             "success": False,
@@ -98,10 +70,15 @@ def activate_license_cli(license_key: str) -> dict:
         from .pro_downloader import install_pro
         result = install_pro(license_key=license_key)
 
+        tier_info = license_data.get("tier_info", get_tier_info(DEFAULT_TIER))
+
         if result["success"]:
             installed = ", ".join(result["installed"])
             return {
                 "success": True,
+                "tier_info": tier_info,
+                "machine_id": license_data.get("machine_id", "unknown"),
+                "product": "Clouvel Pro",
                 "message": f"""Clouvel Pro 활성화 완료!
 
 설치된 모듈: {installed}
@@ -123,44 +100,35 @@ Pro 기능을 사용할 수 있습니다."""
 
 
 def get_license_status() -> dict:
-    """CLI용 라이선스 상태 확인"""
-    cached = get_cached_license()
-    if cached:
-        return {
-            "has_license": True,
-            "license_key": cached.get("license_key", "")[:12] + "...",
-            "activated_at": cached.get("activated_at"),
-            "message": "라이선스가 활성화되어 있습니다."
-        }
-    return {
-        "has_license": False,
-        "message": "라이선스가 없습니다.\n\n구매: https://polar.sh/clouvel"
-    }
+    """CLI용 라이선스 상태 확인
+
+    license.py와 동일한 반환값 유지 필요:
+    - tier_info: 티어 정보 (name, price, seats)
+    - days_since_activation: 활성화 후 경과 일수
+    - premium_unlocked: 프리미엄 기능 잠금 해제 여부
+    - premium_unlock_remaining: 잠금 해제까지 남은 일수
+    """
+    cached = load_license_cache()
+    return calculate_license_status(cached)
 
 
 def deactivate_license_cli() -> dict:
     """CLI용 라이선스 비활성화"""
-    if LICENSE_FILE.exists():
-        try:
-            LICENSE_FILE.unlink()
-            return {
-                "success": True,
-                "message": "라이선스가 비활성화되었습니다."
-            }
-        except Exception as e:
-            return {
-                "success": False,
-                "message": f"라이선스 파일 삭제 실패: {e}"
-            }
+    if delete_license_cache():
+        return {
+            "success": True,
+            "message": "라이선스가 비활성화되었습니다."
+        }
     return {
-        "success": True,
-        "message": "라이선스가 없습니다."
+        "success": False,
+        "message": "라이선스 파일 삭제 실패"
     }
 
 
 def get_license_age_days() -> int:
     """라이선스 활성화 후 경과 일수 (Free 버전)"""
-    return 0
+    status = get_license_status()
+    return status.get("days_since_activation", 0)
 
 
 def require_license(func):

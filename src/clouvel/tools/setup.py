@@ -134,13 +134,39 @@ async def setup_cli(path: str, level: str) -> list[TextContent]:
             pre_commit_content = '''#!/bin/bash
 # Clouvel pre-commit hook (Free)
 # 1. PRD 문서 확인
-# 2. 민감 파일 커밋 차단
+# 2. 기록 파일 확인 (files/created.md, status/current.md)
+# 3. 민감 파일 커밋 차단
 
 # === PRD 체크 ===
 DOCS_DIR="./docs"
 if ! ls "$DOCS_DIR"/*[Pp][Rr][Dd]* 1> /dev/null 2>&1; then
     echo "[Clouvel] BLOCKED: No PRD document found."
     echo "Please create docs/PRD.md first."
+    exit 1
+fi
+
+# === 기록 파일 체크 (v1.5) ===
+if [ ! -f ".claude/files/created.md" ]; then
+    echo ""
+    echo "========================================"
+    echo "[Clouvel] BLOCKED: files/created.md 없음"
+    echo "========================================"
+    echo ""
+    echo "생성 파일 기록이 없습니다."
+    echo "해결: .claude/files/created.md 생성 후 커밋"
+    echo ""
+    exit 1
+fi
+
+if [ ! -f ".claude/status/current.md" ]; then
+    echo ""
+    echo "========================================"
+    echo "[Clouvel] BLOCKED: status/current.md 없음"
+    echo "========================================"
+    echo ""
+    echo "작업 상태 기록이 없습니다."
+    echo "해결: .claude/status/current.md 생성 후 커밋"
+    echo ""
     exit 1
 fi
 
@@ -166,7 +192,7 @@ if [ -n "$SENSITIVE_FILES" ]; then
     exit 1
 fi
 
-echo "[Clouvel] Document check passed."
+echo "[Clouvel] All checks passed. ✓"
 '''
             pre_commit.write_text(pre_commit_content, encoding='utf-8')
             # chmod +x 처리

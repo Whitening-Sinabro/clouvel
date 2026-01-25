@@ -1574,7 +1574,7 @@ if [ -n "$NEW_FILES" ] && [ -f "$CREATED_MD" ]; then
         echo "To record these files, copy & run in Claude:"
         echo "────────────────────────────────────────"
         echo -e "$UNTRACKED" | while read -r file; do
-            [ -n "$file" ] && echo "record_file(path=\".\", file_path=\"$file\", purpose=\"<describe purpose>\")"
+            [ -n "$file" ] && echo 'record_file(path=".", file_path="'"$file"'", purpose="...")'
         done
         echo "────────────────────────────────────────"
         echo ""

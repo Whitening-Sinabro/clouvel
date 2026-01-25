@@ -39,6 +39,7 @@ from .tools import (
     record_file, list_files,
     # knowledge (Free, v1.4)
     record_decision, record_location, search_knowledge, get_context, init_knowledge, rebuild_index,
+    unlock_decision, list_locked_decisions,
     # manager (Pro, v1.2)
     manager, ask_manager, list_managers, MANAGERS,
     # ship (Pro, v1.2)
@@ -511,6 +512,29 @@ TOOL_DEFINITIONS = [
             "properties": {}
         }
     ),
+    Tool(
+        name="unlock_decision",
+        description="Unlock a locked decision. Requires explicit reason. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "decision_id": {"type": "integer", "description": "The ID of the decision to unlock"},
+                "reason": {"type": "string", "description": "Why this decision is being unlocked (required for audit)"}
+            },
+            "required": ["decision_id", "reason"]
+        }
+    ),
+    Tool(
+        name="list_locked_decisions",
+        description="List all locked decisions. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_name": {"type": "string", "description": "Filter by project name (optional)"},
+                "project_path": {"type": "string", "description": "Filter by project path (optional)"}
+            }
+        }
+    ),
 
     # === Tracking Tools (v1.5) ===
     Tool(
@@ -754,6 +778,8 @@ TOOL_HANDLERS = {
     "get_context": lambda args: _wrap_get_context(args),
     "init_knowledge": lambda args: _wrap_init_knowledge(),
     "rebuild_index": lambda args: _wrap_rebuild_index(),
+    "unlock_decision": lambda args: _wrap_unlock_decision(args),
+    "list_locked_decisions": lambda args: _wrap_list_locked_decisions(args),
 
     # Tracking (v1.5)
     "record_file": lambda args: _wrap_record_file(args),
@@ -1031,6 +1057,72 @@ async def _wrap_rebuild_index() -> list[TextContent]:
 """
     else:
         output = f"""# ❌ Rebuild Error
+
+{result.get('error', 'Unknown error')}
+"""
+    return [TextContent(type="text", text=output)]
+
+
+async def _wrap_unlock_decision(args: dict) -> list[TextContent]:
+    """unlock_decision tool wrapper"""
+    result = await unlock_decision(
+        decision_id=args.get("decision_id"),
+        reason=args.get("reason")
+    )
+
+    if result.get("status") == "unlocked":
+        output = f"""# 🔓 Decision Unlocked
+
+**Decision ID**: {result.get('decision_id')}
+**Category**: {result.get('category')}
+**Decision**: {result.get('decision')}
+**Unlock Reason**: {result.get('unlock_reason', 'Not specified')}
+
+This decision can now be modified.
+"""
+    elif result.get("status") == "pro_required":
+        output = f"""# ⚠️ Pro Feature Required
+
+{result.get('error')}
+
+**Purchase**: {result.get('purchase')}
+"""
+    else:
+        output = f"""# ❌ Unlock Error
+
+{result.get('error', 'Unknown error')}
+"""
+    return [TextContent(type="text", text=output)]
+
+
+async def _wrap_list_locked_decisions(args: dict) -> list[TextContent]:
+    """list_locked_decisions tool wrapper"""
+    result = await list_locked_decisions(
+        project_name=args.get("project_name"),
+        project_path=args.get("project_path")
+    )
+
+    if result.get("status") == "success":
+        decisions = result.get("decisions", [])
+        if not decisions:
+            output = "# 🔒 Locked Decisions\n\nNo locked decisions found."
+        else:
+            lines = ["# 🔒 Locked Decisions\n"]
+            for d in decisions:
+                lines.append(f"- **[{d['id']}]** [{d['category']}] {d['decision']}")
+                if d.get('reasoning'):
+                    lines.append(f"  - Reason: {d['reasoning'][:100]}...")
+            lines.append(f"\n**Total**: {result.get('count')} locked decisions")
+            output = "\n".join(lines)
+    elif result.get("status") == "pro_required":
+        output = f"""# ⚠️ Pro Feature Required
+
+{result.get('error')}
+
+**Purchase**: {result.get('purchase')}
+"""
+    else:
+        output = f"""# ❌ Error
 
 {result.get('error', 'Unknown error')}
 """

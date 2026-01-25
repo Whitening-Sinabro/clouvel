@@ -308,3 +308,164 @@ async def rebuild_index() -> dict:
             "status": "error",
             "error": str(e)
         }
+
+
+async def unlock_decision(
+    decision_id: int,
+    reason: Optional[str] = None
+) -> dict:
+    """
+    Unlock a locked decision.
+
+    Args:
+        decision_id: The ID of the decision to unlock
+        reason: Why this decision is being unlocked
+
+    Returns:
+        dict with status and unlocked decision info
+    """
+    if not _HAS_KNOWLEDGE_DB:
+        return PRO_MESSAGE
+
+    try:
+        init_knowledge_db()
+
+        # Import sqlite3 for direct update
+        import sqlite3
+        from pathlib import Path
+
+        db_path = Path.home() / ".clouvel" / "knowledge.db"
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        # Get current decision
+        cursor.execute(
+            "SELECT category, decision, reasoning FROM decisions WHERE id = ?",
+            (decision_id,)
+        )
+        row = cursor.fetchone()
+
+        if not row:
+            conn.close()
+            return {
+                "status": "error",
+                "error": f"Decision {decision_id} not found"
+            }
+
+        category, decision, reasoning = row
+
+        # Check if it's locked
+        if not category.startswith("locked:"):
+            conn.close()
+            return {
+                "status": "error",
+                "error": f"Decision {decision_id} is not locked"
+            }
+
+        # Remove locked: prefix
+        new_category = category[7:]  # Remove "locked:" prefix
+
+        # Update reasoning with unlock note
+        new_reasoning = reasoning or ""
+        if reason:
+            new_reasoning = f"{new_reasoning}\n\n[UNLOCKED: {reason}]" if new_reasoning else f"[UNLOCKED: {reason}]"
+
+        cursor.execute(
+            "UPDATE decisions SET category = ?, reasoning = ? WHERE id = ?",
+            (new_category, new_reasoning, decision_id)
+        )
+        conn.commit()
+        conn.close()
+
+        return {
+            "status": "unlocked",
+            "decision_id": decision_id,
+            "category": new_category,
+            "decision": decision,
+            "unlock_reason": reason
+        }
+
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e)
+        }
+
+
+async def list_locked_decisions(
+    project_name: Optional[str] = None,
+    project_path: Optional[str] = None
+) -> dict:
+    """
+    List all locked decisions.
+
+    Args:
+        project_name: Filter by project name (optional)
+        project_path: Filter by project path (optional)
+
+    Returns:
+        dict with list of locked decisions
+    """
+    if not _HAS_KNOWLEDGE_DB:
+        return PRO_MESSAGE
+
+    try:
+        init_knowledge_db()
+
+        import sqlite3
+        from pathlib import Path
+
+        db_path = Path.home() / ".clouvel" / "knowledge.db"
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        # Get project_id if filtering
+        project_id = None
+        if project_name or project_path:
+            project_id = get_or_create_project(
+                name=project_name or "default",
+                path=project_path
+            )
+
+        # Query locked decisions
+        if project_id:
+            cursor.execute(
+                """SELECT id, category, decision, reasoning, created_at
+                   FROM decisions
+                   WHERE category LIKE 'locked:%' AND project_id = ?
+                   ORDER BY created_at DESC""",
+                (project_id,)
+            )
+        else:
+            cursor.execute(
+                """SELECT id, category, decision, reasoning, created_at
+                   FROM decisions
+                   WHERE category LIKE 'locked:%'
+                   ORDER BY created_at DESC"""
+            )
+
+        rows = cursor.fetchall()
+        conn.close()
+
+        decisions = []
+        for row in rows:
+            decisions.append({
+                "id": row[0],
+                "category": row[1][7:],  # Remove "locked:" prefix for display
+                "decision": row[2],
+                "reasoning": row[3],
+                "created_at": row[4],
+                "locked": True
+            })
+
+        return {
+            "status": "success",
+            "count": len(decisions),
+            "decisions": decisions
+        }
+
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e)
+        }

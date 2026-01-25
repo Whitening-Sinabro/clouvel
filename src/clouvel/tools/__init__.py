@@ -78,6 +78,8 @@ from .knowledge import (
     get_context,
     init_knowledge,
     rebuild_index,
+    unlock_decision,
+    list_locked_decisions,
 )
 
 # Manager 도구 (API 기반 - v1.6.0)
@@ -198,6 +200,7 @@ __all__ = [
     "record_file", "list_files",
     # knowledge (Free, v1.4)
     "record_decision", "record_location", "search_knowledge", "get_context", "init_knowledge", "rebuild_index",
+    "unlock_decision", "list_locked_decisions",
     # manager (Pro, v1.2)
     "manager", "ask_manager", "list_managers", "MANAGERS",
     # ship (Pro, v1.2)

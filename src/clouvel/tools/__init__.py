@@ -64,6 +64,12 @@ from .start import (
     save_prd,
 )
 
+# Tracking 도구 (v1.5)
+from .tracking import (
+    record_file,
+    list_files,
+)
+
 # Knowledge Base 도구 (Free, v1.4)
 from .knowledge import (
     record_decision,
@@ -74,21 +80,60 @@ from .knowledge import (
     rebuild_index,
 )
 
-# Manager 도구 (Pro 기능 - 폴더가 없으면 스킵)
-try:
-    from .manager import (
-        manager,
-        ask_manager,
-        list_managers,
-        MANAGERS,
+# Manager 도구 (API 기반 - v1.6.0)
+# Pro 기능은 Cloudflare Workers API로 제공됨
+from ..api_client import call_manager_api, get_trial_status as get_api_trial_status
+
+def manager(
+    context: str,
+    mode: str = "auto",
+    managers: list = None,
+    include_checklist: bool = True,
+    topic: str = None,
+    **kwargs
+):
+    """
+    8 C-Level manager feedback via API.
+
+    Args:
+        context: Content to review
+        mode: 'auto', 'all', or 'specific'
+        managers: List of managers when mode='specific'
+        topic: Topic hint (auth, api, payment, etc.)
+
+    Returns:
+        Manager feedback and recommendations
+    """
+    return call_manager_api(
+        context=context,
+        topic=topic,
+        mode=mode,
+        managers=managers,
     )
-    _HAS_MANAGER = True
-except ImportError:
-    _HAS_MANAGER = False
-    manager = None
-    ask_manager = None
-    list_managers = None
-    MANAGERS = {}
+
+def ask_manager(manager_key: str, question: str):
+    """Ask a specific manager a question."""
+    return call_manager_api(
+        context=question,
+        mode="specific",
+        managers=[manager_key],
+    )
+
+def list_managers():
+    """List available managers."""
+    return [
+        {"key": "PM", "emoji": "👔", "title": "Product Manager", "focus": "Scope & Requirements"},
+        {"key": "CTO", "emoji": "🛠️", "title": "CTO", "focus": "Architecture & Tech Debt"},
+        {"key": "QA", "emoji": "🧪", "title": "QA Lead", "focus": "Testing & Quality"},
+        {"key": "CDO", "emoji": "🎨", "title": "Chief Design Officer", "focus": "UX & Accessibility"},
+        {"key": "CMO", "emoji": "📢", "title": "CMO", "focus": "Launch & Positioning"},
+        {"key": "CFO", "emoji": "💰", "title": "CFO", "focus": "Cost & ROI"},
+        {"key": "CSO", "emoji": "🔒", "title": "CSO", "focus": "Security & Compliance"},
+        {"key": "ERROR", "emoji": "🔥", "title": "Error Handler", "focus": "Error Handling & Recovery"},
+    ]
+
+MANAGERS = {m["key"]: m for m in list_managers()}
+_HAS_MANAGER = True
 
 from .ship import (
     ship,
@@ -149,6 +194,8 @@ __all__ = [
     "run_install",
     # start (Free, v1.2)
     "start", "quick_start", "save_prd",
+    # tracking (v1.5)
+    "record_file", "list_files",
     # knowledge (Free, v1.4)
     "record_decision", "record_location", "search_knowledge", "get_context", "init_knowledge", "rebuild_index",
     # manager (Pro, v1.2)

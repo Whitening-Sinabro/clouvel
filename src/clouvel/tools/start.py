@@ -6,6 +6,80 @@ import json
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
+
+def _get_trial_info() -> Optional[Dict[str, Any]]:
+    """Get Trial status for Pro features via API."""
+    try:
+        from ..api_client import get_trial_status
+
+        status = get_trial_status()
+
+        if "error" in status:
+            # API unavailable, show trial info anyway
+            return {
+                "has_trial": True,
+                "message": """
+---
+
+💡 **Pro Trial Available!**
+
+| Feature | Free Uses | Description |
+|---------|-----------|-------------|
+| `manager` | 10 uses | 8 C-Level manager feedback |
+| `ship` | 5 uses | One-click test→verify→evidence |
+
+→ Try now: `manager(context="your plan", topic="feature")`
+→ Upgrade: https://polar.sh/clouvel
+"""
+            }
+
+        features = status.get("features", {})
+
+        # Check if any trial remaining
+        has_trial = any(f.get("remaining", 0) > 0 for f in features.values())
+
+        if has_trial:
+            return {
+                "has_trial": True,
+                "features": features,
+                "message": """
+---
+
+💡 **Pro Trial Available!**
+
+| Feature | Free Uses | Description |
+|---------|-----------|-------------|
+| `manager` | 10 uses | 8 C-Level manager feedback |
+| `ship` | 5 uses | One-click test→verify→evidence |
+
+→ Try now: `manager(context="your plan", topic="feature")`
+→ Upgrade: https://polar.sh/clouvel
+"""
+            }
+        else:
+            return {
+                "has_trial": False,
+                "message": "Trial exhausted. Upgrade to Pro: https://polar.sh/clouvel"
+            }
+    except Exception:
+        # Fallback - show trial info
+        return {
+            "has_trial": True,
+            "message": """
+---
+
+💡 **Pro Trial Available!**
+
+| Feature | Free Uses | Description |
+|---------|-----------|-------------|
+| `manager` | 10 uses | 8 C-Level manager feedback |
+| `ship` | 5 uses | One-click test→verify→evidence |
+
+→ Try now: `manager(context="your plan", topic="feature")`
+→ Upgrade: https://polar.sh/clouvel
+"""
+        }
+
 # Project type detection patterns
 PROJECT_TYPE_PATTERNS = {
     "chrome-ext": {
@@ -520,6 +594,11 @@ Let's write the PRD together. I'll ask a few questions.
             "exists": doc_path.exists(),
             "description": desc
         }
+
+    # Add Trial info
+    trial_info = _get_trial_info()
+    if trial_info:
+        result["trial_info"] = trial_info
 
     return result
 

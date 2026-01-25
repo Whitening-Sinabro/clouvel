@@ -5,6 +5,65 @@ All notable changes to Clouvel will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-01-25
+
+### Added
+- **API-based Pro Features**: Pro features now served via Cloudflare Workers API
+  - `manager`: 8 C-Level manager feedback via API
+  - `ship`: Trial/license validation via API, execution local
+  - Secure - Pro code never distributed in PyPI package
+  - Reliable - Trial tracking on server, not local file
+
+- **Trial System**: Pro features free trial (server-managed)
+  - `manager`: 10 free uses
+  - `ship`: 5 free uses
+  - Trial usage tracked per client via API
+  - Exhaustion message with upgrade link
+
+- **Start Tool Trial Info**: `start` now shows Trial availability
+  - Shows remaining trial uses for Pro features
+  - Quick start guide: "Try now: `manager(context=..., topic=...)`"
+
+### Changed
+- **Architecture**: Pro features moved from local to API
+  - PyPI package only contains API client
+  - Pro logic runs on Cloudflare Workers
+  - Offline fallback with basic responses
+
+### Philosophy
+- **"맛보기가 전환을 만든다"** (Trial drives conversion) - Let users experience Pro before purchase
+- **"Pro 코드는 서버에"** (Pro code stays on server) - Better security and control
+
+## [1.5.0] - 2026-01-25
+
+### Added
+- **Record Tracking**: New file tracking tools for session continuity
+  - `record_file` - Record file creations to `.claude/files/created.md`
+  - `list_files` - List all recorded files with purpose and status
+  - Prevents "forgotten files" issue across sessions
+- **Pre-commit Hook Enhancement**: Stronger enforcement
+  - `clouvel setup --hooks` command for hook installation
+  - Blocks commit if `.claude/files/created.md` missing
+  - Blocks commit if `.claude/status/current.md` missing
+- **Manager Topic Expansion**: Better context understanding
+  - New topics: `mcp`, `internal`, `tracking`, `maintenance`
+  - Pattern-based detection for problems and requests
+
+### Changed
+- **can_code DoD Check**: Now detects more DoD patterns
+  - Added: `## DoD`, `## Definition of Done`, `## Criteria`, `## 완료 정의`
+  - Test message improved: warns when no tests exist
+- **Manager LLM Optimization**: Improved output for Claude's attention patterns
+  - XML structure with `<critical_summary>`, `<situation_analysis>`, `<meeting_notes>`
+  - Bookending technique: critical issues at beginning AND end
+  - U-shaped attention curve optimization (primacy + recency bias)
+- **Context Analysis**: Enhanced pattern detection
+  - Problem patterns: "없다", "안 됨", "느려", "취약" → error/performance/security
+  - Request patterns: "추가", "구현", "수정" → feature/maintenance
+
+### Philosophy
+- **"기록을 잃지 않는다"** (Don't lose records) - Now enforced, not just documented
+
 ## [1.4.0] - 2026-01-24
 
 ### Changed

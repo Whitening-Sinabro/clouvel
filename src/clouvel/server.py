@@ -78,7 +78,10 @@ TOOL_DEFINITIONS = [
         description="Must call before writing code. Checks document status and determines if coding is allowed.",
         inputSchema={
             "type": "object",
-            "properties": {"path": {"type": "string", "description": "Project docs folder path"}},
+            "properties": {
+                "path": {"type": "string", "description": "Project docs folder path"},
+                "mode": {"type": "string", "enum": ["pre", "post"], "description": "pre (default): check before coding, post: verify file tracking after coding"}
+            },
             "required": ["path"]
         }
     ),
@@ -697,7 +700,7 @@ async def list_tools() -> list[Tool]:
 
 TOOL_HANDLERS = {
     # Core
-    "can_code": lambda args: can_code(args.get("path", "")),
+    "can_code": lambda args: can_code(args.get("path", ""), args.get("mode", "pre")),
     "scan_docs": lambda args: scan_docs(args.get("path", "")),
     "analyze_docs": lambda args: analyze_docs(args.get("path", "")),
     "init_docs": lambda args: init_docs(args.get("path", ""), args.get("project_name", "")),
@@ -1568,7 +1571,13 @@ if [ -n "$NEW_FILES" ] && [ -f "$CREATED_MD" ]; then
             [ -n "$file" ] && echo "  📁 $file"
         done
         echo ""
-        echo "Recommended: Use record_file tool to track important files"
+        echo "To record these files, copy & run in Claude:"
+        echo "────────────────────────────────────────"
+        echo -e "$UNTRACKED" | while read -r file; do
+            [ -n "$file" ] && echo "record_file(path=\".\", file_path=\"$file\", purpose=\"<describe purpose>\")"
+        done
+        echo "────────────────────────────────────────"
+        echo ""
         echo "Continuing commit... (this is a warning, not a block)"
         echo ""
     fi
@@ -1627,6 +1636,13 @@ echo "[Clouvel] All checks passed. ✓"
 - If BLOCK appears, do not write code, guide user to write documentation
 - If PASS appears, proceed with coding
 - WARN is a recommendation, can proceed but suggest adding recommended docs
+
+**Must call `record_file` after creating important files.**
+
+- After creating a new file with Write tool, call `record_file` to track it
+- Required fields: path (project root), file_path (relative), purpose (what it does)
+- Skip for: temporary files, test data, config files (.json, .yml, .env)
+- This enables file tracking and prevents accidental deletion
 
 """
 

@@ -182,10 +182,92 @@ def _check_tests(project_path: Path) -> tuple[int, list[str]]:
     return len(test_files), test_files[:5]  # 최대 5개만 반환
 
 
-async def can_code(path: str) -> list[TextContent]:
-    """Check if coding is allowed - core feature (B4: quality gate extension)"""
+async def _check_file_tracking(project_path: Path) -> list[TextContent]:
+    """Check if new files are tracked in created.md (post-coding check)"""
+    import subprocess
+
+    created_md = project_path / ".claude" / "files" / "created.md"
+
+    # Get new files from git (uncommitted + staged)
+    try:
+        # New files (untracked + staged new)
+        result = subprocess.run(
+            ["git", "diff", "--name-only", "--diff-filter=A", "HEAD"],
+            capture_output=True, text=True, cwd=project_path, timeout=10
+        )
+        new_files_staged = set(result.stdout.strip().split("\n")) if result.stdout.strip() else set()
+
+        # Untracked files
+        result2 = subprocess.run(
+            ["git", "ls-files", "--others", "--exclude-standard"],
+            capture_output=True, text=True, cwd=project_path, timeout=10
+        )
+        new_files_untracked = set(result2.stdout.strip().split("\n")) if result2.stdout.strip() else set()
+
+        new_files = new_files_staged | new_files_untracked
+        new_files.discard("")  # Remove empty string
+    except Exception:
+        return [TextContent(type="text", text="⚠️ POST CHECK: Could not run git commands")]
+
+    if not new_files:
+        return [TextContent(type="text", text="✅ POST CHECK: No new files detected")]
+
+    # Skip patterns (config, docs, etc.)
+    skip_patterns = {".md", ".txt", ".json", ".yml", ".yaml", ".gitignore", ".env", "__pycache__", ".pyc"}
+    filtered_files = []
+    for f in new_files:
+        if not any(f.endswith(ext) or ext in f for ext in skip_patterns):
+            filtered_files.append(f)
+
+    if not filtered_files:
+        return [TextContent(type="text", text="✅ POST CHECK: No trackable new files (all config/docs)")]
+
+    # Check created.md
+    tracked_files = set()
+    if created_md.exists():
+        content = created_md.read_text(encoding="utf-8")
+        for f in filtered_files:
+            if f in content:
+                tracked_files.add(f)
+
+    untracked = [f for f in filtered_files if f not in tracked_files]
+
+    if not untracked:
+        return [TextContent(type="text", text=f"✅ POST CHECK: All {len(filtered_files)} new files are tracked")]
+
+    # Generate warning with copy-paste commands
+    commands = []
+    for f in untracked[:10]:  # Max 10
+        commands.append(f'record_file(path=".", file_path="{f}", purpose="<describe>")')
+
+    output = f"""⚠️ POST CHECK: {len(untracked)} untracked new files
+
+**Untracked files:**
+{chr(10).join(f"  📁 {f}" for f in untracked[:10])}
+{f"  ... and {len(untracked) - 10} more" if len(untracked) > 10 else ""}
+
+**To track, copy & run:**
+```
+{chr(10).join(commands)}
+```
+"""
+    return [TextContent(type="text", text=output)]
+
+
+async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
+    """Check if coding is allowed - core feature (B4: quality gate extension)
+
+    Args:
+        path: docs folder path
+        mode: "pre" (default) - check before coding
+              "post" - check after coding (verify file tracking)
+    """
     docs_path = Path(path)
     project_path = docs_path.parent if docs_path.name == "docs" else docs_path
+
+    # POST mode: check file tracking
+    if mode == "post":
+        return await _check_file_tracking(project_path)
 
     if not docs_path.exists():
         return [TextContent(type="text", text=CAN_CODE_BLOCK_NO_DOCS.format(path=path))]

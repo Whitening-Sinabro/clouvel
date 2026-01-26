@@ -40,10 +40,12 @@ from .tools import (
     # knowledge (Free, v1.4)
     record_decision, record_location, search_knowledge, get_context, init_knowledge, rebuild_index,
     unlock_decision, list_locked_decisions,
-    # manager (Pro, v1.2)
-    manager, ask_manager, list_managers, MANAGERS,
+    # manager (Pro, v1.2) - 아키텍처 결정 #30: tools/__init__.py에서만 import
+    manager, ask_manager, list_managers, MANAGERS, quick_perspectives, generate_meeting_sync,
     # ship (Pro, v1.2)
     ship, quick_ship, full_ship,
+    # architecture (v1.8)
+    arch_check, check_imports, check_duplicates,
 )
 
 # Error Learning tools (Pro feature - separate import)
@@ -711,6 +713,41 @@ TOOL_DEFINITIONS = [
         description="Clouvel Pro guide. Shovel auto-install, Error Learning, etc.",
         inputSchema={"type": "object", "properties": {}}
     ),
+
+    # === Architecture Guard (v1.8) ===
+    Tool(
+        name="arch_check",
+        description="Check existing code before adding new function/module. Prevents duplicate definitions.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "name": {"description": "Function/class name to add", "type": "string"},
+                "purpose": {"description": "Purpose description", "type": "string"},
+                "path": {"description": "Project root path", "type": "string"},
+            },
+            "required": ["name", "purpose"]
+        }
+    ),
+    Tool(
+        name="check_imports",
+        description="Validate server.py import patterns. Detects architecture rule violations.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"description": "Project root path", "type": "string"},
+            },
+        }
+    ),
+    Tool(
+        name="check_duplicates",
+        description="Detect duplicate function definitions across __init__.py files.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"description": "Project root path", "type": "string"},
+            },
+        }
+    ),
 ]
 
 
@@ -806,6 +843,11 @@ TOOL_HANDLERS = {
 
     # Pro 안내
     "upgrade_pro": lambda args: _upgrade_pro(),
+
+    # Architecture Guard (v1.8)
+    "arch_check": lambda args: arch_check(args.get("name", ""), args.get("purpose", ""), args.get("path", ".")),
+    "check_imports": lambda args: check_imports(args.get("path", ".")),
+    "check_duplicates": lambda args: check_duplicates(args.get("path", ".")),
 }
 
 
@@ -1159,9 +1201,8 @@ async def _wrap_manager(args: dict) -> list[TextContent]:
     # Dynamic meeting transcript generation mode
     if use_dynamic:
         try:
-            from .tools.manager.generator import generate_meeting_sync
             import os
-
+            # 아키텍처 결정 #30: 상단에서 import됨 (tools/__init__.py)
             # Guess project path (use current working directory)
             project_path = os.getcwd()
 
@@ -1267,7 +1308,7 @@ async def _wrap_list_managers() -> list[TextContent]:
 
 async def _wrap_quick_perspectives(args: dict) -> list[TextContent]:
     """quick_perspectives tool wrapper"""
-    from .tools.manager import quick_perspectives
+    # 아키텍처 결정 #30: 상단에서 import됨 (tools/__init__.py)
     result = quick_perspectives(
         context=args.get("context", ""),
         max_managers=args.get("max_managers", 4),

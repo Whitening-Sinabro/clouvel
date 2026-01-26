@@ -82,65 +82,47 @@ from .knowledge import (
     list_locked_decisions,
 )
 
-# Manager 도구 (API 기반 - v1.6.0)
-# Pro 기능은 Cloudflare Workers API로 제공됨
-from ..api_client import call_manager_api, get_trial_status as get_api_trial_status
-
-def manager(
-    context: str,
-    mode: str = "auto",
-    managers: list = None,
-    include_checklist: bool = True,
-    topic: str = None,
-    **kwargs
-):
-    """
-    8 C-Level manager feedback via API.
-
-    Args:
-        context: Content to review
-        mode: 'auto', 'all', or 'specific'
-        managers: List of managers when mode='specific'
-        topic: Topic hint (auth, api, payment, etc.)
-
-    Returns:
-        Manager feedback and recommendations
-    """
-    return call_manager_api(
-        context=context,
-        topic=topic,
-        mode=mode,
-        managers=managers,
+# Manager 도구 (v1.8.0 - 단일 소스)
+# 아키텍처 결정 #30: tools/__init__.py에서만 export, 중복 정의 금지
+# tools/manager/에서 import하여 re-export
+try:
+    from .manager import (
+        manager,
+        ask_manager,
+        list_managers,
+        MANAGERS,
+        quick_perspectives,
+        generate_meeting_sync,  # Dynamic meeting generation
     )
+    _HAS_MANAGER = True
+except ImportError as e:
+    # manager 모듈 로드 실패 시 fallback
+    _HAS_MANAGER = False
+    MANAGERS = {}
 
-def ask_manager(manager_key: str, question: str):
-    """Ask a specific manager a question."""
-    return call_manager_api(
-        context=question,
-        mode="specific",
-        managers=[manager_key],
-    )
+    def manager(*args, **kwargs):
+        return {"error": f"Manager module not available: {e}"}
 
-def list_managers():
-    """List available managers."""
-    return [
-        {"key": "PM", "emoji": "👔", "title": "Product Manager", "focus": "Scope & Requirements"},
-        {"key": "CTO", "emoji": "🛠️", "title": "CTO", "focus": "Architecture & Tech Debt"},
-        {"key": "QA", "emoji": "🧪", "title": "QA Lead", "focus": "Testing & Quality"},
-        {"key": "CDO", "emoji": "🎨", "title": "Chief Design Officer", "focus": "UX & Accessibility"},
-        {"key": "CMO", "emoji": "📢", "title": "CMO", "focus": "Launch & Positioning"},
-        {"key": "CFO", "emoji": "💰", "title": "CFO", "focus": "Cost & ROI"},
-        {"key": "CSO", "emoji": "🔒", "title": "CSO", "focus": "Security & Compliance"},
-        {"key": "ERROR", "emoji": "🔥", "title": "Error Handler", "focus": "Error Handling & Recovery"},
-    ]
+    def ask_manager(*args, **kwargs):
+        return {"error": f"Manager module not available: {e}"}
 
-MANAGERS = {m["key"]: m for m in list_managers()}
-_HAS_MANAGER = True
+    def list_managers():
+        return []
+
+    def quick_perspectives(*args, **kwargs):
+        return {"error": f"Manager module not available: {e}"}
 
 from .ship import (
     ship,
     quick_ship,
     full_ship,
+)
+
+# Architecture Guard 도구 (v1.8)
+from .architecture import (
+    arch_check,
+    check_imports,
+    check_duplicates,
 )
 
 # Error Learning 도구 (Pro 기능 - 파일이 없으면 스킵)
@@ -208,4 +190,6 @@ __all__ = [
     # errors (Pro, v1.4, v2.0)
     "error_record", "error_check", "error_learn", "log_error", "analyze_error", "get_error_summary",
     "error_search", "error_resolve", "error_get", "error_stats",
+    # architecture (v1.8)
+    "arch_check", "check_imports", "check_duplicates",
 ]

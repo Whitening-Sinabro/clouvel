@@ -24,6 +24,14 @@
 | `README.md` | 프로젝트 소개 | ❌ |
 | `CHANGELOG.md` | 변경 이력 | ❌ |
 
+## 아키텍처 문서
+
+| 파일경로 | 목적 | 삭제가능 |
+|----------|------|----------|
+| `docs/architecture/flow_manager.md` | Manager 코드 플로우 (엔트리포인트, 호출그래프, 시퀀스) | ❌ |
+| `docs/architecture/data_contracts.md` | Manager API 요청/응답 스키마, 인증 흐름 | ❌ |
+| `docs/architecture/decision_log_manager.md` | Manager 아키텍처 결정 로그 (옵션 비교) | ❌ |
+
 ## 핵심 소스 코드
 
 | 파일경로 | 목적 | 삭제가능 |
@@ -82,3 +90,6 @@
 | 2026-01-25 | Phase 4: context 분석 | `src/clouvel/tools/manager/utils.py` (패턴 감지 추가) |
 | 2026-01-25 | Phase 4: LLM 최적화 | `src/clouvel/tools/manager/formatter.py` (XML + bookending) |
 | 2026-01-25 | Phase 5: record_file | `src/clouvel/tools/tracking.py` (신규) |
+| 2026-01-26 | 아키텍처 문서화 | `docs/architecture/flow_manager.md` (신규) |
+| 2026-01-26 | 아키텍처 문서화 | `docs/architecture/data_contracts.md` (신규) |
+| 2026-01-26 | 아키텍처 문서화 | `docs/architecture/decision_log_manager.md` (신규) |

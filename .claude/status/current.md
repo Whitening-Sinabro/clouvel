@@ -1,6 +1,6 @@
 # Clouvel 현재 상태
 
-> **마지막 업데이트**: 2026-01-26 (v1.7.0 배포)
+> **마지막 업데이트**: 2026-01-26 (v1.7.3 배포)
 
 ---
 
@@ -8,12 +8,26 @@
 
 | 항목              | 상태                              |
 | ----------------- | --------------------------------- |
-| **clouvel**       | v1.7.0 PyPI 배포 완료 ✅          |
-| **아키텍처**      | ✅ Manager 충돌 해결 (#32, #41)   |
+| **clouvel**       | v1.7.3 PyPI 배포 완료             |
+| **아키텍처**      | ⚠️ Manager 실행 경로 불일치 발견   |
 | **Knowledge Base**| ✅ 아키텍처 결정 기록 완료        |
 | **라이선스 서버** | ✅ 동작 중 (Polar.sh + Worker API) |
 | **결제**          | ✅ Polar.sh 연동 완료             |
 | **보안**          | ✅ 민감 파일 커밋 차단 자동화     |
+
+---
+
+## 결론 (2026-01-26)
+
+**Manager 실행 경로 불일치 문제 발견 및 문서화 완료**
+
+- `server.py`가 `call_manager_api()` 대신 로컬 `tools/manager/` 모듈 사용
+- `tools/manager/`는 PyPI 빌드에서 제외됨 → 설치 시 ImportError
+- 문서: `docs/architecture/flow_manager.md`, `data_contracts.md`, `decision_log_manager.md`
+
+**다음 액션 (택1)**:
+1. 옵션1: `_wrap_manager()`가 `call_manager_api()` 호출하도록 수정 (권장)
+2. 옵션2: `tools/manager/`를 PyPI 빌드에 포함
 
 ---
 

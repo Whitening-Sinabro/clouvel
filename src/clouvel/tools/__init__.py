@@ -97,20 +97,22 @@ try:
     _HAS_MANAGER = True
 except ImportError as e:
     # manager 모듈 로드 실패 시 fallback
+    # Python 3에서 except 블록 종료 후 e가 삭제되므로 미리 저장
+    _MANAGER_IMPORT_ERROR = str(e)
     _HAS_MANAGER = False
     MANAGERS = {}
 
-    def manager(*args, **kwargs):
-        return {"error": f"Manager module not available: {e}"}
+    def manager(*args, _err=_MANAGER_IMPORT_ERROR, **kwargs):
+        return {"error": f"Manager module not available: {_err}"}
 
-    def ask_manager(*args, **kwargs):
-        return {"error": f"Manager module not available: {e}"}
+    def ask_manager(*args, _err=_MANAGER_IMPORT_ERROR, **kwargs):
+        return {"error": f"Manager module not available: {_err}"}
 
     def list_managers():
         return []
 
-    def quick_perspectives(*args, **kwargs):
-        return {"error": f"Manager module not available: {e}"}
+    def quick_perspectives(*args, _err=_MANAGER_IMPORT_ERROR, **kwargs):
+        return {"error": f"Manager module not available: {_err}"}
 
     def generate_meeting_sync(*args, **kwargs):
         return "Manager module not available"

@@ -16,11 +16,14 @@ from ..api_client import call_ship_api
 
 def _check_dev_mode() -> bool:
     """Check if running in dev mode."""
-    if os.environ.get("CLOUVEL_DEV") == "1" or os.environ.get("CLOUVEL_DEV_MODE") == "1":
-        return True
-
-    dev_file = Path(__file__).parents[2] / ".clouvel-dev"
-    return dev_file.exists()
+    # 표준 개발자 감지 (git remote 체크 포함)
+    try:
+        from ..license_common import is_developer
+        if is_developer():
+            return True
+    except ImportError:
+        pass
+    return False
 
 
 def _trial_exhausted_response() -> Dict[str, Any]:

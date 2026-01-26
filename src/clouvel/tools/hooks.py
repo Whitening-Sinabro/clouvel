@@ -8,7 +8,19 @@ from mcp.types import TextContent
 
 
 async def hook_design(path: str, trigger: str, checks: list, block_on_fail: bool) -> list[TextContent]:
-    """설계 훅 - 코드 작성 전 자동 체크포인트"""
+    """설계 훅 - 코드 작성 전 자동 체크포인트
+
+    DEPRECATED: Use `setup_cli(hook="design")` instead. Will be removed in v2.0.
+    """
+    # Deprecation warning
+    deprecation_warning = """⚠️ **DEPRECATED**: `hook_design` will be removed in v2.0.
+Use `setup_cli` with hook option instead:
+
+**Migration**: `setup_cli(path, level="strict", hook="design", hook_trigger="pre_code")`
+
+---
+
+"""
     project_path = Path(path)
 
     if not project_path.exists():
@@ -43,7 +55,7 @@ async def hook_design(path: str, trigger: str, checks: list, block_on_fail: bool
     # 체크리스트 생성
     checklist_md = "\n".join(f"- [ ] {check}" for check in active_checks)
 
-    return [TextContent(type="text", text=f"""# 설계 훅 생성 완료
+    return [TextContent(type="text", text=deprecation_warning + f"""# 설계 훅 생성 완료
 
 ## 훅 설정
 
@@ -80,7 +92,19 @@ Claude가 코드 작성 전:
 
 
 async def hook_verify(path: str, trigger: str, steps: list, parallel: bool, continue_on_error: bool) -> list[TextContent]:
-    """검증 훅 - 코드 완료 후 자동 검증 체크포인트"""
+    """검증 훅 - 코드 완료 후 자동 검증 체크포인트
+
+    DEPRECATED: Use `setup_cli(hook="verify")` instead. Will be removed in v2.0.
+    """
+    # Deprecation warning
+    deprecation_warning = """⚠️ **DEPRECATED**: `hook_verify` will be removed in v2.0.
+Use `setup_cli` with hook option instead:
+
+**Migration**: `setup_cli(path, level="strict", hook="verify", hook_trigger="post_code")`
+
+---
+
+"""
     project_path = Path(path)
 
     if not project_path.exists():
@@ -132,7 +156,7 @@ async def hook_verify(path: str, trigger: str, steps: list, parallel: bool, cont
     execution_mode = "병렬 (동시 실행)" if parallel else "순차 (하나씩 실행)"
     error_handling = "계속 진행" if continue_on_error else "즉시 중단"
 
-    return [TextContent(type="text", text=f"""# 검증 훅 생성 완료
+    return [TextContent(type="text", text=deprecation_warning + f"""# 검증 훅 생성 완료
 
 ## 훅 설정
 

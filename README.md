@@ -78,7 +78,8 @@ That's it. No config needed.
 | Feature | Description |
 |---------|-------------|
 | `can_code` | PRD gate - blocks coding without specs |
-| `start` | Project onboarding with PRD templates |
+| `start` | Project onboarding with PRD templates (v1.9: `--template`, `--guide`, `--init`) |
+| `setup_cli` | Project setup with hooks (v1.9: `--rules`, `--hook`) |
 | `plan` | Detailed execution planning |
 | `save_prd` | Save PRD from conversation |
 | Knowledge Base | SQLite-based decision tracking + FTS5 search |
@@ -90,7 +91,8 @@ That's it. No config needed.
 | Feature | Description |
 |---------|-------------|
 | `manager` | 8 C-Level managers review your code (PM, CTO, QA, CDO, CMO, CFO, CSO, Error) |
-| `ship` | One-click test → verify → evidence generation |
+| `quick_perspectives` | Fast pre-coding check with key questions |
+| `ship` | One-click lint → test → build → evidence generation |
 | Error Learning | Learn from mistakes, auto-generate NEVER/ALWAYS rules |
 | Dynamic meetings | AI-powered team discussions with Claude API |
 
@@ -186,6 +188,30 @@ You: "Review my login implementation"
 Status: NEEDS_REVISION
 ```
 
+### v1.9 Consolidated Tools
+
+```bash
+# Before: Multiple tools
+get_prd_template(template="web-app")
+get_prd_guide()
+init_docs()
+
+# After: Single tool with options
+start --template=web-app    # Get template
+start --guide               # Get PRD writing guide
+start --init                # Initialize docs folder
+
+# Before: Separate hook tools
+init_rules(template="web")
+hook_design(trigger="pre_code")
+hook_verify(trigger="post_code")
+
+# After: Single tool with options
+setup_cli --rules=web              # Initialize rules
+setup_cli --hook=design            # Create design hook
+setup_cli --hook=verify            # Create verify hook
+```
+
 ---
 
 ## Documentation
@@ -203,6 +229,26 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 - [Report bugs](https://github.com/Whitening-Sinabro/clouvel/issues)
 - [Request features](https://github.com/Whitening-Sinabro/clouvel/issues)
 - [Join discussions](https://github.com/Whitening-Sinabro/clouvel/discussions)
+
+---
+
+## Deprecation Notice (v1.9)
+
+The following tools show deprecation warnings and will be removed in v2.0:
+
+| Deprecated | Use Instead |
+|------------|-------------|
+| `scan_docs` | `can_code` |
+| `analyze_docs` | `can_code` |
+| `verify` | `ship` |
+| `gate` | `ship` |
+| `get_prd_template` | `start --template` |
+| `get_prd_guide` | `start --guide` |
+| `init_docs` | `start --init` |
+| `init_rules` | `setup_cli --rules` |
+| `hook_design` | `setup_cli --hook=design` |
+| `hook_verify` | `setup_cli --hook=verify` |
+| `handoff` | `record_decision` + `update_progress` |
 
 ---
 

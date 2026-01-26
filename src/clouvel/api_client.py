@@ -50,6 +50,8 @@ def call_manager_api(
     topic: Optional[str] = None,
     mode: str = "auto",
     managers: list = None,
+    use_dynamic: bool = False,
+    include_checklist: bool = True,
 ) -> Dict[str, Any]:
     """
     Call manager API.
@@ -59,10 +61,27 @@ def call_manager_api(
         topic: Topic hint (auth, api, payment, etc.)
         mode: 'auto', 'all', or 'specific'
         managers: List of managers when mode='specific'
+        use_dynamic: If True, generates dynamic meeting via Claude API
+        include_checklist: Whether to include checklist
 
     Returns:
         Manager feedback and recommendations
     """
+    # Developer mode: bypass API, use local fallback with full features
+    try:
+        from .license_common import is_developer
+        if is_developer():
+            return _dev_mode_response(
+                context=context,
+                topic=topic,
+                mode=mode,
+                managers=managers,
+                use_dynamic=use_dynamic,
+                include_checklist=include_checklist,
+            )
+    except ImportError:
+        pass
+
     try:
         payload = {
             "context": context,
@@ -132,6 +151,18 @@ def call_ship_api(
 
     Ship runs locally but requires API validation for trial/license.
     """
+    # Developer mode: always allow
+    try:
+        from .license_common import is_developer
+        if is_developer():
+            return {
+                "allowed": True,
+                "dev_mode": True,
+                "message": "Developer mode - unlimited ship access",
+            }
+    except ImportError:
+        pass
+
     try:
         payload = {
             "path": path,
@@ -190,6 +221,82 @@ def get_trial_status() -> Dict[str, Any]:
             "error": str(e),
             "features": {},
         }
+
+
+def _dev_mode_response(
+    context: str,
+    topic: Optional[str] = None,
+    mode: str = "auto",
+    managers: list = None,
+    use_dynamic: bool = False,
+    include_checklist: bool = True,
+) -> Dict[str, Any]:
+    """Developer mode response - use local manager module with full features."""
+    try:
+        # Dynamic meeting: use generate_meeting_sync (calls Claude API if available)
+        if use_dynamic:
+            from .tools.manager import generate_meeting_sync
+            meeting_output = generate_meeting_sync(
+                context=context,
+                topic=topic,
+            )
+            return {
+                "dev_mode": True,
+                "formatted_output": meeting_output,
+                "active_managers": ["PM", "CTO", "QA", "CDO", "CFO", "CSO", "CMO"],
+            }
+
+        # Regular mode: use local manager module
+        from .tools.manager import manager
+        result = manager(
+            context=context,
+            mode=mode,
+            managers=managers,
+            topic=topic,
+            use_dynamic=False,
+            include_checklist=include_checklist,
+        )
+        result["dev_mode"] = True
+        return result
+    except ImportError:
+        pass
+
+    # Fallback: return mock full response for dev testing
+    return {
+        "topic": topic or "feature",
+        "dev_mode": True,
+        "active_managers": ["PM", "CTO", "QA", "CDO", "CFO", "CSO", "CMO"],
+        "feedback": {
+            "PM": {"emoji": "👔", "title": "Product Manager", "questions": ["Is this in the PRD?", "What is the MVP scope?"]},
+            "CTO": {"emoji": "🛠️", "title": "CTO", "questions": ["Does this follow existing patterns?", "What is the maintenance burden?"]},
+            "QA": {"emoji": "🧪", "title": "QA Lead", "questions": ["What are the edge cases?", "How will you test this?"]},
+            "CDO": {"emoji": "🎨", "title": "Design Officer", "questions": ["Is the UX intuitive?", "Does it match the design system?"]},
+            "CFO": {"emoji": "💰", "title": "CFO", "questions": ["What is the cost impact?", "ROI calculation?"]},
+            "CSO": {"emoji": "🔒", "title": "Security Officer", "questions": ["Any security concerns?", "Data protection compliance?"]},
+            "CMO": {"emoji": "📣", "title": "Marketing Officer", "questions": ["How will users discover this?", "Messaging strategy?"]},
+        },
+        "formatted_output": f"""
+## 💡 C-Level Perspectives (Developer Mode)
+
+> 🛠️ **DEV MODE**: Using local manager, no API call.
+
+**Context**: {context[:100]}...
+
+**👔 PM**: Is this in the PRD? What is the MVP scope?
+
+**🛠️ CTO**: Does this follow existing patterns?
+
+**🧪 QA**: What are the edge cases? How will you test this?
+
+**🎨 CDO**: Is the UX intuitive?
+
+**🔒 CSO**: Any security concerns?
+
+---
+
+> Developer mode - unlimited access
+""",
+    }
 
 
 def _fallback_response(error_message: str) -> Dict[str, Any]:

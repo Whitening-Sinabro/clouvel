@@ -439,7 +439,15 @@ def _detect_project_type(project_path: Path) -> Dict[str, Any]:
     return detected
 
 
-def start(path: str, project_name: str = "", project_type: str = "") -> Dict[str, Any]:
+def start(
+    path: str,
+    project_name: str = "",
+    project_type: str = "",
+    template: str = "",
+    layout: str = "standard",
+    guide: bool = False,
+    init: bool = False
+) -> Dict[str, Any]:
     """
     Start project onboarding.
 
@@ -454,6 +462,10 @@ def start(path: str, project_name: str = "", project_type: str = "") -> Dict[str
         path: Project root path
         project_name: Project name (optional)
         project_type: Force project type (optional)
+        template: Get PRD template (replaces get_prd_template)
+        layout: Template layout - lite, standard, detailed (default: standard)
+        guide: Show PRD writing guide (replaces get_prd_guide)
+        init: Initialize docs folder with templates (replaces init_docs)
 
     Returns:
         Onboarding result and next step guide (or PRD writing questions)
@@ -463,6 +475,172 @@ def start(path: str, project_name: str = "", project_type: str = "") -> Dict[str
     project_path = Path(path).resolve()
     docs_path = project_path / "docs"
     prd_path = docs_path / "PRD.md"
+
+    # === Option: --guide (PRD writing guide) ===
+    if guide:
+        return {
+            "status": "GUIDE",
+            "message": """# PRD Writing Guide
+
+## Why PRD?
+- Clarify what to build before coding
+- Align understanding between team/AI
+- Prevent "why did we do it this way?" later
+
+## Writing Order
+
+### Step 1: Core first
+1. **One-line Summary** - If you can't write it, it's not clear
+2. **Core Principles** - 3 things that never change
+
+### Step 2: Input/Output
+3. **Input Spec** - What comes in
+4. **Output Spec** - What goes out
+
+### Step 3: Exception handling
+5. **Error Cases** - Everything that could fail
+
+### Step 4: Details
+6. **API** - Endpoint list
+7. **DB** - Table structure
+8. **State Machine** - If applicable
+
+### Step 5: Verification
+9. **Test Plan** - How to verify
+
+## Tips
+- Don't try to write perfectly. Just write.
+- You can update while coding.
+- But never build features not in the PRD.
+"""
+        }
+
+    # === Option: --init (Initialize docs folder) ===
+    if init:
+        docs_path.mkdir(parents=True, exist_ok=True)
+        name = project_name or project_path.name
+        today = datetime.now().strftime('%Y-%m-%d')
+
+        templates_to_create = {
+            "PRD.md": f"""# {name} PRD
+
+> Created: {today}
+
+---
+
+## 1. Project Overview
+
+### 1.1 Purpose
+[Describe the problem this project solves]
+
+### 1.2 Goals
+- [ ] Core goal 1
+- [ ] Core goal 2
+
+---
+
+## 2. Functional Requirements
+
+### 2.1 Core Features
+1. **Feature 1**: Description
+
+### 2.2 Out of Scope
+- Items excluded from this version
+
+---
+
+## 3. Acceptance Criteria
+
+- [ ] Criterion 1
+- [ ] Criterion 2
+""",
+            "ARCHITECTURE.md": f"# {name} Architecture\n\n[Architecture description]\n",
+            "API.md": f"# {name} API\n\n| Method | Endpoint | Description |\n|--------|----------|-------------|\n| GET | /api/... | ... |\n",
+        }
+
+        created = []
+        for filename, content in templates_to_create.items():
+            file_path = docs_path / filename
+            if not file_path.exists():
+                file_path.write_text(content, encoding='utf-8')
+                created.append(filename)
+
+        return {
+            "status": "INITIALIZED",
+            "docs_path": str(docs_path),
+            "created_files": created,
+            "message": f"✅ Docs folder initialized: {docs_path}\n\nCreated: {', '.join(created) if created else 'None (already exist)'}\n\nNext: Fill in PRD.md sections"
+        }
+
+    # === Option: --template (Get PRD template) ===
+    if template:
+        name = project_name or project_path.name
+        today = datetime.now().strftime('%Y-%m-%d')
+
+        # Try loading from templates folder
+        templates_base = Path(__file__).parent.parent / "templates"
+        template_path = templates_base / template / f"{layout}.md"
+
+        if template_path.exists():
+            content = template_path.read_text(encoding="utf-8")
+            content = content.replace("{PROJECT_NAME}", name)
+            content = content.replace("{DATE}", today)
+        else:
+            # Fallback generic template
+            content = f"""# {name} PRD
+
+> This document is law. If it's not here, don't build it.
+> Created: {today}
+
+---
+
+## 1. One-line Summary
+[Write here]
+
+---
+
+## 2. Core Principles
+1. [Principle 1]
+2. [Principle 2]
+3. [Principle 3]
+
+---
+
+## 3. Input Spec
+### 3.1 [Input Type 1]
+- Format:
+- Required fields:
+- Constraints:
+
+---
+
+## 4. Output Spec
+### 4.1 [Output Type 1]
+- Format:
+- Fields:
+- Example:
+
+---
+
+## 5. Error Cases
+| Situation | Handling | Error Code |
+|-----------|----------|------------|
+| [Situation1] | [Method] | [Code] |
+
+---
+
+## 6. Acceptance Criteria
+- [ ] [Test case 1]
+- [ ] [Test case 2]
+"""
+
+        return {
+            "status": "TEMPLATE",
+            "template": template,
+            "layout": layout,
+            "content": content,
+            "message": f"# {template}/{layout} Template\n\n```markdown\n{content}\n```\n\nSave to: `docs/PRD.md`"
+        }
 
     result = {
         "status": "UNKNOWN",

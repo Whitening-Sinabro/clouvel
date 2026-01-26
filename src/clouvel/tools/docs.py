@@ -73,12 +73,23 @@ def _load_template(template: str, layout: str) -> str:
 async def get_prd_template(project_name: str, output_path: str, template: str = "generic", layout: str = "standard") -> list[TextContent]:
     """Generate PRD template
 
+    DEPRECATED: Use `start(template=..., layout=...)` instead. Will be removed in v2.0.
+
     Args:
         project_name: Project name
         output_path: Output path
         template: Template type (web-app, api, cli, generic)
         layout: Layout (lite, standard, detailed)
     """
+    # Deprecation warning
+    deprecation_warning = """⚠️ **DEPRECATED**: `get_prd_template` will be removed in v2.0.
+Use `start` with template option instead:
+
+**Migration**: `start(path, template="web-app", layout="standard")`
+
+---
+
+"""
     # Try loading template
     content = _load_template(template, layout)
 
@@ -88,7 +99,7 @@ async def get_prd_template(project_name: str, output_path: str, template: str = 
         content = content.replace("{PROJECT_NAME}", project_name)
         content = content.replace("{DATE}", now)
 
-        return [TextContent(type="text", text=f"""# {template}/{layout} Template
+        return [TextContent(type="text", text=deprecation_warning + f"""# {template}/{layout} Template
 
 ```markdown
 {content}
@@ -185,7 +196,7 @@ async def get_prd_template(project_name: str, output_path: str, template: str = 
 | {datetime.now().strftime('%Y-%m-%d')} | Initial draft | |
 
 """
-    return [TextContent(type="text", text=f"```markdown\n{template_content}\n```\n\nSave to: `{output_path}`")]
+    return [TextContent(type="text", text=deprecation_warning + f"```markdown\n{template_content}\n```\n\nSave to: `{output_path}`")]
 
 
 async def list_templates() -> list[TextContent]:
@@ -226,8 +237,19 @@ async def write_prd_section(section: str, content: str) -> list[TextContent]:
 
 
 async def get_prd_guide() -> list[TextContent]:
-    """PRD writing guide"""
-    return [TextContent(type="text", text="""# PRD Writing Guide
+    """PRD writing guide
+
+    DEPRECATED: Use `start(guide=True)` instead. Will be removed in v2.0.
+    """
+    deprecation_warning = """⚠️ **DEPRECATED**: `get_prd_guide` will be removed in v2.0.
+Use `start` with guide option instead:
+
+**Migration**: `start(path, guide=True)`
+
+---
+
+"""
+    return [TextContent(type="text", text=deprecation_warning + """# PRD Writing Guide
 
 ## Why PRD?
 - Clarify what to build before coding

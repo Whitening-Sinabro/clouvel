@@ -8,7 +8,19 @@ from mcp.types import TextContent
 
 
 async def init_rules(path: str, template: str) -> list[TextContent]:
-    """규칙 모듈화 초기화"""
+    """규칙 모듈화 초기화
+
+    DEPRECATED: Use `setup_cli(rules=...)` instead. Will be removed in v2.0.
+    """
+    # Deprecation warning
+    deprecation_warning = """⚠️ **DEPRECATED**: `init_rules` will be removed in v2.0.
+Use `setup_cli` with rules option instead:
+
+**Migration**: `setup_cli(path, level="strict", rules="web")`
+
+---
+
+"""
     project_path = Path(path)
 
     if not project_path.exists():
@@ -112,7 +124,7 @@ async def init_rules(path: str, template: str) -> list[TextContent]:
 
     created_list = "\n".join(f"- {f}" for f in created) if created else "없음 (이미 존재)"
 
-    return [TextContent(type="text", text=f"""# 규칙 모듈화 완료
+    return [TextContent(type="text", text=deprecation_warning + f"""# 규칙 모듈화 완료
 
 ## 템플릿
 **{template}**

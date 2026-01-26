@@ -186,12 +186,15 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="setup_cli",
-        description="CLI environment setup. Generate hooks, CLAUDE.md, pre-commit.",
+        description="CLI environment setup. Generate hooks, CLAUDE.md, pre-commit. Now includes: --rules, --hook options. (v1.9 extended)",
         inputSchema={
             "type": "object",
             "properties": {
                 "path": {"type": "string", "description": "Project root path"},
-                "level": {"type": "string", "enum": ["remind", "strict", "full"]}
+                "level": {"type": "string", "enum": ["remind", "strict", "full"]},
+                "rules": {"type": "string", "description": "Initialize rules (replaces init_rules)", "enum": ["web", "api", "fullstack", "minimal"]},
+                "hook": {"type": "string", "description": "Create hook (replaces hook_design, hook_verify)", "enum": ["design", "verify"]},
+                "hook_trigger": {"type": "string", "description": "Trigger for hook", "enum": ["pre_code", "pre_feature", "pre_refactor", "pre_api", "post_code", "post_feature", "pre_commit", "pre_push"]}
             },
             "required": ["path"]
         }
@@ -410,16 +413,20 @@ TOOL_DEFINITIONS = [
         }
     ),
 
-    # === Start Tool (Free, v1.2) ===
+    # === Start Tool (Free, v1.2 → v1.9 extended) ===
     Tool(
         name="start",
-        description="Project onboarding. PRD check, auto-detect project type, interactive PRD writing guide. (Free)",
+        description="Project onboarding. PRD check, auto-detect project type, interactive PRD writing guide. Now includes: --template, --guide, --init options. (Free)",
         inputSchema={
             "type": "object",
             "properties": {
                 "path": {"type": "string", "description": "Project root path"},
                 "project_name": {"type": "string", "description": "Project name (optional)"},
-                "project_type": {"type": "string", "description": "Force project type (optional)", "enum": ["web-app", "api", "cli", "chrome-ext", "discord-bot", "landing-page", "generic"]}
+                "project_type": {"type": "string", "description": "Force project type (optional)", "enum": ["web-app", "api", "cli", "chrome-ext", "discord-bot", "landing-page", "generic"]},
+                "template": {"type": "string", "description": "Get PRD template (replaces get_prd_template)", "enum": ["web-app", "api", "cli", "chrome-ext", "discord-bot", "landing-page", "saas", "generic"]},
+                "layout": {"type": "string", "description": "Template layout", "enum": ["lite", "standard", "detailed"], "default": "standard"},
+                "guide": {"type": "boolean", "description": "Show PRD writing guide (replaces get_prd_guide)", "default": False},
+                "init": {"type": "boolean", "description": "Initialize docs folder with templates (replaces init_docs)", "default": False}
             },
             "required": ["path"]
         }
@@ -779,7 +786,7 @@ TOOL_HANDLERS = {
 
     # Setup
     "init_clouvel": lambda args: init_clouvel(args.get("platform", "ask")),
-    "setup_cli": lambda args: setup_cli(args.get("path", ""), args.get("level", "remind")),
+    "setup_cli": lambda args: setup_cli(args.get("path", ""), args.get("level", "remind"), args.get("rules", ""), args.get("hook", ""), args.get("hook_trigger", "")),
 
     # Rules (v0.5)
     "init_rules": lambda args: init_rules(args.get("path", ""), args.get("template", "minimal")),
@@ -869,17 +876,33 @@ async def _wrap_start(args: dict) -> list[TextContent]:
     result = start(
         args.get("path", ""),
         args.get("project_name", ""),
-        args.get("project_type", "")
+        args.get("project_type", ""),
+        args.get("template", ""),
+        args.get("layout", "standard"),
+        args.get("guide", False),
+        args.get("init", False)
     )
 
     if isinstance(result, dict):
+        # Handle special modes (guide, init, template)
+        status = result.get("status", "UNKNOWN")
+
+        if status == "GUIDE":
+            return [TextContent(type="text", text=result.get("message", ""))]
+
+        if status == "INITIALIZED":
+            return [TextContent(type="text", text=result.get("message", ""))]
+
+        if status == "TEMPLATE":
+            return [TextContent(type="text", text=result.get("message", ""))]
+
         # Project type info
         ptype = result.get("project_type", {})
         type_info = f"**Type**: {ptype.get('description', 'N/A')} ({ptype.get('type', 'generic')}) - Confidence {ptype.get('confidence', 0)}%"
 
         output = f"""# 🚀 Start
 
-**Status**: {result.get('status', 'UNKNOWN')}
+**Status**: {status}
 **Project**: {result.get('project_name', 'N/A')}
 {type_info}
 
@@ -1195,19 +1218,23 @@ async def _wrap_manager(args: dict) -> list[TextContent]:
     """manager tool wrapper - Worker API 사용 (v1.8)
 
     아키텍처 결정: 로컬 tools/manager/ 대신 Worker API 호출
-    근거: docs/architecture/decision_log_manager.md
+    개발자 모드: 로컬 manager 모듈 직접 호출 (use_dynamic 포함)
     """
     context = args.get("context", "")
     topic = args.get("topic", None)
     mode = args.get("mode", "auto")
     managers = args.get("managers", None)
+    use_dynamic = args.get("use_dynamic", False)
+    include_checklist = args.get("include_checklist", True)
 
-    # Worker API 호출
+    # Worker API 호출 (개발자 모드면 로컬 실행)
     result = call_manager_api(
         context=context,
         topic=topic,
         mode=mode,
         managers=managers,
+        use_dynamic=use_dynamic,
+        include_checklist=include_checklist,
     )
 
     # 응답 처리

@@ -70,12 +70,196 @@ clouvel init -p /path/to/project -l strict
     return [TextContent(type="text", text=guides.get(platform, guides["cli"]))]
 
 
-async def setup_cli(path: str, level: str) -> list[TextContent]:
-    """CLI 환경 설정"""
+async def setup_cli(
+    path: str,
+    level: str,
+    rules: str = "",
+    hook: str = "",
+    hook_trigger: str = ""
+) -> list[TextContent]:
+    """CLI 환경 설정
+
+    Args:
+        path: Project root path
+        level: Enforcement level (remind, strict, full)
+        rules: Initialize rules with template (replaces init_rules) - web, api, fullstack, minimal
+        hook: Create hook (replaces hook_design, hook_verify) - design or verify
+        hook_trigger: Trigger for hook - pre_code, pre_feature, post_code, pre_commit, etc.
+    """
     project_path = Path(path).resolve()
 
     if not project_path.exists():
         return [TextContent(type="text", text=f"❌ 경로가 존재하지 않습니다: {path}")]
+
+    # === Option: --rules (Initialize rules) ===
+    if rules:
+        rules_dir = project_path / ".claude" / "rules"
+        rules_dir.mkdir(parents=True, exist_ok=True)
+
+        templates = {
+            "minimal": ["global.md", "security.md"],
+            "web": ["global.md", "security.md", "frontend.md"],
+            "api": ["global.md", "security.md", "api.md", "database.md"],
+            "fullstack": ["global.md", "security.md", "frontend.md", "api.md", "database.md"],
+        }
+
+        rule_contents = {
+            "global.md": """# Global Rules
+
+## ALWAYS
+- Read before Edit
+- Check PRD before implementing
+- Update progress after completing
+
+## NEVER
+- Skip documentation
+- Implement features not in PRD
+- Commit without tests
+""",
+            "security.md": """# Security Rules
+
+## ALWAYS
+- Validate user input
+- Use parameterized queries
+- Escape output for XSS prevention
+
+## NEVER
+- Store passwords in plain text
+- Expose sensitive data in logs
+- Trust client-side validation alone
+""",
+            "frontend.md": """# Frontend Rules
+
+## ALWAYS
+- Use semantic HTML
+- Handle loading/error states
+- Support keyboard navigation
+
+## NEVER
+- Use inline styles for complex CSS
+- Mutate props directly
+- Skip accessibility attributes
+""",
+            "api.md": """# API Rules
+
+## ALWAYS
+- Return consistent response format
+- Include proper HTTP status codes
+- Document all endpoints
+
+## NEVER
+- Expose internal errors to clients
+- Use GET for state-changing operations
+- Skip rate limiting
+""",
+            "database.md": """# Database Rules
+
+## ALWAYS
+- Use migrations for schema changes
+- Index foreign keys
+- Use transactions for multi-step operations
+
+## NEVER
+- Store JSON for relational data
+- Skip backup before migration
+- Use SELECT * in production
+""",
+        }
+
+        files_to_create = templates.get(rules, templates["minimal"])
+        created = []
+
+        for filename in files_to_create:
+            file_path = rules_dir / filename
+            if not file_path.exists():
+                file_path.write_text(rule_contents.get(filename, f"# {filename}\n"), encoding='utf-8')
+                created.append(filename)
+
+        return [TextContent(type="text", text=f"""# Rules Initialized
+
+## Template: {rules}
+
+## Created Files
+{chr(10).join(f"- {f}" for f in created) if created else "None (already exist)"}
+
+## Path
+`{rules_dir}`
+
+**Context savings 50%+!**
+""")]
+
+    # === Option: --hook (Create hook) ===
+    if hook:
+        hooks_dir = project_path / ".claude" / "hooks"
+        hooks_dir.mkdir(parents=True, exist_ok=True)
+
+        from datetime import datetime
+
+        if hook == "design":
+            default_checks = {
+                "pre_code": ["prd_exists", "architecture_review", "scope_defined"],
+                "pre_feature": ["feature_in_prd", "api_spec_exists", "db_schema_ready"],
+                "pre_refactor": ["test_coverage", "backup_exists", "rollback_plan"],
+                "pre_api": ["api_spec_complete", "auth_defined", "error_codes_listed"]
+            }
+            trigger = hook_trigger or "pre_code"
+            checks = default_checks.get(trigger, default_checks["pre_code"])
+
+            hook_config = {
+                "name": f"design_{trigger}",
+                "trigger": trigger,
+                "checks": checks,
+                "block_on_fail": True,
+                "created": datetime.now().isoformat()
+            }
+            hook_file = hooks_dir / f"{trigger}.json"
+            hook_file.write_text(json.dumps(hook_config, indent=2, ensure_ascii=False), encoding='utf-8')
+
+            return [TextContent(type="text", text=f"""# Design Hook Created
+
+## Trigger: {trigger}
+## Checks: {len(checks)}
+
+{chr(10).join(f"- [ ] {c}" for c in checks)}
+
+## Path
+`{hook_file}`
+""")]
+
+        elif hook == "verify":
+            default_steps = {
+                "post_code": ["lint", "type_check"],
+                "post_feature": ["lint", "test", "build"],
+                "pre_commit": ["lint", "test", "security_scan"],
+                "pre_push": ["lint", "test", "build", "integration_test"]
+            }
+            trigger = hook_trigger or "post_code"
+            steps = default_steps.get(trigger, default_steps["post_code"])
+
+            hook_config = {
+                "name": f"verify_{trigger}",
+                "trigger": trigger,
+                "steps": steps,
+                "parallel": False,
+                "continue_on_error": False,
+                "created": datetime.now().isoformat()
+            }
+            hook_file = hooks_dir / f"{trigger}.json"
+            hook_file.write_text(json.dumps(hook_config, indent=2, ensure_ascii=False), encoding='utf-8')
+
+            return [TextContent(type="text", text=f"""# Verify Hook Created
+
+## Trigger: {trigger}
+## Steps: {len(steps)}
+
+{chr(10).join(f"{i+1}. {s}" for i, s in enumerate(steps))}
+
+## Path
+`{hook_file}`
+""")]
+
+        else:
+            return [TextContent(type="text", text=f"❌ Unknown hook type: {hook}. Use 'design' or 'verify'.")]
 
     created_files = []
 

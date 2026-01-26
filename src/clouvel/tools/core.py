@@ -364,7 +364,22 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
 
 
 async def scan_docs(path: str) -> list[TextContent]:
-    """Scan docs folder"""
+    """Scan docs folder
+
+    DEPRECATED: Use `can_code` instead. Will be removed in v2.0.
+    """
+    # Deprecation warning
+    deprecation_warning = """⚠️ **DEPRECATED**: `scan_docs` will be removed in v2.0.
+Use `can_code` instead - it includes all scan_docs functionality plus:
+- PRD section validation
+- Test file detection
+- Knowledge Base context
+
+**Migration**: Replace `scan_docs(path)` with `can_code(path)`
+
+---
+
+"""
     docs_path = Path(path)
 
     if not docs_path.exists():
@@ -382,11 +397,26 @@ async def scan_docs(path: str) -> list[TextContent]:
     result = SCAN_RESULT.format(path=path, count=len(files))
     result += "\n".join(files)
 
-    return [TextContent(type="text", text=result)]
+    return [TextContent(type="text", text=deprecation_warning + result)]
 
 
 async def analyze_docs(path: str) -> list[TextContent]:
-    """Analyze docs folder"""
+    """Analyze docs folder
+
+    DEPRECATED: Use `can_code` instead. Will be removed in v2.0.
+    """
+    # Deprecation warning
+    deprecation_warning = """⚠️ **DEPRECATED**: `analyze_docs` will be removed in v2.0.
+Use `can_code` instead - it includes all analyze_docs functionality plus:
+- PRD section validation (acceptance criteria check)
+- Test file detection
+- Knowledge Base context loading
+
+**Migration**: Replace `analyze_docs(path)` with `can_code(path)`
+
+---
+
+"""
     docs_path = Path(path)
 
     if not docs_path.exists():
@@ -426,11 +456,23 @@ async def analyze_docs(path: str) -> list[TextContent]:
     else:
         result += ANALYZE_INCOMPLETE.format(count=len(missing))
 
-    return [TextContent(type="text", text=result)]
+    return [TextContent(type="text", text=deprecation_warning + result)]
 
 
 async def init_docs(path: str, project_name: str) -> list[TextContent]:
-    """Initialize docs folder + generate templates"""
+    """Initialize docs folder + generate templates
+
+    DEPRECATED: Use `start(init=True)` instead. Will be removed in v2.0.
+    """
+    # Deprecation warning
+    deprecation_warning = """⚠️ **DEPRECATED**: `init_docs` will be removed in v2.0.
+Use `start` with init option instead:
+
+**Migration**: `start(path, init=True)`
+
+---
+
+"""
     project_path = Path(path)
     docs_path = project_path / "docs"
 
@@ -459,4 +501,4 @@ async def init_docs(path: str, project_name: str) -> list[TextContent]:
 
     result += INIT_NEXT_STEPS
 
-    return [TextContent(type="text", text=result)]
+    return [TextContent(type="text", text=deprecation_warning + result)]

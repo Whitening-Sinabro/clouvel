@@ -14,7 +14,7 @@
   "hero": {
     "badge": "Claude Code용 MCP 서버",
     "badge_new": "NEW",
-    "badge_version": "v1.6.6 - 답 주는 AI 말고, 질문하는 AI",
+    "badge_version": "v1.9.0 - 52개 도구 → 12개 표준 (더 심플하게)",
     "title_1": "어려운 질문을",
     "title_2": "던지는 AI.",
     "subtitle": "8명의 AI 매니저가 코딩 전에 모든 각도에서 생각하게 도와줍니다.",

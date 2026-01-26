@@ -7,7 +7,23 @@ from mcp.types import TextContent
 
 
 async def verify(path: str, scope: str, checklist: list) -> list[TextContent]:
-    """Context Bias 제거 검증"""
+    """Context Bias 제거 검증
+
+    DEPRECATED: Use `ship` instead. Will be removed in v2.0.
+    """
+    # Deprecation warning
+    deprecation_warning = """⚠️ **DEPRECATED**: `verify` will be removed in v2.0.
+Use `ship` instead - it provides:
+- Automated lint/typecheck/test/build execution
+- EVIDENCE.md generation
+- License/Trial verification
+
+**Migration**: Replace `verify(path, scope)` with `ship(path, steps=["lint", "test"])`
+
+---
+
+"""
+
     # 기본 체크리스트
     default_checklist = {
         "file": [
@@ -31,7 +47,7 @@ async def verify(path: str, scope: str, checklist: list) -> list[TextContent]:
     active_checklist = checklist if checklist else default_checklist.get(scope, default_checklist["file"])
     checklist_md = "\n".join(f"- [ ] {item}" for item in active_checklist)
 
-    return [TextContent(type="text", text=f"""# Context Bias 제거 검증
+    result = f"""# Context Bias 제거 검증
 
 ## 검증 대상
 `{path}`
@@ -60,15 +76,31 @@ async def verify(path: str, scope: str, checklist: list) -> list[TextContent]:
 
 ## 검증 후
 
-- 모든 항목 통과 → `gate` 도구로 자동 검증
+- 모든 항목 통과 → `ship` 도구로 자동 검증
 - 실패 항목 있음 → 수정 후 재검증
 
 **"/clear 후 다시 보면 다르게 보인다"**
-""")]
+"""
+    return [TextContent(type="text", text=deprecation_warning + result)]
 
 
 async def gate(path: str, steps: list, fix: bool) -> list[TextContent]:
-    """Gate 검증 자동화"""
+    """Gate 검증 자동화
+
+    DEPRECATED: Use `ship` instead. Will be removed in v2.0.
+    """
+    # Deprecation warning
+    deprecation_warning = """⚠️ **DEPRECATED**: `gate` will be removed in v2.0.
+Use `ship` instead - it provides:
+- Same lint/test/build execution
+- Better EVIDENCE.md format
+- License/Trial integration
+
+**Migration**: Replace `gate(path, steps, fix)` with `ship(path, steps=steps, auto_fix=fix)`
+
+---
+
+"""
     project_path = Path(path)
 
     if not project_path.exists():
@@ -114,7 +146,7 @@ async def gate(path: str, steps: list, fix: bool) -> list[TextContent]:
     evidence_file = project_path / "EVIDENCE.md"
     evidence_file.write_text(evidence_template, encoding='utf-8')
 
-    return [TextContent(type="text", text=f"""# Gate 검증 시작
+    result = f"""# Gate 검증 시작
 
 ## 검증 단계
 
@@ -132,11 +164,31 @@ async def gate(path: str, steps: list, fix: bool) -> list[TextContent]:
 {'lint 에러는 자동 수정을 시도합니다.' if fix else ''}
 
 **모든 단계 PASS = 완료!**
-""")]
+"""
+    return [TextContent(type="text", text=deprecation_warning + result)]
 
 
 async def handoff(path: str, feature: str, decisions: str, warnings: str, next_steps: str) -> list[TextContent]:
-    """의도 기록"""
+    """의도 기록
+
+    DEPRECATED: Use `record_decision` + `update_progress` instead. Will be removed in v2.0.
+    """
+    # Deprecation warning
+    deprecation_warning = """⚠️ **DEPRECATED**: `handoff` will be removed in v2.0.
+Use `record_decision` + `update_progress` instead:
+- `record_decision`: Saves decisions to Knowledge Base (persists across sessions)
+- `update_progress`: Tracks current session progress
+
+**Migration**:
+```
+# Instead of handoff(path, feature, decisions, warnings, next_steps):
+record_decision(category="feature", decision=decisions, reasoning=feature)
+update_progress(path, completed=[feature], next=next_steps)
+```
+
+---
+
+"""
     project_path = Path(path)
 
     if not project_path.exists():
@@ -192,7 +244,7 @@ async def handoff(path: str, feature: str, decisions: str, warnings: str, next_s
 """
     handoff_file.write_text(content, encoding='utf-8')
 
-    return [TextContent(type="text", text=f"""# Handoff 기록 완료
+    result = f"""# Handoff 기록 완료
 
 ## 기록 위치
 `{handoff_file}`
@@ -209,4 +261,5 @@ async def handoff(path: str, feature: str, decisions: str, warnings: str, next_s
 ---
 
 **다음 작업자(또는 미래의 나)를 위한 기록이 저장되었습니다.**
-""")]
+"""
+    return [TextContent(type="text", text=deprecation_warning + result)]

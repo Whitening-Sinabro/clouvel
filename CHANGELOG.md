@@ -5,6 +5,51 @@ All notable changes to Clouvel will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-01-26
+
+### Added
+- **Tool Consolidation**: 52 MCP tools analyzed and standardized into 9 groups
+  - `start` now supports `--template`, `--layout`, `--guide`, `--init` options
+  - `setup_cli` now supports `--rules`, `--hook`, `--hook_trigger` options
+- **Deprecation Warnings**: 11 tools show deprecation notice (removed in v2.0)
+  - `scan_docs`, `analyze_docs` → use `can_code`
+  - `verify`, `gate` → use `ship`
+  - `get_prd_template`, `get_prd_guide`, `init_docs` → use `start` with options
+  - `init_rules`, `hook_design`, `hook_verify` → use `setup_cli` with options
+  - `handoff` → use `record_decision` + `update_progress`
+- **Developer Mode Fix**: Trial bypass for developers (no more `trial_exhausted` in dev)
+
+### Changed
+- **Architecture**: MCP tools consolidated from 52 to 12 standard + 18 keep + 6 merge + 5 deprecate
+- **Documentation**: MCP_CATALOG.md, MCP_GROUPS.md, MCP_STANDARDIZATION_PLAN.md
+
+### Philosophy
+- **"One tool, one purpose"** - Consolidate similar tools with options instead of separate commands
+
+---
+
+## [1.8.0] - 2026-01-26
+
+### Changed
+- **Manager Architecture**: Moved from local execution to Worker API
+  - `_wrap_manager()` now calls `call_manager_api()` instead of local module
+  - `_wrap_quick_perspectives()` also uses Worker API
+  - Local `tools/manager/` only used in developer mode
+- **Architecture Documentation**: Added SSOT documentation system
+  - `ENTRYPOINTS.md` - Entry points (CLI, MCP, Packaging)
+  - `SIDE_EFFECTS.md` - Side effects matrix
+  - `SMOKE_LOGS.md` - Execution verification records
+  - `CALL_FLOWS/` - Call flow diagrams
+  - `DECISION_LOG/` - Architecture Decision Records
+
+### Added
+- **Architecture Guard**: Tools for architecture validation
+  - `arch_check` - Check existing code before adding new functions
+  - `check_imports` - Validate import patterns
+  - `check_duplicates` - Detect duplicate function definitions
+
+---
+
 ## [1.6.0] - 2026-01-25
 
 ### Added

@@ -221,6 +221,11 @@
             Reference
           </p>
           <a
+            href="#deprecation"
+            class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
+            >Deprecation (v1.9)</a
+          >
+          <a
             href="#changelog"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
             >Changelog</a
@@ -918,11 +923,11 @@
                 >start</code
               >
               <span
-                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded"
-                >NEW v1.2</span
+                class="bg-accent text-white text-xs px-2 py-0.5 rounded"
+                >UPDATED v1.9</span
               >
               <span class="text-slate-500 text-sm"
-                >프로젝트 온보딩 + PRD 자동 생성</span
+                >프로젝트 온보딩 + PRD 자동 생성 (통합 도구)</span
               >
             </div>
             <div class="space-y-4">
@@ -935,6 +940,20 @@
                 >
                   <p>path: str - 프로젝트 루트 경로</p>
                   <p>project_name: str (optional) - 프로젝트 이름</p>
+                  <p class="text-accent">template: str (optional) - PRD 템플릿 타입 (web-app, api, cli, generic)</p>
+                  <p class="text-accent">layout: str (optional) - 템플릿 레이아웃 (lite, standard, detailed)</p>
+                  <p class="text-accent">guide: bool (optional) - PRD 작성 가이드 표시</p>
+                  <p class="text-accent">init: bool (optional) - docs 폴더 초기화</p>
+                </div>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
+                  v1.9 통합된 기능
+                </p>
+                <div class="text-sm text-slate-600 space-y-1">
+                  <p>• <code class="text-red-400 line-through">get_prd_template</code> → <code class="text-emerald-500">start --template=web-app</code></p>
+                  <p>• <code class="text-red-400 line-through">get_prd_guide</code> → <code class="text-emerald-500">start --guide</code></p>
+                  <p>• <code class="text-red-400 line-through">init_docs</code> → <code class="text-emerald-500">start --init</code></p>
                 </div>
               </div>
               <div>
@@ -1929,6 +1948,86 @@
           </div>
         </section>
 
+        <!-- Deprecation Notice (v1.9) -->
+        <section id="deprecation" class="mb-16">
+          <h2 class="text-2xl font-bold mb-6">Deprecation Notice (v1.9)</h2>
+
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="bg-amber-500 text-white text-xs font-semibold px-2 py-1 rounded">WARNING</span>
+              <span class="font-semibold text-amber-800">Tool Consolidation in v1.9</span>
+            </div>
+            <p class="text-amber-700 text-sm mb-4">
+              v1.9 consolidates 52 tools into 12 standard tools with options.
+              Deprecated tools still work but show warnings. They will be removed in v2.0.
+            </p>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-xl p-6">
+            <h3 class="font-semibold mb-4">Migration Guide</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-slate-200">
+                    <th class="text-left py-2 px-3 text-slate-600">Deprecated Tool</th>
+                    <th class="text-left py-2 px-3 text-slate-600">New Usage</th>
+                  </tr>
+                </thead>
+                <tbody class="font-mono text-xs">
+                  <tr class="border-b border-slate-100">
+                    <td class="py-2 px-3 text-red-500 line-through">get_prd_template</td>
+                    <td class="py-2 px-3 text-emerald-600">start --template=web-app</td>
+                  </tr>
+                  <tr class="border-b border-slate-100">
+                    <td class="py-2 px-3 text-red-500 line-through">get_prd_guide</td>
+                    <td class="py-2 px-3 text-emerald-600">start --guide</td>
+                  </tr>
+                  <tr class="border-b border-slate-100">
+                    <td class="py-2 px-3 text-red-500 line-through">init_docs</td>
+                    <td class="py-2 px-3 text-emerald-600">start --init</td>
+                  </tr>
+                  <tr class="border-b border-slate-100">
+                    <td class="py-2 px-3 text-red-500 line-through">list_templates</td>
+                    <td class="py-2 px-3 text-emerald-600">start --template (shows available)</td>
+                  </tr>
+                  <tr class="border-b border-slate-100">
+                    <td class="py-2 px-3 text-red-500 line-through">init_rules</td>
+                    <td class="py-2 px-3 text-emerald-600">setup_cli --rules</td>
+                  </tr>
+                  <tr class="border-b border-slate-100">
+                    <td class="py-2 px-3 text-red-500 line-through">hook_design</td>
+                    <td class="py-2 px-3 text-emerald-600">setup_cli --hook=design</td>
+                  </tr>
+                  <tr class="border-b border-slate-100">
+                    <td class="py-2 px-3 text-red-500 line-through">hook_verify</td>
+                    <td class="py-2 px-3 text-emerald-600">setup_cli --hook=verify</td>
+                  </tr>
+                  <tr class="border-b border-slate-100">
+                    <td class="py-2 px-3 text-red-500 line-through">quick_ship</td>
+                    <td class="py-2 px-3 text-emerald-600">ship --quick</td>
+                  </tr>
+                  <tr class="border-b border-slate-100">
+                    <td class="py-2 px-3 text-red-500 line-through">full_ship</td>
+                    <td class="py-2 px-3 text-emerald-600">ship --full</td>
+                  </tr>
+                  <tr class="border-b border-slate-100">
+                    <td class="py-2 px-3 text-red-500 line-through">init_planning</td>
+                    <td class="py-2 px-3 text-emerald-600">plan --init</td>
+                  </tr>
+                  <tr class="border-b border-slate-100">
+                    <td class="py-2 px-3 text-red-500 line-through">refresh_goals</td>
+                    <td class="py-2 px-3 text-emerald-600">plan --refresh</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-3 text-red-500 line-through">update_progress</td>
+                    <td class="py-2 px-3 text-emerald-600">plan --update</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
         <!-- Changelog -->
         <section id="changelog" class="mb-16">
           <h2 class="text-2xl font-bold mb-6">Changelog</h2>
@@ -1944,8 +2043,8 @@
           <div class="space-y-6 mb-10">
             <div class="border-l-4 border-emerald-500 pl-6">
               <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v1.3.4</span>
-                <span class="text-slate-500 text-sm">2026-01-22</span>
+                <span class="font-mono font-bold">v1.9.0</span>
+                <span class="text-slate-500 text-sm">2026-01-26</span>
                 <span
                   class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded"
                   >Latest</span
@@ -1953,17 +2052,47 @@
               </div>
               <ul class="text-sm text-slate-600 space-y-1">
                 <li>
-                  - <strong>템플릿 8종</strong>: web-app, api, cli, chrome-ext,
-                  discord-bot, landing-page, saas, generic (16개 파일)
+                  - <strong>Tool Consolidation</strong>: 52 tools → 12 standard tools with options
                 </li>
                 <li>
-                  - <strong>start 개선</strong>: 프로젝트 타입 자동 감지 +
-                  대화형 PRD 가이드
+                  - <strong>Deprecation Warnings</strong>: Old tools show warnings, work until v2.0
                 </li>
-                <li>- <strong>save_prd</strong>: PRD 저장 도구 추가</li>
                 <li>
-                  - <strong>버전 체크</strong>: PyPI 최신 버전 알림 (24시간
-                  캐싱)
+                  - <strong>Developer Mode Fix</strong>: Dynamic meeting works in dev mode
+                </li>
+              </ul>
+            </div>
+            <div class="border-l-4 border-slate-300 pl-6">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="font-mono font-bold">v1.8.0</span>
+                <span class="text-slate-500 text-sm">2026-01-25</span>
+              </div>
+              <ul class="text-sm text-slate-600 space-y-1">
+                <li>
+                  - <strong>Manager Worker API</strong>: Manager uses Worker API instead of local module
+                </li>
+                <li>
+                  - <strong>Architecture Documentation</strong>: Added manager architecture docs
+                </li>
+              </ul>
+            </div>
+            <div class="border-l-4 border-slate-300 pl-6">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="font-mono font-bold">v1.3.4</span>
+                <span class="text-slate-500 text-sm">2026-01-22</span>
+              </div>
+              <ul class="text-sm text-slate-600 space-y-1">
+                <li>
+                  - <strong>8 Templates</strong>: web-app, api, cli, chrome-ext,
+                  discord-bot, landing-page, saas, generic
+                </li>
+                <li>
+                  - <strong>start improvements</strong>: Auto-detect project type +
+                  interactive PRD guide
+                </li>
+                <li>- <strong>save_prd</strong>: PRD save tool added</li>
+                <li>
+                  - <strong>Version check</strong>: PyPI latest version notification (24h cache)
                 </li>
               </ul>
             </div>
@@ -2007,8 +2136,8 @@
           <div class="space-y-6">
             <div class="border-l-4 border-accent pl-6">
               <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v1.3.4</span>
-                <span class="text-slate-500 text-sm">2026-01-22</span>
+                <span class="font-mono font-bold">v1.9.0</span>
+                <span class="text-slate-500 text-sm">2026-01-26</span>
                 <span
                   class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded"
                   >Latest</span
@@ -2016,17 +2145,47 @@
               </div>
               <ul class="text-sm text-slate-600 space-y-1">
                 <li>
-                  - <strong>템플릿 8종</strong>: web-app, api, cli, chrome-ext,
+                  - <strong>Tool Consolidation</strong>: 52 tools → 12 standard tools with options
+                </li>
+                <li>
+                  - <strong>Deprecation Warnings</strong>: Old tools show warnings, work until v2.0
+                </li>
+                <li>
+                  - <strong>Developer Mode Fix</strong>: Dynamic meeting works in dev mode
+                </li>
+              </ul>
+            </div>
+            <div class="border-l-4 border-slate-300 pl-6">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="font-mono font-bold">v1.8.0</span>
+                <span class="text-slate-500 text-sm">2026-01-25</span>
+              </div>
+              <ul class="text-sm text-slate-600 space-y-1">
+                <li>
+                  - <strong>Manager Worker API</strong>: Manager uses Worker API instead of local module
+                </li>
+                <li>
+                  - <strong>Architecture Documentation</strong>: Added manager architecture docs
+                </li>
+              </ul>
+            </div>
+            <div class="border-l-4 border-slate-300 pl-6">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="font-mono font-bold">v1.3.4</span>
+                <span class="text-slate-500 text-sm">2026-01-22</span>
+              </div>
+              <ul class="text-sm text-slate-600 space-y-1">
+                <li>
+                  - <strong>8 Templates</strong>: web-app, api, cli, chrome-ext,
                   discord-bot, landing-page, saas, generic
                 </li>
                 <li>
-                  - <strong>start 개선</strong>: 프로젝트 타입 자동 감지 +
-                  대화형 PRD 가이드 (5-6개 질문)
+                  - <strong>start improvements</strong>: Auto-detect project type +
+                  interactive PRD guide
                 </li>
-                <li>- <strong>save_prd</strong>: PRD 저장 도구 추가</li>
+                <li>- <strong>save_prd</strong>: PRD save tool added</li>
                 <li>
-                  - <strong>버전 체크</strong>: PyPI 최신 버전 알림 (24시간
-                  캐싱)
+                  - <strong>Version check</strong>: PyPI latest version notification (24h cache)
                 </li>
               </ul>
             </div>
@@ -2126,16 +2285,52 @@
                 Decision lock/unlock, file creation tracking
               </p>
             </div>
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <span
+                  class="bg-emerald-500 text-white text-xs font-semibold px-2 py-1 rounded"
+                  >DONE</span
+                >
+                <span class="font-semibold">v1.7 - Architecture Guard</span>
+              </div>
+              <p class="text-slate-600 text-sm">
+                Architecture validation, import rules enforcement
+              </p>
+            </div>
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <span
+                  class="bg-emerald-500 text-white text-xs font-semibold px-2 py-1 rounded"
+                  >DONE</span
+                >
+                <span class="font-semibold">v1.8 - Manager Worker API</span>
+              </div>
+              <p class="text-slate-600 text-sm">
+                Manager uses Worker API instead of local module
+              </p>
+            </div>
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <span
+                  class="bg-emerald-500 text-white text-xs font-semibold px-2 py-1 rounded"
+                  >DONE</span
+                >
+                <span class="font-semibold">v1.9 - Tool Consolidation</span>
+              </div>
+              <p class="text-slate-600 text-sm">
+                52 tools → 12 standard tools with options, deprecation warnings
+              </p>
+            </div>
             <div class="bg-accent/10 border border-accent/30 rounded-xl p-6">
               <div class="flex items-center gap-3 mb-3">
                 <span
                   class="bg-accent text-white text-xs font-semibold px-2 py-1 rounded"
                   >NEXT</span
                 >
-                <span class="font-semibold">v1.7 - Analytics Dashboard</span>
+                <span class="font-semibold">v2.0 - Major Release</span>
               </div>
               <p class="text-slate-600 text-sm">
-                Error pattern visualization, productivity metrics, web dashboard
+                Remove deprecated tools, analytics dashboard, team features
               </p>
             </div>
             <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
@@ -2144,19 +2339,7 @@
                   class="bg-slate-400 text-white text-xs font-semibold px-2 py-1 rounded"
                   >PLANNED</span
                 >
-                <span class="font-semibold">v1.8 - Team Features</span>
-              </div>
-              <p class="text-slate-600 text-sm">
-                Team management, context sharing, error pattern team sharing
-              </p>
-            </div>
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-3">
-                <span
-                  class="bg-slate-400 text-white text-xs font-semibold px-2 py-1 rounded"
-                  >PLANNED</span
-                >
-                <span class="font-semibold">v2.0 - Enterprise</span>
+                <span class="font-semibold">v2.1 - Enterprise</span>
               </div>
               <p class="text-slate-600 text-sm">
                 SSO integration, audit logs, on-premise deployment

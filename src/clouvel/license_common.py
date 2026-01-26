@@ -13,10 +13,54 @@ import os
 import json
 import hashlib
 import platform
+import subprocess
 import uuid
 from pathlib import Path
 from datetime import datetime
 from typing import Optional, Dict, Any
+
+
+# ============================================================
+# 개발자 감지
+# ============================================================
+
+def is_developer() -> bool:
+    """Check if running as Clouvel developer.
+
+    개발자 조건:
+    1. CLOUVEL_DEV=1 환경변수 설정
+    2. 또는 소스 코드가 clouvel git 저장소 내에 있는 경우
+    """
+    # 환경변수로 명시적 개발자 모드
+    if os.environ.get("CLOUVEL_DEV") == "1":
+        return True
+
+    # git remote 확인 (소스 파일 위치 기준)
+    # __file__ 기반으로 체크해서 MCP 서버 cwd와 무관하게 동작
+    try:
+        source_dir = Path(__file__).parent
+        result = subprocess.run(
+            ["git", "remote", "-v"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            cwd=str(source_dir)
+        )
+        if result.returncode == 0:
+            output = result.stdout.lower()
+            if "clouvel" in output and ("github.com" in output or "origin" in output):
+                return True
+    except Exception:
+        pass
+
+    return False
+
+
+DEV_TIER_INFO = {
+    "name": "Developer",
+    "price": "$0 (Dev)",
+    "seats": 999,
+}
 
 
 # ============================================================
@@ -153,6 +197,22 @@ def calculate_license_status(cached: Dict[str, Any]) -> Dict[str, Any]:
     공통 반환값 구조를 보장.
     license.py, license_free.py 모두 이 함수 사용 권장.
     """
+    # 개발자 자동 Pro 처리
+    if is_developer():
+        return {
+            "has_license": True,
+            "tier": "developer",
+            "tier_info": DEV_TIER_INFO,
+            "license_key": "DEV-MODE",
+            "machine_id": get_machine_id(),
+            "activated_at": datetime.now().isoformat(),
+            "days_since_activation": 999,
+            "premium_unlocked": True,
+            "premium_unlock_remaining": 0,
+            "is_developer": True,
+            "message": "[DEV] Developer Mode (Auto Pro)"
+        }
+
     if not cached:
         return {
             "has_license": False,

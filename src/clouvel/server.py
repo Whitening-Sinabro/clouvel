@@ -1962,13 +1962,13 @@ Check status with 'clouvel status'.
         result = get_license_status()
         if result.get("has_license"):
             tier_info = result.get("tier_info", {})
-            unlock_status = "✅ Unlocked" if result.get("premium_unlocked") else f"⏳ {result.get('premium_unlock_remaining', '?')} days remaining"
+            unlock_status = "[OK] Unlocked" if result.get("premium_unlocked") else f"[...] {result.get('premium_unlock_remaining', '?')} days remaining"
             print(f"""
 ================================================================
                    Clouvel License Status
 ================================================================
 
-Status: ✅ Activated
+Status: [OK] Activated
 Tier: {tier_info.get('name', 'Unknown')} ({tier_info.get('price', '?')})
 Machine: {result.get('machine_id', 'Unknown')[:8]}...
 
@@ -1984,7 +1984,7 @@ Premium features: {unlock_status}
                    Clouvel License Status
 ================================================================
 
-Status: ❌ Not activated
+Status: [X] Not activated
 
 {result.get('message', '')}
 

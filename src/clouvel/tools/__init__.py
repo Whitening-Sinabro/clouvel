@@ -112,6 +112,9 @@ except ImportError as e:
     def quick_perspectives(*args, **kwargs):
         return {"error": f"Manager module not available: {e}"}
 
+    def generate_meeting_sync(*args, **kwargs):
+        return "Manager module not available"
+
 from .ship import (
     ship,
     quick_ship,

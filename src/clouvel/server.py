@@ -16,6 +16,7 @@ from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
 
 from .analytics import log_tool_call, get_stats, format_stats
+from .api_client import call_manager_api  # v1.8: Worker API 사용
 from .tools import (
     # core
     can_code, scan_docs, analyze_docs, init_docs, REQUIRED_DOCS,
@@ -40,8 +41,9 @@ from .tools import (
     # knowledge (Free, v1.4)
     record_decision, record_location, search_knowledge, get_context, init_knowledge, rebuild_index,
     unlock_decision, list_locked_decisions,
-    # manager (Pro, v1.2) - 아키텍처 결정 #30: tools/__init__.py에서만 import
-    manager, ask_manager, list_managers, MANAGERS, quick_perspectives, generate_meeting_sync,
+    # manager (Pro, v1.2) - 아키텍처 결정: Worker API 사용 (call_manager_api)
+    # manager, quick_perspectives, generate_meeting_sync 제거됨 - Worker API로 이동
+    list_managers, MANAGERS,
     # ship (Pro, v1.2)
     ship, quick_ship, full_ship,
     # architecture (v1.8)
@@ -1190,48 +1192,37 @@ async def _wrap_list_files(args: dict) -> list[TextContent]:
 
 
 async def _wrap_manager(args: dict) -> list[TextContent]:
-    """manager tool wrapper"""
-    use_dynamic = args.get("use_dynamic", False)
+    """manager tool wrapper - Worker API 사용 (v1.8)
+
+    아키텍처 결정: 로컬 tools/manager/ 대신 Worker API 호출
+    근거: docs/architecture/decision_log_manager.md
+    """
     context = args.get("context", "")
     topic = args.get("topic", None)
+    mode = args.get("mode", "auto")
+    managers = args.get("managers", None)
 
-    meeting_output = None
-    participants = []
+    # Worker API 호출
+    result = call_manager_api(
+        context=context,
+        topic=topic,
+        mode=mode,
+        managers=managers,
+    )
 
-    # Dynamic meeting transcript generation mode
-    if use_dynamic:
-        try:
-            import os
-            # 아키텍처 결정 #30: 상단에서 import됨 (tools/__init__.py)
-            # Guess project path (use current working directory)
-            project_path = os.getcwd()
-
-            meeting_output = generate_meeting_sync(
-                context=context,
-                topic=topic,
-                project_path=project_path,
-                auto_log=True
-            )
-            participants = ["PM", "CTO", "QA", "CDO", "CMO", "CFO", "CSO"]  # Dynamic uses all
-        except ImportError:
-            return [TextContent(type="text", text="anthropic package required: pip install anthropic")]
-        except Exception as e:
-            # Fallback to existing method if API key missing or error
-            meeting_output = f"Dynamic meeting generation failed: {e}\n\nProceeding with existing method."
-
-    # Existing static feedback (if dynamic failed or not requested)
-    if meeting_output is None or "failed" in meeting_output:
-        result = manager(
-            context=context,
-            mode=args.get("mode", "auto"),
-            managers=args.get("managers", None),
-            include_checklist=args.get("include_checklist", True)
-        )
-        if isinstance(result, dict) and result.get("formatted_output"):
-            meeting_output = result["formatted_output"]
-            participants = result.get("selected_managers", ["PM", "CTO", "QA"])
-        else:
-            meeting_output = str(result)
+    # 응답 처리
+    if isinstance(result, dict):
+        meeting_output = result.get("formatted_output", "")
+        if not meeting_output:
+            # error 응답이거나 formatted_output이 없는 경우
+            if result.get("error"):
+                meeting_output = f"## Manager Error\n\n{result.get('error')}\n\n{result.get('message', '')}"
+            else:
+                meeting_output = str(result)
+        participants = result.get("active_managers", ["PM", "CTO", "QA"])
+    else:
+        meeting_output = str(result)
+        participants = ["PM", "CTO", "QA"]
 
     # Auto-record meeting to Knowledge Base
     _auto_record_meeting(context, topic, participants, meeting_output)
@@ -1307,15 +1298,43 @@ async def _wrap_list_managers() -> list[TextContent]:
 
 
 async def _wrap_quick_perspectives(args: dict) -> list[TextContent]:
-    """quick_perspectives tool wrapper"""
-    # 아키텍처 결정 #30: 상단에서 import됨 (tools/__init__.py)
-    result = quick_perspectives(
-        context=args.get("context", ""),
-        max_managers=args.get("max_managers", 4),
-        questions_per_manager=args.get("questions_per_manager", 2)
+    """quick_perspectives tool wrapper - Worker API 사용 (v1.8)
+
+    quick_perspectives는 manager의 간소화 버전.
+    Worker API 호출 후 간략한 포맷으로 변환.
+    """
+    context = args.get("context", "")
+    max_managers = args.get("max_managers", 4)
+
+    # Worker API 호출 (manager와 동일)
+    result = call_manager_api(
+        context=context,
+        mode="auto",  # 자동 매니저 선택
     )
-    if isinstance(result, dict) and result.get("formatted_output"):
-        return [TextContent(type="text", text=result["formatted_output"])]
+
+    # 응답을 quick format으로 변환
+    if isinstance(result, dict):
+        if result.get("error"):
+            return [TextContent(type="text", text=f"## Quick Perspectives Error\n\n{result.get('message', result.get('error'))}")]
+
+        # 간략한 포맷으로 출력
+        feedback = result.get("feedback", {})
+        active = result.get("active_managers", [])[:max_managers]
+
+        lines = [f"## Quick Perspectives\n\n_Before: **{context[:80]}{'...' if len(context) > 80 else ''}**_\n"]
+        for mgr_key in active:
+            mgr = feedback.get(mgr_key, {})
+            emoji = mgr.get("emoji", "")
+            title = mgr.get("title", mgr_key)
+            questions = mgr.get("questions", [])[:2]  # 매니저당 2개 질문
+            if questions:
+                lines.append(f"**{emoji} {title}**:")
+                for q in questions:
+                    lines.append(f"  - {q}")
+                lines.append("")
+
+        return [TextContent(type="text", text="\n".join(lines))]
+
     return [TextContent(type="text", text=str(result))]
 
 

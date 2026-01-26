@@ -14,7 +14,7 @@
   "hero": {
     "badge": "MCP Server for Claude Code",
     "badge_new": "NEW",
-    "badge_version": "v1.4.0 - AI that asks questions, not gives answers",
+    "badge_version": "v1.6.6 - AI that asks questions, not gives answers",
     "title_1": "AI that asks",
     "title_2": "tough questions.",
     "subtitle": "8 AI managers help you think from every angle before you code.",
@@ -117,6 +117,8 @@
     "free_f3_new": "NEW",
     "free_f4": "Progress tracking",
     "free_f5": "Goal reminder",
+    "free_f6": "AI Managers trial (10 uses)",
+    "free_f7": "Ship trial (5 uses)",
     "personal": "Personal Pro",
     "personal_desc": "Solo developer (1 seat)",
     "personal_f1": "All Free features",

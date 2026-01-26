@@ -14,7 +14,7 @@
   "hero": {
     "badge": "Claude Code용 MCP 서버",
     "badge_new": "NEW",
-    "badge_version": "v1.4.0 - 답 주는 AI 말고, 질문하는 AI",
+    "badge_version": "v1.6.6 - 답 주는 AI 말고, 질문하는 AI",
     "title_1": "어려운 질문을",
     "title_2": "던지는 AI.",
     "subtitle": "8명의 AI 매니저가 코딩 전에 모든 각도에서 생각하게 도와줍니다.",
@@ -117,6 +117,8 @@
     "free_f3_new": "NEW",
     "free_f4": "진행 상황 추적",
     "free_f5": "목표 리마인드",
+    "free_f6": "AI 매니저 체험 (10회)",
+    "free_f7": "Ship 체험 (5회)",
     "personal": "Personal Pro",
     "personal_desc": "솔로 개발자 (1명)",
     "personal_f1": "Free 기능 전체",

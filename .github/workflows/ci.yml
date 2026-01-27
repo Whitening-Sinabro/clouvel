@@ -27,6 +27,9 @@ jobs:
           pip install -e .
           pip install pytest pytest-asyncio
 
+      - name: Validate documentation
+        run: python scripts/docs_check.py
+
       - name: Run tests
         run: pytest tests/ -v
 

@@ -250,15 +250,15 @@
         <h1
           class="text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.1] mb-6"
         >
-          <span data-i18n="hero.title_1">PRD 없으면,</span><br />
-          <span class="accent-text" data-i18n="hero.title_2">코딩 없다.</span>
+          <span data-i18n="hero.title_1">스펙 없이?</span><br />
+          <span class="accent-text" data-i18n="hero.title_2">코딩 금지.</span>
         </h1>
         <p class="text-lg md:text-xl text-slate-600 mb-3 leading-relaxed" data-i18n="hero.subtitle">
-          AI가 맥락을 "멋대로 압축"해서 중요한 요구사항을 생략하는 순간이 있다.
+          스펙 건너뛰면 디버깅 지옥행.
         </p>
         <p class="text-base md:text-lg text-slate-500 mb-8">
-          <span data-i18n="hero.desc_solo_text">"거의 맞는" 코드 디버깅 그만.</span>
-          <strong class="text-dark-slate" data-i18n="hero.desc_solo">솔로 개발자 & 인디 해커를 위한 도구.</strong>
+          <span data-i18n="hero.desc_solo_text">혼자 개발하니까. 매 시간이 소중하니까.</span>
+          <strong class="text-dark-slate" data-i18n="hero.desc_solo">당신이 놓친 걸 잡아주는 AI 팀.</strong>
         </p>
         <div class="flex flex-wrap gap-3 md:gap-4 justify-center">
           <a
@@ -435,10 +435,10 @@
             <span class="text-red-500 text-xl md:text-2xl mt-0.5">3</span>
             <div>
               <h3 class="font-semibold text-base md:text-lg mb-1" data-i18n="problem.problem_3_title">
-                결과가 매번 달라져서 디버깅 시간이 폭발
+                지난주에 뭘 결정했는지 까먹음
               </h3>
               <p class="text-slate-600 text-sm md:text-base" data-i18n="problem.problem_3_desc">
-                같은 요청인데 어제랑 오늘 결과가 다름 → 2-3일 디버깅 지옥
+                결정 기록 없음. 같은 논쟁 반복. 컨텍스트 다시 파악하느라 시간 낭비.
               </p>
             </div>
           </div>
@@ -507,85 +507,41 @@
             3단계 품질 게이트: BLOCK → WARN → PASS
           </p>
         </div>
-        <div class="grid md:grid-cols-3 gap-4 md:gap-6">
+        <!-- Screenshot Grid -->
+        <div class="grid md:grid-cols-2 gap-6 md:gap-8">
           <!-- PRD 없음 → BLOCK -->
-          <div class="bg-slate-800/50 rounded-2xl p-5 border border-red-500/30">
-            <div class="flex items-center gap-2 mb-4">
-              <span class="text-red-400 text-lg font-bold" data-i18n="demo.no_prd">PRD 없음</span>
-              <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded"
-                >BLOCK</span
-              >
+          <div class="rounded-2xl overflow-hidden border border-red-500/30 shadow-2xl">
+            <div class="bg-slate-800/80 px-4 py-2 flex items-center gap-2">
+              <span class="text-red-400 font-bold" data-i18n="demo.no_prd">PRD 없음</span>
+              <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">BLOCK</span>
             </div>
-            <div class="code-block rounded-xl p-4 font-mono text-xs">
-              <div class="flex items-center gap-2 mb-3">
-                <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-              </div>
-              <div class="space-y-2 text-slate-300">
-                <p data-i18n="demo.no_prd_cmd">
-                  <span class="text-slate-500">$</span> claude "로그인 만들어줘"
-                </p>
-                <p class="text-red-400 font-semibold" data-i18n="demo.no_prd_result">BLOCK: 코딩 금지</p>
-                <p class="text-slate-500 text-xs" data-i18n="demo.no_prd_desc">PRD 없음 → 문서 먼저</p>
-              </div>
-            </div>
-          </div>
-          <!-- PRD 있지만 불완전 → WARN -->
-          <div
-            class="bg-slate-800/50 rounded-2xl p-5 border border-yellow-500/30"
-          >
-            <div class="flex items-center gap-2 mb-4">
-              <span class="text-yellow-400 text-lg font-bold" data-i18n="demo.incomplete">PRD 불완전</span>
-              <span
-                class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded"
-                >WARN</span
-              >
-            </div>
-            <div class="code-block rounded-xl p-4 font-mono text-xs">
-              <div class="flex items-center gap-2 mb-3">
-                <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-              </div>
-              <div class="space-y-2 text-slate-300">
-                <p data-i18n="demo.no_prd_cmd">
-                  <span class="text-slate-500">$</span> claude "로그인 만들어줘"
-                </p>
-                <p class="text-yellow-400 font-semibold" data-i18n="demo.incomplete_result">PASS | WARN 2개</p>
-                <p class="text-slate-500 text-xs" data-i18n="demo.incomplete_desc">
-                  권장 없음: 아키텍처, 테스트
-                </p>
-              </div>
-            </div>
+            <img src="assets/can_code_block.png" alt="Clouvel BLOCK - PRD 없음" class="w-full" loading="lazy" />
           </div>
           <!-- PRD 완전 → PASS -->
-          <div
-            class="bg-slate-800/50 rounded-2xl p-5 border border-emerald-500/30"
-          >
-            <div class="flex items-center gap-2 mb-4">
-              <span class="text-emerald-400 text-lg font-bold" data-i18n="demo.complete">PRD 완전</span>
-              <span
-                class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded"
-                >PASS</span
-              >
+          <div class="rounded-2xl overflow-hidden border border-emerald-500/30 shadow-2xl">
+            <div class="bg-slate-800/80 px-4 py-2 flex items-center gap-2">
+              <span class="text-emerald-400 font-bold" data-i18n="demo.complete">PRD 완전</span>
+              <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded">PASS</span>
             </div>
-            <div class="code-block rounded-xl p-4 font-mono text-xs">
-              <div class="flex items-center gap-2 mb-3">
-                <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-              </div>
-              <div class="space-y-2 text-slate-300">
-                <p data-i18n="demo.no_prd_cmd">
-                  <span class="text-slate-500">$</span> claude "로그인 만들어줘"
-                </p>
-                <p class="text-emerald-400 font-semibold" data-i18n="demo.complete_result">
-                  PASS | 코딩 시작 가능
-                </p>
-                <p class="text-slate-500 text-xs" data-i18n="demo.complete_desc">필수: PRD ✓ | 테스트 3개</p>
-              </div>
+            <img src="assets/can_code_pass.png" alt="Clouvel PASS - 코딩 가능" class="w-full" loading="lazy" />
+          </div>
+        </div>
+
+        <!-- Manager Review Section -->
+        <div class="mt-12">
+          <div class="text-center mb-6">
+            <h3 class="text-xl md:text-2xl font-bold mb-2">
+              <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Pro:</span>
+              8명의 AI 매니저가 코드를 리뷰합니다
+            </h3>
+            <p class="text-slate-400">PM, CTO, QA, CSO 등 - ship 전에 검토</p>
+          </div>
+          <div class="rounded-2xl overflow-hidden border border-purple-500/30 shadow-2xl max-w-4xl mx-auto">
+            <div class="bg-slate-800/80 px-4 py-2 flex items-center gap-2">
+              <span class="text-purple-400 font-bold">매니저 회의</span>
+              <span class="bg-purple-500/20 text-purple-400 text-xs px-2 py-1 rounded">PRO</span>
             </div>
+            <img src="assets/manager_feedback.png" alt="Clouvel Manager Review" class="w-full" loading="lazy" />
           </div>
         </div>
       </div>

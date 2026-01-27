@@ -1,149 +1,161 @@
-# Reddit Post Drafts
+# Reddit Post Drafts v3
 
-> Created: 2026-01-24
-> Target: Week 2 - First community posts
+> Updated: 2026-01-24
+> Strategy: 70% launch discount + natural tone (no AI vibes)
 
 ---
 
 ## 1. r/ClaudeAI
 
-**Title**: I built an MCP server that blocks Claude from coding until you write a spec
+**Title**: I built an MCP server that makes Claude way more consistent
 
 **Body**:
 
+```
 Hey r/ClaudeAI!
 
-I kept running into the same problem: I'd ask Claude to "build login" and it would skip password reset, forget social auth, and ignore half my requirements. Every time I asked, I got different code.
+I kept running into the same problem - I'd ask Claude to "build login" and it would skip password reset, forget social auth, and ignore half my requirements. Every time I asked, I got different code.
 
-So I built **Clouvel** - an MCP server that adds a PRD gate to Claude.
+So I built Clouvel, an MCP server that adds a PRD gate to Claude.
 
-**How it works:**
+How it works:
 - You ask Claude to code something
 - Clouvel checks if a PRD (spec) exists
-- No spec? Coding blocked. Write the spec first.
-- Spec exists? Coding allowed.
+- No spec? Blocked. Write the spec first.
+- Spec exists? Go ahead.
 
+Demo: https://whitening-sinabro.github.io/clouvel/assets/demo.gif
+
+The idea is simple - same spec, same output. Every time.
+
+Free tier has PRD gate, templates, progress tracking. Pro ($9.99/mo) adds 8 AI manager personas that review your code before you ship.
+
+I'm doing a launch offer - first 50 users get 70% off Pro ($2.99/mo). Code is LAUNCH70.
+
+GitHub: https://github.com/Whitening-Sinabro/clouvel
+Pro: https://buy.polar.sh/polar_cl_YVVTx0UOobHJOTG9FinmAJyg7ZrfClSHdNYg51F5mzf
+
+Anyone else frustrated with inconsistent AI output? How do you handle it?
 ```
-You: "Build login"
-Claude: ❌ BLOCKED - No PRD found
-
-You: *writes requirements*
-Claude: ✅ PASS - Coding allowed
-```
-
-**Demo**: [GIF showing BLOCK → PASS flow]
-
-The idea is simple: same spec → same output. No more "AI lottery."
-
-It's free and open source. Pro version adds 8 C-Level manager personas (PM, CTO, QA, etc.) that review your code.
-
-**GitHub**: https://github.com/Whitening-Sinabro/clouvel
-**Docs**: https://whitening-sinabro.github.io/clouvel/
-
-Would love feedback from this community. Anyone else frustrated with inconsistent AI code output?
 
 ---
 
 ## 2. r/SideProject
 
-**Title**: I built a "spec gate" for AI coding after wasting hours debugging AI-generated code
+**Title**: I built a "spec gate" for AI coding - 70% off this week
 
 **Body**:
 
+```
 Hey everyone!
 
-**The problem**: As a solo dev, I use AI coding assistants constantly. But I noticed a pattern - AI would "interpret" my vague requests and build something 80% right. Then I'd spend hours debugging the 20%.
+As a solo dev, I use AI coding assistants constantly. But I noticed a pattern - AI would "interpret" my vague requests and build something 80% right. Then I'd spend hours debugging the 20%.
 
-**The pattern**:
+The pattern:
 - "Build login" → skips password reset
 - "Add dashboard" → different layout every time
 - "Create API" → inconsistent error handling
 
-**My solution**: I built Clouvel, an MCP server that blocks AI from coding until you write a spec (PRD).
+So I built Clouvel, an MCP server that blocks AI from coding until you write a spec.
 
-It sounds annoying, but it actually saves time. Writing a 10-minute spec means:
-- AI knows exactly what to build
-- Consistent output every time
-- No more "what was I thinking?" moments
+It sounds annoying, but it actually saves time. Writing a 10-minute spec means AI knows exactly what to build, and you get consistent output every time.
 
-**Quick start:**
-```bash
+Demo: https://whitening-sinabro.github.io/clouvel/assets/demo.gif
+
+Quick start:
 pip install clouvel
 clouvel install
-# That's it
+
+The core is free and open source.
+
+I also have a Pro version ($9.99/mo) with "manager" personas that review your code - like having a virtual PM and CTO.
+
+Doing a launch deal this week - first 50 users get 70% off ($2.99/mo). Use code LAUNCH70.
+
+GitHub: https://github.com/Whitening-Sinabro/clouvel
+Pro: https://buy.polar.sh/polar_cl_YVVTx0UOobHJOTG9FinmAJyg7ZrfClSHdNYg51F5mzf
+
+Anyone else building tools to make AI coding more predictable?
 ```
-
-It's free and MIT licensed. I also have a Pro version with "manager" personas that review code (like having a virtual PM and CTO).
-
-**GitHub**: https://github.com/Whitening-Sinabro/clouvel
-
-Anyone else building tools to make AI coding more predictable? Would love to hear your approaches.
 
 ---
 
-## 3. r/IndieHackers (or r/SaaS)
+## 3. r/IndieHackers
 
-**Title**: From 0 subscribers to pivoting to English market - my AI dev tool journey
+**Title**: Changing my target market - giving first 50 users 70% off
 
 **Body**:
 
+```
 Hey indie hackers!
 
-Quick story: I built Clouvel, a PRD-first gate for AI coding. Launched targeting Korean developers. Result: 0 paying users.
+Quick story about a pivot.
 
-**What went wrong**: The Claude Code / MCP ecosystem is almost entirely English-speaking. I was marketing in Korean to an audience that doesn't exist.
+I built Clouvel, a PRD-first gate for AI coding. Initially targeted a small local market, but realized the Claude Code / MCP ecosystem is global and English-first.
 
-**The pivot**: Spent a week converting everything to English - docs, error messages, landing page. Now targeting solo devs and indie hackers globally.
+Instead of fighting an uphill battle, I pivoted to target solo devs globally. Spent a week converting everything - docs, error messages, landing page.
 
-**What Clouvel does**:
-Blocks AI from coding until you write a spec. Sounds simple, but it solves the "AI lottery" problem where you get different code every time you ask.
+What Clouvel does:
 
-```
-Before: "Build login" → AI guesses requirements
+It blocks AI from coding until you write a spec. Sounds simple, but it solves the "AI lottery" problem where you get different code every time you ask.
+
+Before: "Build login" → AI guesses, different result each time
 After: "Build login" → AI reads your PRD, builds exactly what you specified
-```
 
-**Business model**:
+Demo: https://whitening-sinabro.github.io/clouvel/assets/demo.gif
+
+Business model:
 - Free: Core PRD gate (open source)
-- Pro ($9.99/mo): 8 "manager" personas review your code
+- Pro: 8 AI manager personas review your code
 
-**Current stats**:
-- GitHub stars: [X]
-- Users: [X]
-- Revenue: $0 (just pivoted)
+To celebrate the pivot, first 50 users get 70% off Pro.
 
-**Lessons learned**:
-1. Check if your target market exists before building
-2. English-first for dev tools (unless you have a specific regional advantage)
+Regular: $9.99/mo
+Early bird: $2.99/mo (locked in)
+
+Use code LAUNCH70: https://buy.polar.sh/polar_cl_YVVTx0UOobHJOTG9FinmAJyg7ZrfClSHdNYg51F5mzf
+
+Lessons learned:
+1. Go where your users are, not where you want them to be
+2. English-first for dev tools
 3. MCP ecosystem is small but growing fast
 
-Would love feedback on the positioning. Does "PRD-first AI coding" resonate?
+Does "PRD-first AI coding" resonate with you?
 
-**Links**:
-- GitHub: https://github.com/Whitening-Sinabro/clouvel
-- Landing: https://whitening-sinabro.github.io/clouvel/
+GitHub: https://github.com/Whitening-Sinabro/clouvel
+```
 
 ---
 
 ## Posting Strategy
 
-| Subreddit | Best Time (PST) | Day | Notes |
-|-----------|-----------------|-----|-------|
-| r/ClaudeAI | 9-11 AM | Tue-Thu | Technical audience, focus on MCP |
-| r/SideProject | 8-10 AM | Mon-Wed | Show progress, ask for feedback |
-| r/IndieHackers | 7-9 AM | Tue-Thu | Story-driven, business angle |
+| Subreddit | CTA Focus | Best Time (PST) | Korean Time |
+|-----------|-----------|-----------------|-------------|
+| r/ClaudeAI | Technical | Tue-Thu 9-11 AM | 새벽 2-4시 |
+| r/SideProject | Discount | Mon-Wed 8-10 AM | 새벽 1-3시 |
+| r/IndieHackers | Story | Tue-Thu 7-9 AM | 자정-2시 |
 
-### Tips
-- Don't post to all 3 on the same day
-- Engage with comments within first 2 hours
-- Cross-post success to X with #BuildInPublic
+### Posting Order
+1. r/SideProject first (today - most friendly)
+2. Wait 2-3 days → r/ClaudeAI
+3. Wait 2-3 days → r/IndieHackers
+
+---
+
+## Checkout Links
+
+| Subreddit | Link |
+|-----------|------|
+| All | https://buy.polar.sh/polar_cl_YVVTx0UOobHJOTG9FinmAJyg7ZrfClSHdNYg51F5mzf |
+
+> 쿠폰 코드 LAUNCH70은 Polar.sh 체크아웃 페이지에서 별도 입력
 
 ---
 
 ## Checklist
 
-- [ ] Post to r/ClaudeAI (most relevant)
-- [ ] Wait 2-3 days, post to r/SideProject
+- [x] Create LAUNCH70 coupon in Polar.sh
+- [x] Test coupon works
+- [ ] Post to r/SideProject
+- [ ] Wait 2-3 days, post to r/ClaudeAI
 - [ ] Wait 2-3 days, post to r/IndieHackers
-- [ ] Update stats in posts with real numbers
-- [ ] Replace [GIF] with actual demo.gif link

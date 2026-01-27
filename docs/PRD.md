@@ -536,3 +536,269 @@ async def check_rules_framing(path: str) -> list[TextContent]:
 **효과 크기**:
 - 긍정형 지시 (implementation intentions): medium-to-large effect
 - 부정형 지시 (thought suppression): rebound effect (d = 0.30)
+
+---
+
+## v1.9 도구 통합 + Deprecation
+
+> **완료일**: 2026-01-26
+> **목표**: 유사 도구 통합, API 단순화
+
+### 배경 (왜 필요한가)
+
+MCP 도구 분석 결과:
+- 52개 도구 중 9개 유사 그룹 발견
+- 5개 기능 중복 (scan_docs ≈ can_code)
+- 6개 통합 가능 (get_prd_template → start --template)
+
+### A. Deprecation Warnings
+
+| Deprecated | 대체 | Migration |
+|------------|------|-----------|
+| `scan_docs` | `can_code` | `can_code(path)` |
+| `analyze_docs` | `can_code` | `can_code(path)` |
+| `verify` | `ship` | `ship(path, steps=["lint", "test"])` |
+| `gate` | `ship` | `ship(path, steps, auto_fix)` |
+| `handoff` | `record_decision` + `update_progress` | 조합 사용 |
+| `get_prd_template` | `start` | `start(path, template="web-app")` |
+| `get_prd_guide` | `start` | `start(path, guide=True)` |
+| `init_docs` | `start` | `start(path, init=True)` |
+| `init_rules` | `setup_cli` | `setup_cli(path, rules="web")` |
+| `hook_design` | `setup_cli` | `setup_cli(path, hook="design")` |
+| `hook_verify` | `setup_cli` | `setup_cli(path, hook="verify")` |
+
+### B. 옵션 확장
+
+#### start 도구 통합
+
+```python
+start(
+    path: str,
+    template: str = None,     # get_prd_template 대체
+    layout: str = "standard", # lite | standard | detailed
+    guide: bool = False,      # get_prd_guide 대체
+    init: bool = False,       # init_docs 대체
+    project_type: str = None, # 타입 강제 지정
+    project_name: str = None
+)
+```
+
+#### setup_cli 도구 통합
+
+```python
+setup_cli(
+    path: str,
+    level: str = "remind",
+    rules: str = None,        # init_rules 대체: web | api | fullstack | minimal
+    hook: str = None,         # hook_design/hook_verify 대체: design | verify
+    hook_trigger: str = None  # pre_code | post_code | pre_commit 등
+)
+```
+
+### C. 신규 도구
+
+| 도구 | 설명 | 버전 |
+|------|------|------|
+| `debug_runtime` | MCP 런타임 환경 진단 | v3.2 |
+| `check_sync` | 파일 쌍 동기화 검증 | v3.1 |
+
+### 완료 기준 (DoD)
+
+- [x] 11개 도구에 deprecation warning 추가
+- [x] `start --template/--guide/--init` 옵션 동작
+- [x] `setup_cli --rules/--hook` 옵션 동작
+- [x] README.md 업데이트
+- [x] CLAUDE.md에 migration guide 추가
+
+---
+
+## v3.1 런타임 안전장치
+
+> **완료일**: 2026-01-27
+> **목표**: 사이드이펙트 체크, 상업용 안전장치
+
+### A. check_sync 도구
+
+파일 쌍 동기화 검증:
+- `license.py` ↔ `license_free.py`: 함수 시그니처
+- `messages/en.py` ↔ `messages/ko.py`: 메시지 키
+
+### B. ship 안전장치 (Pro)
+
+```python
+_run_safety_checks():
+    - 시크릿 파일 탐지 (.env, *.key, *.pem)
+    - 시크릿 패턴 탐지 (API key, password)
+    - .env.example 존재 확인
+    - git 추적 시크릿 → BLOCK
+```
+
+### C. PRD Diff + 영향 분석
+
+save_prd 시:
+- 이전 PRD 백업 (`.claude/prd_history/`)
+- 변경 내용 분석 (추가/삭제 라인)
+- 영향받는 파일 검색
+
+### 완료 기준 (DoD)
+
+- [x] check_sync 도구 구현
+- [x] ship 안전장치 구현
+- [x] save_prd diff 분석 구현
+
+---
+
+## v3.2 MCP 런타임 디버그
+
+> **완료일**: 2026-01-27
+> **목표**: MCP 환경 진단 도구
+
+### debug_runtime 도구
+
+```python
+debug_runtime(project_path: str = None):
+    - sys.executable 출력
+    - clouvel.__file__ 출력
+    - is_developer() 결과
+    - can_use_pro() 결과
+    - 환경 변수 (CLOUVEL_DEV 등)
+```
+
+### 완료 기준 (DoD)
+
+- [x] debug_runtime 도구 구현
+- [x] server.py에 등록
+- [x] MCP 재시작 후 테스트 통과
+
+---
+
+## 테스트 커버리지 강화
+
+> **완료일**: 2026-01-27
+> **목표**: P0 테스트 파일 작성
+
+### 추가된 테스트 파일
+
+| 파일 | 테스트 수 | 내용 |
+|------|----------|------|
+| `test_knowledge.py` | 35 | Knowledge Base 전체 |
+| `test_ship.py` | 23 | Ship 도구 전체 |
+
+### 전체 테스트 현황
+
+```
+234 passed, 7 skipped
+```
+
+### 완료 기준 (DoD)
+
+- [x] test_knowledge.py 작성 (20+ 테스트)
+- [x] test_ship.py 작성 (15+ 테스트)
+- [x] 전체 테스트 통과
+
+---
+
+## v1.10 Review 도구 (Pro)
+
+> **상태**: 설계 완료
+> **우선순위**: P1
+> **담당**: PM
+
+### 배경
+
+현재 워크플로우: `handoff → verify → gate`
+
+**문제**: 코드 리뷰 단계 누락. ship 전에 매니저 관점 검토가 없음.
+
+### 제안 워크플로우
+
+```
+handoff → review → verify → gate → ship
+```
+
+### API 설계
+
+```python
+@mcp_tool
+async def review(
+    path: str,
+    scope: str = "feature",  # file | feature | full
+    managers: list[str] = None,  # 특정 매니저만 (기본: auto)
+    base_branch: str = "main"  # diff 기준 브랜치
+) -> list[TextContent]:
+    """매니저들의 코드 리뷰
+
+    1. git diff로 변경 파일 수집
+    2. 변경 코드 분석
+    3. 매니저별 관점에서 리뷰
+    4. 이슈 및 수정 제안 반환
+    """
+```
+
+### 응답 형식
+
+```markdown
+## 🔍 Code Review
+
+**Scope**: feature (login-auth)
+**Files**: 5 changed (+234 -45)
+
+### 👔 PM Review
+- ✅ PRD 요구사항 충족
+- ⚠️ 에러 메시지 사용자 친화적이지 않음 (line 45)
+
+### 🔧 CTO Review
+- ✅ 아키텍처 패턴 준수
+- ❌ N+1 쿼리 발견 (user_service.py:78)
+  ```suggestion
+  # Before
+  for user in users:
+      profile = get_profile(user.id)
+
+  # After
+  profiles = get_profiles_batch([u.id for u in users])
+  ```
+
+### 🔒 CSO Review
+- ⚠️ 입력 검증 누락 (auth.py:23)
+- ❌ SQL 인젝션 위험 (query.py:56)
+
+### 📊 Summary
+| Manager | Pass | Warn | Fail |
+|---------|------|------|------|
+| PM | 3 | 1 | 0 |
+| CTO | 2 | 0 | 1 |
+| CSO | 1 | 1 | 1 |
+
+**Verdict**: ⚠️ 2 issues must be fixed before ship
+```
+
+### 매니저별 리뷰 관점
+
+| 매니저 | 리뷰 관점 |
+|--------|----------|
+| PM | PRD 충족, 기능 완성도, UX |
+| CTO | 아키텍처, 성능, 코드 품질 |
+| QA | 테스트 커버리지, 엣지 케이스 |
+| CSO | 보안 취약점, 인증/인가 |
+| CFO | 비용 영향 (API 호출, 리소스) |
+| CDO | UI/UX 일관성 |
+
+### 구현 계획
+
+| Phase | 내용 | 예상 |
+|-------|------|------|
+| 1 | git diff 파싱 + 파일 수집 | 2h |
+| 2 | 매니저별 리뷰 프롬프트 | 3h |
+| 3 | Worker API 연동 | 2h |
+| 4 | 응답 포맷터 | 2h |
+| 5 | 테스트 | 2h |
+
+### 완료 기준 (DoD)
+
+- [ ] `review` 도구 MCP 등록
+- [ ] git diff 기반 변경 파일 수집
+- [ ] 매니저별 리뷰 프롬프트 작성
+- [ ] Worker API 또는 로컬 실행 지원
+- [ ] test_review.py 10+ 테스트
+- [ ] 문서 업데이트

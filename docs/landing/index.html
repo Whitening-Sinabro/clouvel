@@ -202,15 +202,15 @@
         <h1
           class="text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.1] mb-6"
         >
-          AI that asks<br />
-          <span class="accent-text">tough questions.</span>
+          No spec,<br />
+          <span class="accent-text">no code.</span>
         </h1>
         <p class="text-lg md:text-xl text-slate-600 mb-3 leading-relaxed">
-          8 AI managers help you think from every angle before you code.
+          Skip the spec, enter debugging hell.
         </p>
         <p class="text-base md:text-lg text-slate-500 mb-8">
-          Not another AI that gives easy answers.
-          <strong class="text-dark-slate">An AI team that makes you think.</strong>
+          You're building alone. Make every hour count.
+          <strong class="text-dark-slate">An AI team that catches what you miss.</strong>
         </p>
         <div class="flex flex-wrap gap-3 md:gap-4 justify-center">
           <a
@@ -386,10 +386,10 @@
             <span class="text-red-500 text-xl md:text-2xl mt-0.5">3</span>
             <div>
               <h3 class="font-semibold text-base md:text-lg mb-1">
-                Results vary every time, debugging explodes
+                You forget what you decided last week
               </h3>
               <p class="text-slate-600 text-sm md:text-base">
-                Same prompt, different results yesterday vs today - 2-3 days debugging hell.
+                No record of decisions. Repeat the same debates. Waste hours rediscovering context.
               </p>
             </div>
           </div>
@@ -459,85 +459,41 @@
             3-tier quality gate: BLOCK - WARN - PASS
           </p>
         </div>
-        <div class="grid md:grid-cols-3 gap-4 md:gap-6">
+        <!-- Screenshot Grid -->
+        <div class="grid md:grid-cols-2 gap-6 md:gap-8">
           <!-- No PRD - BLOCK -->
-          <div class="bg-slate-800/50 rounded-2xl p-5 border border-red-500/30">
-            <div class="flex items-center gap-2 mb-4">
-              <span class="text-red-400 text-lg font-bold">No PRD</span>
-              <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded"
-                >BLOCK</span
-              >
+          <div class="rounded-2xl overflow-hidden border border-red-500/30 shadow-2xl">
+            <div class="bg-slate-800/80 px-4 py-2 flex items-center gap-2">
+              <span class="text-red-400 font-bold">No PRD</span>
+              <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">BLOCK</span>
             </div>
-            <div class="code-block rounded-xl p-4 font-mono text-xs">
-              <div class="flex items-center gap-2 mb-3">
-                <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-              </div>
-              <div class="space-y-2 text-slate-300">
-                <p>
-                  <span class="text-slate-500">$</span> claude "build login"
-                </p>
-                <p class="text-red-400 font-semibold">BLOCK: Coding forbidden</p>
-                <p class="text-slate-500 text-xs">No PRD - write docs first</p>
-              </div>
-            </div>
-          </div>
-          <!-- Incomplete PRD - WARN -->
-          <div
-            class="bg-slate-800/50 rounded-2xl p-5 border border-yellow-500/30"
-          >
-            <div class="flex items-center gap-2 mb-4">
-              <span class="text-yellow-400 text-lg font-bold">Incomplete PRD</span>
-              <span
-                class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded"
-                >WARN</span
-              >
-            </div>
-            <div class="code-block rounded-xl p-4 font-mono text-xs">
-              <div class="flex items-center gap-2 mb-3">
-                <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-              </div>
-              <div class="space-y-2 text-slate-300">
-                <p>
-                  <span class="text-slate-500">$</span> claude "build login"
-                </p>
-                <p class="text-yellow-400 font-semibold">PASS | WARN 2</p>
-                <p class="text-slate-500 text-xs">
-                  Missing: architecture, tests
-                </p>
-              </div>
-            </div>
+            <img src="assets/can_code_block.png" alt="Clouvel BLOCK - No PRD" class="w-full" loading="lazy" />
           </div>
           <!-- Complete PRD - PASS -->
-          <div
-            class="bg-slate-800/50 rounded-2xl p-5 border border-emerald-500/30"
-          >
-            <div class="flex items-center gap-2 mb-4">
-              <span class="text-emerald-400 text-lg font-bold">Complete PRD</span>
-              <span
-                class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded"
-                >PASS</span
-              >
+          <div class="rounded-2xl overflow-hidden border border-emerald-500/30 shadow-2xl">
+            <div class="bg-slate-800/80 px-4 py-2 flex items-center gap-2">
+              <span class="text-emerald-400 font-bold">Complete PRD</span>
+              <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded">PASS</span>
             </div>
-            <div class="code-block rounded-xl p-4 font-mono text-xs">
-              <div class="flex items-center gap-2 mb-3">
-                <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-              </div>
-              <div class="space-y-2 text-slate-300">
-                <p>
-                  <span class="text-slate-500">$</span> claude "build login"
-                </p>
-                <p class="text-emerald-400 font-semibold">
-                  PASS | Ready to code
-                </p>
-                <p class="text-slate-500 text-xs">Required: PRD OK | 3 tests</p>
-              </div>
+            <img src="assets/can_code_pass.png" alt="Clouvel PASS - Ready to code" class="w-full" loading="lazy" />
+          </div>
+        </div>
+
+        <!-- Manager Review Section -->
+        <div class="mt-12">
+          <div class="text-center mb-6">
+            <h3 class="text-xl md:text-2xl font-bold mb-2">
+              <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Pro:</span>
+              8 AI Managers review your code
+            </h3>
+            <p class="text-slate-400">PM, CTO, QA, CSO and more - before you ship</p>
+          </div>
+          <div class="rounded-2xl overflow-hidden border border-purple-500/30 shadow-2xl max-w-4xl mx-auto">
+            <div class="bg-slate-800/80 px-4 py-2 flex items-center gap-2">
+              <span class="text-purple-400 font-bold">Manager Meeting</span>
+              <span class="bg-purple-500/20 text-purple-400 text-xs px-2 py-1 rounded">PRO</span>
             </div>
+            <img src="assets/manager_feedback.png" alt="Clouvel Manager Review" class="w-full" loading="lazy" />
           </div>
         </div>
       </div>

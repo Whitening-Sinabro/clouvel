@@ -1,6 +1,46 @@
 # Clouvel 현재 상태
 
-> **마지막 업데이트**: 2026-01-26 (v1.7.3 배포)
+> **마지막 업데이트**: 2026-01-27 (MCP 로컬 소스 강제 설정)
+
+---
+
+## 🚨 재시작 후 확인 (v3.2)
+
+**MCP 설정 변경됨** - Claude Code 재시작 필요
+
+### 변경 내용
+```
+PYTHONPATH=D:\clouvel\src 추가됨
+```
+
+### 재시작 후 확인 명령
+```
+debug_runtime(project_path="D:\\clouvel")
+```
+
+### 예상 결과 (성공 시)
+- `clouvel.__file__`: `D:\clouvel\src\clouvel\...` ✅
+- `is_developer`: `True` ✅
+- `can_use_kb`: `True` ✅
+
+### 실패 시 체크
+- `clouvel.__file__`이 `site-packages` → 여전히 설치본 사용 중
+- `is_developer: False` → project_path 전달 안 됨
+
+### 추가된 도구 (v3.2)
+- `debug_runtime` - MCP 런타임 환경 진단 도구
+
+---
+
+## 개발 환경
+
+| 항목 | 값 |
+|------|-----|
+| **패키지 관리** | uv / uvx |
+| **로컬 테스트** | `py -m pip install -e D:\clouvel` |
+| **MCP 설정** | `PYTHONPATH=D:\clouvel\src` (로컬 소스 강제) |
+| **MCP 리로드** | Claude Code 재시작 (프로세스 재시작 필요) |
+| **Python** | 3.10+ |
 
 ---
 
@@ -8,8 +48,10 @@
 
 | 항목              | 상태                              |
 | ----------------- | --------------------------------- |
-| **clouvel**       | v1.7.3 PyPI 배포 완료             |
-| **아키텍처**      | ⚠️ Manager 실행 경로 불일치 발견   |
+| **clouvel**       | v1.9.0 준비 완료 (Deprecation Warnings) |
+| **아키텍처**      | ✅ Manager Worker API 전환 완료   |
+| **문서 시스템**   | ✅ SSOT 완성 (ENTRYPOINTS + SIDE_EFFECTS + SMOKE_LOGS) |
+| **MCP 표준화**    | ✅ 52개 도구 분석 완료 (9그룹, 12표준, 5폐기, 6통합) |
 | **Knowledge Base**| ✅ 아키텍처 결정 기록 완료        |
 | **라이선스 서버** | ✅ 동작 중 (Polar.sh + Worker API) |
 | **결제**          | ✅ Polar.sh 연동 완료             |
@@ -17,23 +59,355 @@
 
 ---
 
-## 결론 (2026-01-26)
+## 확인된 런타임 경로 (v1.9.0)
 
-**Manager 실행 경로 불일치 문제 발견 및 문서화 완료**
+- **Manager**: `_wrap_manager()` → `call_manager_api()` → Dev mode? → 로컬 실행 | Non-dev → Worker API
+- **Ship**: Dev mode → 직접 실행 | Non-dev → API 권한 체크 → 로컬 실행
+- **License**: `license_free.py` stub (PyPI) | `license.py` (Pro/Dev)
 
-- `server.py`가 `call_manager_api()` 대신 로컬 `tools/manager/` 모듈 사용
-- `tools/manager/`는 PyPI 빌드에서 제외됨 → 설치 시 ImportError
-- 문서: `docs/architecture/flow_manager.md`, `data_contracts.md`, `decision_log_manager.md`
+## Top 3 Side Effects
 
-**다음 액션 (택1)**:
-1. 옵션1: `_wrap_manager()`가 `call_manager_api()` 호출하도록 수정 (권장)
-2. 옵션2: `tools/manager/`를 PyPI 빌드에 포함
+1. **Network**: Worker API 호출 (`clouvel-api.workers.dev`, 30s timeout)
+2. **File I/O**: `~/.clouvel/license.json` (라이선스 캐시)
+3. **Process**: `git remote -v` (is_developer 체크, 5s timeout)
 
 ---
 
-## 오늘 완료 (2026-01-26)
+## 문서 시스템 (SSOT)
 
-### 아키텍처 분석 및 기록 📋
+### 구조
+
+```
+docs/architecture/
+├── ENTRYPOINTS.md          # 진입점 (CLI, MCP, Packaging)
+├── SIDE_EFFECTS.md         # 외부 부작용 매트릭스
+├── SMOKE_LOGS.md           # 실행 검증 기록
+├── RUNTIME_PATHS.md        # 조건 분기 (AUTO-GEN)
+├── MODULE_MAP.md           # 모듈 맵 (AUTO-GEN)
+├── data_contracts.md       # API 스키마 (AUTO-GEN)
+├── CALL_FLOWS/
+│   ├── flow_index.md       # 인덱스
+│   ├── flow_manager.md     # Manager 플로우
+│   ├── flow_activate.md    # 라이선스 활성화
+│   └── flow_webhook.md     # Worker API 통신
+└── DECISION_LOG/
+    └── ADR-0001-manager-execution.md  # RESOLVED
+
+docs/mcp/
+├── MCP_CATALOG.md          # 52개 도구 전체 카탈로그
+├── MCP_GROUPS.md           # 9개 유사 그룹 분류
+└── MCP_STANDARDIZATION_PLAN.md  # 표준화 계획 + 로드맵
+
+scripts/
+├── docs_extract.py         # AUTO-GEN 섹션 갱신
+└── docs_check.py           # 문서 유효성 검증 (all PASS)
+```
+
+### 검증 명령
+
+```bash
+py -3 scripts/docs_check.py   # 문서 유효성 검증
+py -3 scripts/docs_extract.py # AUTO-GEN 섹션 갱신
+```
+
+---
+
+## 결론 (2026-01-26)
+
+**v1.8.0 배포 - Manager Worker API 전환 완료**
+
+- `_wrap_manager()`가 `call_manager_api()` 호출하도록 수정
+- `_wrap_quick_perspectives()`도 Worker API 사용하도록 변경
+- 로컬 `tools/manager/` 의존성 제거
+- PyPI 설치 시 정상 동작 확인
+
+**SSOT 문서 시스템 강화 완료**:
+- ENTRYPOINTS.md - 진입점 문서 (Evidence 기반)
+- SIDE_EFFECTS.md - 부작용 매트릭스 (6개 카테고리)
+- SMOKE_LOGS.md - 실행 검증 기록 템플릿
+- ADR-0001 업데이트 - RESOLVED 상태로 변경
+- docs_extract.py - entrypoints, side_effects 추출 추가
+- docs_check.py - 새 문서 검증 추가 (7개 체크 all PASS)
+
+---
+
+## 오늘 완료 (2026-01-27)
+
+### 8역할 C-Level 마스터 분석 ✅
+
+**생성 파일**:
+- `CLOUVEL_STATUS.md` - 현재 상태 종합
+- `CLOUVEL_ACTION_PLAN.md` - P0/P1/P2 액션 플랜
+
+**주요 발견**:
+- PRD vs 구현 갭: 5개 기능 PRD 미반영
+- 테스트 커버리지: 4개 파일만 (P0 개선 필요)
+- Manager 충돌: ✅ RESOLVED (v1.8.0 Worker API)
+
+**CLAUDE.md 업데이트**:
+- Manager 충돌 해결됨으로 변경
+- Compounding Rules 4개 추가
+- v1.9 도구 통합 안내 추가
+
+**다음 P0 액션**:
+1. test_knowledge.py 작성 (20+ 테스트)
+2. test_ship.py 작성 (15+ 테스트)
+3. Reddit r/ClaudeAI 포스트 업로드
+
+---
+
+### v3.2: MCP 런타임 디버그 + 로컬 소스 강제 ✅
+
+**문제**: `project_path` 기반 DEV 모드 감지가 MCP에서 작동 안 함
+- 직접 Python 테스트: `is_developer("D:/clouvel")` → `True` ✅
+- MCP 호출: `search_knowledge(project_path="D:\\clouvel")` → Pro 라이센스 필요 ❌
+
+**원인**: MCP 서버가 설치본(`site-packages`)을 사용, 로컬 소스 아님
+
+**해결**:
+1. `debug_runtime` 도구 추가 (`server.py`)
+   - `sys.executable`, `clouvel.__file__`, `is_developer()` 출력
+   - MCP 런타임 환경 즉시 진단 가능
+2. MCP 설정에 `PYTHONPATH` 추가
+   ```bash
+   claude mcp remove clouvel -s user
+   claude mcp add clouvel -s user --env PYTHONPATH="D:\clouvel\src" -- py -m clouvel.server
+   ```
+
+**변경 파일**:
+- `src/clouvel/server.py` - `debug_runtime` 도구 + 핸들러 추가
+
+**다음 단계**: Claude Code 재시작 후 `debug_runtime` 호출하여 확인
+
+---
+
+### Phase 3: Sideeffect 검사 + 안전장치 (v3.1) ✅
+
+**check_sync 도구 구현**
+- `architecture.py`에 `check_sync()` 함수 추가
+- license.py ↔ license_free.py 함수 시그니처 동기화 검증
+- messages/en.py ↔ ko.py 메시지 키 동기화 검증
+- server.py에 도구 등록 완료
+
+**ship 상업용 안전장치**
+- `_run_safety_checks()`: ship 전 안전 검사
+- 시크릿 파일 탐지 (`.env`, `*.key`, `*.pem` 등)
+- 시크릿 내용 패턴 탐지 (API key, password 등)
+- .env.example 존재 확인
+- git 추적 시크릿 → BLOCK
+
+**Manager context 분석 강화**
+- PRD/Spec 관련 패턴 추가
+- Ship/Deploy 관련 패턴 추가
+- 코드 품질 패턴 추가 (refactor, duplicate)
+
+**변경 파일**:
+- `src/clouvel/tools/architecture.py` - check_sync 추가
+- `src/clouvel/tools/__init__.py` - export 추가
+- `src/clouvel/server.py` - 도구 등록
+- `src/clouvel/tools/ship_pro.py` - 안전장치 추가
+- `src/clouvel/tools/manager/utils.py` - context 분석 강화
+
+### Phase 2: PRD Diff + 영향 분석 (v3.1) ✅
+
+**PRD 버전 관리**
+- `_backup_prd()`: 이전 PRD를 `.claude/prd_history/PRD_{timestamp}.md`에 백업
+- 변경 이력 추적 가능
+
+**PRD Diff 계산**
+- `_calculate_prd_diff()`: difflib로 변경 내용 분석
+- 추가/삭제 라인 수, 변경된 섹션, 키워드 추출
+
+**영향 분석**
+- `_analyze_prd_impact()`: 변경된 키워드로 영향받는 파일 검색
+- 테스트 파일 영향 경고
+- Critical 섹션 (API, Schema, Security) 변경 경고
+
+**save_prd 통합**
+- 결과에 diff 요약 포함: `+N -M lines`
+- 영향받는 파일 수 표시: `N files may need updates`
+
+**변경 파일**: `src/clouvel/tools/start.py`
+
+### Phase 1: 유료화 강화 (v3.1) ✅
+
+**Ship COMPLETION_REPORT 자동 생성**
+- `_generate_completion_report()` 함수 추가
+- ship PASS 시 프로젝트 루트에 `COMPLETION_REPORT.md` 생성
+- AC 기준 PASS 근거 테이블 포함
+
+**Pro 유도 메시지 삽입 (3개 포인트)**
+- `can_code` WARN 시: "ship auto-generates evidence & completion report"
+- `save_prd` 후: "Track PRD changes & impact analysis with ship"
+- `plan` 후: "ship auto-generates PASS evidence & completion report"
+
+**변경 파일**:
+- `src/clouvel/tools/ship_pro.py` - COMPLETION_REPORT 생성
+- `src/clouvel/messages/en.py` - Pro 유도 메시지
+- `src/clouvel/tools/start.py` - save_prd Pro 유도
+- `src/clouvel/tools/planning.py` - plan Pro 유도
+
+### 환경 정리 (PM+CTO 리뷰) ✅
+
+**Phase 1: .env.example 생성**
+- 12개 환경 변수 문서화
+- 용도별 그룹핑 (Dev/API/License/Pro/Team)
+
+**Phase 2: DEV 모드 변수 통합**
+- `CLOUVEL_DEV_MODE` → `CLOUVEL_DEV` 통합
+- `content_api.py`, `shovel.py` 수정
+- 단일 변수로 일관성 확보
+
+**Phase 3: pyproject.toml 수정**
+- classifier에 Python 3.10, 3.13 추가
+- 실제 지원 버전 명시 (3.10~3.13)
+
+**Phase 4: CLAUDE.md 환경 섹션 추가**
+- 개발 모드 설정 방법
+- 환경 변수 목록 테이블
+- 필수 파일 목록
+
+### 랜딩페이지 카피 수정 (Solo Dev 타겟) ✅
+
+**C-Level 동적 회의 결과 반영**:
+
+| 섹션 | EN Before | EN After | KO After |
+|------|-----------|----------|----------|
+| Hero title | "AI that asks tough questions." | "No spec, no code." | "스펙 없이? 코딩 금지." |
+| Hero subtitle | "8 AI managers help you think..." | "Skip the spec, enter debugging hell." | "스펙 건너뛰면 디버깅 지옥행." |
+| Hero desc | "Not another AI that gives easy answers." | "You're building alone. Make every hour count." | "혼자 개발하니까. 매 시간이 소중하니까." |
+| Problem 3 title | "Results vary every time, debugging explodes" | "You forget what you decided last week" | "지난주에 뭘 결정했는지 까먹음" |
+| Problem 3 desc | "Same prompt, different results..." | "No record of decisions. Repeat the same debates." | "결정 기록 없음. 같은 논쟁 반복." |
+
+**회의 결정 사항**:
+- 타겟: Solo dev only (Team lead 문구 제거)
+- "Vibe coding" 표현 제거 → 더 직접적인 메시지
+- Problem 3 오버프라미스 제거: "same prompt, different results" → "결정 기록 없음" (Knowledge Base 기능과 연결)
+
+**파일 변경**:
+- `docs/landing/i18n/en.json` - Hero + Problem 섹션
+- `docs/landing/i18n/ko.json` - Hero + Problem 섹션
+- `docs/landing/index.html` - Hero + Problem 섹션 (하드코딩 텍스트)
+- `docs/landing/index-ko.html` - Hero + Problem 섹션 (기본 텍스트/fallback)
+
+### Knowledge Base 개발자 모드 수정 ✅
+
+**문제**: 개발자 환경에서 Knowledge Base 도구 사용 불가 (Pro 라이센스 필요 메시지)
+
+**원인**: `tools/knowledge.py`에 `is_developer()` 체크 누락
+
+**수정**:
+- `_is_dev_mode()` 함수 추가
+- `_IS_DEVELOPER`, `_CAN_USE_KB` 플래그 추가
+- 모든 함수에서 `_HAS_KNOWLEDGE_DB` → `_CAN_USE_KB` 변경
+- 개발자 모드면 Knowledge Base 전체 접근 가능
+
+**테스트**:
+```python
+_IS_DEVELOPER: True
+_HAS_KNOWLEDGE_DB: True
+_CAN_USE_KB: True
+record_decision: {'status': 'recorded', 'decision_id': '42'} ✅
+```
+
+**파일 변경**:
+- `src/clouvel/tools/knowledge.py`
+
+**주의**: MCP 서버 재시작 필요 (코드 변경 반영)
+
+---
+
+## 이전 완료 (2026-01-26)
+
+### v1.9.0 - MCP 표준화 전체 구현 ✅
+
+**Phase 1: Deprecation Warnings** ✅
+- `tools/core.py` - `scan_docs`, `analyze_docs`, `init_docs` deprecation warning
+- `tools/verify.py` - `verify`, `gate`, `handoff` deprecation warning
+- `tools/docs.py` - `get_prd_template`, `get_prd_guide` deprecation warning
+- `tools/rules.py` - `init_rules` deprecation warning
+- `tools/hooks.py` - `hook_design`, `hook_verify` deprecation warning
+
+**Phase 2: Option Extensions** ✅
+- `tools/start.py` - `--template`, `--layout`, `--guide`, `--init` 옵션 추가
+- `tools/setup.py` - `--rules`, `--hook`, `--hook_trigger` 옵션 추가
+- `server.py` - Tool 정의 + 핸들러 업데이트
+
+**Developer Mode Fix** ✅
+- `api_client.py:66-72` - `call_manager_api()`에 `is_developer()` 체크 추가
+- 개발자 모드에서 Worker API 우회 → 로컬 manager 모듈 사용
+- `_dev_mode_response()` - 로컬 manager 호출 + `dev_mode: True` 반환
+- 테스트: `is_developer(): True`, `dev_mode: True`, `error: None` ✅
+
+**Phase 3: Deprecation Plan (v2.0 제거 예정)**
+| 도구 | 대체 | Migration Path |
+|------|------|----------------|
+| `scan_docs` | `can_code` | `can_code(path)` |
+| `analyze_docs` | `can_code` | `can_code(path)` |
+| `verify` | `ship` | `ship(path, steps=["lint", "test"])` |
+| `gate` | `ship` | `ship(path, steps=steps, auto_fix=fix)` |
+| `handoff` | `record_decision` + `update_progress` | 조합 사용 |
+| `get_prd_template` | `start` | `start(path, template="web-app")` |
+| `get_prd_guide` | `start` | `start(path, guide=True)` |
+| `init_docs` | `start` | `start(path, init=True)` |
+| `init_rules` | `setup_cli` | `setup_cli(path, rules="web")` |
+| `hook_design` | `setup_cli` | `setup_cli(path, hook="design")` |
+| `hook_verify` | `setup_cli` | `setup_cli(path, hook="verify")` |
+
+### MCP 도구 표준화 완료 ✅
+
+**생성 파일**:
+- `docs/mcp/MCP_CATALOG.md` - 52개 도구 전체 카탈로그
+- `docs/mcp/MCP_GROUPS.md` - 9개 유사 그룹 분류
+- `docs/mcp/MCP_STANDARDIZATION_PLAN.md` - 표준화 계획
+
+**분석 결과**:
+| Action | Count | 대상 |
+|--------|-------|------|
+| **Standard** | 12 | `can_code`, `start`, `ship`, `manager`, `setup_cli` 등 |
+| **Keep** | 18 | 용도가 명확히 다른 도구 |
+| **Merge** | 6 | `get_prd_template` → `start --template` 등 |
+| **Deprecate** | 5 | `scan_docs`, `analyze_docs`, `verify`, `gate`, `handoff` |
+
+**유사 판정 기준** (5개 중 3개 이상 일치):
+1. Purpose - 해결하는 문제
+2. Interface - IO 스키마
+3. Side Effects - Network/FS/ENV/Process
+4. Runtime Context - Local/Worker, Sync/Async
+5. Dependencies - API 키/스토리지
+
+### v1.8.0 배포 - Manager Worker API 전환 ✅
+
+**변경 내용**:
+- `server.py:1193-1225`: `_wrap_manager()` → `call_manager_api()` 호출
+- `server.py:1275-1305`: `_wrap_quick_perspectives()` → Worker API 사용
+- 제거된 import: `manager`, `quick_perspectives`, `generate_meeting_sync`
+- 추가된 import: `from .api_client import call_manager_api`
+
+**근거**: ADR-0001 (Manager 실행 아키텍처 결정)
+
+### 문서 시스템 구축 ✅
+
+**디렉토리 구조**:
+```
+docs/architecture/
+├── CALL_FLOWS/
+│   ├── flow_index.md
+│   ├── flow_manager.md
+│   ├── flow_activate.md
+│   └── flow_webhook.md
+├── DECISION_LOG/
+│   └── ADR-0001-manager-execution.md
+├── DATA_CONTRACTS.md
+├── MODULE_MAP.md
+└── RUNTIME_PATHS.md
+```
+
+**자동화 스크립트**:
+- `scripts/docs_extract.py` - 코드에서 AUTO-GEN 섹션 자동 생성
+- `scripts/docs_check.py` - 문서 유효성 검증
+
+### 이전: 아키텍처 분석 및 기록 📋
 
 **문제**: manager 도구 충돌로 다른 작업 불가
 
@@ -48,7 +422,7 @@
 |----|----------|------|------|
 | #30 | architecture | server.py Import 규칙 | 🔒 LOCKED |
 | #31 | architecture | Pro 기능 패턴 (ship 표준) | 🔒 LOCKED |
-| #32 | architecture | Manager 충돌 (미해결) | ⚠️ OPEN |
+| #32 | architecture | Manager 충돌 | ✅ RESOLVED (v1.8.0) |
 | #33 | architecture | 라이센스 모듈 구조 | 🔒 LOCKED |
 | #34 | architecture | Trial 관리 (API 우선) | 🔒 LOCKED |
 | #35 | architecture | Optional 의존성 | 🔒 LOCKED |
@@ -58,31 +432,58 @@
 | #39 | process | 기록 트리거 | 🔒 LOCKED |
 | #40 | process | 코드 추가 전 확인 | 🔒 LOCKED |
 
-**CLAUDE.md 업데이트**:
-- 아키텍처 규칙 섹션 추가
-- 기록 규칙 섹션 추가
-- 긍정적 프레이밍 원칙 추가
-
-**findings.md 업데이트**:
-- Manager 충돌 분석 기록
-- 기록된 결정/위치 목록
-
 ---
 
 ## 다음 할 일
 
-### P0: Manager 충돌 해결 (#32)
+### P0: MCP 서버 재시작 후 확인 (v3.2) ✅
+- [x] `debug_runtime(project_path="D:\\clouvel")` 호출
+- [x] `clouvel.__file__` = `D:\clouvel\src\clouvel\...` 확인
+- [x] `is_developer` = `True` 확인
+- [x] `search_knowledge(query="architecture", project_path="D:\\clouvel")` 테스트
+- [x] Knowledge Base 도구 정상 작동 확인
 
-**해결 방향**: ship 패턴으로 통일
-1. `tools/manager.py` 생성 (진입점: API 권한 → 로컬 실행)
-2. `tools/manager/` → `tools/manager_impl/` 이름 변경
-3. `tools/__init__.py`의 중복 manager 제거
-4. `server.py` import 정리
+### P0: 테스트 커버리지 확보 ✅
+- [x] test_knowledge.py 작성 (35 테스트)
+- [x] test_ship.py 작성 (23 테스트)
+- [x] 전체 테스트 통과: **234 passed, 7 skipped**
 
-### P1: 테스트
+### P0: PRD v1.9 동기화 ✅
+- [x] docs/PRD.md에 v1.9 도구 통합 섹션 추가
+- [x] v3.1 런타임 안전장치 섹션 추가
+- [x] v3.2 MCP 런타임 디버그 섹션 추가
+- [x] 테스트 커버리지 강화 섹션 추가
 
-- `pytest tests/` 실행
-- uvx 환경 테스트
+### P0: Reddit 포스트 (진행 중)
+- [x] r/SideProject 포스트 업로드 ✅
+- [ ] r/ClaudeAI 포스트 (2-3일 후)
+- [ ] r/IndieHackers 포스트 (2-3일 후)
+
+### P1: 완료 (2026-01-27)
+- [x] CI 문서 검증 ✅ (.github/workflows/ci.yml에 docs_check.py 추가)
+- [x] review 도구 API 설계 ✅ (docs/PRD.md v1.10 섹션)
+- [x] Compounding Rules ✅ (CLAUDE.md에 4개 규칙)
+- [ ] Product Hunt 준비 (로고 + 스크린샷 필요)
+
+### P1: 완료 ✅
+
+- [x] `python scripts/docs_check.py` 실행 (all PASS)
+- [x] SSOT 문서 시스템 구축 완료
+- [x] ADR-0001 RESOLVED 상태로 업데이트
+- [x] MCP 도구 표준화 (52개 → 9그룹 → 표준화 계획)
+
+### P1: Gate 통합 (다음 단계)
+
+- [ ] `docs_check.py`를 ship 도구에 연동
+- [ ] pre-commit hook에 문서 검증 추가
+- [ ] CI에 docs_check.py 실행 추가
+- [x] MCP Deprecation Warnings (v1.9): 11개 도구 ✅
+- [x] MCP Option Extensions (v1.9): `start --template/--guide/--init`, `setup_cli --rules/--hook` ✅
+
+### P2: Smoke Test 자동화 (선택)
+
+- [ ] `scripts/smoke_test.py` 생성
+- [ ] SMOKE_LOGS.md AUTO-GEN 섹션 자동 채우기
 
 ---
 

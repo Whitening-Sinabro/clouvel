@@ -1,24 +1,32 @@
-# Manager 아키텍처 결정 로그
+# ADR-0001: Manager Execution Architecture
 
 > 작성일: 2026-01-26
-> 버전: v1.7.3 기준
-> 상태: **미해결 - 결정 필요**
+> 최종 업데이트: 2026-01-26 (v1.8.0 구현 완료)
+> 상태: **RESOLVED - 옵션 1 (Worker API) 선택 및 구현됨**
 
 ---
 
 ## (A) 결론
 
-### 현재 상태
+### 최종 결정
 
-**"로컬 실행" 구현이지만, 로컬 모듈이 배포에서 제외되어 PyPI 설치 시 작동 불가**
+**옵션 1: Worker API 사용** - v1.8.0에서 구현 완료
 
-### 의도
+### 구현 상태
 
-**"Worker 실행"** - `api_client.py:call_manager_api()` 함수가 존재함
+| 항목 | 상태 | Evidence |
+|------|------|----------|
+| `server.py:_wrap_manager()` | `call_manager_api()` 호출 | `server.py:1193-1225` |
+| `server.py:_wrap_quick_perspectives()` | Worker API 사용 | `server.py:1275-1305` |
+| 로컬 manager import | 제거됨 | `server.py:44` 라인 삭제 |
+| PyPI 설치 테스트 | 통과 | uvx 환경에서 검증 |
 
-### 실제
+### 변경 이력 요약
 
-**"로컬 실행 시도 → 실패"** - `server.py:_wrap_manager()`가 `call_manager_api()`를 사용하지 않음
+| 버전 | 상태 |
+|------|------|
+| v1.7.x | 로컬 실행 시도 → ImportError |
+| v1.8.0 | Worker API 전환 완료 |
 
 ---
 
@@ -168,23 +176,60 @@ exclude = [
 
 ---
 
-## 권장안
+## 최종 결정
 
-**옵션 1 (Worker API 사용)** 권장
+**옵션 1 (Worker API 사용)** 선택 및 구현 완료
 
-이유:
-1. `api_client.py:call_manager_api()`가 이미 존재 - 의도된 아키텍처로 보임
+### 결정 근거
+
+1. `api_client.py:call_manager_api()`가 이미 존재 - 의도된 아키텍처
 2. Pro 기능 보호 - 비즈니스 모델 유지
 3. Trial 체크가 서버에서 일관되게 처리됨
-4. 로컬 의존성 감소
+4. 로컬 의존성 감소 (anthropic 패키지 불필요)
 
-단, Worker API가 manager 로직을 완전히 구현했는지 먼저 확인 필요.
+### 단점 수용
+
+- 네트워크 필수 → fallback 응답 구현 (`api_client.py:195-242`)
+- API 지연 → 30초 timeout 설정 (`api_client.py:17`)
 
 ---
 
-## 다음 액션
+## 완료된 액션
 
-1. [ ] Worker API (`clouvel-api.vnddns999.workers.dev/api/manager`) 동작 확인
-2. [ ] 옵션 선택 후 구현
-3. [ ] 테스트 (PyPI 설치 환경에서)
-4. [ ] Knowledge Base에 결정 기록 (`record_decision`)
+1. [x] Worker API 동작 확인 (2026-01-26)
+2. [x] 옵션 1 구현 (v1.8.0)
+3. [x] PyPI 설치 환경 테스트 통과
+4. [x] Knowledge Base에 결정 기록 (decision #30-40)
+
+### 구현 변경사항
+
+```python
+# server.py (v1.8.0)
+
+# Line 19: 새 import 추가
+from .api_client import call_manager_api
+
+# Line 1193-1225: _wrap_manager() 변경
+async def _wrap_manager(args: dict) -> list[TextContent]:
+    result = call_manager_api(
+        context=args.get("context", ""),
+        topic=args.get("topic"),
+        mode=args.get("mode", "auto"),
+        managers=args.get("managers"),
+    )
+    # ... formatting
+```
+
+### 롤백 계획
+
+옵션 2로 롤백이 필요한 경우:
+1. `pyproject.toml` exclude에서 `tools/manager/` 제거
+2. `server.py`에서 로컬 import 복원
+3. `_wrap_manager()`가 로컬 함수 호출하도록 변경
+
+---
+
+## 참조
+
+- flow_manager.md: [Manager 호출 플로우](../CALL_FLOWS/flow_manager.md)
+- Knowledge Base: `search_knowledge("architecture manager")` → decision #30, #32

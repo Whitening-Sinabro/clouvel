@@ -859,9 +859,10 @@ def save_prd(
     project_type: str = ""
 ) -> Dict[str, Any]:
     """
-    Save PRD content.
+    Save PRD content with version history and impact analysis (v3.1 Pro).
 
     Save PRD written by Claude through conversation with user.
+    Pro feature: Tracks changes and analyzes impact on codebase.
 
     Args:
         path: Project root path
@@ -870,7 +871,7 @@ def save_prd(
         project_type: Project type (optional, for metadata)
 
     Returns:
-        Save result
+        Save result with diff and impact analysis (Pro)
     """
     from datetime import datetime
 
@@ -881,7 +882,9 @@ def save_prd(
     result = {
         "status": "UNKNOWN",
         "prd_path": str(prd_path),
-        "message": ""
+        "message": "",
+        "diff": None,
+        "impact": None
     }
 
     # Create docs folder
@@ -900,7 +903,17 @@ def save_prd(
         header = f"# {name} PRD\n\n> Created: {today}\n\n---\n\n"
         content = header + content
 
-    # Save
+    # v3.1 Pro: Backup previous PRD and calculate diff
+    old_content = None
+    if prd_path.exists():
+        try:
+            old_content = prd_path.read_text(encoding="utf-8")
+            # Backup to history
+            _backup_prd(project_path, old_content)
+        except Exception:
+            pass
+
+    # Save new PRD
     try:
         prd_path.write_text(content, encoding="utf-8")
         result["status"] = "SAVED"
@@ -910,6 +923,17 @@ def save_prd(
         validation = _validate_prd(content)
         result["validation"] = validation
 
+        # v3.1 Pro: Calculate diff if previous version exists
+        if old_content:
+            diff_result = _calculate_prd_diff(old_content, content)
+            result["diff"] = diff_result
+
+            # v3.1 Pro: Impact analysis
+            if diff_result.get("has_changes"):
+                impact = _analyze_prd_impact(project_path, diff_result)
+                result["impact"] = impact
+
+        # Build next_steps
         if validation["is_valid"]:
             result["next_steps"] = [
                 "PRD saved! You can start coding now.",
@@ -921,11 +945,180 @@ def save_prd(
                 "Consider completing the PRD if needed."
             ]
 
+        # Add Pro upsell or diff summary
+        if result.get("diff") and result["diff"].get("has_changes"):
+            result["next_steps"].append(
+                f"📊 PRD changed: +{result['diff']['added_lines']} -{result['diff']['removed_lines']} lines"
+            )
+            if result.get("impact") and result["impact"].get("affected_files"):
+                result["next_steps"].append(
+                    f"⚠️ Impact: {len(result['impact']['affected_files'])} files may need updates"
+                )
+        else:
+            result["next_steps"].append(
+                "💎 Pro: Track PRD changes & impact analysis with `ship` → https://polar.sh/clouvel"
+            )
+
     except Exception as e:
         result["status"] = "ERROR"
         result["message"] = f"Failed to save PRD: {e}"
 
     return result
+
+
+def _backup_prd(project_path: Path, content: str) -> str:
+    """Backup PRD to history folder (v3.1 Pro).
+
+    Returns:
+        Backup file path
+    """
+    from datetime import datetime
+
+    history_dir = project_path / ".claude" / "prd_history"
+    history_dir.mkdir(parents=True, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup_path = history_dir / f"PRD_{timestamp}.md"
+
+    try:
+        backup_path.write_text(content, encoding="utf-8")
+        return str(backup_path)
+    except Exception:
+        return None
+
+
+def _calculate_prd_diff(old_content: str, new_content: str) -> Dict[str, Any]:
+    """Calculate diff between old and new PRD (v3.1 Pro).
+
+    Returns:
+        Diff summary with changed sections
+    """
+    import difflib
+
+    old_lines = old_content.splitlines()
+    new_lines = new_content.splitlines()
+
+    diff = list(difflib.unified_diff(old_lines, new_lines, lineterm=''))
+
+    added_lines = sum(1 for line in diff if line.startswith('+') and not line.startswith('+++'))
+    removed_lines = sum(1 for line in diff if line.startswith('-') and not line.startswith('---'))
+
+    # Extract changed sections (## headers)
+    changed_sections = set()
+    current_section = "Unknown"
+
+    for line in diff:
+        if line.startswith('@@'):
+            continue
+        if line.startswith(('+', '-')) and not line.startswith(('+++', '---')):
+            actual_line = line[1:].strip()
+            if actual_line.startswith('## '):
+                current_section = actual_line[3:].strip()
+            changed_sections.add(current_section)
+
+    # Extract changed keywords (for impact analysis)
+    changed_keywords = set()
+    for line in diff:
+        if line.startswith(('+', '-')) and not line.startswith(('+++', '---')):
+            # Extract words that look like identifiers
+            words = line[1:].split()
+            for word in words:
+                # Filter: 3+ chars, alphanumeric, not common words
+                clean = ''.join(c for c in word if c.isalnum() or c == '_')
+                if len(clean) >= 3 and clean.lower() not in {'the', 'and', 'for', 'with', 'this', 'that', 'from', 'todo'}:
+                    changed_keywords.add(clean.lower())
+
+    return {
+        "has_changes": added_lines > 0 or removed_lines > 0,
+        "added_lines": added_lines,
+        "removed_lines": removed_lines,
+        "changed_sections": list(changed_sections),
+        "changed_keywords": list(changed_keywords)[:20],  # Limit to 20
+        "diff_preview": '\n'.join(diff[:30]) if diff else ""
+    }
+
+
+def _analyze_prd_impact(project_path: Path, diff_result: Dict) -> Dict[str, Any]:
+    """Analyze impact of PRD changes on codebase (v3.1 Pro).
+
+    Searches for files that might be affected by PRD changes.
+
+    Returns:
+        Impact analysis with affected files and warnings
+    """
+    import re
+
+    keywords = diff_result.get("changed_keywords", [])
+    if not keywords:
+        return {"affected_files": [], "warnings": []}
+
+    affected_files = []
+    warnings = []
+
+    # Search in src/ directory
+    src_dir = project_path / "src"
+    if not src_dir.exists():
+        src_dir = project_path
+
+    # File extensions to search
+    extensions = {'.py', '.js', '.ts', '.tsx', '.jsx', '.go', '.rs', '.java'}
+
+    try:
+        for file_path in src_dir.rglob('*'):
+            if not file_path.is_file():
+                continue
+            if file_path.suffix not in extensions:
+                continue
+            if '__pycache__' in str(file_path) or 'node_modules' in str(file_path):
+                continue
+
+            try:
+                content = file_path.read_text(encoding='utf-8', errors='ignore').lower()
+
+                # Check if any keyword appears in file
+                matched_keywords = []
+                for keyword in keywords:
+                    if keyword in content:
+                        matched_keywords.append(keyword)
+
+                if matched_keywords:
+                    rel_path = file_path.relative_to(project_path)
+                    affected_files.append({
+                        "path": str(rel_path),
+                        "matched_keywords": matched_keywords[:5],
+                        "match_count": len(matched_keywords)
+                    })
+            except Exception:
+                continue
+
+    except Exception:
+        pass
+
+    # Sort by match count (most affected first)
+    affected_files.sort(key=lambda x: x["match_count"], reverse=True)
+    affected_files = affected_files[:15]  # Limit to 15 files
+
+    # Generate warnings
+    if len(affected_files) > 10:
+        warnings.append(f"Large impact: {len(affected_files)}+ files may need review")
+
+    # Check if tests might be affected
+    test_affected = [f for f in affected_files if 'test' in f["path"].lower()]
+    if test_affected:
+        warnings.append(f"Tests may need updates: {len(test_affected)} test files affected")
+
+    # Check changed sections for critical areas
+    changed_sections = diff_result.get("changed_sections", [])
+    critical_sections = {'acceptance', 'criteria', 'api', 'database', 'schema', 'security'}
+    critical_changes = [s for s in changed_sections if any(c in s.lower() for c in critical_sections)]
+    if critical_changes:
+        warnings.append(f"Critical sections changed: {', '.join(critical_changes)}")
+
+    return {
+        "affected_files": affected_files,
+        "warnings": warnings,
+        "summary": f"{len(affected_files)} files may be affected by PRD changes"
+    }
 
 
 def get_prd_questions(project_type: str = "generic") -> Dict[str, Any]:

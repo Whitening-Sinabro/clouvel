@@ -9,7 +9,31 @@ v1.2 new tools:
 - ship: One-click test→verify→evidence generation (Pro)
 
 Free version - For Pro features, see clouvel-pro package
+
+v3.1: Runtime entitlement bootstrap (env var timing fix).
 """
+
+import os
+
+
+def _bootstrap_env() -> None:
+    """Bootstrap environment before tool imports.
+
+    MCP environments may inject env vars AFTER module import.
+    This syncs CLOUVEL_DEV and CLOUVEL_DEV_MODE to avoid timing issues.
+    """
+    dev = os.getenv("CLOUVEL_DEV")
+    dev_mode = os.getenv("CLOUVEL_DEV_MODE")
+
+    # Sync: if one is set, copy to the other
+    if dev_mode is None and dev is not None:
+        os.environ["CLOUVEL_DEV_MODE"] = dev
+    if dev is None and dev_mode is not None:
+        os.environ["CLOUVEL_DEV"] = dev_mode
+
+
+# MUST run before tool imports
+_bootstrap_env()
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
@@ -46,8 +70,8 @@ from .tools import (
     list_managers, MANAGERS,
     # ship (Pro, v1.2)
     ship, quick_ship, full_ship,
-    # architecture (v1.8)
-    arch_check, check_imports, check_duplicates,
+    # architecture (v1.8 + v3.1)
+    arch_check, check_imports, check_duplicates, check_sync,
 )
 
 # Error Learning tools (Pro feature - separate import)
@@ -488,6 +512,7 @@ TOOL_DEFINITIONS = [
             "properties": {
                 "query": {"type": "string", "description": "Search query (FTS5 syntax supported)"},
                 "project_name": {"type": "string", "description": "Filter by project (optional)"},
+                "project_path": {"type": "string", "description": "Project path (for dev mode auto-detection)"},
                 "limit": {"type": "integer", "description": "Max results (default 20)"}
             },
             "required": ["query"]
@@ -512,7 +537,9 @@ TOOL_DEFINITIONS = [
         description="Initialize the knowledge base. Creates SQLite database at ~/.clouvel/knowledge.db. (Pro)",
         inputSchema={
             "type": "object",
-            "properties": {}
+            "properties": {
+                "project_path": {"type": "string", "description": "Project path (for dev mode auto-detection)"}
+            }
         }
     ),
     Tool(
@@ -520,7 +547,9 @@ TOOL_DEFINITIONS = [
         description="Rebuild the knowledge base search index. Use if search results seem incomplete. (Pro)",
         inputSchema={
             "type": "object",
-            "properties": {}
+            "properties": {
+                "project_path": {"type": "string", "description": "Project path (for dev mode auto-detection)"}
+            }
         }
     ),
     Tool(
@@ -530,7 +559,8 @@ TOOL_DEFINITIONS = [
             "type": "object",
             "properties": {
                 "decision_id": {"type": "integer", "description": "The ID of the decision to unlock"},
-                "reason": {"type": "string", "description": "Why this decision is being unlocked (required for audit)"}
+                "reason": {"type": "string", "description": "Why this decision is being unlocked (required for audit)"},
+                "project_path": {"type": "string", "description": "Project path (for dev mode auto-detection)"}
             },
             "required": ["decision_id", "reason"]
         }
@@ -757,6 +787,28 @@ TOOL_DEFINITIONS = [
             },
         }
     ),
+    # v3.1: Sideeffect sync checker
+    Tool(
+        name="check_sync",
+        description="v3.1: Verify sync between file pairs (license.py ↔ license_free.py, messages/en.py ↔ ko.py). Detects missing functions and signature mismatches.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"description": "Project root path", "type": "string"},
+            },
+        }
+    ),
+    # v3.2: Debug runtime environment (MCP debugging)
+    Tool(
+        name="debug_runtime",
+        description="Debug MCP runtime environment. Shows Python executable, clouvel path, and entitlement status. Use to diagnose MCP/interpreter issues.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_path": {"description": "Project path for is_developer check", "type": "string"},
+            },
+        }
+    ),
 ]
 
 
@@ -822,8 +874,8 @@ TOOL_HANDLERS = {
     "record_location": lambda args: _wrap_record_location(args),
     "search_knowledge": lambda args: _wrap_search_knowledge(args),
     "get_context": lambda args: _wrap_get_context(args),
-    "init_knowledge": lambda args: _wrap_init_knowledge(),
-    "rebuild_index": lambda args: _wrap_rebuild_index(),
+    "init_knowledge": lambda args: _wrap_init_knowledge(args),
+    "rebuild_index": lambda args: _wrap_rebuild_index(args),
     "unlock_decision": lambda args: _wrap_unlock_decision(args),
     "list_locked_decisions": lambda args: _wrap_list_locked_decisions(args),
 
@@ -853,10 +905,14 @@ TOOL_HANDLERS = {
     # Pro 안내
     "upgrade_pro": lambda args: _upgrade_pro(),
 
-    # Architecture Guard (v1.8)
+    # Architecture Guard (v1.8 + v3.1)
     "arch_check": lambda args: arch_check(args.get("name", ""), args.get("purpose", ""), args.get("path", ".")),
     "check_imports": lambda args: check_imports(args.get("path", ".")),
     "check_duplicates": lambda args: check_duplicates(args.get("path", ".")),
+    "check_sync": lambda args: check_sync(args.get("path", ".")),  # v3.1
+
+    # Debug (v3.2)
+    "debug_runtime": lambda args: _wrap_debug_runtime(args),
 }
 
 
@@ -1022,6 +1078,7 @@ async def _wrap_search_knowledge(args: dict) -> list[TextContent]:
     result = await search_knowledge(
         query=args.get("query", ""),
         project_name=args.get("project_name"),
+        project_path=args.get("project_path"),
         limit=args.get("limit", 20)
     )
 
@@ -1086,9 +1143,11 @@ async def _wrap_get_context(args: dict) -> list[TextContent]:
     return [TextContent(type="text", text=output)]
 
 
-async def _wrap_init_knowledge() -> list[TextContent]:
+async def _wrap_init_knowledge(args: dict) -> list[TextContent]:
     """init_knowledge tool wrapper"""
-    result = await init_knowledge()
+    result = await init_knowledge(
+        project_path=args.get("project_path")
+    )
 
     if result.get("status") == "initialized":
         output = f"""# ✅ Knowledge Base Initialized
@@ -1111,9 +1170,11 @@ async def _wrap_init_knowledge() -> list[TextContent]:
     return [TextContent(type="text", text=output)]
 
 
-async def _wrap_rebuild_index() -> list[TextContent]:
+async def _wrap_rebuild_index(args: dict) -> list[TextContent]:
     """rebuild_index tool wrapper"""
-    result = await rebuild_index()
+    result = await rebuild_index(
+        project_path=args.get("project_path")
+    )
 
     if result.get("status") == "rebuilt":
         output = f"""# ✅ Search Index Rebuilt
@@ -1134,7 +1195,8 @@ async def _wrap_unlock_decision(args: dict) -> list[TextContent]:
     """unlock_decision tool wrapper"""
     result = await unlock_decision(
         decision_id=args.get("decision_id"),
-        reason=args.get("reason")
+        reason=args.get("reason"),
+        project_path=args.get("project_path")
     )
 
     if result.get("status") == "unlocked":
@@ -1611,6 +1673,48 @@ https://polar.sh/clouvel
 pip install clouvel-pro
 ```
 """)]
+
+
+async def _wrap_debug_runtime(args: dict) -> list[TextContent]:
+    """Debug MCP runtime environment."""
+    import sys
+    import clouvel
+    from .utils.entitlements import is_developer, is_clouvel_repo, can_use_pro
+    from .tools.knowledge import can_use_kb
+
+    project_path = args.get("project_path", "")
+
+    # Gather runtime info
+    info = {
+        "sys.executable": sys.executable,
+        "sys.path[:3]": sys.path[:3],
+        "clouvel.__file__": clouvel.__file__,
+        "project_path": project_path,
+        "is_clouvel_repo": is_clouvel_repo(project_path) if project_path else "N/A (no path)",
+        "is_developer": is_developer(project_path) if project_path else is_developer(),
+        "can_use_pro": can_use_pro(project_path) if project_path else can_use_pro(),
+        "can_use_kb": can_use_kb(project_path) if project_path else can_use_kb(),
+        "env.CLOUVEL_DEV": os.getenv("CLOUVEL_DEV", "not set"),
+        "env.CLOUVEL_DEV_MODE": os.getenv("CLOUVEL_DEV_MODE", "not set"),
+    }
+
+    output = "# 🔧 Debug Runtime\n\n"
+    for k, v in info.items():
+        output += f"**{k}**: `{v}`\n"
+
+    # Quick diagnosis
+    output += "\n## Diagnosis\n"
+    if "site-packages" in str(clouvel.__file__):
+        output += "⚠️ Using **installed package** (not local source)\n"
+    elif "D:" in str(clouvel.__file__) or "clouvel" in str(clouvel.__file__).lower():
+        output += "✅ Using **local source**\n"
+
+    if info["is_developer"]:
+        output += "✅ Developer mode: **ACTIVE**\n"
+    else:
+        output += "❌ Developer mode: **INACTIVE** (Pro features blocked)\n"
+
+    return [TextContent(type="text", text=output)]
 
 
 @server.call_tool()

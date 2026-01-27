@@ -15,11 +15,11 @@
     "badge": "Claude Code용 MCP 서버",
     "badge_new": "NEW",
     "badge_version": "v1.9.0 - 52개 도구 → 12개 표준 (더 심플하게)",
-    "title_1": "어려운 질문을",
-    "title_2": "던지는 AI.",
-    "subtitle": "8명의 AI 매니저가 코딩 전에 모든 각도에서 생각하게 도와줍니다.",
-    "desc_solo_text": "쉬운 답 주는 AI는 이미 많다.",
-    "desc_solo": "생각하게 만드는 AI 팀.",
+    "title_1": "스펙 없이?",
+    "title_2": "코딩 금지.",
+    "subtitle": "스펙 건너뛰면 디버깅 지옥행.",
+    "desc_solo_text": "혼자 개발하니까. 매 시간이 소중하니까.",
+    "desc_solo": "당신이 놓친 걸 잡아주는 AI 팀.",
     "cta_start": "시작하기",
     "cta_demo": "데모 보기"
   },
@@ -45,8 +45,8 @@
     "problem_1_desc": "\"로그인 만들어\" - 비밀번호 재설정? 소셜 로그인? 조용히 생략됨.",
     "problem_2_title": "설계 없이 바로 코딩으로 직행",
     "problem_2_desc": "아키텍처 고민 없이 - 바로 코드 - 나중에 전체 리팩토링.",
-    "problem_3_title": "매번 결과가 달라지고 디버깅 폭발",
-    "problem_3_desc": "같은 프롬프트인데 어제와 오늘 결과가 다름 - 2-3일 디버깅 지옥.",
+    "problem_3_title": "지난주에 뭘 결정했는지 까먹음",
+    "problem_3_desc": "결정 기록 없음. 같은 논쟁 반복. 컨텍스트 다시 파악하느라 시간 낭비.",
     "conclusion": "그래서 PRD는 <span class=\"text-accent\">'옵션'</span>이 아니라 <span class=\"text-accent\">'게이트'</span>여야 합니다."
   },
   "how": {

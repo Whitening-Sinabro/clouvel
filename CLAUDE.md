@@ -24,6 +24,41 @@ claude --mcp clouvel
 
 ---
 
+## 환경 설정
+
+### 개발 모드 (개발자 전용)
+
+```bash
+# 방법 1: 환경 변수 (권장)
+export CLOUVEL_DEV=1
+
+# 방법 2: git remote 자동 감지
+# clouvel 저장소 내에서 실행 시 자동 활성화
+```
+
+**개발 모드 활성화 시**:
+- 라이선스 체크 우회
+- Pro 기능 전체 접근
+- Worker API 우회 → 로컬 실행
+
+### 환경 변수 목록
+
+| 변수 | 용도 | 기본값 |
+|------|------|--------|
+| `CLOUVEL_DEV` | 개발 모드 | - |
+| `CLOUVEL_LICENSE` | 라이선스 키 | - |
+| `ANTHROPIC_API_KEY` | 동적 회의 | - (없으면 static mode) |
+| `CLOUVEL_KB_KEY` | KB 암호화 | - (선택) |
+
+### 필수 파일
+
+| 파일 | 용도 | Git 추적 |
+|------|------|----------|
+| `.env` | 로컬 설정 | ❌ (.gitignore) |
+| `.env.example` | 템플릿 | ✅ |
+
+---
+
 ## 핵심 도구
 
 | 도구           | 설명                   |
@@ -171,14 +206,16 @@ tools/xxx.py (진입점)
 | `tools/xxx_pro.py` | Pro 구현 | `ship_pro.py` |
 | `tools/xxx/` | 복잡한 내부 모듈 | `manager/` (내부용) |
 
-### ⚠️ 현재 문제: Manager 충돌 (#32 - 미해결)
+### ✅ Manager 충돌 해결됨 (#32 - RESOLVED, v1.8.0)
 
-| 위치 | 역할 | 문제 |
-|------|------|------|
-| `tools/__init__.py:89-114` | API 기반 manager | server.py가 여기서 가져오면 API 호출 |
-| `tools/manager/core.py:220` | 로컬 기반 manager | server.py가 여기서 가져오면 로컬 처리 |
+| 위치 | 역할 | 현재 상태 |
+|------|------|----------|
+| `server.py` | `call_manager_api()` 호출 | ✅ Worker API 사용 |
+| `tools/manager/` | 로컬 모듈 (DEV 모드) | ✅ DEV 시에만 사용 |
 
-**해결 방향**: ship 패턴으로 통일 (API 권한 → 로컬 실행)
+**해결**: Worker API 전환 완료 (2026-01-26)
+- Non-dev: Worker API 호출
+- Dev: 로컬 manager 모듈 사용
 
 ### 라이센스 모듈 (🔒 LOCKED #33)
 
@@ -230,3 +267,83 @@ tools/xxx.py (진입점)
 | "기록 안 하면 안 됨" | "아키텍처 변경 시 record_decision 호출" |
 
 **연구 근거**: Wegner (1987) - 부정형 지시는 역효과. Anthropic/OpenAI 공식 문서 - 긍정적 프레이밍 권장.
+
+---
+
+## 📋 Compounding Rules (과거 실수에서 배운 규칙)
+
+> **추가일**: 2026-01-27
+> **목적**: 같은 실수 반복 방지
+
+### Rule 1: Stub 파일 동기화 (2026-01-25)
+
+**트리거**: `license.py`, `license_free.py`, `messages/*.py` 수정 시
+
+**체크리스트**:
+1. 반환값 구조 일치 확인
+2. 함수 시그니처 일치 확인
+3. `check_sync(path)` 실행하여 자동 검증
+
+**사고 사례**: `license_status`가 "Unknown" 표시 - `tier_info` 반환 누락
+
+### Rule 2: PyPI 배포 전 테스트 (2026-01-25)
+
+**트리거**: version bump 후 배포 전
+
+**체크리스트**:
+1. `pip install -e .` 로컬 테스트
+2. `uvx clouvel@latest license_status` 실행
+3. tier_info 정상 반환 확인
+4. optional deps 없이도 기본 기능 동작 확인
+
+**사고 사례**: uvx에서 `anthropic` import 실패 - optional dependency 미지정
+
+### Rule 3: Import 규칙 준수 (2026-01-26)
+
+**트리거**: `server.py`에서 tools import 추가 시
+
+**체크리스트**:
+1. `from .tools import xxx` 형태만 사용
+2. `from .tools.xxx import yyy` 형태 금지
+3. `check_imports(path)` 실행하여 자동 검증
+
+**사고 사례**: Manager 도구 충돌 - 두 곳에서 같은 함수 정의
+
+### Rule 4: 테스트 후 검증 (2026-01-25)
+
+**트리거**: 기능 구현 완료 후
+
+**체크리스트**:
+1. `pytest tests/` 통과
+2. MCP 도구 수동 호출 테스트 (실제 환경)
+3. uvx 환경에서 테스트 (PyPI 배포 시뮬레이션)
+
+**원칙**: pytest 통과 ≠ 완료. 실제 MCP 환경 테스트 필수.
+
+---
+
+## 🔄 v1.9 도구 통합 안내
+
+> **추가일**: 2026-01-27
+> **목적**: Deprecated 도구 대체 방법 안내
+
+### 대체 매핑
+
+| Deprecated | 대체 | 예시 |
+|------------|------|------|
+| `scan_docs` | `can_code` | `can_code(path)` |
+| `analyze_docs` | `can_code` | `can_code(path)` |
+| `verify` | `ship` | `ship(path, steps=["lint", "test"])` |
+| `gate` | `ship` | `ship(path, steps=steps, auto_fix=fix)` |
+| `get_prd_template` | `start` | `start(path, template="web-app")` |
+| `get_prd_guide` | `start` | `start(path, guide=True)` |
+| `init_docs` | `start` | `start(path, init=True)` |
+| `init_rules` | `setup_cli` | `setup_cli(path, rules="web")` |
+| `hook_design` | `setup_cli` | `setup_cli(path, hook="design")` |
+| `hook_verify` | `setup_cli` | `setup_cli(path, hook="verify")` |
+| `handoff` | `record_decision` + `update_progress` | 조합 사용 |
+
+### v2.0 제거 예정
+
+위 deprecated 도구들은 v2.0에서 완전 제거 예정.
+현재는 deprecation warning만 표시되며 기능은 정상 동작.

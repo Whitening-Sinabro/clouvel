@@ -2,34 +2,62 @@
 
 Tools for recording and retrieving decisions, code locations, and context.
 Requires Pro license - db module not included in Free version.
+Developer mode: full access for development.
+
+v3.1: Runtime entitlement checks (no import-time constants).
+v3.2: project_path based detection for MCP compatibility.
 """
 
 from typing import Optional, List
 
-# Pro feature - conditional import
-try:
-    from ..db.knowledge import (
-        init_knowledge_db,
-        get_or_create_project,
-        record_decision as db_record_decision,
-        record_location as db_record_location,
-        record_meeting as db_record_meeting,
-        record_event as db_record_event,
-        search_knowledge as db_search_knowledge,
-        get_recent_decisions,
-        get_recent_locations,
-        get_project_summary,
-        rebuild_search_index as db_rebuild_search_index,
-    )
-    _HAS_KNOWLEDGE_DB = True
-except ImportError:
-    _HAS_KNOWLEDGE_DB = False
+# Runtime entitlement check (not import-time constant)
+from ..utils.entitlements import is_developer, can_use_pro
+
+# DB module reference (lazy loaded)
+_db_module = None
+
+
+def _get_db():
+    """Lazy load db module at runtime."""
+    global _db_module
+    if _db_module is not None:
+        return _db_module
+
+    try:
+        from ..db import knowledge as db
+        _db_module = db
+        return db
+    except ImportError:
+        return None
+
+
+def can_use_kb(project_path: Optional[str] = None) -> bool:
+    """Runtime check: can use Knowledge Base?
+
+    True if:
+    - Developer mode (env-based OR project_path is clouvel repo), OR
+    - DB module available (Pro installed)
+
+    Args:
+        project_path: Project path for auto-detection (MCP-friendly)
+    """
+    if is_developer(project_path):
+        return True
+    return _get_db() is not None
+
 
 PRO_MESSAGE = {
     "status": "pro_required",
     "error": "Knowledge Base requires Clouvel Pro license.",
     "purchase": "https://polar.sh/clouvel"
 }
+
+
+def _format_pro_message() -> str:
+    """Formatted Pro message for display."""
+    return """# ❌ Error Recording Decision
+
+Knowledge Base requires Clouvel Pro license."""
 
 
 async def record_decision(
@@ -56,15 +84,19 @@ async def record_decision(
     Returns:
         dict with decision_id and status
     """
-    if not _HAS_KNOWLEDGE_DB:
+    if not can_use_kb(project_path):
+        return PRO_MESSAGE
+
+    db = _get_db()
+    if not db:
         return PRO_MESSAGE
 
     try:
-        init_knowledge_db()
+        db.init_knowledge_db()
 
         project_id = None
         if project_name or project_path:
-            project_id = get_or_create_project(
+            project_id = db.get_or_create_project(
                 name=project_name or "default",
                 path=project_path
             )
@@ -72,7 +104,7 @@ async def record_decision(
         # Prefix category with "locked:" if locked=True
         stored_category = f"locked:{category}" if locked else category
 
-        decision_id = db_record_decision(
+        decision_id = db.record_decision(
             category=stored_category,
             decision=decision,
             reasoning=reasoning,
@@ -117,20 +149,24 @@ async def record_location(
     Returns:
         dict with location_id and status
     """
-    if not _HAS_KNOWLEDGE_DB:
+    if not can_use_kb(project_path):
+        return PRO_MESSAGE
+
+    db = _get_db()
+    if not db:
         return PRO_MESSAGE
 
     try:
-        init_knowledge_db()
+        db.init_knowledge_db()
 
         project_id = None
         if project_name or project_path:
-            project_id = get_or_create_project(
+            project_id = db.get_or_create_project(
                 name=project_name or "default",
                 path=project_path
             )
 
-        location_id = db_record_location(
+        location_id = db.record_location(
             name=name,
             repo=repo,
             path=path,
@@ -157,6 +193,7 @@ async def record_location(
 async def search_knowledge(
     query: str,
     project_name: Optional[str] = None,
+    project_path: Optional[str] = None,
     limit: int = 20
 ) -> dict:
     """
@@ -165,22 +202,27 @@ async def search_knowledge(
     Args:
         query: Search query (FTS5 syntax supported)
         project_name: Filter by project (optional)
+        project_path: Project path for auto-detection (MCP-friendly)
         limit: Max results (default 20)
 
     Returns:
         dict with search results
     """
-    if not _HAS_KNOWLEDGE_DB:
+    if not can_use_kb(project_path):
+        return PRO_MESSAGE
+
+    db = _get_db()
+    if not db:
         return PRO_MESSAGE
 
     try:
-        init_knowledge_db()
+        db.init_knowledge_db()
 
         project_id = None
         if project_name:
-            project_id = get_or_create_project(name=project_name)
+            project_id = db.get_or_create_project(name=project_name)
 
-        results = db_search_knowledge(
+        results = db.search_knowledge(
             query=query,
             project_id=project_id,
             limit=limit
@@ -220,15 +262,19 @@ async def get_context(
     Returns:
         dict with recent decisions and locations
     """
-    if not _HAS_KNOWLEDGE_DB:
+    if not can_use_kb(project_path):
+        return PRO_MESSAGE
+
+    db = _get_db()
+    if not db:
         return PRO_MESSAGE
 
     try:
-        init_knowledge_db()
+        db.init_knowledge_db()
 
         project_id = None
         if project_name or project_path:
-            project_id = get_or_create_project(
+            project_id = db.get_or_create_project(
                 name=project_name or "default",
                 path=project_path
             )
@@ -239,13 +285,13 @@ async def get_context(
         }
 
         if include_decisions:
-            result["decisions"] = get_recent_decisions(
+            result["decisions"] = db.get_recent_decisions(
                 project_id=project_id,
                 limit=limit
             )
 
         if include_locations:
-            result["locations"] = get_recent_locations(
+            result["locations"] = db.get_recent_locations(
                 project_id=project_id,
                 limit=limit
             )
@@ -259,18 +305,25 @@ async def get_context(
         }
 
 
-async def init_knowledge() -> dict:
+async def init_knowledge(project_path: Optional[str] = None) -> dict:
     """
     Initialize the knowledge base.
+
+    Args:
+        project_path: Project path for auto-detection (MCP-friendly)
 
     Returns:
         dict with database path and status
     """
-    if not _HAS_KNOWLEDGE_DB:
+    if not can_use_kb(project_path):
+        return PRO_MESSAGE
+
+    db = _get_db()
+    if not db:
         return PRO_MESSAGE
 
     try:
-        db_path = init_knowledge_db()
+        db_path = db.init_knowledge_db()
         return {
             "status": "initialized",
             "db_path": str(db_path),
@@ -284,19 +337,26 @@ async def init_knowledge() -> dict:
         }
 
 
-async def rebuild_index() -> dict:
+async def rebuild_index(project_path: Optional[str] = None) -> dict:
     """
     Rebuild the search index from existing data.
     Use this if search results seem incomplete or out of sync.
 
+    Args:
+        project_path: Project path for auto-detection (MCP-friendly)
+
     Returns:
         dict with count of indexed items
     """
-    if not _HAS_KNOWLEDGE_DB:
+    if not can_use_kb(project_path):
+        return PRO_MESSAGE
+
+    db = _get_db()
+    if not db:
         return PRO_MESSAGE
 
     try:
-        count = db_rebuild_search_index()
+        count = db.rebuild_search_index()
         return {
             "status": "rebuilt",
             "indexed_count": count,
@@ -312,7 +372,8 @@ async def rebuild_index() -> dict:
 
 async def unlock_decision(
     decision_id: int,
-    reason: Optional[str] = None
+    reason: Optional[str] = None,
+    project_path: Optional[str] = None
 ) -> dict:
     """
     Unlock a locked decision.
@@ -320,15 +381,20 @@ async def unlock_decision(
     Args:
         decision_id: The ID of the decision to unlock
         reason: Why this decision is being unlocked
+        project_path: Project path for auto-detection (MCP-friendly)
 
     Returns:
         dict with status and unlocked decision info
     """
-    if not _HAS_KNOWLEDGE_DB:
+    if not can_use_kb(project_path):
+        return PRO_MESSAGE
+
+    db = _get_db()
+    if not db:
         return PRO_MESSAGE
 
     try:
-        init_knowledge_db()
+        db.init_knowledge_db()
 
         # Import sqlite3 for direct update
         import sqlite3
@@ -406,11 +472,15 @@ async def list_locked_decisions(
     Returns:
         dict with list of locked decisions
     """
-    if not _HAS_KNOWLEDGE_DB:
+    if not can_use_kb(project_path):
+        return PRO_MESSAGE
+
+    db = _get_db()
+    if not db:
         return PRO_MESSAGE
 
     try:
-        init_knowledge_db()
+        db.init_knowledge_db()
 
         import sqlite3
         from pathlib import Path
@@ -422,7 +492,7 @@ async def list_locked_decisions(
         # Get project_id if filtering
         project_id = None
         if project_name or project_path:
-            project_id = get_or_create_project(
+            project_id = db.get_or_create_project(
                 name=project_name or "default",
                 path=project_path
             )

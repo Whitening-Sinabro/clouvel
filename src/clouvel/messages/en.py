@@ -11,55 +11,19 @@ DOC_NAMES = {
 }
 
 # can_code messages
-CAN_CODE_BLOCK_NO_DOCS = """
-# ⛔ BLOCK: No coding allowed
+CAN_CODE_BLOCK_NO_DOCS = """⛔ BLOCK | No docs folder: {path} | Fix: start(path=".") | 💎 Pro: manager 10, ship 5
 
-## Reason
-docs folder not found: `{path}`
-
-## What to do now
-1. Create a `docs` folder
-2. Write a PRD (Product Requirements Document) first
-3. Use `get_prd_template` tool to generate a template
-
-## Why?
-Coding without PRD leads to:
-- Unclear requirements → Rework
-- Missing edge cases → Bugs
-- Team misalignment → Conflicts
-
-**Spec first, code later.**
-
-Tell the user you'll help them write a PRD.
+Why spec first? 10 min spec → 2 hours saved (no rework)
+Next: Run start(path=".") to create PRD template
 """
 
-CAN_CODE_BLOCK_MISSING_DOCS = """
-# ⛔ BLOCK: No coding allowed
+CAN_CODE_BLOCK_MISSING_DOCS = """⛔ BLOCK | Missing: {missing_items} | Fix: start(path=".") | 💎 Pro: manager 10, ship 5
 
-## Current Status
-✅ Found:
-{detected_list}
-
-❌ Missing (Required - BLOCK):
-{missing_list}
-
-## What to do now
-Do NOT write code. Instead:
-
-1. Write the missing documents/sections first
-2. **PRD must have an Acceptance Criteria section**
-3. Use `get_prd_guide` tool for writing guidelines
-4. Use `get_prd_template` tool to generate a template
-
-## Message for user
-"Before writing code, we need to prepare the documentation.
-Missing required items: {missing_items}
-Would you like me to help you write the PRD?"
-
-**Do NOT write any code. Help with documentation instead.**
+Found: {detected_list} | Missing (required): {missing_list}
+Next: Write PRD with Acceptance Criteria section first
 """
 
-CAN_CODE_PASS_WITH_WARN = "✅ PASS | ⚠️ WARN {warn_count} | Required: {found_docs} ✓{test_info} | Missing recommended: {warn_summary}{prd_rule}"
+CAN_CODE_PASS_WITH_WARN = "✅ PASS | ⚠️ WARN {warn_count} | Required: {found_docs} ✓{test_info} | Missing recommended: {warn_summary}{prd_rule}\n\n💎 Pro: `ship` auto-generates evidence & completion report → https://polar.sh/clouvel"
 
 CAN_CODE_PASS = "✅ PASS | Required: {found_docs} ✓{test_info} | Ready to code{prd_rule}"
 

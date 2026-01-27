@@ -123,11 +123,12 @@ from .ship import (
     full_ship,
 )
 
-# Architecture Guard 도구 (v1.8)
+# Architecture Guard 도구 (v1.8 + v3.1)
 from .architecture import (
     arch_check,
     check_imports,
     check_duplicates,
+    check_sync,  # v3.1: Sideeffect sync checker
 )
 
 # Error Learning 도구 (Pro 기능 - 파일이 없으면 스킵)
@@ -195,6 +196,6 @@ __all__ = [
     # errors (Pro, v1.4, v2.0)
     "error_record", "error_check", "error_learn", "log_error", "analyze_error", "get_error_summary",
     "error_search", "error_resolve", "error_get", "error_stats",
-    # architecture (v1.8)
-    "arch_check", "check_imports", "check_duplicates",
+    # architecture (v1.8 + v3.1)
+    "arch_check", "check_imports", "check_duplicates", "check_sync",
 ]

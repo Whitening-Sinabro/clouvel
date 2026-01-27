@@ -579,4 +579,8 @@ Total **{len(action_items)}** action items across **{len([p for p in action_item
 4. Verify with `ship` tool when all complete
 
 **Start your work with a detailed plan!**
+
+---
+
+💎 **Pro**: `ship` auto-generates PASS evidence & completion report → https://polar.sh/clouvel
 """)]

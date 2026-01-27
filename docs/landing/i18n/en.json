@@ -15,11 +15,11 @@
     "badge": "MCP Server for Claude Code",
     "badge_new": "NEW",
     "badge_version": "v1.9.0 - 52 tools → 12 standards (simpler, faster)",
-    "title_1": "AI that asks",
-    "title_2": "tough questions.",
-    "subtitle": "8 AI managers help you think from every angle before you code.",
-    "desc_solo_text": "Not another AI that gives easy answers.",
-    "desc_solo": "An AI team that makes you think.",
+    "title_1": "No spec,",
+    "title_2": "no code.",
+    "subtitle": "Skip the spec, enter debugging hell.",
+    "desc_solo_text": "You're building alone. Make every hour count.",
+    "desc_solo": "An AI team that catches what you miss.",
     "cta_start": "Get started",
     "cta_demo": "See demo"
   },
@@ -45,8 +45,8 @@
     "problem_1_desc": "\"Build login\" - Password reset? Social login? Silently omitted.",
     "problem_2_title": "Jumps straight to coding, skipping design",
     "problem_2_desc": "No architecture thinking - straight to code - full refactor later.",
-    "problem_3_title": "Results vary every time, debugging explodes",
-    "problem_3_desc": "Same prompt, different results yesterday vs today - 2-3 days debugging hell.",
+    "problem_3_title": "You forget what you decided last week",
+    "problem_3_desc": "No record of decisions. Repeat the same debates. Waste hours rediscovering context.",
     "conclusion": "That's why PRD should be a <span class=\"text-accent\">'gate'</span>, not an <span class=\"text-accent\">'option'</span>."
   },
   "how": {

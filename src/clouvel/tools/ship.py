@@ -5,25 +5,16 @@ Clouvel Ship Tool - Pro / Trial (API-based)
 One-click test → verify → evidence generation tool.
 
 Trial/License validation via API, execution is local.
+
+v3.1: Runtime entitlement checks (no import-time constants).
+v3.2: project_path based detection for MCP compatibility.
 """
 
-import os
 from pathlib import Path
 from typing import Dict, Any, List
 
 from ..api_client import call_ship_api
-
-
-def _check_dev_mode() -> bool:
-    """Check if running in dev mode."""
-    # 표준 개발자 감지 (git remote 체크 포함)
-    try:
-        from ..license_common import is_developer
-        if is_developer():
-            return True
-    except ImportError:
-        pass
-    return False
+from ..utils.entitlements import is_developer
 
 
 def _trial_exhausted_response() -> Dict[str, Any]:
@@ -64,8 +55,8 @@ def ship(
 
     Pro feature with 5 free trial uses.
     """
-    # Dev mode bypass
-    if _check_dev_mode():
+    # Dev mode bypass (runtime check with project_path, not import-time)
+    if is_developer(path):
         try:
             from .ship_pro import ship as ship_impl
             return ship_impl(

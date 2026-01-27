@@ -223,6 +223,51 @@ def get_trial_status() -> Dict[str, Any]:
         }
 
 
+def _generate_dynamic_meeting_direct(context: str, topic: Optional[str], api_key: str) -> str:
+    """
+    Generate dynamic meeting directly using anthropic package.
+    Used when tools/manager module is not available (PyPI version).
+    """
+    import anthropic
+
+    topic_hint = topic or "feature"
+    system_prompt = f"""당신은 소프트웨어 프로젝트 회의를 진행하는 퍼실리테이터입니다.
+7명의 C-Level 임원이 참석한 회의를 자연스러운 대화체로 작성해주세요.
+
+참석자:
+- 👔 PM (Product Manager): 스펙, MVP, 우선순위
+- 🛠️ CTO: 아키텍처, 기술 부채, 패턴
+- 🧪 QA: 테스트, 엣지케이스, 검증
+- 🎨 CDO (Design): UX, 일관성, 접근성
+- 💰 CFO: 비용, ROI, 리소스
+- 🔒 CSO (Security): 보안, 취약점, 컴플라이언스
+- 📣 CMO: 사용자 커뮤니케이션, 포지셔닝
+
+회의 주제: {topic_hint}
+
+형식:
+1. 각 임원이 1-2개의 핵심 질문이나 우려사항을 제기
+2. 자연스러운 대화체 (예: "잠깐, 그거 보안 이슈 아니야?" "좋은 지적이에요, 근데...")
+3. 마지막에 액션 아이템 정리
+
+한국어로 작성해주세요."""
+
+    user_prompt = f"""다음 내용에 대해 C-Level 회의를 진행해주세요:
+
+{context}
+
+자연스러운 회의 대화체로 작성해주세요. 각 임원의 관점에서 핵심 질문과 우려사항을 다뤄주세요."""
+
+    client = anthropic.Anthropic(api_key=api_key)
+    response = client.messages.create(
+        model="claude-sonnet-4-20250514",
+        max_tokens=4096,
+        system=system_prompt,
+        messages=[{"role": "user", "content": user_prompt}]
+    )
+    return response.content[0].text
+
+
 def _dev_mode_response(
     context: str,
     topic: Optional[str] = None,
@@ -232,8 +277,8 @@ def _dev_mode_response(
     include_checklist: bool = True,
 ) -> Dict[str, Any]:
     """Developer mode response - use local manager module with full features."""
+    # 1. Try local manager module (development environment)
     try:
-        # Dynamic meeting: use generate_meeting_sync (calls Claude API if available)
         if use_dynamic:
             from .tools.manager import generate_meeting_sync
             meeting_output = generate_meeting_sync(
@@ -261,7 +306,25 @@ def _dev_mode_response(
     except ImportError:
         pass
 
-    # Fallback: return mock full response for dev testing
+    # 2. Local module not available (PyPI version) - try direct anthropic call
+    if use_dynamic:
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if api_key:
+            try:
+                meeting_output = _generate_dynamic_meeting_direct(context, topic, api_key)
+                return {
+                    "dev_mode": True,
+                    "formatted_output": f"## 🏢 C-Level 동적 회의\n\n{meeting_output}",
+                    "active_managers": ["PM", "CTO", "QA", "CDO", "CFO", "CSO", "CMO"],
+                }
+            except ImportError:
+                # anthropic package not installed
+                pass
+            except Exception as e:
+                # API error - fall through to mock
+                pass
+
+    # 3. Fallback: return mock full response for dev testing
     return {
         "topic": topic or "feature",
         "dev_mode": True,

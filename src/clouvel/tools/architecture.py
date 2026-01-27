@@ -362,3 +362,187 @@ def check_duplicates(path: str = ".") -> Dict[str, Any]:
 
     result["formatted_output"] = "\n".join(output_lines)
     return result
+
+
+# v3.1: Sideeffect Sync Checker
+SYNC_PAIRS = [
+    {
+        "primary": "license.py",
+        "stub": "license_free.py",
+        "sync_items": ["함수 시그니처", "반환값 구조"],
+        "description": "Pro 라이선스 ↔ Free 스텁",
+    },
+    {
+        "primary": "messages/en.py",
+        "stub": "messages/ko.py",
+        "sync_items": ["메시지 키", "포맷 변수"],
+        "description": "영문 메시지 ↔ 한글 메시지",
+    },
+]
+
+
+def check_sync(path: str = ".") -> Dict[str, Any]:
+    """동기화 필수 파일 쌍 검증 (v3.1 Pro)
+
+    CLAUDE.md에 정의된 파일 쌍의 동기화 상태를 검사합니다.
+    - license.py ↔ license_free.py: 함수 시그니처/반환값
+    - messages/en.py ↔ messages/ko.py: 메시지 키
+
+    Args:
+        path: 프로젝트 경로
+
+    Returns:
+        동기화 검사 결과
+    """
+    import ast
+
+    project_path = Path(path).resolve()
+    src_dir = project_path / "src" / "clouvel"
+
+    result = {
+        "valid": True,
+        "pairs_checked": 0,
+        "issues": [],
+        "warnings": [],
+        "details": [],
+    }
+
+    for pair in SYNC_PAIRS:
+        primary_path = src_dir / pair["primary"]
+        stub_path = src_dir / pair["stub"]
+
+        pair_result = {
+            "primary": pair["primary"],
+            "stub": pair["stub"],
+            "description": pair["description"],
+            "sync_status": "UNKNOWN",
+            "missing_in_stub": [],
+            "signature_mismatch": [],
+        }
+
+        # 파일 존재 확인
+        if not primary_path.exists():
+            pair_result["sync_status"] = "SKIP"
+            pair_result["note"] = f"Primary file not found: {pair['primary']}"
+            result["details"].append(pair_result)
+            continue
+
+        if not stub_path.exists():
+            pair_result["sync_status"] = "SKIP"
+            pair_result["note"] = f"Stub file not found: {pair['stub']}"
+            result["details"].append(pair_result)
+            continue
+
+        result["pairs_checked"] += 1
+
+        try:
+            primary_content = primary_path.read_text(encoding="utf-8")
+            stub_content = stub_path.read_text(encoding="utf-8")
+
+            # Python 파일인 경우 AST 분석
+            if pair["primary"].endswith(".py"):
+                primary_funcs = _extract_functions(primary_content)
+                stub_funcs = _extract_functions(stub_content)
+
+                # 누락된 함수 찾기
+                for func_name, func_sig in primary_funcs.items():
+                    if func_name.startswith("_"):
+                        continue  # private 함수는 스킵
+
+                    if func_name not in stub_funcs:
+                        pair_result["missing_in_stub"].append(func_name)
+                    else:
+                        # 시그니처 비교 (파라미터 이름만)
+                        primary_params = set(func_sig.get("params", []))
+                        stub_params = set(stub_funcs[func_name].get("params", []))
+
+                        if primary_params != stub_params:
+                            pair_result["signature_mismatch"].append({
+                                "function": func_name,
+                                "primary_params": list(primary_params),
+                                "stub_params": list(stub_params),
+                            })
+
+                # 상태 결정
+                if pair_result["missing_in_stub"] or pair_result["signature_mismatch"]:
+                    pair_result["sync_status"] = "OUT_OF_SYNC"
+                    result["valid"] = False
+                    result["issues"].append({
+                        "pair": f"{pair['primary']} ↔ {pair['stub']}",
+                        "missing": pair_result["missing_in_stub"],
+                        "mismatch": len(pair_result["signature_mismatch"]),
+                    })
+                else:
+                    pair_result["sync_status"] = "IN_SYNC"
+
+        except Exception as e:
+            pair_result["sync_status"] = "ERROR"
+            pair_result["error"] = str(e)
+            result["warnings"].append(f"Error checking {pair['primary']}: {e}")
+
+        result["details"].append(pair_result)
+
+    # formatted_output 생성
+    output_lines = [
+        "# check_sync 결과 (v3.1)",
+        "",
+        f"**상태**: {'✅ ALL IN SYNC' if result['valid'] else '⚠️ OUT OF SYNC'}",
+        f"**검사된 쌍**: {result['pairs_checked']}",
+        "",
+    ]
+
+    if result["issues"]:
+        output_lines.append("## 동기화 필요")
+        output_lines.append("")
+        for issue in result["issues"]:
+            output_lines.append(f"### {issue['pair']}")
+            if issue["missing"]:
+                output_lines.append(f"- 누락된 함수: {', '.join(issue['missing'])}")
+            if issue["mismatch"]:
+                output_lines.append(f"- 시그니처 불일치: {issue['mismatch']}개")
+            output_lines.append("")
+
+        output_lines.append("### 수정 방법")
+        output_lines.append("1. Primary 파일의 함수를 Stub 파일에도 추가")
+        output_lines.append("2. 반환값 구조 동일하게 유지")
+        output_lines.append("3. `pytest tests/` 실행하여 확인")
+    else:
+        output_lines.append("모든 파일 쌍이 동기화되어 있습니다.")
+
+    output_lines.append("")
+    output_lines.append("---")
+    output_lines.append("**검사 대상 (CLAUDE.md 기반)**:")
+    for pair in SYNC_PAIRS:
+        output_lines.append(f"- {pair['primary']} ↔ {pair['stub']}")
+
+    result["formatted_output"] = "\n".join(output_lines)
+    return result
+
+
+def _extract_functions(content: str) -> Dict[str, Dict]:
+    """Python 소스에서 함수 정의 추출
+
+    Returns:
+        {function_name: {"params": [...], "returns": ...}}
+    """
+    import ast
+
+    functions = {}
+
+    try:
+        tree = ast.parse(content)
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                func_name = node.name
+                params = []
+                for arg in node.args.args:
+                    params.append(arg.arg)
+
+                functions[func_name] = {
+                    "params": params,
+                    "lineno": node.lineno,
+                }
+    except SyntaxError:
+        pass
+
+    return functions

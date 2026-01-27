@@ -191,3 +191,64 @@ if response.status_code == 402:
 | License Key 조회 | `api_client.py` | 27-45 |
 | 402 처리 | `api_client.py` | 92-111 |
 | Fallback 응답 | `api_client.py` | 195-242 |
+
+
+<!-- AUTO-GEN:START -->
+## Data Contracts
+
+_Auto-generated: 2026-01-26 19:44_
+
+### External API Calls
+
+| File | Line | Call |
+|------|------|------|
+| `src\clouvel\api_client.py` | 82 | `response = requests.post(` |
+| `src\clouvel\api_client.py` | 145 | `response = requests.post(` |
+| `src\clouvel\api_client.py` | 178 | `response = requests.get(` |
+| `src\clouvel\content_api.py` | 248 | `response = requests.post(` |
+| `src\clouvel\content_api.py` | 350 | `response = requests.get(` |
+| `src\clouvel\license.py` | 165 | `response = requests.post(` |
+| `src\clouvel\license.py` | 342 | `response = requests.get(` |
+| `src\clouvel\license.py` | 366 | `response = requests.post(` |
+| `src\clouvel\license.py` | 616 | `response = requests.post(` |
+| `src\clouvel\license.py` | 777 | `response = requests.post(` |
+| `src\clouvel\license.py` | 844 | `response = requests.post(` |
+| `src\clouvel\pro_downloader.py` | 83 | `response = requests.get(url, stream=True, timeout=60)` |
+| `src\clouvel\pro_downloader.py` | 139 | `response = requests.post(` |
+| `src\clouvel\version_check.py` | 34 | `response = requests.get(` |
+| `src\clouvel\tools\team.py` | 43 | `response = requests.get(url, params=data, timeout=10)` |
+| `src\clouvel\tools\team.py` | 45 | `response = requests.post(url, json=data, timeout=10)` |
+
+### API Endpoints
+
+| File | Line | Endpoint |
+|------|------|----------|
+| `src\clouvel\api_client.py` | 16 | `API_BASE_URL = os.environ.get("CLOUVEL_API_URL", "https://clouvel-api....` |
+| `src\clouvel\api_client.py` | 83 | `f"{API_BASE_URL}/api/manager",` |
+| `src\clouvel\api_client.py` | 146 | `f"{API_BASE_URL}/api/ship",` |
+| `src\clouvel\api_client.py` | 179 | `f"{API_BASE_URL}/api/trial/status",` |
+| `src\clouvel\content_api.py` | 43 | `"https://clouvel-license-webhook.vnddns999.workers.dev"` |
+| `src\clouvel\license.py` | 43 | `"https://clouvel-license-webhook.vnddns999.workers.dev/check"` |
+| `src\clouvel\license.py` | 68 | `"https://clouvel-license-webhook.vnddns999.workers.dev/heartbeat"` |
+| `src\clouvel\license.py` | 1089 | `3. 방화벽에서 clouvel-license-webhook.vnddns999.workers.dev 허용` |
+| `src\clouvel\pro_downloader.py` | 35 | `"https://clouvel-pro-download.vnddns999.workers.dev"` |
+| `src\clouvel\tools\start.py` | 244 | `| GET | /api/... | ... |` |
+| `src\clouvel\tools\team.py` | 16 | `"https://clouvel-license-webhook.vnddns999.workers.dev"` |
+| `src\clouvel\tools\manager\data\cso.py` | 4 | `CSO_DATA = {'emoji': '🔒', 'title': 'Chief Security Officer', 'focus': ...` |
+| `src\clouvel\tools\manager\data\cto.py` | 4 | `CTO_DATA = {'emoji': '🛠️', 'title': 'Chief Technology Officer', 'focus...` |
+| `src\clouvel\tools\manager\prompts\examples.py` | 55 | `**🛠️ CTO**: Structure looks good, but a few things to add. First, API ...` |
+| `src\clouvel\tools\manager\prompts\examples.py` | 71 | `| 1 | 🛠️ CTO | Apply API versioning (/api/v1) | P0 |` |
+
+### Worker Integrations
+
+| File | Line | Worker |
+|------|------|--------|
+| `src\clouvel\api_client.py` | 16 | `API_BASE_URL = os.environ.get("CLOUVEL_API_URL", "https://clouvel-api....` |
+| `src\clouvel\content_api.py` | 43 | `"https://clouvel-license-webhook.vnddns999.workers.dev"` |
+| `src\clouvel\license.py` | 43 | `"https://clouvel-license-webhook.vnddns999.workers.dev/check"` |
+| `src\clouvel\license.py` | 68 | `"https://clouvel-license-webhook.vnddns999.workers.dev/heartbeat"` |
+| `src\clouvel\license.py` | 1089 | `3. 방화벽에서 clouvel-license-webhook.vnddns999.workers.dev 허용` |
+| `src\clouvel\pro_downloader.py` | 35 | `"https://clouvel-pro-download.vnddns999.workers.dev"` |
+| `src\clouvel\tools\team.py` | 16 | `"https://clouvel-license-webhook.vnddns999.workers.dev"` |
+
+<!-- AUTO-GEN:END -->

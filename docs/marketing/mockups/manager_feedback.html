@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clouvel - Manager Feedback</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #1e1e1e;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        .terminal {
+            background: #0d1117;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .terminal-header {
+            background: #161b22;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .terminal-btn {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+        }
+        .btn-red { background: #ff5f56; }
+        .btn-yellow { background: #ffbd2e; }
+        .btn-green { background: #27ca40; }
+        .terminal-title {
+            color: #8b949e;
+            font-size: 20px;
+            margin-left: 12px;
+        }
+        .terminal-body {
+            padding: 48px;
+            color: #e6edf3;
+            font-size: 22px;
+            line-height: 1.8;
+        }
+        .prompt {
+            color: #7ee787;
+        }
+        .command {
+            color: #79c0ff;
+        }
+        .output {
+            margin-top: 16px;
+        }
+        .section-title {
+            color: #a371f7;
+            font-weight: bold;
+            font-size: 28px;
+            margin: 24px 0 16px 0;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #30363d;
+        }
+        .manager-card {
+            background: #161b22;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 16px 0;
+        }
+        .manager-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .manager-icon {
+            font-size: 28px;
+        }
+        .manager-name {
+            font-weight: bold;
+            font-size: 24px;
+        }
+        .pm { color: #79c0ff; border-left: 3px solid #79c0ff; }
+        .cto { color: #7ee787; border-left: 3px solid #7ee787; }
+        .cso { color: #f85149; border-left: 3px solid #f85149; }
+        .qa { color: #ffa657; border-left: 3px solid #ffa657; }
+        .feedback-item {
+            color: #8b949e;
+            margin: 8px 0;
+            padding-left: 8px;
+        }
+        .check { color: #3fb950; }
+        .warn { color: #d29922; }
+        .fail { color: #f85149; }
+        .question {
+            color: #e6edf3;
+            font-style: italic;
+        }
+        .summary-box {
+            background: #21262d;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+        .summary-title {
+            color: #ffa657;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .summary-table td {
+            padding: 6px 12px;
+            border-bottom: 1px solid #30363d;
+        }
+        .summary-table td:first-child {
+            color: #8b949e;
+        }
+        .verdict {
+            margin-top: 16px;
+            padding: 12px;
+            background: #0d1117;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .verdict-pass {
+            color: #3fb950;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="terminal-btn btn-red"></div>
+            <div class="terminal-btn btn-yellow"></div>
+            <div class="terminal-btn btn-green"></div>
+            <span class="terminal-title">Claude Code — my-project</span>
+        </div>
+        <div class="terminal-body">
+            <div>
+                <span class="prompt">claude&gt;</span>
+                <span class="command">Review my authentication implementation plan</span>
+            </div>
+
+            <div class="output">
+                <div class="section-title">🎯 Manager Meeting — Authentication Review</div>
+
+                <div class="manager-card pm">
+                    <div class="manager-header">
+                        <span class="manager-icon">👔</span>
+                        <span class="manager-name">PM (Product Manager)</span>
+                    </div>
+                    <div class="feedback-item"><span class="check">✓</span> Scope is well-defined, MVP-appropriate</div>
+                    <div class="feedback-item"><span class="warn">⚠</span> Missing: Password requirements in PRD</div>
+                    <div class="feedback-item question">"What happens if OAuth provider is down?"</div>
+                </div>
+
+                <div class="manager-card cto">
+                    <div class="manager-header">
+                        <span class="manager-icon">🛠️</span>
+                        <span class="manager-name">CTO (Chief Technology Officer)</span>
+                    </div>
+                    <div class="feedback-item"><span class="check">✓</span> JWT + refresh token pattern is solid</div>
+                    <div class="feedback-item"><span class="check">✓</span> Bcrypt for password hashing - good choice</div>
+                    <div class="feedback-item question">"Consider rate limiting per IP, not just per user"</div>
+                </div>
+
+                <div class="manager-card cso">
+                    <div class="manager-header">
+                        <span class="manager-icon">🔒</span>
+                        <span class="manager-name">CSO (Chief Security Officer)</span>
+                    </div>
+                    <div class="feedback-item"><span class="fail">✗</span> CRITICAL: Add CSRF protection to login form</div>
+                    <div class="feedback-item"><span class="warn">⚠</span> Implement account lockout after 5 failed attempts</div>
+                    <div class="feedback-item question">"How are you handling token revocation?"</div>
+                </div>
+
+                <div class="manager-card qa">
+                    <div class="manager-header">
+                        <span class="manager-icon">🧪</span>
+                        <span class="manager-name">QA (Quality Assurance)</span>
+                    </div>
+                    <div class="feedback-item"><span class="check">✓</span> Test coverage plan looks comprehensive</div>
+                    <div class="feedback-item"><span class="warn">⚠</span> Add edge case: expired OAuth token refresh</div>
+                </div>
+
+                <div class="summary-box">
+                    <div class="summary-title">📊 Summary</div>
+                    <table class="summary-table">
+                        <tr><td>Total Issues</td><td><span class="fail">1 Critical</span>, <span class="warn">3 Warnings</span></td></tr>
+                        <tr><td>Questions</td><td>4 to answer before implementation</td></tr>
+                        <tr><td>Approval</td><td>Conditional (fix CSRF first)</td></tr>
+                    </table>
+                    <div class="verdict">
+                        <span class="verdict-pass">📋 Action Items generated → .claude/planning/task_plan.md</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

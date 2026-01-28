@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clouvel - can_code PASS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #1e1e1e;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        .terminal {
+            background: #0d1117;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .terminal-header {
+            background: #161b22;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .terminal-btn {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+        }
+        .btn-red { background: #ff5f56; }
+        .btn-yellow { background: #ffbd2e; }
+        .btn-green { background: #27ca40; }
+        .terminal-title {
+            color: #8b949e;
+            font-size: 20px;
+            margin-left: 12px;
+        }
+        .terminal-body {
+            padding: 48px;
+            color: #e6edf3;
+            font-size: 24px;
+            line-height: 1.8;
+        }
+        .prompt {
+            color: #7ee787;
+        }
+        .command {
+            color: #79c0ff;
+        }
+        .output {
+            margin-top: 16px;
+            padding: 16px;
+            background: #161b22;
+            border-radius: 8px;
+            border-left: 4px solid #3fb950;
+        }
+        .pass {
+            color: #3fb950;
+            font-weight: bold;
+            font-size: 28px;
+        }
+        .info {
+            color: #8b949e;
+            margin-top: 8px;
+        }
+        .highlight {
+            color: #ffa657;
+        }
+        .check {
+            color: #3fb950;
+        }
+        .file-list {
+            margin-top: 12px;
+            padding-left: 20px;
+        }
+        .file-list li {
+            color: #8b949e;
+            margin: 4px 0;
+        }
+        .ai-response {
+            margin-top: 20px;
+            padding: 16px;
+            background: #21262d;
+            border-radius: 8px;
+            border-left: 4px solid #79c0ff;
+        }
+        .ai-label {
+            color: #79c0ff;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: #e6edf3;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="terminal-btn btn-red"></div>
+            <div class="terminal-btn btn-yellow"></div>
+            <div class="terminal-btn btn-green"></div>
+            <span class="terminal-title">Claude Code — my-project</span>
+        </div>
+        <div class="terminal-body">
+            <div>
+                <span class="prompt">claude&gt;</span>
+                <span class="command">Build a login page with OAuth support</span>
+            </div>
+
+            <div class="output">
+                <div class="pass">✅ PASS | Required: PRD ✓ Acceptance ✓ | 12 tests | Ready to code</div>
+
+                <div class="info" style="margin-top: 12px;">
+                    <span class="check">✓</span> docs/PRD.md (OAuth, password reset, rate limiting defined)
+                </div>
+                <div class="info">
+                    <span class="check">✓</span> Acceptance Criteria: 8 items
+                </div>
+                <div class="info">
+                    <span class="check">✓</span> tests/: 12 test files
+                </div>
+            </div>
+
+            <div class="ai-response">
+                <div class="ai-label">Claude</div>
+                <div style="color: #e6edf3;">
+                    I'll implement the login page based on your PRD specifications:
+                </div>
+                <ul class="file-list">
+                    <li>OAuth providers: Google, GitHub (as specified in PRD §2.1)</li>
+                    <li>Password reset flow with email verification</li>
+                    <li>Rate limiting: 5 attempts per 15 minutes</li>
+                    <li>Session timeout: 24 hours</li>
+                </ul>
+                <div style="color: #8b949e; margin-top: 12px;">
+                    Creating <span class="highlight">src/auth/login.ts</span>...
+                </div>
+            </div>
+
+            <div style="margin-top: 24px;">
+                <span class="prompt">claude&gt;</span> <span class="cursor"></span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

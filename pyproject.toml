@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "clouvel"
-version = "1.9.1"
+version = "2.0.0"
 description = "바이브코딩 프로세스를 강제하는 MCP 서버 - PRD 없으면 코딩 없다"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -29,6 +29,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# 터미널 UI (예쁜 출력)
+ui = [
+    "rich>=13.0.0",
+]
 # Knowledge Base 암호화 (선택)
 encryption = [
     "cryptography>=41.0.0",
@@ -49,6 +53,7 @@ vector = [
 ]
 # 전체 기능
 full = [
+    "rich>=13.0.0",
     "chromadb>=0.4.0",
     "sentence-transformers>=2.2.0",
     "cryptography>=41.0.0",

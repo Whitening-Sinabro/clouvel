@@ -1,6 +1,6 @@
 # Clouvel 현재 상태
 
-> **마지막 업데이트**: 2026-01-27 (MCP 로컬 소스 강제 설정)
+> **마지막 업데이트**: 2026-01-28 (v2.0 Proactive MCP 구현 완료)
 
 ---
 
@@ -56,6 +56,7 @@ debug_runtime(project_path="D:\\clouvel")
 | **라이선스 서버** | ✅ 동작 중 (Polar.sh + Worker API) |
 | **결제**          | ✅ Polar.sh 연동 완료             |
 | **보안**          | ✅ 민감 파일 커밋 차단 자동화     |
+| **Product Hunt**  | 🚀 런칭 예약됨 (2026-01-28 15:00 VN) |
 
 ---
 
@@ -131,7 +132,114 @@ py -3 scripts/docs_extract.py # AUTO-GEN 섹션 갱신
 
 ---
 
-## 오늘 완료 (2026-01-27)
+## 오늘 완료 (2026-01-28)
+
+### Product Hunt 런칭 예약 ✅
+
+**런칭 시간**: 2026-01-28 15:00 (베트남) / 00:01 PST
+
+**완료 항목**:
+- [x] 썸네일 이미지 수정 (비율 깨짐 해결)
+- [x] Gallery 이미지 3장 (01, 02, 04)
+- [x] 데모 영상 YouTube 업로드 (20초, 10배속)
+- [x] Shoutouts 추가 (Claude, GitHub, Polar)
+- [x] First comment 작성
+- [x] 프로모 코드: LAUNCH70 (70% off)
+- [x] Bootstrapped 선택
+- [x] 100% 체크리스트 완료
+
+**소셜 포스트 예약**:
+| 플랫폼 | 시간 (VN) | 상태 |
+|--------|----------|------|
+| Twitter | 15:00 | ✅ 예약됨 |
+| Threads | 15:30 | ✅ 예약됨 |
+| Twitter 리마인더 | 20:00 | ✅ 예약됨 |
+
+**Reddit 포스트 준비**:
+- [x] `docs/marketing/reddit-posts-ph-launch.md` 작성 완료
+- r/ClaudeAI, r/SideProject, r/IndieHackers 3개
+
+**런칭 당일 할 일**:
+- [ ] 댓글 1시간마다 확인 & 답변
+- [ ] Reddit 포스트 발행 (링크 교체 후)
+
+### v2.0 Proactive MCP 구현 완료 ✅
+
+**목표**: Claude Code Hooks 연동으로 자동 PRD 체크 및 드리프트 감지
+
+**완료 항목**:
+
+| 항목 | 설명 | 티어 |
+|------|------|------|
+| `can_code --silent` | 훅용 PRD 체크 (exit code만) | Free |
+| `drift_check --silent` | 컨텍스트 드리프트 감지 | Pro |
+| `pattern_watch` | 에러 패턴 감시 | Pro |
+| `auto_remind` | 진행 리마인드 | Pro |
+| `setup --proactive [free|pro]` | 훅 자동 설정 | Free |
+
+**생성 파일**:
+- `src/clouvel/tools/proactive.py` - 프로액티브 도구 (drift_check, pattern_watch, auto_remind)
+- `tests/test_proactive.py` - 25개 테스트 (all pass)
+- `docs/HOOKS.md` - Claude Code Hooks 연동 가이드
+
+**수정 파일**:
+- `src/clouvel/tools/setup.py` - `proactive` 파라미터 추가
+- `src/clouvel/server.py` - CLI 명령어 + Tool 정의 추가
+- `src/clouvel/tools/__init__.py` - export 추가
+
+**훅 설정 예시** (`.claude/settings.local.json`):
+```json
+{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Edit|Write",
+      "hooks": [{
+        "type": "command",
+        "command": "clouvel can_code --path ./docs --silent"
+      }]
+    }]
+  }
+}
+```
+
+**티어 전략**:
+- Free: 자동 PRD 체크만 (코드 작성 전 차단)
+- Pro: 드리프트 감지, 패턴 감시, 진행 리마인드 추가
+
+**커밋**:
+- `56d89b8` feat(v2.0): proactive MCP - drift_check, pattern_watch, auto_remind
+- `47e6bc4` fix: remove emojis for Windows cp949 encoding
+- `de62b24` feat: clouvel setup --proactive [free|pro] command
+
+---
+
+## 이전 완료 (2026-01-27)
+
+### pytest coverage 52% 달성 ✅
+
+**목표**: 49% → 50%
+**결과**: **52%** (목표 초과 달성)
+
+| 항목 | Before | After |
+|------|--------|-------|
+| 커버리지 | 49% | **52%** |
+| 테스트 수 | ~1306 | **1341** |
+| 테스트 파일 | - | +31개 |
+
+**추가된 테스트 파일**:
+- `test_api_client.py` - API 클라이언트 (dynamic meeting, import errors)
+- `test_architecture.py` - 아키텍처 도구 (KB, grep, sync)
+- `test_context.py` - 컨텍스트 복구
+- `test_db_*.py` - DB 모듈 (errors, rules, migrate, vectors)
+- `test_hooks.py` - 훅 시스템
+- `test_rules_tools.py` - 규칙 도구
+- 외 21개 모듈 테스트
+
+**커밋**:
+- `92cef73` test: increase coverage from 49% to 52%
+- `162c066` feat: comprehensive tests + architecture docs + MCP catalog
+
+---
 
 ### 8역할 C-Level 마스터 분석 ✅
 
@@ -454,16 +562,18 @@ docs/architecture/
 - [x] v3.2 MCP 런타임 디버그 섹션 추가
 - [x] 테스트 커버리지 강화 섹션 추가
 
-### P0: Reddit 포스트 (진행 중)
-- [x] r/SideProject 포스트 업로드 ✅
-- [ ] r/ClaudeAI 포스트 (2-3일 후)
-- [ ] r/IndieHackers 포스트 (2-3일 후)
+### P0: Product Hunt 런칭 당일 (2026-01-28 15:00 VN)
+- [ ] 소셜 포스트 발행 (Twitter 15:00, Threads 15:30, Twitter 20:00)
+- [ ] 댓글 1시간마다 확인 & 답변
+- [ ] r/ClaudeAI 포스트
+- [ ] r/SideProject 포스트 (업데이트)
+- [ ] r/IndieHackers 포스트
 
 ### P1: 완료 (2026-01-27)
 - [x] CI 문서 검증 ✅ (.github/workflows/ci.yml에 docs_check.py 추가)
 - [x] review 도구 API 설계 ✅ (docs/PRD.md v1.10 섹션)
 - [x] Compounding Rules ✅ (CLAUDE.md에 4개 규칙)
-- [ ] Product Hunt 준비 (로고 + 스크린샷 필요)
+- [x] Product Hunt 준비 ✅ (2026-01-28 런칭 예약 완료)
 
 ### P1: 완료 ✅
 

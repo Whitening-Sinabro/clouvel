@@ -57,7 +57,7 @@ async def drift_check(
     if not _can_use_pro():
         return [TextContent(
             type="text",
-            text="💎 drift_check is a Pro feature. Upgrade at https://whitening-sinabro.github.io/clouvel/"
+            text="[Pro] drift_check is a Pro feature. Upgrade at https://whitening-sinabro.github.io/clouvel/"
         )]
 
     project_path = Path(path)
@@ -65,7 +65,7 @@ async def drift_check(
     if not project_path.exists():
         if silent:
             return [TextContent(type="text", text="DRIFT:PATH_NOT_FOUND")]
-        return [TextContent(type="text", text=f"❌ Path does not exist: {path}")]
+        return [TextContent(type="text", text=f"[ERROR] Path does not exist: {path}")]
 
     # Load original goals from task_plan.md
     task_plan_path = project_path / ".claude" / "planning" / "task_plan.md"
@@ -75,7 +75,7 @@ async def drift_check(
             return [TextContent(type="text", text="OK:NO_PLAN")]
         return [TextContent(
             type="text",
-            text="ℹ️ No task plan found. Use `init_planning` to set goals first."
+            text="[INFO] No task plan found. Use `init_planning` to set goals first."
         )]
 
     try:
@@ -83,7 +83,7 @@ async def drift_check(
     except Exception as e:
         if silent:
             return [TextContent(type="text", text=f"DRIFT:READ_ERROR:{e}")]
-        return [TextContent(type="text", text=f"❌ Failed to read task plan: {e}")]
+        return [TextContent(type="text", text=f"[ERROR] Failed to read task plan: {e}")]
 
     # Extract goals
     goals = _extract_goals(task_plan_content)
@@ -94,7 +94,7 @@ async def drift_check(
             return [TextContent(type="text", text="OK:NO_GOALS")]
         return [TextContent(
             type="text",
-            text="ℹ️ No goals defined in task plan. Add goals to enable drift detection."
+            text="[INFO] No goals defined in task plan. Add goals to enable drift detection."
         )]
 
     # Load recent progress from progress.md
@@ -118,15 +118,15 @@ async def drift_check(
     # Build response
     if drift_score < 30:
         status = "OK"
-        emoji = "✅"
+        prefix = "[OK]"
         message = "Aligned with goals"
     elif drift_score < 60:
         status = "WARN"
-        emoji = "⚠️"
+        prefix = "[WARN]"
         message = "Minor drift detected"
     else:
         status = "DRIFT"
-        emoji = "🚨"
+        prefix = "[DRIFT]"
         message = "Significant drift from goals"
 
     if silent:
@@ -134,7 +134,7 @@ async def drift_check(
 
     # Detailed output
     output_lines = [
-        f"{emoji} **Drift Check**: {message}",
+        f"{prefix} **Drift Check**: {message}",
         "",
         f"**Score**: {drift_score}/100 (lower is better)",
         "",
@@ -182,13 +182,13 @@ async def pattern_watch(
     if not _can_use_pro():
         return [TextContent(
             type="text",
-            text="💎 pattern_watch is a Pro feature. Upgrade at https://whitening-sinabro.github.io/clouvel/"
+            text="[Pro] pattern_watch is a Pro feature. Upgrade at https://whitening-sinabro.github.io/clouvel/"
         )]
 
     project_path = Path(path)
 
     if not project_path.exists():
-        return [TextContent(type="text", text=f"❌ Path does not exist: {path}")]
+        return [TextContent(type="text", text=f"[ERROR] Path does not exist: {path}")]
 
     # Load error history
     errors_path = project_path / ".claude" / "errors" / "history.md"
@@ -196,13 +196,13 @@ async def pattern_watch(
     if not errors_path.exists():
         return [TextContent(
             type="text",
-            text="ℹ️ No error history found. Errors will be tracked automatically."
+            text="[INFO] No error history found. Errors will be tracked automatically."
         )]
 
     try:
         errors_content = errors_path.read_text(encoding="utf-8")
     except Exception as e:
-        return [TextContent(type="text", text=f"❌ Failed to read error history: {e}")]
+        return [TextContent(type="text", text=f"[ERROR] Failed to read error history: {e}")]
 
     # Analyze patterns
     patterns = _analyze_error_patterns(errors_content)
@@ -216,11 +216,11 @@ async def pattern_watch(
     if not alerts:
         return [TextContent(
             type="text",
-            text=f"✅ No repeated error patterns detected (threshold: {threshold})"
+            text=f"[OK] No repeated error patterns detected (threshold: {threshold})"
         )]
 
     output_lines = [
-        f"🚨 **Error Pattern Alert** (threshold: {threshold})",
+        f"[ALERT] **Error Pattern Alert** (threshold: {threshold})",
         "",
         "**Repeated Patterns**:",
     ] + alerts + [
@@ -253,13 +253,13 @@ async def auto_remind(
     if not _can_use_pro():
         return [TextContent(
             type="text",
-            text="💎 auto_remind is a Pro feature. Upgrade at https://whitening-sinabro.github.io/clouvel/"
+            text="[Pro] auto_remind is a Pro feature. Upgrade at https://whitening-sinabro.github.io/clouvel/"
         )]
 
     project_path = Path(path)
 
     if not project_path.exists():
-        return [TextContent(type="text", text=f"❌ Path does not exist: {path}")]
+        return [TextContent(type="text", text=f"[ERROR] Path does not exist: {path}")]
 
     # Save config
     config_dir = project_path / ".clouvel"
@@ -294,13 +294,13 @@ proactive:
     try:
         config_path.write_text(config_content, encoding="utf-8")
     except Exception as e:
-        return [TextContent(type="text", text=f"❌ Failed to save config: {e}")]
+        return [TextContent(type="text", text=f"[ERROR] Failed to save config: {e}")]
 
     status = "enabled" if enabled else "disabled"
 
     return [TextContent(
         type="text",
-        text=f"""✅ **Auto Remind Configured**
+        text=f"""[OK] **Auto Remind Configured**
 
 **Status**: {status}
 **Interval**: {interval} minutes

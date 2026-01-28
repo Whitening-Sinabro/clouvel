@@ -2094,6 +2094,16 @@ def main():
     install_parser.add_argument("--platform", choices=["auto", "code", "desktop", "cursor", "all"], default="auto", help="Target platform for installation")
     install_parser.add_argument("--force", action="store_true", help="Reinstall even if already installed")
 
+    # can_code command (for hooks integration)
+    can_code_parser = subparsers.add_parser("can_code", help="Check if coding is allowed (for hooks)")
+    can_code_parser.add_argument("--path", "-p", default=".", help="Project docs path")
+    can_code_parser.add_argument("--silent", "-s", action="store_true", help="Silent mode - exit code only")
+
+    # drift_check command (for hooks integration)
+    drift_parser = subparsers.add_parser("drift_check", help="Check for context drift (Pro)")
+    drift_parser.add_argument("--path", "-p", default=".", help="Project root path")
+    drift_parser.add_argument("--silent", "-s", action="store_true", help="Silent mode - minimal output")
+
     # activate command (license activation)
     activate_parser = subparsers.add_parser("activate", help="Activate license")
     activate_parser.add_argument("license_key", help="License key")
@@ -2124,6 +2134,43 @@ def main():
             force=args.force if hasattr(args, 'force') else False
         )
         print(result)
+    elif args.command == "can_code":
+        # CLI for hooks integration
+        from .tools.core import can_code as sync_can_code
+        result = asyncio.run(sync_can_code(args.path))
+
+        # Parse result to determine exit code
+        result_text = result[0].text if result else ""
+        is_block = "BLOCK" in result_text
+        is_warn = "WARN" in result_text
+
+        if args.silent:
+            # Silent mode: just exit code
+            if is_block:
+                sys.exit(1)  # BLOCK = fail
+            else:
+                sys.exit(0)  # PASS or WARN = ok
+        else:
+            # Normal mode: print result
+            print(result_text)
+            if is_block:
+                sys.exit(1)
+    elif args.command == "drift_check":
+        # CLI for hooks integration
+        from .tools.proactive import drift_check as sync_drift_check
+        result = asyncio.run(sync_drift_check(args.path, silent=args.silent))
+
+        result_text = result[0].text if result else ""
+
+        if args.silent:
+            print(result_text)  # Short status like "OK:0" or "DRIFT:75"
+            if "DRIFT" in result_text:
+                sys.exit(1)
+            sys.exit(0)
+        else:
+            print(result_text)
+            if "DRIFT" in result_text or "🚨" in result_text:
+                sys.exit(1)
     elif args.command == "activate":
         try:
             from .license import activate_license_cli

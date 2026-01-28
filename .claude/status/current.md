@@ -1,34 +1,6 @@
 # Clouvel 현재 상태
 
-> **마지막 업데이트**: 2026-01-28 (v2.0 Proactive MCP 구현 완료)
-
----
-
-## 🚨 재시작 후 확인 (v3.2)
-
-**MCP 설정 변경됨** - Claude Code 재시작 필요
-
-### 변경 내용
-```
-PYTHONPATH=D:\clouvel\src 추가됨
-```
-
-### 재시작 후 확인 명령
-```
-debug_runtime(project_path="D:\\clouvel")
-```
-
-### 예상 결과 (성공 시)
-- `clouvel.__file__`: `D:\clouvel\src\clouvel\...` ✅
-- `is_developer`: `True` ✅
-- `can_use_kb`: `True` ✅
-
-### 실패 시 체크
-- `clouvel.__file__`이 `site-packages` → 여전히 설치본 사용 중
-- `is_developer: False` → project_path 전달 안 됨
-
-### 추가된 도구 (v3.2)
-- `debug_runtime` - MCP 런타임 환경 진단 도구
+> **마지막 업데이트**: 2026-01-28 (v2.0.0 PyPI 배포 완료)
 
 ---
 
@@ -48,7 +20,7 @@ debug_runtime(project_path="D:\\clouvel")
 
 | 항목              | 상태                              |
 | ----------------- | --------------------------------- |
-| **clouvel**       | v1.9.0 준비 완료 (Deprecation Warnings) |
+| **clouvel**       | v2.0.0 PyPI 배포 완료 |
 | **아키텍처**      | ✅ Manager Worker API 전환 완료   |
 | **문서 시스템**   | ✅ SSOT 완성 (ENTRYPOINTS + SIDE_EFFECTS + SMOKE_LOGS) |
 | **MCP 표준화**    | ✅ 52개 도구 분석 완료 (9그룹, 12표준, 5폐기, 6통합) |

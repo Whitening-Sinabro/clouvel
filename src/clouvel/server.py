@@ -212,7 +212,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="setup_cli",
-        description="CLI environment setup. Generate hooks, CLAUDE.md, pre-commit. Now includes: --rules, --hook options. (v1.9 extended)",
+        description="CLI environment setup. Generate hooks, CLAUDE.md, pre-commit. Now includes: --rules, --hook, --proactive options. (v2.0 extended)",
         inputSchema={
             "type": "object",
             "properties": {
@@ -220,7 +220,8 @@ TOOL_DEFINITIONS = [
                 "level": {"type": "string", "enum": ["remind", "strict", "full"]},
                 "rules": {"type": "string", "description": "Initialize rules (replaces init_rules)", "enum": ["web", "api", "fullstack", "minimal"]},
                 "hook": {"type": "string", "description": "Create hook (replaces hook_design, hook_verify)", "enum": ["design", "verify"]},
-                "hook_trigger": {"type": "string", "description": "Trigger for hook", "enum": ["pre_code", "pre_feature", "pre_refactor", "pre_api", "post_code", "post_feature", "pre_commit", "pre_push"]}
+                "hook_trigger": {"type": "string", "description": "Trigger for hook", "enum": ["pre_code", "pre_feature", "pre_refactor", "pre_api", "post_code", "post_feature", "pre_commit", "pre_push"]},
+                "proactive": {"type": "string", "description": "Setup proactive hooks (v2.0) - auto PRD check, drift detection", "enum": ["free", "pro"]}
             },
             "required": ["path"]
         }
@@ -879,7 +880,7 @@ TOOL_HANDLERS = {
 
     # Setup
     "init_clouvel": lambda args: init_clouvel(args.get("platform", "ask")),
-    "setup_cli": lambda args: setup_cli(args.get("path", ""), args.get("level", "remind"), args.get("rules", ""), args.get("hook", ""), args.get("hook_trigger", "")),
+    "setup_cli": lambda args: setup_cli(args.get("path", ""), args.get("level", "strict"), args.get("rules", ""), args.get("hook", ""), args.get("hook_trigger", ""), args.get("proactive", "")),
 
     # Rules (v0.5)
     "init_rules": lambda args: init_rules(args.get("path", ""), args.get("template", "minimal")),
@@ -2088,6 +2089,8 @@ def main():
     setup_parser = subparsers.add_parser("setup", help="Install Clouvel forced invocation mechanism (global)")
     setup_parser.add_argument("--global-only", action="store_true", help="Configure CLAUDE.md only (exclude MCP registration)")
     setup_parser.add_argument("--hooks", action="store_true", help="Install pre-commit hooks for record enforcement")
+    setup_parser.add_argument("--proactive", choices=["free", "pro"], help="Setup proactive hooks (v2.0) - auto PRD check, drift detection")
+    setup_parser.add_argument("--path", "-p", default=".", help="Project root path")
 
     # install command (new, recommended)
     install_parser = subparsers.add_parser("install", help="Install Clouvel MCP server (recommended)")
@@ -2122,11 +2125,20 @@ def main():
         result = asyncio.run(sync_setup(args.path, args.level))
         print(result[0].text)
     elif args.command == "setup":
-        result = _run_setup(
-            global_only=args.global_only if hasattr(args, 'global_only') else False,
-            hooks=args.hooks if hasattr(args, 'hooks') else False
-        )
-        print(result)
+        # Handle --proactive option
+        if hasattr(args, 'proactive') and args.proactive:
+            from .tools.setup import setup_cli as sync_setup
+            result = asyncio.run(sync_setup(
+                path=args.path if hasattr(args, 'path') else ".",
+                proactive=args.proactive
+            ))
+            print(result[0].text)
+        else:
+            result = _run_setup(
+                global_only=args.global_only if hasattr(args, 'global_only') else False,
+                hooks=args.hooks if hasattr(args, 'hooks') else False
+            )
+            print(result)
     elif args.command == "install":
         from .tools.install import run_install
         result = run_install(

@@ -72,10 +72,11 @@ clouvel init -p /path/to/project -l strict
 
 async def setup_cli(
     path: str,
-    level: str,
+    level: str = "strict",
     rules: str = "",
     hook: str = "",
-    hook_trigger: str = ""
+    hook_trigger: str = "",
+    proactive: str = ""
 ) -> list[TextContent]:
     """CLI 환경 설정
 
@@ -85,6 +86,7 @@ async def setup_cli(
         rules: Initialize rules with template (replaces init_rules) - web, api, fullstack, minimal
         hook: Create hook (replaces hook_design, hook_verify) - design or verify
         hook_trigger: Trigger for hook - pre_code, pre_feature, post_code, pre_commit, etc.
+        proactive: Setup proactive hooks (v2.0) - free or pro
     """
     project_path = Path(path).resolve()
 
@@ -260,6 +262,104 @@ async def setup_cli(
 
         else:
             return [TextContent(type="text", text=f"❌ Unknown hook type: {hook}. Use 'design' or 'verify'.")]
+
+    # === Option: --proactive (v2.0 Proactive MCP) ===
+    if proactive:
+        claude_dir = project_path / ".claude"
+        claude_dir.mkdir(parents=True, exist_ok=True)
+
+        settings_file = claude_dir / "settings.local.json"
+
+        # Determine docs path relative to project
+        docs_path = "./docs"
+        if (project_path / "docs").exists():
+            docs_path = "./docs"
+        elif (project_path / "doc").exists():
+            docs_path = "./doc"
+
+        if proactive == "free":
+            # Free: Auto PRD check only
+            settings_content = {
+                "hooks": {
+                    "PreToolUse": [
+                        {
+                            "matcher": "Edit|Write",
+                            "hooks": [
+                                {
+                                    "type": "command",
+                                    "command": f"clouvel can_code --path {docs_path} --silent"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+            tier_msg = "Free"
+            features = ["Auto PRD check before Edit/Write"]
+
+        elif proactive == "pro":
+            # Pro: Full proactive features
+            settings_content = {
+                "hooks": {
+                    "PreToolUse": [
+                        {
+                            "matcher": "Edit|Write",
+                            "hooks": [
+                                {
+                                    "type": "command",
+                                    "command": f"clouvel can_code --path {docs_path} --silent"
+                                }
+                            ]
+                        }
+                    ],
+                    "PostToolUse": [
+                        {
+                            "matcher": ".*",
+                            "hooks": [
+                                {
+                                    "type": "command",
+                                    "command": "clouvel drift_check --path . --silent"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+            tier_msg = "Pro"
+            features = [
+                "Auto PRD check before Edit/Write",
+                "Context drift detection after every action"
+            ]
+
+        else:
+            return [TextContent(type="text", text=f"❌ Unknown proactive tier: {proactive}. Use 'free' or 'pro'.")]
+
+        # Write settings file
+        settings_file.write_text(json.dumps(settings_content, indent=2), encoding='utf-8')
+
+        return [TextContent(type="text", text=f"""# Proactive MCP Configured ({tier_msg})
+
+## Features Enabled
+{chr(10).join(f"- {f}" for f in features)}
+
+## Settings File
+`{settings_file}`
+
+## How It Works
+- **PreToolUse**: Checks PRD before you write code
+- **BLOCK** = No coding allowed (PRD missing)
+- **PASS** = Coding allowed
+
+## Next Steps
+1. Restart Claude Code to apply hooks
+2. Try editing a file - PRD check will run automatically
+
+## Docs Path
+`{docs_path}` (auto-detected)
+
+---
+Tip: Edit `.claude/settings.local.json` to customize.
+""")]
 
     created_files = []
 

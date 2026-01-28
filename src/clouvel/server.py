@@ -74,6 +74,13 @@ from .tools import (
     arch_check, check_imports, check_duplicates, check_sync,
     # proactive (v2.0)
     drift_check, pattern_watch, auto_remind,
+    # meeting (Free, v2.1)
+    meeting, meeting_topics,
+    # meeting feedback & tuning (Free, v2.2)
+    rate_meeting, get_meeting_stats, export_training_data,
+    enable_ab_testing, disable_ab_testing, get_variant_performance, list_variants,
+    # meeting personalization (Free, v2.3)
+    configure_meeting, add_persona_override, get_meeting_config, reset_meeting_config,
 )
 
 # Error Learning tools (Pro feature - separate import)
@@ -851,6 +858,183 @@ TOOL_DEFINITIONS = [
             "required": ["path"],
         }
     ),
+    # Meeting (Free, v2.1)
+    Tool(
+        name="meeting",
+        description="C-Level 회의 시뮬레이션. 8명 매니저(PM/CTO/QA/CSO/CDO/CMO/CFO/ERROR)가 참여하는 회의록 생성. 별도 API 호출 없이 Claude가 직접 회의를 시뮬레이션합니다. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "context": {"description": "회의 주제/상황 설명", "type": "string"},
+                "topic": {
+                    "description": "토픽 힌트 (미지정시 자동 감지). 지원: auth, api, payment, ui, feature, launch, error, security, performance, design, cost, maintenance",
+                    "type": "string",
+                    "enum": ["auth", "api", "payment", "ui", "feature", "launch", "error", "security", "performance", "design", "cost", "maintenance"],
+                },
+                "managers": {
+                    "description": "참여 매니저 목록 (미지정시 토픽에 따라 자동 선택). 지원: PM, CTO, QA, CSO, CDO, CMO, CFO, ERROR",
+                    "type": "array",
+                    "items": {"type": "string"},
+                },
+                "project_path": {"description": "프로젝트 경로 (Knowledge Base 연동용)", "type": "string"},
+                "include_example": {"description": "few-shot 예시 포함 여부 (기본: true)", "type": "boolean"},
+            },
+            "required": ["context"],
+        }
+    ),
+    Tool(
+        name="meeting_topics",
+        description="meeting 도구에서 지원하는 토픽 목록 반환. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {},
+        }
+    ),
+    # Meeting Feedback & Tuning (Free, v2.2)
+    Tool(
+        name="rate_meeting",
+        description="회의 품질 평가. 1-5점 평가 + 피드백으로 프롬프트 개선에 기여. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_path": {"description": "프로젝트 경로", "type": "string"},
+                "meeting_id": {"description": "회의 ID (meeting 도구 실행 후 표시됨)", "type": "string"},
+                "rating": {"description": "품질 평가 (1-5). 1:전혀 도움 안됨, 3:보통, 5:매우 유용", "type": "integer", "minimum": 1, "maximum": 5},
+                "feedback": {"description": "텍스트 피드백 (선택)", "type": "string"},
+                "tags": {"description": "태그 목록 (예: natural, actionable, specific)", "type": "array", "items": {"type": "string"}},
+            },
+            "required": ["project_path", "meeting_id", "rating"],
+        }
+    ),
+    Tool(
+        name="get_meeting_stats",
+        description="회의 품질 통계. 토픽별/버전별 평균 평점, 높은 품질 후보 등. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_path": {"description": "프로젝트 경로", "type": "string"},
+                "days": {"description": "분석 기간 (일)", "type": "integer"},
+            },
+            "required": ["project_path"],
+        }
+    ),
+    Tool(
+        name="export_training_data",
+        description="고품질 회의록 추출. rating >= 4인 회의록을 EXAMPLES 후보로 내보내기. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_path": {"description": "프로젝트 경로", "type": "string"},
+                "min_rating": {"description": "최소 평점 (기본: 4)", "type": "integer"},
+            },
+            "required": ["project_path"],
+        }
+    ),
+    Tool(
+        name="enable_ab_testing",
+        description="A/B 테스팅 활성화. 여러 프롬프트 버전을 테스트하여 최적 버전 찾기. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_path": {"description": "프로젝트 경로", "type": "string"},
+                "variants": {"description": "테스트할 버전 목록 (기본: 전체)", "type": "array", "items": {"type": "string"}},
+            },
+            "required": ["project_path"],
+        }
+    ),
+    Tool(
+        name="disable_ab_testing",
+        description="A/B 테스팅 비활성화. 선택적으로 우승 버전 설정. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_path": {"description": "프로젝트 경로", "type": "string"},
+                "set_winner": {"description": "활성 버전으로 설정할 버전", "type": "string"},
+            },
+            "required": ["project_path"],
+        }
+    ),
+    Tool(
+        name="get_variant_performance",
+        description="프롬프트 버전별 성능 비교. 사용 횟수, 평균 평점 등. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_path": {"description": "프로젝트 경로", "type": "string"},
+            },
+            "required": ["project_path"],
+        }
+    ),
+    Tool(
+        name="list_variants",
+        description="사용 가능한 프롬프트 버전 목록. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {},
+        }
+    ),
+    # Meeting Personalization (Free, v2.3)
+    Tool(
+        name="configure_meeting",
+        description="프로젝트별 회의 설정. 매니저 비중, 토픽별 기본 매니저, 언어/형식 설정. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_path": {"description": "프로젝트 경로", "type": "string"},
+                "manager_weights": {
+                    "description": "매니저별 가중치 (0.0-2.0). 예: {\"CSO\": 1.5, \"CDO\": 0.5}",
+                    "type": "object",
+                },
+                "default_managers": {
+                    "description": "토픽별 기본 매니저. 예: {\"auth\": [\"PM\", \"CTO\", \"CSO\"]}",
+                    "type": "object",
+                },
+                "preferences": {
+                    "description": "언어(ko/en), 형식(formal/casual), 상세도(full/summary/minimal)",
+                    "type": "object",
+                },
+            },
+            "required": ["project_path"],
+        }
+    ),
+    Tool(
+        name="add_persona_override",
+        description="매니저 페르소나 커스터마이징. 프로젝트에 맞는 말투/질문 추가. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_path": {"description": "프로젝트 경로", "type": "string"},
+                "manager": {"description": "매니저 키 (PM, CTO, QA, CSO, CDO, CMO, CFO, ERROR)", "type": "string"},
+                "overrides": {
+                    "description": "오버라이드 설정. 예: {\"pet_phrases\": [\"기술 부채 조심\"], \"focus_areas\": [\"보안\"]}",
+                    "type": "object",
+                },
+            },
+            "required": ["project_path", "manager", "overrides"],
+        }
+    ),
+    Tool(
+        name="get_meeting_config",
+        description="현재 회의 설정 확인. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_path": {"description": "프로젝트 경로", "type": "string"},
+            },
+            "required": ["project_path"],
+        }
+    ),
+    Tool(
+        name="reset_meeting_config",
+        description="회의 설정 초기화. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_path": {"description": "프로젝트 경로", "type": "string"},
+            },
+            "required": ["project_path"],
+        }
+    ),
 ]
 
 
@@ -960,6 +1144,61 @@ TOOL_HANDLERS = {
     "drift_check": lambda args: _wrap_drift_check(args),
     "pattern_watch": lambda args: _wrap_pattern_watch(args),
     "auto_remind": lambda args: _wrap_auto_remind(args),
+    # Meeting (Free, v2.1)
+    "meeting": lambda args: meeting(
+        context=args.get("context", ""),
+        topic=args.get("topic"),
+        managers=args.get("managers"),
+        project_path=args.get("project_path"),
+        include_example=args.get("include_example", True),
+    ),
+    "meeting_topics": lambda args: meeting_topics(),
+    # Meeting Feedback & Tuning (Free, v2.2)
+    "rate_meeting": lambda args: rate_meeting(
+        project_path=args.get("project_path", ""),
+        meeting_id=args.get("meeting_id", ""),
+        rating=args.get("rating", 3),
+        feedback=args.get("feedback"),
+        tags=args.get("tags"),
+    ),
+    "get_meeting_stats": lambda args: get_meeting_stats(
+        project_path=args.get("project_path", ""),
+        days=args.get("days", 30),
+    ),
+    "export_training_data": lambda args: export_training_data(
+        project_path=args.get("project_path", ""),
+        min_rating=args.get("min_rating", 4),
+    ),
+    "enable_ab_testing": lambda args: enable_ab_testing(
+        project_path=args.get("project_path", ""),
+        variants=args.get("variants"),
+    ),
+    "disable_ab_testing": lambda args: disable_ab_testing(
+        project_path=args.get("project_path", ""),
+        set_winner=args.get("set_winner"),
+    ),
+    "get_variant_performance": lambda args: get_variant_performance(
+        project_path=args.get("project_path", ""),
+    ),
+    "list_variants": lambda args: list_variants(),
+    # Meeting Personalization (Free, v2.3)
+    "configure_meeting": lambda args: configure_meeting(
+        project_path=args.get("project_path", ""),
+        manager_weights=args.get("manager_weights"),
+        default_managers=args.get("default_managers"),
+        preferences=args.get("preferences"),
+    ),
+    "add_persona_override": lambda args: add_persona_override(
+        project_path=args.get("project_path", ""),
+        manager=args.get("manager", ""),
+        overrides=args.get("overrides", {}),
+    ),
+    "get_meeting_config": lambda args: get_meeting_config(
+        project_path=args.get("project_path", ""),
+    ),
+    "reset_meeting_config": lambda args: reset_meeting_config(
+        project_path=args.get("project_path", ""),
+    ),
 }
 
 

@@ -138,6 +138,35 @@ from .proactive import (
     auto_remind,
 )
 
+# Meeting 도구 (Free, v2.1)
+from .meeting import (
+    meeting,
+    meeting_topics,
+)
+
+# Meeting Feedback & Tuning (Free, v2.2)
+from .meeting_feedback import (
+    save_meeting,
+    rate_meeting,
+    get_meeting_stats,
+    export_training_data,
+)
+from .meeting_tuning import (
+    enable_ab_testing,
+    disable_ab_testing,
+    get_variant_performance,
+    list_variants,
+)
+
+# Meeting Personalization (Free, v2.3)
+from .meeting_personalization import (
+    configure_meeting,
+    add_persona_override,
+    add_custom_prompt,
+    get_meeting_config,
+    reset_meeting_config,
+)
+
 # Error Learning 도구 (Pro 기능 - 파일이 없으면 스킵)
 try:
     from .errors import (
@@ -207,4 +236,11 @@ __all__ = [
     "arch_check", "check_imports", "check_duplicates", "check_sync",
     # proactive (v2.0)
     "drift_check", "pattern_watch", "auto_remind",
+    # meeting (Free, v2.1)
+    "meeting", "meeting_topics",
+    # meeting feedback & tuning (Free, v2.2)
+    "save_meeting", "rate_meeting", "get_meeting_stats", "export_training_data",
+    "enable_ab_testing", "disable_ab_testing", "get_variant_performance", "list_variants",
+    # meeting personalization (Free, v2.3)
+    "configure_meeting", "add_persona_override", "add_custom_prompt", "get_meeting_config", "reset_meeting_config",
 ]

@@ -1,6 +1,6 @@
 # Clouvel 현재 상태
 
-> **마지막 업데이트**: 2026-01-28 (v2.0.0 PyPI 배포 완료)
+> **마지막 업데이트**: 2026-01-28 (v2.1.1 PyPI 배포 완료)
 
 ---
 
@@ -20,7 +20,7 @@
 
 | 항목              | 상태                              |
 | ----------------- | --------------------------------- |
-| **clouvel**       | v2.0.0 PyPI 배포 완료 |
+| **clouvel**       | v2.1.1 PyPI 배포 완료 |
 | **아키텍처**      | ✅ Manager Worker API 전환 완료   |
 | **문서 시스템**   | ✅ SSOT 완성 (ENTRYPOINTS + SIDE_EFFECTS + SMOKE_LOGS) |
 | **MCP 표준화**    | ✅ 52개 도구 분석 완료 (9그룹, 12표준, 5폐기, 6통합) |
@@ -104,7 +104,58 @@ py -3 scripts/docs_extract.py # AUTO-GEN 섹션 갱신
 
 ---
 
-## 오늘 완료 (2026-01-28)
+## 오늘 완료 (2026-01-28) - Part 2
+
+### v2.1.0 Meeting System 구현 ✅
+
+**목표**: 자연스러운 C-Level 회의록 자동 생성 (BYOK 불필요)
+
+**구현 Phase**:
+
+| Phase | 내용 | 파일 | 상태 |
+|-------|------|------|------|
+| 1 | 기본 연결 | `meeting.py`, `meeting_prompt.py` | ✅ |
+| 2 | 피드백 루프 | `meeting_feedback.py`, `meeting_tuning.py` | ✅ |
+| 3 | KB 연동 강화 | `meeting_kb.py`, `meeting_personalization.py` | ✅ |
+| 4 | 품질 자동화 | - | v2.2 예정 |
+
+**새 MCP 도구 (13개, 전부 Free)**:
+- `meeting` - 회의록 생성 (30초)
+- `meeting_topics` - 지원 토픽 목록
+- `rate_meeting` - 회의 품질 평가
+- `get_meeting_stats` - 통계
+- `export_training_data` - 학습 데이터 추출
+- `enable_ab_testing` / `disable_ab_testing` - A/B 테스팅
+- `get_variant_performance` / `list_variants` - 버전 성능
+- `configure_meeting` - 프로젝트 설정
+- `add_persona_override` - 페르소나 커스터마이징
+- `get_meeting_config` / `reset_meeting_config` - 설정 관리
+
+**A/B 테스팅 프롬프트 버전**:
+| 버전 | 이름 | 특징 |
+|------|------|------|
+| v1.0.0 | baseline | 풀 페르소나 + 예시 1개 |
+| v1.1.0 | concise | 요약 페르소나, 질문 없음 |
+| v1.2.0 | rich_examples | 예시 2개 |
+| v1.3.0 | minimal | 최소 프롬프트 |
+
+**테스트 완료**:
+- auth 토픽: 2957 chars ✅
+- payment 토픽: 4250 chars ✅
+- launch 토픽: 2930 chars ✅
+
+**랜딩 페이지 업데이트**:
+- 버전 배지: v1.9.0 → v2.1.0
+- Manager 섹션: "30초 C-Level 회의록 생성" 강조
+- Features: Meeting transcripts 강조
+- Pricing Free: "회의록 자동 생성" 추가
+
+**문서**:
+- `docs/roadmap-meeting.md` - 전체 로드맵
+
+---
+
+## 오늘 완료 (2026-01-28) - Part 1
 
 ### Product Hunt 런칭 예약 ✅
 

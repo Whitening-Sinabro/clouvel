@@ -543,6 +543,57 @@
             </div>
             <img src="assets/manager_feedback.png" alt="Clouvel Manager Review" class="w-full" loading="lazy" />
           </div>
+
+          <!-- Free vs Pro Comparison -->
+          <div class="mt-8 grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="text-emerald-400 font-bold text-lg">Free</span>
+                <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded">3명</span>
+              </div>
+              <div class="space-y-2 text-sm">
+                <div class="flex items-center gap-2 text-slate-300">
+                  <span class="text-emerald-400">PM</span> 제품 관점
+                </div>
+                <div class="flex items-center gap-2 text-slate-300">
+                  <span class="text-emerald-400">CTO</span> 기술 검토
+                </div>
+                <div class="flex items-center gap-2 text-slate-300">
+                  <span class="text-emerald-400">QA</span> 테스트 커버리지
+                </div>
+                <div class="pt-2 text-slate-500 text-xs">기본 개발 관점</div>
+              </div>
+            </div>
+            <div class="bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-xl p-6 border border-purple-500/30">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="text-purple-400 font-bold text-lg">Pro</span>
+                <span class="bg-purple-500/20 text-purple-400 text-xs px-2 py-1 rounded">8명</span>
+              </div>
+              <div class="space-y-2 text-sm">
+                <div class="flex items-center gap-2 text-slate-300">
+                  <span class="text-emerald-400">PM + CTO + QA</span> (포함)
+                </div>
+                <div class="flex items-center gap-2 text-purple-300">
+                  <span class="text-purple-400">+ CDO</span> 디자인 & UX 검토
+                </div>
+                <div class="flex items-center gap-2 text-purple-300">
+                  <span class="text-purple-400">+ CMO</span> 마케팅 & 메시지
+                </div>
+                <div class="flex items-center gap-2 text-purple-300">
+                  <span class="text-purple-400">+ CFO</span> 비용 & ROI 분석
+                </div>
+                <div class="flex items-center gap-2 text-purple-300">
+                  <span class="text-purple-400">+ CSO</span> 보안 검토
+                </div>
+                <div class="flex items-center gap-2 text-purple-300">
+                  <span class="text-purple-400">+ ERROR</span> 위험 & 장애 분석
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="text-center text-slate-500 text-sm mt-4">
+            Pro가 놓치는 것을 잡아줍니다: 보안 취약점, 비용 문제, UX 이슈 등
+          </p>
         </div>
       </div>
     </section>
@@ -1036,11 +1087,11 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span data-i18n="pricing.free_f6">AI Managers trial (10 uses)</span>
+                <span class="text-emerald-700 font-medium">AI 매니저 3명 (PM, CTO, QA)</span>
               </li>
-              <li class="flex items-center gap-2">
+              <li class="flex items-center gap-2 text-slate-400">
                 <svg
-                  class="w-4 h-4 text-emerald-500 shrink-0"
+                  class="w-4 h-4 shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1049,10 +1100,10 @@
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M5 13l4 4L19 7"
+                    d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
-                <span data-i18n="pricing.free_f7">Ship trial (5 uses)</span>
+                <span class="line-through">CDO, CMO, CFO, CSO, ERROR</span>
               </li>
             </ul>
             <a
@@ -1078,20 +1129,24 @@
             <div
               class="price-display monthly-price flex items-baseline gap-1 mb-1"
             >
-              <span class="text-4xl font-bold">$9.99</span>
+              <span class="text-4xl font-bold">$7.99</span>
               <span class="text-slate-500" data-i18n="pricing.per_month">/ month</span>
             </div>
             <div
               class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
             >
-              <span class="text-4xl font-bold">$99</span>
+              <span class="text-4xl font-bold">$79.99</span>
               <span class="text-slate-500" data-i18n="pricing.per_year">/ year</span>
             </div>
-            <p class="monthly-price text-slate-400 text-sm font-medium mb-6" data-i18n="pricing.yearly_note">
-              17% off with yearly
+            <p class="monthly-price text-emerald-600 text-sm font-medium mb-2">
+              코드 <span class="font-bold">FIRST1</span> 입력시 첫 달 $1
+              <span class="text-orange-500 text-xs ml-1">(50명 한정!)</span>
+            </p>
+            <p class="monthly-price text-slate-400 text-xs mb-6" data-i18n="pricing.yearly_note">
+              연간 결제시 17% 할인
             </p>
             <p class="yearly-price hidden text-accent text-sm font-medium mb-6" data-i18n="pricing.yearly_applied">
-              17% off applied
+              연 $16 절약
             </p>
             <ul class="space-y-3 mb-8 text-sm">
               <li class="flex items-center gap-2">
@@ -1124,7 +1179,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-accent font-medium" data-i18n="pricing.personal_f2">8 C-Level managers</span>
+                <span class="text-accent font-medium">전체 8명 (+CDO, CMO, CFO, CSO, ERROR)</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg

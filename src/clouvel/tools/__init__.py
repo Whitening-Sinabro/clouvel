@@ -131,6 +131,13 @@ from .architecture import (
     check_sync,  # v3.1: Sideeffect sync checker
 )
 
+# Proactive 도구 (v2.0)
+from .proactive import (
+    drift_check,
+    pattern_watch,
+    auto_remind,
+)
+
 # Error Learning 도구 (Pro 기능 - 파일이 없으면 스킵)
 try:
     from .errors import (
@@ -198,4 +205,6 @@ __all__ = [
     "error_search", "error_resolve", "error_get", "error_stats",
     # architecture (v1.8 + v3.1)
     "arch_check", "check_imports", "check_duplicates", "check_sync",
+    # proactive (v2.0)
+    "drift_check", "pattern_watch", "auto_remind",
 ]

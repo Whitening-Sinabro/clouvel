@@ -72,6 +72,8 @@ from .tools import (
     ship, quick_ship, full_ship,
     # architecture (v1.8 + v3.1)
     arch_check, check_imports, check_duplicates, check_sync,
+    # proactive (v2.0)
+    drift_check, pattern_watch, auto_remind,
 )
 
 # Error Learning tools (Pro feature - separate import)
@@ -809,6 +811,45 @@ TOOL_DEFINITIONS = [
             },
         }
     ),
+    # v2.0: Proactive MCP tools
+    Tool(
+        name="drift_check",
+        description="v2.0: Detect context drift - check if current work deviates from original goals. Compares recent actions against task plan. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"description": "Project root path", "type": "string"},
+                "silent": {"description": "If True, return minimal output (for hooks)", "type": "boolean"},
+            },
+            "required": ["path"],
+        }
+    ),
+    Tool(
+        name="pattern_watch",
+        description="v2.0: Watch for repeated error patterns. Detects when same error occurs multiple times. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"description": "Project root path", "type": "string"},
+                "threshold": {"description": "Number of occurrences to trigger alert (default: 3)", "type": "integer"},
+                "check_only": {"description": "If True, only check without recording", "type": "boolean"},
+            },
+            "required": ["path"],
+        }
+    ),
+    Tool(
+        name="auto_remind",
+        description="v2.0: Configure automatic progress reminders. Reminds to update current.md periodically. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"description": "Project root path", "type": "string"},
+                "interval": {"description": "Reminder interval in minutes (default: 30)", "type": "integer"},
+                "enabled": {"description": "Enable or disable reminders", "type": "boolean"},
+            },
+            "required": ["path"],
+        }
+    ),
 ]
 
 
@@ -913,6 +954,11 @@ TOOL_HANDLERS = {
 
     # Debug (v3.2)
     "debug_runtime": lambda args: _wrap_debug_runtime(args),
+
+    # Proactive (v2.0)
+    "drift_check": lambda args: _wrap_drift_check(args),
+    "pattern_watch": lambda args: _wrap_pattern_watch(args),
+    "auto_remind": lambda args: _wrap_auto_remind(args),
 }
 
 
@@ -2152,6 +2198,36 @@ Purchase: https://polar.sh/clouvel
             sys.exit(1)
     else:
         asyncio.run(run_server())
+
+
+# ============================================================
+# Proactive Tool Wrappers (v2.0)
+# ============================================================
+
+async def _wrap_drift_check(args: dict) -> list[TextContent]:
+    """drift_check tool wrapper"""
+    return await drift_check(
+        path=args.get("path", "."),
+        silent=args.get("silent", False)
+    )
+
+
+async def _wrap_pattern_watch(args: dict) -> list[TextContent]:
+    """pattern_watch tool wrapper"""
+    return await pattern_watch(
+        path=args.get("path", "."),
+        threshold=args.get("threshold", 3),
+        check_only=args.get("check_only", False)
+    )
+
+
+async def _wrap_auto_remind(args: dict) -> list[TextContent]:
+    """auto_remind tool wrapper"""
+    return await auto_remind(
+        path=args.get("path", "."),
+        interval=args.get("interval", 30),
+        enabled=args.get("enabled", True)
+    )
 
 
 if __name__ == "__main__":

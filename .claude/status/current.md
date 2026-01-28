@@ -183,6 +183,80 @@ py -3 scripts/docs_extract.py # AUTO-GEN 섹션 갱신
 - `47e6bc4` fix: remove emojis for Windows cp949 encoding
 - `de62b24` feat: clouvel setup --proactive [free|pro] command
 
+### v2.0.0 PyPI 배포 완료 ✅
+
+**배포 시간**: 2026-01-28 ~13:00 (VN)
+
+**버전**: `clouvel==2.0.0`
+
+**배포 확인**:
+```bash
+uvx clouvel@2.0.0 status  # License status 확인
+uvx clouvel@2.0.0 can_code --path ./docs --silent  # Exit 0 (PASS)
+uvx clouvel@2.0.0 drift_check --path . --silent  # OK:NO_GOALS
+```
+
+**테스트 결과**:
+- **1395 passed, 10 skipped** (40초)
+- Skipped: ChromaDB 선택적 의존성 3개 + 이전 Shovel 테스트 7개
+
+**Windows cp949 인코딩 수정**:
+- `proactive.py`에서 모든 이모지 제거
+- `[OK]`, `[WARN]`, `[ERROR]`, `[Pro]` 텍스트 형식으로 변경
+
+**최종 커밋**:
+- `26ac47f` feat(v2.0.0): Proactive MCP release + Windows cp949 fix
+- `2206d07` chore: update current.md to v2.0.0 deployed status
+
+### Pro 훅 활성화 ✅
+
+**파일**: `.claude/settings.local.json`
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Edit|Write",
+      "hooks": [{
+        "type": "command",
+        "command": "clouvel can_code --path ./docs --silent"
+      }]
+    }],
+    "PostToolUse": [{
+      "matcher": ".*",
+      "hooks": [{
+        "type": "command",
+        "command": "clouvel drift_check --path . --silent"
+      }]
+    }]
+  }
+}
+```
+
+**동작**:
+- Edit/Write 전: PRD 체크 (BLOCK/PASS)
+- 모든 도구 후: 드리프트 감지 (OK/WARN/DRIFT)
+
+---
+
+## 오늘 요약 (2026-01-28)
+
+| 시간 | 작업 | 결과 |
+|------|------|------|
+| 오전 | Product Hunt 런칭 예약 | 15:00 VN 예약 완료 |
+| 오전 | 썸네일/Gallery/소셜 포스트 | 전부 준비 완료 |
+| 오후 | v2.0 Proactive MCP 구현 | proactive.py + 25 tests |
+| 오후 | Windows cp949 이모지 수정 | 모든 이모지 제거 |
+| 오후 | v2.0.0 PyPI 배포 | 배포 + uvx 테스트 완료 |
+| 오후 | Pro 훅 활성화 | settings.local.json 업데이트 |
+
+**GitHub 커밋 (오늘)**:
+1. `56d89b8` - v2.0 proactive MCP 구현
+2. `47e6bc4` - Windows 이모지 수정
+3. `de62b24` - setup --proactive 명령어
+4. `26ac47f` - v2.0.0 릴리즈
+5. `2206d07` - current.md 업데이트
+
 ---
 
 ## 이전 완료 (2026-01-27)

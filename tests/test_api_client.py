@@ -166,12 +166,14 @@ class TestFallbackResponse:
         assert result.get("offline") is True
 
     def test_default_managers_present(self):
-        """Default managers (PM, CTO, QA) present"""
+        """v3.0: FREE tier = PM only"""
         from clouvel.api_client import _fallback_response
         result = _fallback_response("Error")
-        assert "PM" in result["active_managers"]
-        assert "CTO" in result["active_managers"]
-        assert "QA" in result["active_managers"]
+        assert result["active_managers"] == ["PM"]
+        # v3.0: CTO, QA are now Pro-only
+        assert "missed_perspectives" in result
+        assert "CTO" in result["missed_perspectives"]
+        assert "QA" in result["missed_perspectives"]
 
 
 class TestDevModeResponse:

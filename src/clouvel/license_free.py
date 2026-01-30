@@ -24,8 +24,13 @@ from .license_common import (
     delete_license_cache,
     calculate_license_status,
     create_license_data,
+    is_feature_available,
+    register_project,
+    get_project_count,
     DEFAULT_TIER,
     TIER_INFO,
+    PRO_ONLY_FEATURES,
+    FREE_PROJECT_LIMIT,
 )
 
 

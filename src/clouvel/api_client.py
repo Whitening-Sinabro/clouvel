@@ -16,6 +16,18 @@ from typing import Dict, Any, Optional
 API_BASE_URL = os.environ.get("CLOUVEL_API_URL", "https://clouvel-api.vnddns999.workers.dev")
 API_TIMEOUT = 30  # seconds
 
+# v3.0: Version for API compatibility check
+def _get_client_version() -> str:
+    """Get current clouvel version."""
+    try:
+        from importlib.metadata import version
+        return version("clouvel")
+    except Exception:
+        return "3.0.0"
+
+CLIENT_VERSION = _get_client_version()
+MIN_REQUIRED_VERSION = "3.0.0"
+
 
 def _get_client_id() -> str:
     """Generate a unique client ID for trial tracking."""
@@ -104,9 +116,34 @@ def call_manager_api(
             headers={
                 "Content-Type": "application/json",
                 "X-Clouvel-Client": _get_client_id(),
+                "X-Clouvel-Version": CLIENT_VERSION,  # v3.0: Version header
             },
             timeout=API_TIMEOUT,
         )
+
+        if response.status_code == 426:
+            # v3.0: Upgrade required
+            data = response.json() if response.text else {}
+            return {
+                "error": "upgrade_required",
+                "message": data.get("message", "Clouvel v3.0+ required"),
+                "formatted_output": f"""
+==================================================
+⛔ UPGRADE REQUIRED
+==================================================
+
+Clouvel v3.0+ is required. Your version: {CLIENT_VERSION}
+
+Run: pip install --upgrade clouvel
+
+Changes in v3.0:
+- FREE: PM only (was 3 managers)
+- FREE: WARN mode (was BLOCK)
+- PRO: Full 8 managers + BLOCK mode
+
+==================================================
+"""
+            }
 
         if response.status_code == 402:
             # Trial exhausted
@@ -179,9 +216,18 @@ def call_ship_api(
             headers={
                 "Content-Type": "application/json",
                 "X-Clouvel-Client": _get_client_id(),
+                "X-Clouvel-Version": CLIENT_VERSION,  # v3.0: Version header
             },
             timeout=API_TIMEOUT,
         )
+
+        if response.status_code == 426:
+            # v3.0: Upgrade required
+            return {
+                "allowed": False,
+                "error": "upgrade_required",
+                "message": f"Clouvel v3.0+ required. Current: {CLIENT_VERSION}. Run: pip install --upgrade clouvel",
+            }
 
         if response.status_code == 402:
             data = response.json()
@@ -210,6 +256,7 @@ def get_trial_status() -> Dict[str, Any]:
             f"{API_BASE_URL}/api/trial/status",
             headers={
                 "X-Clouvel-Client": _get_client_id(),
+                "X-Clouvel-Version": CLIENT_VERSION,  # v3.0: Version header
             },
             timeout=API_TIMEOUT,
         )
@@ -363,10 +410,13 @@ def _dev_mode_response(
 
 
 def _fallback_response(error_message: str) -> Dict[str, Any]:
-    """Fallback response when API is unavailable."""
+    """Fallback response when API is unavailable.
+
+    v3.0: FREE tier = PM only (1 manager)
+    """
     return {
         "topic": "feature",
-        "active_managers": ["PM", "CTO", "QA"],
+        "active_managers": ["PM"],
         "feedback": {
             "PM": {
                 "emoji": "👔",
@@ -374,39 +424,30 @@ def _fallback_response(error_message: str) -> Dict[str, Any]:
                 "questions": [
                     "Is this in the PRD?",
                     "What is the MVP scope?",
-                ],
-            },
-            "CTO": {
-                "emoji": "🛠️",
-                "title": "CTO",
-                "questions": [
-                    "Does this follow existing patterns?",
-                    "What is the maintenance burden?",
-                ],
-            },
-            "QA": {
-                "emoji": "🧪",
-                "title": "QA Lead",
-                "questions": [
-                    "What are the edge cases?",
-                    "How will you test this?",
+                    "What is the acceptance criteria?",
                 ],
             },
         },
         "formatted_output": f"""
-## 💡 C-Level Perspectives (Offline Mode)
+## 💡 C-Level Perspectives (FREE Tier)
 
 > ⚠️ {error_message}
 
 **👔 PM**: Is this in the PRD? What is the MVP scope?
 
-**🛠️ CTO**: Does this follow existing patterns?
-
-**🧪 QA**: What are the edge cases? How will you test this?
-
 ---
 
-> 💡 For full feedback, ensure API connectivity.
+**💎 Pro: 7 more managers** (CTO, QA, CDO, CMO, CFO, CSO, ERROR)
+→ https://polar.sh/clouvel (code: FIRST01)
 """,
         "offline": True,
+        "missed_perspectives": {
+            "CTO": {"emoji": "🛠️", "hint": "Technical architecture & code quality"},
+            "QA": {"emoji": "🧪", "hint": "Test strategy & edge cases"},
+            "CDO": {"emoji": "🎨", "hint": "Design & UX review"},
+            "CMO": {"emoji": "📢", "hint": "Marketing & messaging"},
+            "CFO": {"emoji": "💰", "hint": "Cost & ROI analysis"},
+            "CSO": {"emoji": "🔒", "hint": "Security review"},
+            "ERROR": {"emoji": "🔥", "hint": "Risk & failure modes"},
+        },
     }

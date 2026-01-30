@@ -6,6 +6,19 @@ from pathlib import Path
 from datetime import datetime
 from mcp.types import TextContent
 
+# Rich UI (optional)
+try:
+    from clouvel.ui import render_can_code, HAS_RICH
+except ImportError:
+    HAS_RICH = False
+    render_can_code = None
+
+# v3.0: License tier checking
+from clouvel.license_common import is_feature_available, register_project
+
+# v3.0: Migration notice
+from clouvel.version_check import get_v3_migration_notice
+
 # Knowledge Base integration (optional - graceful fallback if not available)
 try:
     from clouvel.db.knowledge import (
@@ -46,6 +59,11 @@ from clouvel.messages import (
     TEMPLATE_API,
     TEMPLATE_DATABASE,
     TEMPLATE_VERIFICATION,
+    # v3.0: FREE tier messages
+    CAN_CODE_PROJECT_LIMIT,
+    CAN_CODE_WARN_NO_DOCS_FREE,
+    CAN_CODE_WARN_NO_PRD_FREE,
+    CAN_CODE_PASS_FREE,
 )
 
 # Required documents definition
@@ -264,6 +282,8 @@ async def _check_file_tracking(project_path: Path) -> list[TextContent]:
 async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
     """Check if coding is allowed - core feature (B4: quality gate extension)
 
+    v3.0: FREE tier = WARN (can proceed), PRO tier = BLOCK (must fix first)
+
     Args:
         path: docs folder path
         mode: "pre" (default) - check before coding
@@ -276,8 +296,31 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
     if mode == "post":
         return await _check_file_tracking(project_path)
 
+    # v3.0: Check license tier for behavior
+    validation_check = is_feature_available("full_prd_validation")
+    is_pro = validation_check["available"]
+
+    blocking_check = is_feature_available("code_blocking")
+    can_block = blocking_check["available"]
+
+    # v3.0: Project limit check (FREE = 1 project)
+    project_check = register_project(str(project_path))
+    if not project_check.get("allowed", True):
+        return [TextContent(type="text", text=CAN_CODE_PROJECT_LIMIT.format(
+            count=project_check["count"],
+            limit=project_check["limit"],
+            existing_project=project_check.get("existing_project", "unknown"),
+            upgrade_hint="FIRST01"
+        ))]
+
+    # v3.0: No docs folder - BLOCK for Pro, WARN for Free
     if not docs_path.exists():
-        return [TextContent(type="text", text=CAN_CODE_BLOCK_NO_DOCS.format(path=path))]
+        if can_block:
+            return [TextContent(type="text", text=CAN_CODE_BLOCK_NO_DOCS.format(path=path))]
+        else:
+            return [TextContent(type="text", text=CAN_CODE_WARN_NO_DOCS_FREE.format(
+                path=path, upgrade_hint="FIRST01"
+            ))]
 
     files = [f for f in docs_path.iterdir() if f.is_file()]
     file_names = [f.name.lower() for f in files]
@@ -318,11 +361,39 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
     # B4: Check test files
     test_count, test_files = _check_tests(project_path)
 
-    # BLOCK condition: No PRD OR no acceptance section
+    # v3.0: FREE tier - existence check only, never block
+    if not is_pro:
+        prd_exists = prd_file is not None
+        if prd_exists:
+            return [TextContent(type="text", text=CAN_CODE_PASS_FREE.format(
+                test_count=test_count,
+                upgrade_hint="PRO validates PRD sections + blocks coding"
+            ))]
+        else:
+            return [TextContent(type="text", text=CAN_CODE_WARN_NO_PRD_FREE.format(
+                upgrade_hint="FIRST01"
+            ))]
+
+    # PRO tier: BLOCK condition - No PRD OR no acceptance section
     if missing_critical or prd_sections_missing_critical:
         all_missing_critical = missing_critical + [PRD_SECTION_PREFIX.format(section=s) for s in prd_sections_missing_critical]
-        detected_list = "\n".join(f"- {d}" for d in detected_critical + detected_warn) if (detected_critical or detected_warn) else "None"
+        found_list = detected_critical + detected_warn
 
+        # Use Rich UI if available
+        if HAS_RICH and render_can_code:
+            output = render_can_code(
+                status="BLOCK",
+                title=f"Missing: {', '.join(all_missing_critical)}",
+                found=found_list,
+                missing=all_missing_critical,
+                test_count=test_count,
+                next_action=f"Fix: start(path=\"{path}\")",
+                pro_hint="manager 10, ship 5",
+            )
+            return [TextContent(type="text", text=output)]
+
+        # Fallback to plain text
+        detected_list = "\n".join(f"- {d}" for d in found_list) if found_list else "None"
         return [TextContent(type="text", text=CAN_CODE_BLOCK_MISSING_DOCS.format(
             detected_list=detected_list,
             missing_list=chr(10).join(f'- {m}' for m in all_missing_critical),
@@ -333,13 +404,10 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
     warn_count = len(missing_warn) + len(prd_sections_missing_warn) + (1 if test_count == 0 else 0)
 
     # Short summary format
-    found_docs = ", ".join(detected_critical) if detected_critical else "None"
+    found_docs = detected_critical if detected_critical else []
     warn_items = missing_warn + [f"PRD.{s}" for s in prd_sections_missing_warn]
     if test_count == 0:
         warn_items.append(NO_TESTS)
-    warn_summary = ", ".join(warn_items) if warn_items else "None"
-
-    test_info = f" | {TEST_COUNT.format(count=test_count)}" if test_count > 0 else ""
 
     # PRD edit rule
     prd_rule = PRD_RULE_WARNING
@@ -347,17 +415,46 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
     # Get context from Knowledge Base (session recovery)
     context_summary = _get_context_summary(project_path)
 
+    # Use Rich UI if available
+    if HAS_RICH and render_can_code:
+        if warn_count > 0:
+            output = render_can_code(
+                status="WARN",
+                title=f"Required: PRD ✓ | {test_count} tests",
+                found=found_docs,
+                missing=warn_items,
+                test_count=test_count,
+                next_action=None,
+                pro_hint="ship auto-generates evidence & completion report",
+            )
+        else:
+            output = render_can_code(
+                status="PASS",
+                title=f"Required: PRD ✓ | {test_count} tests | Ready to code",
+                found=found_docs,
+                missing=[],
+                test_count=test_count,
+                next_action=None,
+                pro_hint=None,
+            )
+        return [TextContent(type="text", text=output + "\n" + prd_rule + context_summary)]
+
+    # Fallback to plain text
+    found_docs_str = ", ".join(found_docs) if found_docs else "None"
+    warn_summary = ", ".join(warn_items) if warn_items else "None"
+    test_info = f" | {TEST_COUNT.format(count=test_count)}" if test_count > 0 else ""
+
     if warn_count > 0:
         return [TextContent(type="text", text=CAN_CODE_PASS_WITH_WARN.format(
             warn_count=warn_count,
-            found_docs=found_docs,
+            found_docs=found_docs_str,
             test_info=test_info,
             warn_summary=warn_summary,
             prd_rule=prd_rule
         ) + context_summary)]
     else:
         return [TextContent(type="text", text=CAN_CODE_PASS.format(
-            found_docs=found_docs,
+            found_docs=found_docs_str,
             test_info=test_info,
             prd_rule=prd_rule
         ) + context_summary)]

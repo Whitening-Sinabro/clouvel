@@ -94,6 +94,156 @@ TIER_INFO = {
     "enterprise": {"name": "Enterprise", "price": "$199", "seats": 999},
 }
 
+# ============================================================
+# v3.0: Feature Availability & Project Tracking
+# ============================================================
+
+PRO_ONLY_FEATURES = [
+    "full_prd_validation",
+    "code_blocking",
+    "full_managers",
+    "unlimited_projects",
+    "knowledge_base",
+    "error_learning",
+]
+
+# FREE tier project limit
+FREE_PROJECT_LIMIT = 1
+
+
+def is_feature_available(feature: str) -> Dict[str, Any]:
+    """Check if feature is available for current license.
+
+    v3.0: FREE tier = light (warns, 1 PM, 1 project)
+          PRO tier = heavy (blocks, 8 managers, unlimited)
+
+    Returns:
+        dict with keys:
+        - available: bool
+        - reason: "developer" | "pro" | "free"
+        - upgrade_hint: str (only if not available)
+    """
+    if is_developer():
+        return {"available": True, "reason": "developer"}
+
+    cached = load_license_cache()
+    has_license = cached is not None and cached.get("tier") is not None
+
+    # Non-pro features are always available
+    if feature not in PRO_ONLY_FEATURES:
+        return {"available": True, "reason": "free"}
+
+    # Pro features require license
+    if has_license:
+        return {"available": True, "reason": "pro"}
+
+    return {"available": False, "reason": "free", "upgrade_hint": "FIRST01"}
+
+
+def get_projects_path() -> Path:
+    """Get projects tracking file path: ~/.clouvel/projects.json"""
+    if os.name == 'nt':  # Windows
+        base = Path(os.environ.get('USERPROFILE', '~'))
+    else:  # Unix
+        base = Path.home()
+
+    clouvel_dir = base / ".clouvel"
+    clouvel_dir.mkdir(parents=True, exist_ok=True)
+    return clouvel_dir / "projects.json"
+
+
+def load_projects() -> Dict[str, Any]:
+    """Load registered projects from tracking file."""
+    projects_path = get_projects_path()
+    if projects_path.exists():
+        try:
+            return json.loads(projects_path.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return {"projects": [], "last_updated": None}
+
+
+def save_projects(data: Dict[str, Any]) -> bool:
+    """Save projects data to tracking file."""
+    projects_path = get_projects_path()
+    try:
+        data["last_updated"] = datetime.now().isoformat()
+        projects_path.write_text(
+            json.dumps(data, indent=2, ensure_ascii=False),
+            encoding="utf-8"
+        )
+        return True
+    except Exception:
+        return False
+
+
+def register_project(project_path: str) -> Dict[str, Any]:
+    """Register a project and check if within FREE tier limit.
+
+    v3.0: FREE tier = 1 project only
+          PRO tier = unlimited
+
+    Returns:
+        dict with keys:
+        - allowed: bool
+        - count: int (current project count)
+        - limit: int (project limit)
+        - is_new: bool (True if newly registered)
+    """
+    # Developers and Pro users have unlimited projects
+    if is_developer():
+        return {"allowed": True, "count": 0, "limit": 999, "is_new": False}
+
+    cached = load_license_cache()
+    has_license = cached is not None and cached.get("tier") is not None
+
+    if has_license:
+        return {"allowed": True, "count": 0, "limit": 999, "is_new": False}
+
+    # FREE tier: check project limit
+    data = load_projects()
+    projects = data.get("projects", [])
+
+    # Normalize path for comparison
+    normalized_path = str(Path(project_path).resolve())
+
+    # Check if project is already registered
+    if normalized_path in projects:
+        return {
+            "allowed": True,
+            "count": len(projects),
+            "limit": FREE_PROJECT_LIMIT,
+            "is_new": False
+        }
+
+    # Check if we're at the limit
+    if len(projects) >= FREE_PROJECT_LIMIT:
+        return {
+            "allowed": False,
+            "count": len(projects),
+            "limit": FREE_PROJECT_LIMIT,
+            "is_new": False,
+            "existing_project": projects[0] if projects else None
+        }
+
+    # Register new project
+    projects.append(normalized_path)
+    data["projects"] = projects
+    save_projects(data)
+
+    return {
+        "allowed": True,
+        "count": len(projects),
+        "limit": FREE_PROJECT_LIMIT,
+        "is_new": True
+    }
+
+
+def get_project_count() -> int:
+    """Get current registered project count."""
+    data = load_projects()
+    return len(data.get("projects", []))
+
 def get_tier_info(tier: str) -> Dict[str, Any]:
     """Get tier info with fallback to Personal."""
     return TIER_INFO.get(tier, TIER_INFO[DEFAULT_TIER])

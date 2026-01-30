@@ -193,10 +193,10 @@
             MCP Server for Claude Code
           </div>
           <div
-            class="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-600 text-sm px-4 py-2 rounded-full"
+            class="inline-flex items-center gap-2 bg-orange-500/10 text-orange-600 text-sm px-4 py-2 rounded-full"
           >
-            <span class="font-semibold">NEW</span>
-            v2.1.0 - C-Level Meeting Transcripts (30-sec reviews)
+            <span class="font-semibold">v3.0</span>
+            FREE = Light (PM only, WARN) | PRO = Full (8 managers, BLOCK)
           </div>
         </div>
         <h1
@@ -501,29 +501,37 @@
             <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
               <div class="flex items-center gap-2 mb-4">
                 <span class="text-emerald-400 font-bold text-lg">Free</span>
-                <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded">3 Managers</span>
+                <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded">1 Manager</span>
+                <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">WARN</span>
               </div>
               <div class="space-y-2 text-sm">
                 <div class="flex items-center gap-2 text-slate-300">
                   <span class="text-emerald-400">PM</span> Product perspective
                 </div>
-                <div class="flex items-center gap-2 text-slate-300">
-                  <span class="text-emerald-400">CTO</span> Technical review
+                <div class="flex items-center gap-2 text-slate-500 line-through">
+                  <span>CTO</span> Technical review
                 </div>
-                <div class="flex items-center gap-2 text-slate-300">
-                  <span class="text-emerald-400">QA</span> Test coverage
+                <div class="flex items-center gap-2 text-slate-500 line-through">
+                  <span>QA</span> Test coverage
                 </div>
-                <div class="pt-2 text-slate-500 text-xs">Basic development perspective</div>
+                <div class="pt-2 text-slate-500 text-xs">Light mode - warns but doesn't block</div>
               </div>
             </div>
             <div class="bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-xl p-6 border border-purple-500/30">
               <div class="flex items-center gap-2 mb-4">
                 <span class="text-purple-400 font-bold text-lg">Pro</span>
                 <span class="bg-purple-500/20 text-purple-400 text-xs px-2 py-1 rounded">8 Managers</span>
+                <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">BLOCK</span>
               </div>
               <div class="space-y-2 text-sm">
                 <div class="flex items-center gap-2 text-slate-300">
-                  <span class="text-emerald-400">PM + CTO + QA</span> (included)
+                  <span class="text-emerald-400">PM</span> (included)
+                </div>
+                <div class="flex items-center gap-2 text-purple-300">
+                  <span class="text-purple-400">+ CTO</span> Technical architecture
+                </div>
+                <div class="flex items-center gap-2 text-purple-300">
+                  <span class="text-purple-400">+ QA</span> Test strategy
                 </div>
                 <div class="flex items-center gap-2 text-purple-300">
                   <span class="text-purple-400">+ CDO</span> Design & UX review
@@ -544,7 +552,7 @@
             </div>
           </div>
           <p class="text-center text-slate-500 text-sm mt-4">
-            Pro catches what you miss: security holes, cost implications, UX issues, and more.
+            Pro = Full enforcement. Blocks coding without PRD + 8 managers catch what you miss.
           </p>
         </div>
       </div>
@@ -984,7 +992,23 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-emerald-700 font-medium">3 AI Managers (PM, CTO, QA)</span>
+                <span class="text-emerald-700 font-medium">1 AI Manager (PM only)</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-4 h-4 text-yellow-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+                <span class="text-yellow-600 font-medium">WARN mode (doesn't block)</span>
               </li>
               <li class="flex items-center gap-2 text-slate-400">
                 <svg
@@ -1000,7 +1024,7 @@
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
-                <span class="line-through">CDO, CMO, CFO, CSO, ERROR</span>
+                <span class="line-through">CTO, QA, CDO, CMO, CFO, CSO, ERROR</span>
               </li>
             </ul>
             <a
@@ -1073,7 +1097,23 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-accent font-medium">All 8 AI Managers (+CDO, CMO, CFO, CSO, ERROR)</span>
+                <span class="text-accent font-medium">All 8 AI Managers (+CTO, QA, CDO, CMO, CFO, CSO, ERROR)</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-red-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                  />
+                </svg>
+                <span class="text-red-500 font-medium">BLOCK mode (no PRD = no code)</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg

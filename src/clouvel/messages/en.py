@@ -27,6 +27,43 @@ CAN_CODE_PASS_WITH_WARN = "✅ PASS | ⚠️ WARN {warn_count} | Required: {foun
 
 CAN_CODE_PASS = "✅ PASS | Required: {found_docs} ✓{test_info} | Ready to code{prd_rule}"
 
+# v3.0: FREE tier messages (WARN instead of BLOCK)
+CAN_CODE_PROJECT_LIMIT = """⚠️ PROJECT LIMIT | FREE tier: 1 project ({count}/{limit}) | 💎 Pro: Unlimited
+
+You're using: {existing_project}
+
+To use another project, upgrade to Pro:
+→ https://polar.sh/clouvel (code: {upgrade_hint})
+
+Or continue with your existing project.
+"""
+
+CAN_CODE_WARN_NO_DOCS_FREE = """⚠️ WARN | No docs folder: {path} | Recommended: start(path=".")
+
+FREE tier: You can code, but PRD-first is recommended.
+Why spec first? 10 min spec → 2 hours saved (no rework)
+
+💎 Pro: Blocks coding until PRD exists (prevents rework)
+→ https://polar.sh/clouvel (code: {upgrade_hint})
+"""
+
+CAN_CODE_WARN_NO_PRD_FREE = """⚠️ WARN | No PRD found | Recommended: start(path=".")
+
+FREE tier: You can code, but PRD-first is recommended.
+Why spec first? 10 min spec → 2 hours saved (no rework)
+
+💎 Pro: Blocks coding + validates PRD sections + 8 managers
+→ https://polar.sh/clouvel (code: {upgrade_hint})
+"""
+
+CAN_CODE_PASS_FREE = """✅ PASS | PRD exists ✓ | {test_count} tests | Ready to code (FREE tier)
+
+{upgrade_hint}
+
+💎 Pro: Full PRD validation + code blocking + 8 C-Level managers
+→ https://polar.sh/clouvel
+"""
+
 PRD_RULE_WARNING = "\n\n⚠️ PRD Edit Rule: Do NOT modify PRD without explicit user request. If changes are needed, first propose (1) why changes are needed (2) benefits of improvement (3) specific changes, then proceed after approval."
 
 # Test related

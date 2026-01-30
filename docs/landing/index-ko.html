@@ -241,10 +241,10 @@
             <span data-i18n="hero.badge">MCP Server for Claude Code</span>
           </div>
           <div
-            class="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-600 text-sm px-4 py-2 rounded-full"
+            class="inline-flex items-center gap-2 bg-orange-500/10 text-orange-600 text-sm px-4 py-2 rounded-full"
           >
-            <span class="font-semibold" data-i18n="hero.badge_new">NEW</span>
-            <span data-i18n="hero.badge_version">v2.1.0 - C-Level 회의록 자동 생성 (30초 리뷰)</span>
+            <span class="font-semibold" data-i18n="hero.badge_new">v3.0</span>
+            <span data-i18n="hero.badge_version">FREE = Light (PM만, WARN) | PRO = Full (8명, BLOCK)</span>
           </div>
         </div>
         <h1
@@ -549,29 +549,37 @@
             <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
               <div class="flex items-center gap-2 mb-4">
                 <span class="text-emerald-400 font-bold text-lg">Free</span>
-                <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded">3명</span>
+                <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded">1명</span>
+                <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">WARN</span>
               </div>
               <div class="space-y-2 text-sm">
                 <div class="flex items-center gap-2 text-slate-300">
                   <span class="text-emerald-400">PM</span> 제품 관점
                 </div>
-                <div class="flex items-center gap-2 text-slate-300">
-                  <span class="text-emerald-400">CTO</span> 기술 검토
+                <div class="flex items-center gap-2 text-slate-500 line-through">
+                  <span>CTO</span> 기술 검토
                 </div>
-                <div class="flex items-center gap-2 text-slate-300">
-                  <span class="text-emerald-400">QA</span> 테스트 커버리지
+                <div class="flex items-center gap-2 text-slate-500 line-through">
+                  <span>QA</span> 테스트 커버리지
                 </div>
-                <div class="pt-2 text-slate-500 text-xs">기본 개발 관점</div>
+                <div class="pt-2 text-slate-500 text-xs">Light 모드 - 경고만, 차단 안함</div>
               </div>
             </div>
             <div class="bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-xl p-6 border border-purple-500/30">
               <div class="flex items-center gap-2 mb-4">
                 <span class="text-purple-400 font-bold text-lg">Pro</span>
                 <span class="bg-purple-500/20 text-purple-400 text-xs px-2 py-1 rounded">8명</span>
+                <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">BLOCK</span>
               </div>
               <div class="space-y-2 text-sm">
                 <div class="flex items-center gap-2 text-slate-300">
-                  <span class="text-emerald-400">PM + CTO + QA</span> (포함)
+                  <span class="text-emerald-400">PM</span> (포함)
+                </div>
+                <div class="flex items-center gap-2 text-purple-300">
+                  <span class="text-purple-400">+ CTO</span> 기술 아키텍처
+                </div>
+                <div class="flex items-center gap-2 text-purple-300">
+                  <span class="text-purple-400">+ QA</span> 테스트 전략
                 </div>
                 <div class="flex items-center gap-2 text-purple-300">
                   <span class="text-purple-400">+ CDO</span> 디자인 & UX 검토
@@ -592,7 +600,7 @@
             </div>
           </div>
           <p class="text-center text-slate-500 text-sm mt-4">
-            Pro가 놓치는 것을 잡아줍니다: 보안 취약점, 비용 문제, UX 이슈 등
+            Pro = 완전 강제. PRD 없으면 코딩 차단 + 8명 매니저가 놓치는 것 체크
           </p>
         </div>
       </div>
@@ -1088,7 +1096,23 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-emerald-700 font-medium">AI 매니저 3명 (PM, CTO, QA)</span>
+                <span class="text-emerald-700 font-medium">AI 매니저 1명 (PM만)</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-4 h-4 text-yellow-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+                <span class="text-yellow-600 font-medium">WARN 모드 (차단 안함)</span>
               </li>
               <li class="flex items-center gap-2 text-slate-400">
                 <svg
@@ -1104,7 +1128,7 @@
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
-                <span class="line-through">CDO, CMO, CFO, CSO, ERROR</span>
+                <span class="line-through">CTO, QA, CDO, CMO, CFO, CSO, ERROR</span>
               </li>
             </ul>
             <a
@@ -1180,7 +1204,23 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-accent font-medium">전체 8명 (+CDO, CMO, CFO, CSO, ERROR)</span>
+                <span class="text-accent font-medium">전체 8명 (+CTO, QA, CDO, CMO, CFO, CSO, ERROR)</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-red-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                  />
+                </svg>
+                <span class="text-red-500 font-medium">BLOCK 모드 (PRD 없으면 코딩 차단)</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg

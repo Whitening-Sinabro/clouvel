@@ -15,7 +15,10 @@ CACHE_FILE = CACHE_DIR / "version_cache.json"
 CACHE_TTL = 86400  # 24시간 (초)
 
 # 현재 버전 (pyproject.toml과 동기화)
-CURRENT_VERSION = "1.3.10"
+CURRENT_VERSION = "3.0.0"
+
+# v3.0 마이그레이션 공지 (한 번만 표시)
+V3_MIGRATION_NOTICE_FILE = CACHE_DIR / "v3_notice_shown.json"
 
 
 def _get_current_version() -> str:
@@ -180,3 +183,100 @@ def get_cached_update_info() -> Optional[Dict[str, Any]]:
     캐시된 업데이트 정보 반환
     """
     return _update_info
+
+
+# ============================================================
+# v3.0 Migration Notice
+# ============================================================
+
+V3_NOTICE_EN = """
+================================================
+  CLOUVEL v3.0 - FREE/PRO TIER CHANGES
+================================================
+
+FREE tier is now lighter (easier to start):
+  - Managers: 3 -> 1 (PM only)
+  - can_code: BLOCK -> WARN (you can proceed)
+  - Projects: 1 limit
+
+PRO tier is now heavier (full protection):
+  - Managers: 8 (all C-Level)
+  - can_code: BLOCK (enforced)
+  - Projects: Unlimited
+
+Upgrade: https://polar.sh/clouvel (code: FIRST01)
+
+================================================
+"""
+
+V3_NOTICE_KO = """
+================================================
+  CLOUVEL v3.0 - FREE/PRO 티어 변경
+================================================
+
+FREE 티어가 가벼워졌습니다 (시작이 쉬워짐):
+  - 매니저: 3명 -> 1명 (PM만)
+  - can_code: BLOCK -> WARN (진행 가능)
+  - 프로젝트: 1개 제한
+
+PRO 티어가 강력해졌습니다 (완전 보호):
+  - 매니저: 8명 (전체 C-Level)
+  - can_code: BLOCK (강제)
+  - 프로젝트: 무제한
+
+업그레이드: https://polar.sh/clouvel (코드: FIRST01)
+
+================================================
+"""
+
+
+def _should_show_v3_notice() -> bool:
+    """Check if v3.0 migration notice should be shown."""
+    try:
+        if V3_MIGRATION_NOTICE_FILE.exists():
+            data = json.loads(V3_MIGRATION_NOTICE_FILE.read_text(encoding="utf-8"))
+            return not data.get("shown", False)
+    except Exception:
+        pass
+    return True
+
+
+def _mark_v3_notice_shown() -> None:
+    """Mark v3.0 migration notice as shown."""
+    try:
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        V3_MIGRATION_NOTICE_FILE.write_text(
+            json.dumps({"shown": True, "timestamp": time.time()}),
+            encoding="utf-8"
+        )
+    except Exception:
+        pass
+
+
+def get_v3_migration_notice(lang: str = "en") -> Optional[str]:
+    """
+    Get v3.0 migration notice if not shown yet.
+
+    Args:
+        lang: "en" or "ko"
+
+    Returns:
+        Notice string or None if already shown
+    """
+    if not _should_show_v3_notice():
+        return None
+
+    _mark_v3_notice_shown()
+
+    if lang == "ko":
+        return V3_NOTICE_KO
+    return V3_NOTICE_EN
+
+
+def reset_v3_notice() -> None:
+    """Reset v3.0 notice (for testing)."""
+    try:
+        if V3_MIGRATION_NOTICE_FILE.exists():
+            V3_MIGRATION_NOTICE_FILE.unlink()
+    except Exception:
+        pass

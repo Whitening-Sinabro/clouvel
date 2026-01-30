@@ -6,6 +6,18 @@
 [![Python](https://img.shields.io/pypi/pyversions/clouvel)](https://pypi.org/project/clouvel/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+## v3.0 - FREE/PRO Tier Changes
+
+| | FREE (v3.0) | PRO |
+|---|---|---|
+| Managers | 1 (PM only) | 8 (all) |
+| can_code | WARN (doesn't block) | BLOCK |
+| Projects | 1 | Unlimited |
+
+**Upgrade:** `pip install --upgrade clouvel`
+
+---
+
 ![Demo](docs/landing/assets/demo.gif)
 
 ---
@@ -77,26 +89,30 @@ That's it. No config needed.
 
 | Feature | Description |
 |---------|-------------|
-| `can_code` | PRD gate - blocks coding without specs |
-| `start` | Project onboarding with PRD templates (v1.9: `--template`, `--guide`, `--init`) |
-| `setup_cli` | Project setup with hooks (v1.9: `--rules`, `--hook`) |
+| `can_code` | PRD gate - **WARN mode** (v3.0: doesn't block, just warns) |
+| `manager` | **1 manager (PM only)** - product perspective |
+| `start` | Project onboarding with PRD templates |
 | `plan` | Detailed execution planning |
 | `save_prd` | Save PRD from conversation |
-| Knowledge Base | SQLite-based decision tracking + FTS5 search |
 | Progress tracking | Track what's done and what's next |
 | 8 project templates | web-app, api, cli, chrome-ext, discord-bot, landing-page, saas, generic |
 
-### Pro ($9.99/mo)
+### Pro ($7.99/mo)
 
 | Feature | Description |
 |---------|-------------|
-| `manager` | 8 C-Level managers review your code (PM, CTO, QA, CDO, CMO, CFO, CSO, Error) |
+| `can_code` | **BLOCK mode** - enforces PRD requirement |
+| `manager` | **8 C-Level managers** (PM, CTO, QA, CDO, CMO, CFO, CSO, Error) |
 | `quick_perspectives` | Fast pre-coding check with key questions |
 | `ship` | One-click lint → test → build → evidence generation |
+| Knowledge Base | SQLite-based decision tracking + FTS5 search |
 | Error Learning | Learn from mistakes, auto-generate NEVER/ALWAYS rules |
 | Dynamic meetings | AI-powered team discussions with Claude API |
+| Unlimited projects | No project limit |
 
-**[Get Pro →](https://polar.sh/clouvel)**
+**[Get Pro →](https://polar.sh/clouvel)** (Use code `FIRST1` for $1 first month)
+
+> **v3.0 Migration:** FREE tier is now lighter. If you need CTO, QA, or BLOCK mode, upgrade to Pro.
 
 ---
 

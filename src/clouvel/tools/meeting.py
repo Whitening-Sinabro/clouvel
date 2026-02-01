@@ -4,10 +4,12 @@
 MCP tool that returns a prompt for Claude to simulate C-Level meetings.
 No additional API calls needed - uses the host Claude to generate.
 
-Free feature: Works on all environments (Claude Desktop, CLI, VS Code)
+Free: PM only (v3.0)
+Pro: All 8 managers
 
 v2.1: Basic meeting simulation
 v2.2: Feedback loop + A/B testing integration
+v3.0: FREE/PRO tier separation (PM only for Free)
 """
 
 from typing import Optional, List, Dict, Any
@@ -23,6 +25,33 @@ from .meeting_tuning import (
 from .meeting_kb import get_enriched_kb_context, get_recommended_managers
 from .meeting_personalization import apply_personalization, load_meeting_config
 
+# v3.0: Manager data import with fallback for Free tier (PyPI)
+# manager/ folder is Pro-only and excluded from PyPI distribution
+try:
+    from .manager.data import FREE_MANAGERS, PRO_ONLY_MANAGERS, PRO_ONLY_DESCRIPTIONS
+except ImportError:
+    # Fallback for Free tier - PM only
+    FREE_MANAGERS = ["PM"]
+    PRO_ONLY_MANAGERS = ["CTO", "QA", "CSO", "CDO", "CMO", "CFO", "ERROR"]
+    PRO_ONLY_DESCRIPTIONS = {
+        "CTO": "기술 아키텍처, 확장성, 기술 부채 관점",
+        "QA": "품질 보증, 테스트 커버리지, 엣지 케이스 관점",
+        "CSO": "보안 취약점, 컴플라이언스, 위험 관리 관점",
+        "CDO": "데이터 구조, 분석 파이프라인, 개인정보 관점",
+        "CMO": "사용자 경험, 시장 포지셔닝, 브랜딩 관점",
+        "CFO": "비용 효율성, ROI, 리소스 배분 관점",
+        "ERROR": "장애 대응, 롤백 전략, 모니터링 관점",
+    }
+
+# License check
+def _can_use_pro(project_path: str = None) -> bool:
+    """Check if user can use Pro features."""
+    try:
+        from ..utils.entitlements import can_use_pro
+        return can_use_pro(project_path)
+    except ImportError:
+        return False
+
 
 
 async def meeting(
@@ -36,8 +65,11 @@ async def meeting(
     """
     C-Level 회의 시뮬레이션.
 
-    8명의 C-Level 매니저가 참여하는 회의를 시뮬레이션합니다.
     별도 API 호출 없이 Claude가 직접 회의록을 생성합니다.
+
+    **v3.0 티어 구분**:
+    - Free: PM만 참여
+    - Pro: 8명 전체 (PM, CTO, QA, CSO, CDO, CMO, CFO, ERROR)
 
     Args:
         context: 회의 주제/상황 설명
@@ -45,7 +77,7 @@ async def meeting(
                지원: auth, api, payment, ui, feature, launch, error,
                      security, performance, design, cost, maintenance
         managers: 참여 매니저 목록 (미지정시 토픽에 따라 자동 선택)
-                  지원: PM, CTO, QA, CSO, CDO, CMO, CFO, ERROR
+                  Free 사용자는 PM만 사용 가능
         project_path: 프로젝트 경로 (Knowledge Base 연동 + 피드백 저장용)
         include_example: few-shot 예시 포함 여부
         variant: 프롬프트 버전 (A/B 테스팅용, 미지정시 자동 선택)
@@ -56,7 +88,7 @@ async def meeting(
     Example:
         meeting("로그인 기능 추가. OAuth + 이메일 로그인 지원 예정")
         meeting("결제 시스템 도입", topic="payment")
-        meeting("보안 감사 결과 리뷰", managers=["PM", "CTO", "CSO", "QA"])
+        meeting("보안 감사 결과 리뷰", managers=["PM", "CTO", "CSO", "QA"])  # Pro only
     """
     # Auto-detect topic if not provided
     if topic is None:
@@ -94,6 +126,19 @@ async def meeting(
     if managers is None:
         managers = get_recommended_managers(topic, project_path)
 
+    # v3.0: Filter managers based on license tier
+    is_pro = _can_use_pro(project_path)
+    missed_perspectives = []
+
+    if not is_pro:
+        # Track Pro-only managers that were requested but filtered
+        missed_perspectives = [m for m in managers if m in PRO_ONLY_MANAGERS]
+        # Filter to Free tier only (PM only)
+        managers = [m for m in managers if m in FREE_MANAGERS]
+        # Ensure at least PM is included
+        if not managers:
+            managers = FREE_MANAGERS.copy()
+
     # Get enriched KB context (Phase 3)
     kb_context = get_enriched_kb_context(context, topic, project_path)
 
@@ -110,6 +155,23 @@ async def meeting(
     # Add variant info footer for tracking
     footer = f"\n\n<!-- meeting_variant: {variant} -->"
 
+    # v3.0: Add missed perspectives hint for Free users
+    pro_hint = ""
+    if missed_perspectives:
+        missed_descriptions = [
+            f"- {m}: {PRO_ONLY_DESCRIPTIONS.get(m, '')}"
+            for m in missed_perspectives
+        ]
+        pro_hint = f"""
+
+---
+
+💡 **Pro에서 추가 관점 제공**:
+{chr(10).join(missed_descriptions)}
+
+[Clouvel Pro](https://whitening-sinabro.github.io/clouvel/) 업그레이드로 8명 전체 매니저 피드백을 받으세요.
+"""
+
     # Auto-save meeting for feedback (if project_path provided)
     meeting_id = None
     if project_path:
@@ -122,10 +184,14 @@ async def meeting(
             history_file = _get_history_file(project_path)
 
             # Get actual managers used
-            from .manager.prompts import get_topic_guide
             if managers is None:
-                guide = get_topic_guide(topic)
-                managers = guide.get("participants", ["PM", "CTO", "QA"])
+                try:
+                    from .manager.prompts import get_topic_guide
+                    guide = get_topic_guide(topic)
+                    managers = guide.get("participants", ["PM", "CTO", "QA"])
+                except ImportError:
+                    # Fallback for Free tier
+                    managers = ["PM"]
                 if "PM" not in managers:
                     managers = ["PM"] + managers
                 managers = managers[:5]
@@ -159,7 +225,7 @@ rate_meeting(project_path="{project_path}", meeting_id="{meeting_id}", rating=4,
 ```
 """
 
-    return [TextContent(type="text", text=prompt + footer + rating_prompt)]
+    return [TextContent(type="text", text=prompt + footer + pro_hint + rating_prompt)]
 
 
 async def meeting_topics() -> List[TextContent]:

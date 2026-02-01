@@ -41,6 +41,7 @@ from mcp.types import Tool, TextContent
 
 from .analytics import log_tool_call, get_stats, format_stats
 from .api_client import call_manager_api  # v1.8: Worker API 사용
+from .version_check import get_v3_migration_notice  # v3.0: Migration notice
 from .tools import (
     # core
     can_code, scan_docs, analyze_docs, init_docs, REQUIRED_DOCS,
@@ -1047,9 +1048,27 @@ async def list_tools() -> list[Tool]:
 # Tool Handlers
 # ============================================================
 
+# v3.0: Wrapper to prepend migration notice
+async def _with_v3_notice(coro):
+    """Wrapper that prepends v3.0 migration notice to tool output."""
+    result = await coro
+    notice = get_v3_migration_notice()
+    if notice and result:
+        # Prepend notice to first TextContent
+        if isinstance(result, list) and len(result) > 0:
+            original_text = result[0].text if hasattr(result[0], 'text') else str(result[0])
+            result[0] = TextContent(type="text", text=notice + "\n" + original_text)
+    return result
+
+
+async def _can_code_with_notice(path: str, mode: str = "pre"):
+    """can_code with v3.0 migration notice."""
+    return await _with_v3_notice(can_code(path, mode))
+
+
 TOOL_HANDLERS = {
-    # Core
-    "can_code": lambda args: can_code(args.get("path", ""), args.get("mode", "pre")),
+    # Core (v3.0: with migration notice)
+    "can_code": lambda args: _can_code_with_notice(args.get("path", ""), args.get("mode", "pre")),
     "scan_docs": lambda args: scan_docs(args.get("path", "")),
     "analyze_docs": lambda args: analyze_docs(args.get("path", "")),
     "init_docs": lambda args: init_docs(args.get("path", ""), args.get("project_name", "")),
@@ -1601,6 +1620,11 @@ async def _wrap_manager(args: dict) -> list[TextContent]:
 
     # Auto-record meeting to Knowledge Base
     _auto_record_meeting(context, topic, participants, meeting_output)
+
+    # v3.0: Prepend migration notice
+    notice = get_v3_migration_notice()
+    if notice:
+        meeting_output = notice + "\n" + meeting_output
 
     return [TextContent(type="text", text=meeting_output)]
 

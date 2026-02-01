@@ -104,3 +104,6 @@ KakaoTalk_*.png
 tests/test_manager.py
 .env
 .clouvel-dev
+
+# Marketing portfolio
+docs/marketing/portfolio-*.html

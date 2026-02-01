@@ -28,14 +28,22 @@ CAN_CODE_PASS_WITH_WARN = "✅ PASS | ⚠️ WARN {warn_count} | Required: {foun
 CAN_CODE_PASS = "✅ PASS | Required: {found_docs} ✓{test_info} | Ready to code{prd_rule}"
 
 # v3.0: FREE tier messages (WARN instead of BLOCK)
-CAN_CODE_PROJECT_LIMIT = """⚠️ PROJECT LIMIT | FREE tier: 1 project ({count}/{limit}) | 💎 Pro: Unlimited
+CAN_CODE_PROJECT_LIMIT = """🚫 PROJECT LIMIT | FREE tier: {limit} projects ({count}/{limit}) | 💎 Pro: Unlimited
 
-You're using: {existing_project}
+**Your projects:**
+{existing_project}
 
-To use another project, upgrade to Pro:
+**Options:**
+1. Continue with existing project
+2. Upgrade to Pro for unlimited projects
+
 → https://polar.sh/clouvel (code: {upgrade_hint})
 
-Or continue with your existing project.
+**Pro includes:**
+- Unlimited projects
+- standard + detailed PRD templates
+- 8 C-Level manager feedback
+- One-click ship verification
 """
 
 CAN_CODE_WARN_NO_DOCS_FREE = """⚠️ WARN | No docs folder: {path} | Recommended: start(path=".")

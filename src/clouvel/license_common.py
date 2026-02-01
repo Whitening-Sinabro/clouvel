@@ -108,7 +108,11 @@ PRO_ONLY_FEATURES = [
 ]
 
 # FREE tier project limit
-FREE_PROJECT_LIMIT = 1
+FREE_PROJECT_LIMIT = 3
+
+# FREE tier template layout limit
+FREE_LAYOUTS = ["lite"]
+PRO_LAYOUTS = ["lite", "standard", "detailed"]
 
 
 def is_feature_available(feature: str) -> Dict[str, Any]:

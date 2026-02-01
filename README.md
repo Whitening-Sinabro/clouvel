@@ -6,15 +6,19 @@
 [![Python](https://img.shields.io/pypi/pyversions/clouvel)](https://pypi.org/project/clouvel/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## v3.0 - FREE/PRO Tier Changes
+## v3.0.2 - FREE/PRO Tier Changes
 
-| | FREE (v3.0) | PRO |
+| | FREE | PRO ($7.99/mo) |
 |---|---|---|
-| Managers | 1 (PM only) | 8 (all) |
-| can_code | WARN (doesn't block) | BLOCK |
-| Projects | 1 | Unlimited |
+| **Projects** | 3 | Unlimited |
+| **Templates** | `lite` only (~150 lines) | `lite` + `standard` + `detailed` (~700+ lines) |
+| **Managers** | 1 (PM only) | 8 (all C-Level) |
+| **can_code** | WARN (doesn't block) | BLOCK (enforces PRD) |
+| **Validation** | PRD exists check | PRD section validation |
 
-**Upgrade:** `pip install --upgrade clouvel`
+**Pro templates include:** Input/Output Specs, State Machine, Error Cases, Test Scenarios, DoD
+
+**Upgrade:** `pip install --upgrade clouvel` → [Get Pro](https://polar.sh/clouvel)
 
 ---
 
@@ -89,13 +93,14 @@ That's it. No config needed.
 
 | Feature | Description |
 |---------|-------------|
-| `can_code` | PRD gate - **WARN mode** (v3.0: doesn't block, just warns) |
+| `can_code` | PRD gate - **WARN mode** (doesn't block, just warns) |
 | `manager` | **1 manager (PM only)** - product perspective |
-| `start` | Project onboarding with PRD templates |
+| `start` | Project onboarding with `lite` templates |
 | `plan` | Detailed execution planning |
 | `save_prd` | Save PRD from conversation |
 | Progress tracking | Track what's done and what's next |
-| 8 project templates | web-app, api, cli, chrome-ext, discord-bot, landing-page, saas, generic |
+| **3 projects** | Free tier project limit |
+| 7 project types | web-app, api, cli, chrome-ext, discord-bot, landing-page, saas |
 
 ### Pro ($7.99/mo)
 
@@ -103,16 +108,23 @@ That's it. No config needed.
 |---------|-------------|
 | `can_code` | **BLOCK mode** - enforces PRD requirement |
 | `manager` | **8 C-Level managers** (PM, CTO, QA, CDO, CMO, CFO, CSO, Error) |
+| **All templates** | `lite` + `standard` (~350 lines) + `detailed` (~700+ lines) |
 | `quick_perspectives` | Fast pre-coding check with key questions |
 | `ship` | One-click lint → test → build → evidence generation |
 | Knowledge Base | SQLite-based decision tracking + FTS5 search |
 | Error Learning | Learn from mistakes, auto-generate NEVER/ALWAYS rules |
 | Dynamic meetings | AI-powered team discussions with Claude API |
-| Unlimited projects | No project limit |
+| **Unlimited projects** | No project limit |
 
-**[Get Pro →](https://polar.sh/clouvel)** (Use code `FIRST1` for $1 first month)
+**Pro `detailed` templates include:**
+- Input/Output Specifications (AI understands exactly)
+- State Machine diagrams (complex flow clarity)
+- Error Cases enumerated (prevents hallucination)
+- Test Scenarios & Definition of Done
 
-> **v3.0 Migration:** FREE tier is now lighter. If you need CTO, QA, or BLOCK mode, upgrade to Pro.
+**[Get Pro →](https://polar.sh/clouvel)** (Use code `FIRST01` for early adopter pricing)
+
+> **Upgrade trigger:** When you hit 3 project limit or request `standard`/`detailed` template, you'll see upgrade prompt.
 
 ---
 

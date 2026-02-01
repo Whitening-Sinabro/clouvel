@@ -92,6 +92,12 @@ src/clouvel/templates/
 .claude/planning/error-system-v2.md
 .claude/planning/internal_roadmap.md
 .claude/planning/*internal*.md
+.claude/planning/meetings/
+.claude/planning/*strategy*.md
+.claude/planning/*roadmap*.md
+.claude/planning/content-drafts.md
+.claude/planning/twitter-threads.md
+.claude/evidence/
 
 # 임시/테스트 파일
 nul

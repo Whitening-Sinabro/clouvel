@@ -577,6 +577,40 @@ def start(
         name = project_name or project_path.name
         today = datetime.now().strftime('%Y-%m-%d')
 
+        # Check layout access (Free=lite only, Pro=all)
+        from ..license_common import is_developer, load_license_cache, FREE_LAYOUTS, PRO_LAYOUTS
+
+        is_pro = is_developer()
+        if not is_pro:
+            cached = load_license_cache()
+            is_pro = cached is not None and cached.get("tier") is not None
+
+        requested_layout = layout
+        upsell_message = ""
+
+        if not is_pro and layout not in FREE_LAYOUTS:
+            # Free user requesting Pro layout -> fallback to lite
+            layout = "lite"
+            upsell_message = f"""
+---
+
+💎 **Pro Template Requested**
+
+You requested `{requested_layout}` layout, but Free tier only includes `lite`.
+
+**What you're missing in {requested_layout}:**
+- Input/Output Specifications (AI가 정확히 이해)
+- State Machine diagrams (복잡한 플로우 명시)
+- Error Cases 전체 열거 (할루시네이션 방지)
+- Test Scenarios (검증 기준)
+- Definition of Done (완료 기준)
+
+→ Upgrade to Pro: https://polar.sh/clouvel
+→ Use code `FIRST01` for early adopter pricing
+
+---
+"""
+
         # Try loading from templates folder
         templates_base = Path(__file__).parent.parent / "templates"
         template_path = templates_base / template / f"{layout}.md"
@@ -634,12 +668,54 @@ def start(
 - [ ] [Test case 2]
 """
 
-        return {
+        result = {
             "status": "TEMPLATE",
             "template": template,
             "layout": layout,
+            "requested_layout": requested_layout,
+            "is_pro": is_pro,
             "content": content,
             "message": f"# {template}/{layout} Template\n\n```markdown\n{content}\n```\n\nSave to: `docs/PRD.md`"
+        }
+
+        # Add upsell message if Free user requested Pro layout
+        if upsell_message:
+            result["upsell"] = upsell_message
+            result["message"] = upsell_message + result["message"]
+
+        return result
+
+    # === Check project limit (Free = 3 projects) ===
+    from ..license_common import register_project, FREE_PROJECT_LIMIT
+
+    project_reg = register_project(str(project_path))
+
+    if not project_reg["allowed"]:
+        return {
+            "status": "PROJECT_LIMIT",
+            "project_path": str(project_path),
+            "count": project_reg["count"],
+            "limit": project_reg["limit"],
+            "existing_projects": project_reg.get("existing_project"),
+            "message": f"""🚫 **Project Limit Reached**
+
+Free tier allows **{FREE_PROJECT_LIMIT} projects**. You have {project_reg['count']}.
+
+**Options:**
+1. Continue with existing project: `{project_reg.get('existing_project', 'N/A')}`
+2. Upgrade to Pro for unlimited projects
+
+→ Upgrade: https://polar.sh/clouvel
+→ Use code `FIRST01` for early adopter pricing ($7.99/mo)
+
+**Pro includes:**
+- Unlimited projects
+- standard + detailed templates (not just lite)
+- 8 C-Level manager feedback
+- One-click ship verification
+- Error learning & auto-rules
+""",
+            "upsell": True
         }
 
     result = {
@@ -650,7 +726,10 @@ def start(
         "prd_valid": False,
         "created_files": [],
         "next_steps": [],
-        "message": ""
+        "message": "",
+        "project_count": project_reg["count"],
+        "project_limit": project_reg["limit"],
+        "is_new_project": project_reg["is_new"]
     }
 
     # Infer project name
@@ -757,6 +836,32 @@ Let's write the PRD together. I'll ask a few questions.
             "2. Save with `save_prd` tool when complete",
             "3. Run `start` again to validate"
         ]
+
+        # Add Pro template upsell for specialized project types
+        pro_template_types = ["saas", "api", "cli", "chrome-ext", "discord-bot", "landing-page"]
+        if detected["type"] in pro_template_types:
+            pro_features = {
+                "saas": "Pricing tiers, Aha Moment, SaaS metrics, Payment flow state machine",
+                "api": "TypeScript interfaces, Rate limits per tier, JWT specs, Error codes",
+                "cli": "Signal handling, Shell completion, Config priority, Exit codes",
+                "chrome-ext": "MV3 manifest, Permission matrix, CSP, Storage schema",
+                "discord-bot": "Slash command specs, Intents, Embed templates, Rate limits",
+                "landing-page": "Conversion funnel, A/B testing, SEO meta, Performance budget"
+            }
+            result["pro_template_hint"] = f"""
+---
+
+💎 **Pro Template Available for {detected['description']}**
+
+Free `lite` template: ~150 lines (basic structure)
+Pro `detailed` template: ~700+ lines includes:
+- {pro_features.get(detected['type'], 'Advanced specifications')}
+- Input/Output Specifications (AI가 정확히 이해)
+- Error Cases 전체 열거 (할루시네이션 방지)
+- Test Scenarios & Definition of Done
+
+→ Upgrade: https://polar.sh/clouvel (code: FIRST01)
+"""
 
     # Check additional docs files
     optional_docs = {

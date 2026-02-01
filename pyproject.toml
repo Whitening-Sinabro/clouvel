@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "clouvel"
-version = "3.0.0"
+version = "3.0.1"
 description = "바이브코딩 프로세스를 강제하는 MCP 서버 - PRD 없으면 코딩 없다"
 readme = "README.md"
 requires-python = ">=3.10"

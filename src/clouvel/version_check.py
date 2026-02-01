@@ -15,7 +15,7 @@ CACHE_FILE = CACHE_DIR / "version_cache.json"
 CACHE_TTL = 86400  # 24시간 (초)
 
 # 현재 버전 (pyproject.toml과 동기화)
-CURRENT_VERSION = "3.0.0"
+CURRENT_VERSION = "3.0.1"
 
 # v3.0 마이그레이션 공지 (한 번만 표시)
 V3_MIGRATION_NOTICE_FILE = CACHE_DIR / "v3_notice_shown.json"

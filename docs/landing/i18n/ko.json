@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Clouvel - 질문하는 AI 팀",
-    "description": "8명의 AI 매니저가 코딩 전에 모든 각도에서 생각하게 도와줍니다. 자동화가 아닌 증강."
+    "title": "Clouvel - 혼자 개발, 팀처럼 검토",
+    "description": "AI가 놓치는 걸 잡아주는 가드레일. 8명의 AI 매니저가 30초 안에 리뷰. Gate + Feedback + Memory."
   },
   "nav": {
     "how_it_works": "작동 방식",
@@ -13,14 +13,14 @@
   },
   "hero": {
     "badge": "Claude Code용 MCP 서버",
-    "badge_new": "NEW",
-    "badge_version": "v1.9.0 - 52개 도구 → 12개 표준 (더 심플하게)",
+    "badge_new": "v3.0",
+    "badge_version": "FREE = Light (PM만, WARN) | PRO = Full (8명, BLOCK)",
     "title_1": "스펙 없이?",
     "title_2": "코딩 금지.",
-    "subtitle": "스펙 건너뛰면 디버깅 지옥행.",
-    "desc_solo_text": "혼자 개발하니까. 매 시간이 소중하니까.",
-    "desc_solo": "당신이 놓친 걸 잡아주는 AI 팀.",
-    "cta_start": "시작하기",
+    "subtitle": "AI가 놓치는 걸 잡아주는 가드레일.",
+    "desc_solo_text": "혼자 개발해도 혼자 생각하지 않도록.",
+    "desc_solo": "Gate + Feedback + Memory = 혼자 개발, 팀처럼 검토.",
+    "cta_start": "첫 달 $1로 Pro 시작",
     "cta_demo": "데모 보기"
   },
   "works_with": {
@@ -47,17 +47,17 @@
     "problem_2_desc": "아키텍처 고민 없이 - 바로 코드 - 나중에 전체 리팩토링.",
     "problem_3_title": "지난주에 뭘 결정했는지 까먹음",
     "problem_3_desc": "결정 기록 없음. 같은 논쟁 반복. 컨텍스트 다시 파악하느라 시간 낭비.",
-    "conclusion": "그래서 PRD는 <span class=\"text-accent\">'옵션'</span>이 아니라 <span class=\"text-accent\">'게이트'</span>여야 합니다."
+    "conclusion": "<span class=\"text-accent\">혼자 개발, 팀처럼 검토.</span> 그게 Clouvel입니다."
   },
   "how": {
     "title": "작동 방식",
-    "subtitle": "3단계로 간단하게",
-    "step_1_title": "PRD 작성",
-    "step_1_desc": "PRD 없으면 진행 불가. 스펙부터 작성.",
-    "step_2_title": "게이트 체크",
-    "step_2_desc": "필수 섹션, 포맷, 결정론 체크 통과해야 함.",
-    "step_3_title": "코딩 허용",
-    "step_3_desc": "게이트 통과 후에만 코딩. 구조화된 개발."
+    "subtitle": "Gate + Feedback + Memory",
+    "step_1_title": "Gate",
+    "step_1_desc": "코딩 전에 생각부터. PRD 없으면 차단.",
+    "step_2_title": "Feedback",
+    "step_2_desc": "8명의 매니저가 30초 안에 리뷰. 맹점 발견.",
+    "step_3_title": "Memory",
+    "step_3_desc": "결정 사항 저장. 세션이 바뀌어도 컨텍스트 유지."
   },
   "demo": {
     "title": "실제로 차단되는 모습",

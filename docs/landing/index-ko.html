@@ -75,8 +75,8 @@
         var urlLang = params.get('lang');
         var storedLang = null;
         try { storedLang = localStorage.getItem('clouvel-lang'); } catch(e) {}
-        var lang = urlLang || storedLang || 'en';
-        if (SUPPORTED.indexOf(lang) === -1) lang = 'en';
+        var lang = urlLang || storedLang || 'ko';
+        if (SUPPORTED.indexOf(lang) === -1) lang = 'ko';
         document.documentElement.lang = lang;
         document.documentElement.className = 'i18n-loading';
       })();

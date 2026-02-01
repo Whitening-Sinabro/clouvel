@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Clouvel - No Spec, No Code</title>
+    <title>Clouvel - 혼자 개발, 팀처럼 검토</title>
     <meta
       name="description"
-      content="Stop AI from compressing your requirements. PRD-First gate blocks coding without specs. Integrates with Claude Code."
+      content="AI가 놓치는 걸 잡아주는 가드레일. 8명의 AI 매니저가 30초 안에 리뷰. Gate + Feedback + Memory."
     />
 
     <!-- Open Graph / Social -->
@@ -15,10 +15,10 @@
       property="og:url"
       content="https://whitening-sinabro.github.io/clouvel/"
     />
-    <meta property="og:title" content="Clouvel - No Spec, No Code" />
+    <meta property="og:title" content="Clouvel - 혼자 개발, 팀처럼 검토" />
     <meta
       property="og:description"
-      content="Stop AI from compressing your requirements. PRD-First gate blocks coding without specs."
+      content="AI가 놓치는 걸 잡아주는 가드레일. 8명의 AI 매니저가 30초 안에 리뷰. Gate + Feedback + Memory."
     />
     <meta
       property="og:image"
@@ -31,10 +31,10 @@
       name="twitter:url"
       content="https://whitening-sinabro.github.io/clouvel/"
     />
-    <meta name="twitter:title" content="Clouvel - No Spec, No Code" />
+    <meta name="twitter:title" content="Clouvel - 혼자 개발, 팀처럼 검토" />
     <meta
       name="twitter:description"
-      content="Stop AI from compressing your requirements. PRD-First gate blocks coding without specs."
+      content="AI가 놓치는 걸 잡아주는 가드레일. 8명의 AI 매니저가 30초 안에 리뷰. Gate + Feedback + Memory."
     />
     <meta
       name="twitter:image"
@@ -254,19 +254,20 @@
           <span class="accent-text" data-i18n="hero.title_2">코딩 금지.</span>
         </h1>
         <p class="text-lg md:text-xl text-slate-600 mb-3 leading-relaxed" data-i18n="hero.subtitle">
-          스펙 건너뛰면 디버깅 지옥행.
+          AI가 놓치는 걸 잡아주는 가드레일.
         </p>
         <p class="text-base md:text-lg text-slate-500 mb-8">
-          <span data-i18n="hero.desc_solo_text">혼자 개발하니까. 매 시간이 소중하니까.</span>
-          <strong class="text-dark-slate" data-i18n="hero.desc_solo">당신이 놓친 걸 잡아주는 AI 팀.</strong>
+          <span data-i18n="hero.desc_solo_text">혼자 개발해도 혼자 생각하지 않도록.</span><br/>
+          <strong class="text-dark-slate" data-i18n="hero.desc_solo">Gate + Feedback + Memory = 혼자 개발, 팀처럼 검토.</strong>
         </p>
         <div class="flex flex-wrap gap-3 md:gap-4 justify-center">
           <a
-            href="#getting-started"
+            href="#pricing"
             class="cta-pulse inline-flex items-center gap-2 bg-accent text-white px-6 py-3 md:px-8 md:py-4 rounded-full font-medium hover:bg-accent-dark transition text-base md:text-lg"
             onclick="trackCTA('click', 'hero_get_started')"
           >
-            <span data-i18n="hero.cta_start">Get started</span>
+            <span data-i18n="hero.cta_start">첫 달 $1로 Pro 시작</span>
+            <span class="bg-white/20 text-xs px-2 py-0.5 rounded-full ml-1">FIRST1</span>
             <svg
               class="w-5 h-5"
               fill="none"
@@ -287,9 +288,12 @@
             data-i18n="hero.cta_demo"
             onclick="trackCTA('click', 'hero_see_demo')"
           >
-            See demo
+            데모 보기
           </a>
         </div>
+        <p class="text-center text-orange-600 text-sm mt-4 font-medium">
+          FIRST1 코드로 첫 달 $1 - 남은 자리 <span id="spots-left">47</span>개
+        </p>
       </div>
     </section>
 
@@ -343,6 +347,50 @@
         </div>
         <p class="text-center text-slate-500 text-sm mt-4" data-i18n="works_with.subtitle">
           한 번 설치하면 어디서든 같은 정책
+        </p>
+      </div>
+    </section>
+
+    <!-- 2.3 Social Proof -->
+    <section class="py-6 px-6">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex flex-wrap items-center justify-center gap-4 md:gap-6">
+          <!-- GitHub Stars -->
+          <a
+            href="https://github.com/Whitening-Sinabro/clouvel"
+            target="_blank"
+            class="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+            <span class="font-medium">GitHub에서 Star</span>
+          </a>
+          <!-- PyPI Downloads -->
+          <a
+            href="https://pypi.org/project/clouvel/"
+            target="_blank"
+            class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0L1.75 6v12L12 24l10.25-6V6L12 0zm-1.775 18l-3.975-2.3V9.7l3.975 2.3V18zm0-7.7l-3.975-2.3L12 5.7l3.975 2.3-5.75 2.3zm7.725 5.4l-3.975 2.3V12l3.975-2.3v6z"/>
+            </svg>
+            <span class="font-medium">pip install clouvel</span>
+          </a>
+          <!-- Product Hunt Badge -->
+          <a
+            href="https://www.producthunt.com/posts/clouvel"
+            target="_blank"
+            class="inline-flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M13.604 8.4h-3.405V12h3.405c.995 0 1.801-.806 1.801-1.801 0-.993-.806-1.799-1.801-1.799zM12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm1.604 14.4h-3.405V18H7.801V6h5.803c2.319 0 4.2 1.88 4.2 4.199 0 2.321-1.881 4.201-4.2 4.201z"/>
+            </svg>
+            <span class="font-medium">Product Hunt에서 보기</span>
+          </a>
+        </div>
+        <p class="text-center text-slate-400 text-xs mt-3">
+          시간을 아끼는 솔로 개발자들이 사용 중
         </p>
       </div>
     </section>
@@ -445,51 +493,51 @@
         </div>
         <div class="mt-8 md:mt-10 text-center">
           <p class="text-lg md:text-xl font-semibold text-dark-slate" data-i18n-html="problem.conclusion">
-            That's why PRD should be a <span class="text-accent">'gate'</span>, not an <span class="text-accent">'option'</span>.
+            <span class="text-accent">혼자 개발, 팀처럼 검토.</span> 그게 Clouvel입니다.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- 4. How it works (3-step) -->
+    <!-- 4. How it works (3-layer) -->
     <section id="how-it-works" class="py-16 md:py-20 px-6 bg-white">
       <div class="max-w-4xl mx-auto">
         <div class="text-center mb-10 md:mb-16">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4" data-i18n="how.title">How it works</h2>
-          <p class="text-slate-600 text-base md:text-lg" data-i18n="how.subtitle">3단계로 끝</p>
+          <h2 class="text-2xl md:text-3xl font-bold mb-4" data-i18n="how.title">작동 방식</h2>
+          <p class="text-slate-600 text-base md:text-lg" data-i18n="how.subtitle">Gate + Feedback + Memory</p>
         </div>
         <div class="grid md:grid-cols-3 gap-6 md:gap-8">
           <div class="text-center">
             <div
-              class="w-14 h-14 md:w-16 md:h-16 bg-accent text-white rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4"
+              class="w-14 h-14 md:w-16 md:h-16 bg-red-500 text-white rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4"
             >
               1
             </div>
-            <h3 class="font-semibold text-lg md:text-xl mb-2" data-i18n="how.step_1_title">PRD 제공</h3>
+            <h3 class="font-semibold text-lg md:text-xl mb-2" data-i18n="how.step_1_title">Gate</h3>
             <p class="text-slate-600 text-sm md:text-base" data-i18n="how.step_1_desc">
-              없으면 진행 불가. 문서부터 작성해야 시작됨.
+              코딩 전에 생각부터. PRD 없으면 차단.
             </p>
           </div>
           <div class="text-center">
             <div
-              class="w-14 h-14 md:w-16 md:h-16 bg-accent text-white rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4"
+              class="w-14 h-14 md:w-16 md:h-16 bg-purple-500 text-white rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4"
             >
               2
             </div>
-            <h3 class="font-semibold text-lg md:text-xl mb-2" data-i18n="how.step_2_title">Gate 체크</h3>
+            <h3 class="font-semibold text-lg md:text-xl mb-2" data-i18n="how.step_2_title">Feedback</h3>
             <p class="text-slate-600 text-sm md:text-base" data-i18n="how.step_2_desc">
-              필수 섹션, 형식, 결정론 검사를 통과해야 함.
+              8명의 매니저가 30초 안에 리뷰. 맹점 발견.
             </p>
           </div>
           <div class="text-center">
             <div
-              class="w-14 h-14 md:w-16 md:h-16 bg-accent text-white rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4"
+              class="w-14 h-14 md:w-16 md:h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4"
             >
               3
             </div>
-            <h3 class="font-semibold text-lg md:text-xl mb-2" data-i18n="how.step_3_title">코딩 허용</h3>
+            <h3 class="font-semibold text-lg md:text-xl mb-2" data-i18n="how.step_3_title">Memory</h3>
             <p class="text-slate-600 text-sm md:text-base" data-i18n="how.step_3_desc">
-              통과한 경우에만 코딩 시작. 체계적 개발.
+              결정 사항 저장. 세션이 바뀌어도 컨텍스트 유지.
             </p>
           </div>
         </div>
@@ -663,10 +711,10 @@
               </svg>
             </div>
             <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2" data-i18n="features.f2_title">
-              C-Level 회의록
+              AI 팀 오케스트레이션
             </h3>
             <p class="text-slate-600 text-sm md:text-base" data-i18n="features.f2_desc">
-              30초 만에 실제 같은 회의록 생성. PM, CTO, QA가 코드를 토론.
+              8명의 가상 C-Level이 동시에 리뷰. 혼자 코딩해도 팀 피드백.
             </p>
           </div>
           <div

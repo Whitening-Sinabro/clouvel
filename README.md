@@ -1,24 +1,12 @@
 # Clouvel
 
-> **No spec, no code.** PRD-First gate for AI coding.
+> **No spec, no code.** Guardrails that catch what AI misses.
 
 [![PyPI](https://img.shields.io/pypi/v/clouvel)](https://pypi.org/project/clouvel/)
 [![Python](https://img.shields.io/pypi/pyversions/clouvel)](https://pypi.org/project/clouvel/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## v3.0.2 - FREE/PRO Tier Changes
-
-| | FREE | PRO ($7.99/mo) |
-|---|---|---|
-| **Projects** | 3 | Unlimited |
-| **Templates** | `lite` only (~150 lines) | `lite` + `standard` + `detailed` (~700+ lines) |
-| **Managers** | 1 (PM only) | 8 (all C-Level) |
-| **can_code** | WARN (doesn't block) | BLOCK (enforces PRD) |
-| **Validation** | PRD exists check | PRD section validation |
-
-**Pro templates include:** Input/Output Specs, State Machine, Error Cases, Test Scenarios, DoD
-
-**Upgrade:** `pip install --upgrade clouvel` → [Get Pro](https://polar.sh/clouvel)
+**Solo coding, team-level review.** 8 AI managers catch your blind spots before code ships.
 
 ---
 
@@ -26,29 +14,61 @@
 
 ---
 
-## The Problem
+## Why Clouvel?
 
-You ask AI to "build login" and it:
-- Skips password reset
-- Forgets social auth
-- Ignores error handling
-- Builds something different every time
+AI coding is powerful but dangerous:
 
-**Result**: Hours of debugging "almost right" code.
+| The Pain | What Actually Happens |
+|----------|----------------------|
+| AI skips requirements | "Build login" → No password reset, no social auth |
+| No one reviews your code | Ship bugs you'd catch with a second pair of eyes |
+| You forget past decisions | Repeat the same debates, waste hours rediscovering context |
+| Vibe coding trap | Works today, breaks tomorrow |
 
-## The Solution
+**You're building alone. Clouvel makes sure you're not thinking alone.**
 
-Clouvel blocks AI coding until you write a spec (PRD).
+---
 
+## What Clouvel Does
+
+### 1. Gate — Think before AI codes
 ```
 You: "Build login"
 AI:  ❌ BLOCKED - No PRD found. Write a spec first.
 
 You: *writes PRD with requirements*
-AI:  ✅ PASS - PRD found. Coding allowed.
+AI:  ✅ PASS - Ready to code.
 ```
 
-**Same input → Same output. Every time.**
+### 2. Feedback — 8 managers review in 30 seconds
+```
+👔 PM:  "User story covers happy path, but what about failed attempts?"
+🛠️ CTO: "Consider rate limiting for brute force protection."
+🔒 CSO: "⚠️ Password hashing not implemented."
+```
+
+### 3. Memory — Never forget what you decided
+```
+You: "Why did we use JWT instead of sessions?"
+AI:  Found decision #42: "JWT chosen for stateless scaling" (2024-01-15)
+```
+
+**Gate + Feedback + Memory = Solo dev with team discipline.**
+
+---
+
+## FREE vs PRO
+
+| | FREE | PRO ($7.99/mo) |
+|---|---|---|
+| **Projects** | 3 | Unlimited |
+| **Templates** | `lite` (~150 lines) | All (`lite` + `standard` + `detailed`) |
+| **Managers** | 1 (PM only) | 8 (PM, CTO, QA, CDO, CMO, CFO, CSO, Error) |
+| **can_code** | WARN (doesn't block) | BLOCK (enforces PRD) |
+| **Knowledge Base** | - | Remembers all decisions |
+| **Error Learning** | - | Learns from your mistakes |
+
+**[Get Pro →](https://polar.sh/clouvel)** Use code `FIRST1` for first month $1
 
 ---
 
@@ -69,62 +89,20 @@ That's it. No config needed.
 
 ---
 
-## How It Works
+## Key Tools
 
-1. **You ask AI to code something**
-2. **Clouvel checks for PRD** (Product Requirements Document)
-3. **No PRD? Blocked.** Write the spec first.
-4. **PRD exists? Allowed.** AI codes with clear requirements.
+| Tool | What it does | FREE | PRO |
+|------|--------------|------|-----|
+| `can_code` | Checks if you can start coding | WARN | BLOCK |
+| `start` | Project onboarding + PRD templates | `lite` | All templates |
+| `manager` | C-Level review meeting | PM only | 8 managers |
+| `meeting` | Natural meeting transcript | 1 manager | All managers |
+| `plan` | Detailed execution planning | ✓ | ✓ |
+| `ship` | lint → test → build pipeline | - | ✓ |
+| `record_decision` | Save decisions to Knowledge Base | - | ✓ |
+| `error_learn` | Learn from mistakes | - | ✓ |
 
-### Before & After
-
-| Without Clouvel | With Clouvel |
-|-----------------|--------------|
-| "Build login" → AI guesses | "Build login" → AI reads PRD |
-| Missing features | All requirements included |
-| Different results each time | Consistent output |
-| Debug for hours | Works as specified |
-
----
-
-## Features
-
-### Free (Open Source)
-
-| Feature | Description |
-|---------|-------------|
-| `can_code` | PRD gate - **WARN mode** (doesn't block, just warns) |
-| `manager` | **1 manager (PM only)** - product perspective |
-| `start` | Project onboarding with `lite` templates |
-| `plan` | Detailed execution planning |
-| `save_prd` | Save PRD from conversation |
-| Progress tracking | Track what's done and what's next |
-| **3 projects** | Free tier project limit |
-| 7 project types | web-app, api, cli, chrome-ext, discord-bot, landing-page, saas |
-
-### Pro ($7.99/mo)
-
-| Feature | Description |
-|---------|-------------|
-| `can_code` | **BLOCK mode** - enforces PRD requirement |
-| `manager` | **8 C-Level managers** (PM, CTO, QA, CDO, CMO, CFO, CSO, Error) |
-| **All templates** | `lite` + `standard` (~350 lines) + `detailed` (~700+ lines) |
-| `quick_perspectives` | Fast pre-coding check with key questions |
-| `ship` | One-click lint → test → build → evidence generation |
-| Knowledge Base | SQLite-based decision tracking + FTS5 search |
-| Error Learning | Learn from mistakes, auto-generate NEVER/ALWAYS rules |
-| Dynamic meetings | AI-powered team discussions with Claude API |
-| **Unlimited projects** | No project limit |
-
-**Pro `detailed` templates include:**
-- Input/Output Specifications (AI understands exactly)
-- State Machine diagrams (complex flow clarity)
-- Error Cases enumerated (prevents hallucination)
-- Test Scenarios & Definition of Done
-
-**[Get Pro →](https://polar.sh/clouvel)** (Use code `FIRST01` for early adopter pricing)
-
-> **Upgrade trigger:** When you hit 3 project limit or request `standard`/`detailed` template, you'll see upgrade prompt.
+**7 project types:** web-app, api, cli, chrome-ext, discord-bot, landing-page, saas
 
 ---
 
@@ -293,7 +271,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 ---
 
 <p align="center">
-  <b>Stop debugging AI code. Start with a spec.</b><br>
+  <b>Solo coding, team-level thinking. That's Clouvel.</b><br>
   <a href="https://whitening-sinabro.github.io/clouvel/">Website</a> •
   <a href="https://github.com/Whitening-Sinabro/clouvel/issues">Issues</a> •
   <a href="https://polar.sh/clouvel">Get Pro</a>

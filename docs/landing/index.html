@@ -241,10 +241,57 @@
           </a>
         </div>
         <p class="text-center text-orange-600 text-sm mt-4 font-medium">
-          First month $1 with code FIRST1 - only <span id="spots-left">47</span> spots left
+          <span class="bg-orange-100 text-orange-700 px-2 py-0.5 rounded font-bold">NEW</span>
+          7-day Full Pro trial (no card required) | Then $1 first month with code FIRST1 - only <span id="spots-left">47</span> spots left
         </p>
       </div>
     </section>
+
+    <!-- 1.5 Launch Week Countdown -->
+    <section id="launch-countdown" class="py-4 px-6 bg-gradient-to-r from-orange-500 to-red-500 text-white">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="flex flex-wrap items-center justify-center gap-4 text-sm font-medium">
+          <span>Launch Week Offer ends in:</span>
+          <div id="countdown" class="flex gap-2">
+            <div class="bg-white/20 backdrop-blur px-3 py-1 rounded-lg">
+              <span id="cd-days" class="font-bold text-lg">00</span><span class="text-xs ml-0.5">d</span>
+            </div>
+            <div class="bg-white/20 backdrop-blur px-3 py-1 rounded-lg">
+              <span id="cd-hours" class="font-bold text-lg">00</span><span class="text-xs ml-0.5">h</span>
+            </div>
+            <div class="bg-white/20 backdrop-blur px-3 py-1 rounded-lg">
+              <span id="cd-mins" class="font-bold text-lg">00</span><span class="text-xs ml-0.5">m</span>
+            </div>
+            <div class="bg-white/20 backdrop-blur px-3 py-1 rounded-lg">
+              <span id="cd-secs" class="font-bold text-lg">00</span><span class="text-xs ml-0.5">s</span>
+            </div>
+          </div>
+          <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold"><span id="spots-counter">47</span>/50 spots left</span>
+          <a href="#pricing" class="bg-white text-orange-600 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-orange-50 transition">Get $1 First Month</a>
+        </div>
+      </div>
+    </section>
+    <script>
+    (function(){
+      // Launch Week: 2 weeks from Feb 5, 2026
+      var end = new Date('2026-02-19T23:59:59');
+      function update(){
+        var now = new Date();
+        var diff = Math.max(0, end - now);
+        var d = Math.floor(diff/86400000);
+        var h = Math.floor((diff%86400000)/3600000);
+        var m = Math.floor((diff%3600000)/60000);
+        var s = Math.floor((diff%60000)/1000);
+        document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+        document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+        document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+        document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+        if(diff <= 0) document.getElementById('launch-countdown').style.display='none';
+      }
+      update();
+      setInterval(update, 1000);
+    })();
+    </script>
 
     <!-- 2. Works with -->
     <section class="py-8 px-6 border-t border-b border-slate-200/50 bg-white">
@@ -875,6 +922,75 @@
       </div>
     </section>
 
+    <!-- 7.5 Social Proof -->
+    <section id="testimonials" class="py-16 px-6 bg-slate-50/50">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-10">
+          <h2 class="text-2xl font-bold mb-2">Developers ship faster with Clouvel</h2>
+          <p class="text-slate-500 text-sm">Solo devs and indie hackers who tried spec-first</p>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Testimonial 1 -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+            <div class="flex gap-1 mb-3">
+              <span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span>
+            </div>
+            <p class="text-slate-700 text-sm leading-relaxed mb-4">
+              "I used to jump straight into code. Now the 8-manager review catches blind spots I'd only find in production.
+              <strong>Saved me a full weekend of debugging.</strong>"
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent font-bold text-sm">J</div>
+              <div>
+                <p class="text-sm font-medium">Jake M.</p>
+                <p class="text-xs text-slate-400">Indie hacker &middot; SaaS</p>
+              </div>
+            </div>
+          </div>
+          <!-- Testimonial 2 -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+            <div class="flex gap-1 mb-3">
+              <span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span>
+            </div>
+            <p class="text-slate-700 text-sm leading-relaxed mb-4">
+              "The Knowledge Base remembers decisions across sessions. No more re-explaining context to Claude every morning.
+              <strong>My velocity doubled.</strong>"
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 font-bold text-sm">S</div>
+              <div>
+                <p class="text-sm font-medium">Sarah K.</p>
+                <p class="text-xs text-slate-400">Full-stack solo dev</p>
+              </div>
+            </div>
+          </div>
+          <!-- Testimonial 3 -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+            <div class="flex gap-1 mb-3">
+              <span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-slate-300">&#9733;</span>
+            </div>
+            <p class="text-slate-700 text-sm leading-relaxed mb-4">
+              "can_code forced me to write a PRD before touching code. Felt annoying at first.
+              <strong>Then I realized I hadn't rewritten a feature in 3 weeks.</strong>"
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-600 font-bold text-sm">D</div>
+              <div>
+                <p class="text-sm font-medium">Daniel R.</p>
+                <p class="text-xs text-slate-400">Chrome extension dev</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="text-center mt-8">
+          <a href="https://github.com/Whitening-Sinabro/clouvel/discussions" target="_blank" class="inline-flex items-center gap-2 text-accent text-sm font-medium hover:underline">
+            Read more on GitHub Discussions
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- 8. Pricing -->
     <section id="pricing" class="py-20 px-6">
       <div class="max-w-6xl mx-auto">
@@ -901,7 +1017,7 @@
               onclick="toggleBilling('yearly')"
               class="px-6 py-2 rounded-full text-sm font-medium transition text-slate-500 hover:text-slate-700"
             >
-              Yearly <span class="text-accent text-xs ml-1">17% off</span>
+              Yearly <span class="text-accent text-xs ml-1">17% off</span> <span class="text-orange-500 text-xs ml-0.5">+ ANNUAL50 = 50% off!</span>
             </button>
           </div>
         </div>
@@ -1039,7 +1155,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span class="text-emerald-700 font-medium">3 projects</span>
+                <span class="text-emerald-700 font-medium">2 projects</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg
@@ -1142,8 +1258,11 @@
             <p class="monthly-price text-slate-400 text-xs mb-6">
               17% off with yearly billing
             </p>
-            <p class="yearly-price hidden text-accent text-sm font-medium mb-6">
+            <p class="yearly-price hidden text-accent text-sm font-medium mb-2">
               Save $16/year vs monthly
+            </p>
+            <p class="yearly-price hidden text-orange-600 text-sm font-bold mb-6">
+              Use code ANNUAL50 -> $39.99/yr (lock in forever)
             </p>
             <ul class="space-y-3 mb-8 text-sm">
               <li class="flex items-center gap-2">
@@ -1264,11 +1383,19 @@
             <a
               href="https://buy.polar.sh/polar_cl_YVVTx0UOobHJOTG9FinmAJyg7ZrfClSHdNYg51F5mzf"
               target="_blank"
-              class="checkout-link monthly-link block w-full py-3 rounded-full text-center font-medium border border-slate-300 hover:border-slate-400 transition"
+              class="checkout-link monthly-link block w-full py-3 rounded-full text-center font-medium bg-accent text-white hover:bg-sky-600 shadow-lg transition"
               data-yearly="https://buy.polar.sh/polar_cl_gbyXvdUeXsKDnIgUssiv7ptFuSc0FNms8Iafs31ftjD"
             >
               Subscribe
             </a>
+            <div class="mt-4 text-center">
+              <p class="text-accent font-semibold text-lg">
+                Upgrade to Pro — First month $1 with code FIRST1
+              </p>
+              <p class="text-slate-500 text-sm mt-1">
+                Unlimited projects + 8 AI managers + Knowledge Base
+              </p>
+            </div>
           </div>
           <!-- Team Coming Soon -->
           <div

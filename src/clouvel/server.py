@@ -756,6 +756,11 @@ TOOL_DEFINITIONS = [
         description="Check current license status.",
         inputSchema={"type": "object", "properties": {}}
     ),
+    Tool(
+        name="start_trial",
+        description="Start 7-day Full Pro trial. No credit card required. All Pro features unlocked for 7 days.",
+        inputSchema={"type": "object", "properties": {}}
+    ),
 
     # === Pro Guide ===
     Tool(
@@ -1146,6 +1151,7 @@ TOOL_HANDLERS = {
     # License
     "activate_license": lambda args: _wrap_activate_license(args),
     "license_status": lambda args: _wrap_license_status(),
+    "start_trial": lambda args: _wrap_start_trial(),
 
     # Pro 안내
     "upgrade_pro": lambda args: _upgrade_pro(),
@@ -1320,6 +1326,20 @@ async def _wrap_save_prd(args: dict) -> list[TextContent]:
 
 async def _wrap_record_decision(args: dict) -> list[TextContent]:
     """record_decision tool wrapper"""
+    # v3.1: KB trial check for Free users
+    try:
+        from .license_common import is_developer, is_kb_trial_active, start_kb_trial
+        project_path = args.get("project_path", ".")
+        if not is_developer():
+            start_kb_trial(project_path)  # Start trial on first use
+            if not is_kb_trial_active(project_path):
+                from .messages.en import CAN_CODE_KB_TRIAL_EXPIRED
+                return [TextContent(type="text", text=CAN_CODE_KB_TRIAL_EXPIRED.format(
+                    decision_count="N/A"
+                ))]
+    except ImportError:
+        pass
+
     result = await record_decision(
         category=args.get("category", "general"),
         decision=args.get("decision", ""),
@@ -1351,6 +1371,20 @@ Decision saved to knowledge base. Use `search_knowledge` to retrieve later.
 
 async def _wrap_record_location(args: dict) -> list[TextContent]:
     """record_location tool wrapper"""
+    # v3.1: KB trial check for Free users
+    try:
+        from .license_common import is_developer, is_kb_trial_active, start_kb_trial
+        project_path = args.get("project_path", ".")
+        if not is_developer():
+            start_kb_trial(project_path)
+            if not is_kb_trial_active(project_path):
+                from .messages.en import CAN_CODE_KB_TRIAL_EXPIRED
+                return [TextContent(type="text", text=CAN_CODE_KB_TRIAL_EXPIRED.format(
+                    decision_count="N/A"
+                ))]
+    except ImportError:
+        pass
+
     result = await record_location(
         name=args.get("name", ""),
         repo=args.get("repo", ""),
@@ -1940,6 +1974,84 @@ https://polar.sh/clouvel
 - **Activated at**: {activated_at[:19] if len(activated_at) > 19 else activated_at}
 - **Days since activation**: {days}
 - **Premium features**: {unlock_status}
+""")]
+
+
+async def _wrap_start_trial() -> list[TextContent]:
+    """start_trial tool wrapper - 7-day Full Pro trial"""
+    from .license_common import start_full_trial, get_full_trial_status, is_full_trial_active, load_license_cache
+
+    # Already has a license? No need for trial
+    cached = load_license_cache()
+    if cached and cached.get("tier"):
+        return [TextContent(type="text", text="""
+# Pro Trial
+
+You already have an active Pro license. No trial needed!
+
+Use `license_status` to check your current plan.
+""")]
+
+    # Already in trial?
+    status = get_full_trial_status()
+    if status.get("active"):
+        remaining = status.get("remaining_days", 0)
+        return [TextContent(type="text", text=f"""
+# Pro Trial Active
+
+**{remaining} day(s) remaining** | All Pro features unlocked
+
+Included:
+- 8 C-Level AI managers (PM, CTO, QA, CDO, CMO, CFO, CSO, ERROR)
+- Knowledge Base (decisions preserved across sessions)
+- BLOCK mode (enforced spec-first)
+- ship (lint -> test -> build -> evidence)
+- Unlimited projects
+
+Like it? Lock in $1 for your first month:
+-> https://polar.sh/clouvel (code: FIRST1)
+-> Or $39.99/yr forever (code: ANNUAL50)
+""")]
+
+    # Trial already expired?
+    if not status.get("never_started", False) and not status.get("active", False):
+        return [TextContent(type="text", text="""
+# Pro Trial Expired
+
+Your 7-day trial has ended. Subscribe to keep all Pro features:
+
+- Monthly: $1 first month (code FIRST1), then $7.99/mo
+- Yearly: $39.99/yr forever (code ANNUAL50) - best value
+
+-> https://polar.sh/clouvel
+""")]
+
+    # Start new trial
+    result = start_full_trial()
+    remaining = result.get("remaining_days", 7)
+
+    return [TextContent(type="text", text=f"""
+# Pro Trial Started!
+
+**{remaining} days of full Pro access** - no credit card required.
+
+You now have:
+- 8 C-Level AI managers (PM, CTO, QA, CDO, CMO, CFO, CSO, ERROR)
+- Knowledge Base (decisions preserved across sessions)
+- BLOCK mode (enforced spec-first coding)
+- ship (one-click lint -> test -> build -> evidence)
+- Unlimited projects
+- All Pro templates (standard + detailed)
+
+## Try these first
+1. `manager(context="your current task")` - get 8-manager review
+2. `record_decision(category="architecture", decision="...")` - save a decision
+3. `ship(path=".")` - run full verification
+
+## After trial
+Monthly: $1 first month (code FIRST1)
+Yearly: $39.99/yr forever (code ANNUAL50) - best value
+-> https://polar.sh/clouvel
 """)]
 
 

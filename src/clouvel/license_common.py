@@ -108,7 +108,7 @@ PRO_ONLY_FEATURES = [
 ]
 
 # FREE tier project limit
-FREE_PROJECT_LIMIT = 3
+FREE_PROJECT_LIMIT = 2
 
 # FREE tier template layout limit
 FREE_LAYOUTS = ["lite"]
@@ -137,11 +137,20 @@ def is_feature_available(feature: str) -> Dict[str, Any]:
     if feature not in PRO_ONLY_FEATURES:
         return {"available": True, "reason": "free"}
 
+    # Full Pro Trial active = treat as Pro
+    if is_full_trial_active():
+        trial_status = get_full_trial_status()
+        return {
+            "available": True,
+            "reason": "trial",
+            "remaining_days": trial_status.get("remaining_days", 0),
+        }
+
     # Pro features require license
     if has_license:
         return {"available": True, "reason": "pro"}
 
-    return {"available": False, "reason": "free", "upgrade_hint": "FIRST01"}
+    return {"available": False, "reason": "free", "upgrade_hint": "FIRST1"}
 
 
 def get_projects_path() -> Path:
@@ -222,12 +231,19 @@ def register_project(project_path: str) -> Dict[str, Any]:
 
     # Check if we're at the limit
     if len(projects) >= FREE_PROJECT_LIMIT:
+        # v3.1: Log project limit hit event
+        try:
+            from .analytics import log_event
+            log_event("project_limit_hit", {"count": len(projects), "limit": FREE_PROJECT_LIMIT})
+        except Exception:
+            pass
         return {
             "allowed": False,
             "count": len(projects),
             "limit": FREE_PROJECT_LIMIT,
             "is_new": False,
-            "existing_project": projects[0] if projects else None
+            "existing_projects": projects,
+            "existing_project": "\n  ".join(projects) if projects else "None"
         }
 
     # Register new project
@@ -436,3 +452,337 @@ def create_license_data(license_key: str, tier: str = None) -> Dict[str, Any]:
         "tier": tier,
         "tier_info": tier_info,
     }
+
+
+# ============================================================
+# WARN 횟수 추적 (v3.1: 전환율 개선)
+# ============================================================
+
+def _get_warn_count_path() -> Path:
+    """Get warn count tracking file path: ~/.clouvel/warn_count.json"""
+    if os.name == 'nt':
+        base = Path(os.environ.get('USERPROFILE', '~'))
+    else:
+        base = Path.home()
+    clouvel_dir = base / ".clouvel"
+    clouvel_dir.mkdir(parents=True, exist_ok=True)
+    return clouvel_dir / "warn_count.json"
+
+
+def increment_warn_count(project_path: str) -> int:
+    """Increment WARN count for a project and return new count."""
+    path = _get_warn_count_path()
+    data = {}
+    if path.exists():
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            data = {}
+
+    normalized = str(Path(project_path).resolve())
+    count = data.get(normalized, 0) + 1
+    data[normalized] = count
+
+    try:
+        path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+
+    return count
+
+
+def get_warn_count(project_path: str) -> int:
+    """Get current WARN count for a project."""
+    path = _get_warn_count_path()
+    if not path.exists():
+        return 0
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        normalized = str(Path(project_path).resolve())
+        return data.get(normalized, 0)
+    except Exception:
+        return 0
+
+
+# ============================================================
+# KB Trial 관리 (v3.1: 7일 체험)
+# ============================================================
+
+def _get_kb_trial_path() -> Path:
+    """Get KB trial tracking file path: ~/.clouvel/kb_trial.json"""
+    if os.name == 'nt':
+        base = Path(os.environ.get('USERPROFILE', '~'))
+    else:
+        base = Path.home()
+    clouvel_dir = base / ".clouvel"
+    clouvel_dir.mkdir(parents=True, exist_ok=True)
+    return clouvel_dir / "kb_trial.json"
+
+
+def get_kb_trial_start(project_path: str) -> Optional[str]:
+    """Get KB trial start date for a project. Returns ISO date string or None."""
+    path = _get_kb_trial_path()
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        normalized = str(Path(project_path).resolve())
+        return data.get(normalized)
+    except Exception:
+        return None
+
+
+def start_kb_trial(project_path: str) -> str:
+    """Start KB trial for a project. Returns the start date."""
+    path = _get_kb_trial_path()
+    data = {}
+    if path.exists():
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            data = {}
+
+    normalized = str(Path(project_path).resolve())
+    # Don't overwrite existing trial
+    if normalized in data:
+        return data[normalized]
+
+    start_date = datetime.now().isoformat()
+    data[normalized] = start_date
+
+    try:
+        path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+
+    return start_date
+
+
+def is_kb_trial_active(project_path: str) -> bool:
+    """Check if KB trial is still active (within 7 days)."""
+    start = get_kb_trial_start(project_path)
+    if start is None:
+        return True  # No trial started yet = can start one
+
+    try:
+        start_time = datetime.fromisoformat(start)
+        days = (datetime.now() - start_time).days
+        return days < 7
+    except Exception:
+        return False
+
+
+# ============================================================
+# 주간 풀 매니저 체험 (v3.1)
+# ============================================================
+
+def _get_weekly_meeting_path() -> Path:
+    """Get weekly meeting tracking file path: ~/.clouvel/weekly_meeting.json"""
+    if os.name == 'nt':
+        base = Path(os.environ.get('USERPROFILE', '~'))
+    else:
+        base = Path.home()
+    clouvel_dir = base / ".clouvel"
+    clouvel_dir.mkdir(parents=True, exist_ok=True)
+    return clouvel_dir / "weekly_meeting.json"
+
+
+def can_use_weekly_full_meeting(project_path: str) -> Dict[str, Any]:
+    """Check if user can use weekly full meeting trial.
+
+    Returns dict with:
+    - available: bool
+    - last_used_week: str (ISO week, e.g. "2026-W05")
+    - current_week: str
+    """
+    path = _get_weekly_meeting_path()
+    data = {}
+    if path.exists():
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            data = {}
+
+    normalized = str(Path(project_path).resolve())
+    now = datetime.now()
+    current_week = f"{now.isocalendar()[0]}-W{now.isocalendar()[1]:02d}"
+
+    last_used_week = data.get(normalized)
+
+    return {
+        "available": last_used_week != current_week,
+        "last_used_week": last_used_week,
+        "current_week": current_week,
+    }
+
+
+def mark_weekly_meeting_used(project_path: str) -> None:
+    """Mark weekly full meeting as used for this week."""
+    path = _get_weekly_meeting_path()
+    data = {}
+    if path.exists():
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            data = {}
+
+    normalized = str(Path(project_path).resolve())
+    now = datetime.now()
+    current_week = f"{now.isocalendar()[0]}-W{now.isocalendar()[1]:02d}"
+    data[normalized] = current_week
+
+    try:
+        path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+
+
+# ============================================================
+# Full Pro Trial (v3.2: 7일 전체 기능 체험)
+# ============================================================
+
+FULL_TRIAL_DAYS = 7
+
+
+def _get_full_trial_path() -> Path:
+    """Get full trial tracking file path: ~/.clouvel/full_trial.json"""
+    if os.name == 'nt':
+        base = Path(os.environ.get('USERPROFILE', '~'))
+    else:
+        base = Path.home()
+    clouvel_dir = base / ".clouvel"
+    clouvel_dir.mkdir(parents=True, exist_ok=True)
+    return clouvel_dir / "full_trial.json"
+
+
+def start_full_trial() -> Dict[str, Any]:
+    """Start 7-day Full Pro trial.
+
+    Returns:
+        dict with started_at, machine_id, remaining_days
+    """
+    path = _get_full_trial_path()
+    data = {}
+    if path.exists():
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            data = {}
+
+    mid = get_machine_id()
+
+    # Already started - don't overwrite
+    if "started_at" in data and data.get("machine_id") == mid:
+        return get_full_trial_status()
+
+    data["started_at"] = datetime.now().isoformat()
+    data["machine_id"] = mid
+
+    try:
+        path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+
+    try:
+        from .analytics import log_event
+        log_event("full_trial_started", {"machine_id": mid[:8]})
+    except Exception:
+        pass
+
+    return {
+        "active": True,
+        "started_at": data["started_at"],
+        "remaining_days": FULL_TRIAL_DAYS,
+        "message": f"Pro trial activated! {FULL_TRIAL_DAYS} days of full access.",
+    }
+
+
+def is_full_trial_active() -> bool:
+    """Check if Full Pro trial is still active."""
+    status = get_full_trial_status()
+    return status.get("active", False)
+
+
+def get_full_trial_status() -> Dict[str, Any]:
+    """Get full trial status with remaining days.
+
+    Returns:
+        dict with active, started_at, remaining_days, elapsed_days
+    """
+    path = _get_full_trial_path()
+    if not path.exists():
+        return {"active": False, "remaining_days": 0, "never_started": True}
+
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {"active": False, "remaining_days": 0, "never_started": True}
+
+    started_at = data.get("started_at")
+    stored_mid = data.get("machine_id")
+    if not started_at:
+        return {"active": False, "remaining_days": 0, "never_started": True}
+
+    # Machine ID mismatch = different machine, trial not valid
+    current_mid = get_machine_id()
+    if stored_mid and stored_mid != current_mid:
+        return {"active": False, "remaining_days": 0, "machine_mismatch": True}
+
+    try:
+        start_time = datetime.fromisoformat(started_at)
+        elapsed = (datetime.now() - start_time).days
+        remaining = max(0, FULL_TRIAL_DAYS - elapsed)
+        return {
+            "active": remaining > 0,
+            "started_at": started_at,
+            "elapsed_days": elapsed,
+            "remaining_days": remaining,
+        }
+    except Exception:
+        return {"active": False, "remaining_days": 0}
+
+
+# ============================================================
+# A/B 테스트 플래그 (v3.1: 전환율 실험)
+# ============================================================
+
+def _get_ab_flags_path() -> Path:
+    """Get A/B test flags file path: ~/.clouvel/ab_flags.json"""
+    if os.name == 'nt':
+        base = Path(os.environ.get('USERPROFILE', '~'))
+    else:
+        base = Path.home()
+    clouvel_dir = base / ".clouvel"
+    clouvel_dir.mkdir(parents=True, exist_ok=True)
+    return clouvel_dir / "ab_flags.json"
+
+
+def get_ab_group(experiment_name: str) -> str:
+    """Get A/B test group for an experiment.
+
+    Returns "control" or "treatment". Assignment is random on first call
+    and persisted for consistency.
+    """
+    import random
+
+    path = _get_ab_flags_path()
+    data = {}
+    if path.exists():
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            data = {}
+
+    if experiment_name in data:
+        return data[experiment_name]
+
+    # Random assignment (50/50)
+    group = random.choice(["control", "treatment"])
+    data[experiment_name] = group
+
+    try:
+        path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+
+    return group

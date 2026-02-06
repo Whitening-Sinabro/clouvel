@@ -37,8 +37,8 @@ CAN_CODE_PROJECT_LIMIT = """
   Your 3rd project is waiting.
   Every day without Pro = decisions lost, context forgotten.
 
-  Unlock now: $1 first month (code FIRST1)
-  -> Unlimited projects + 8 AI managers + Knowledge Base
+  Monthly: $1 first month (code FIRST1), then $7.99/mo
+  Annual:  $23.99/yr forever (code LAUNCH70) - save 70%
   -> https://polar.sh/clouvel
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
@@ -83,15 +83,17 @@ CAN_CODE_KB_TRIAL_EXPIRED = """
   Without Pro, new decisions won't be recorded.
   Next session = lost context = repeated mistakes.
 
-  Keep your knowledge growing: $1/first month
-  -> code FIRST1 at https://polar.sh/clouvel
+  Monthly: $1 first month (code FIRST1), then $7.99/mo
+  Annual:  $23.99/yr forever (code LAUNCH70) - save 70%
+  -> https://polar.sh/clouvel
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
 
 CAN_CODE_TRIAL_ACTIVE = """
 ---
 Pro Trial: {remaining_days} day(s) left | Full access to 8 managers, KB, ship, BLOCK mode
-Launch Week: Lock in $1 first month, 47 spots left -> https://polar.sh/clouvel (code: FIRST1)
+Lock in now: $1 first month (FIRST1) or $23.99/yr forever (LAUNCH70)
+-> https://polar.sh/clouvel
 """
 
 CAN_CODE_TRIAL_EXPIRED = """
@@ -104,9 +106,9 @@ CAN_CODE_TRIAL_EXPIRED = """
   - BLOCK mode preventing spec-less coding
   - ship generating evidence & reports
 
-  Don't lose momentum. Two options:
-  Monthly: $1 first month (code FIRST1)
-  Yearly:  $39.99/yr forever (code ANNUAL50) - best value
+  Don't lose momentum:
+  Monthly: $1 first month (code FIRST1), then $7.99/mo
+  Annual:  $23.99/yr forever (code LAUNCH70) - save 70%
   -> https://polar.sh/clouvel
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """

@@ -2008,9 +2008,10 @@ Included:
 - ship (lint -> test -> build -> evidence)
 - Unlimited projects
 
-Like it? Lock in $1 for your first month:
--> https://polar.sh/clouvel (code: FIRST1)
--> Or $39.99/yr forever (code: ANNUAL50)
+Like it? Lock in now:
+Monthly: $1 first month (code FIRST1), then $7.99/mo
+Annual:  $23.99/yr forever (code LAUNCH70) - save 70%
+-> https://polar.sh/clouvel
 """)]
 
     # Trial already expired?
@@ -2021,7 +2022,7 @@ Like it? Lock in $1 for your first month:
 Your 7-day trial has ended. Subscribe to keep all Pro features:
 
 - Monthly: $1 first month (code FIRST1), then $7.99/mo
-- Yearly: $39.99/yr forever (code ANNUAL50) - best value
+- Annual:  $23.99/yr forever (code LAUNCH70) - save 70%
 
 -> https://polar.sh/clouvel
 """)]
@@ -2049,8 +2050,8 @@ You now have:
 3. `ship(path=".")` - run full verification
 
 ## After trial
-Monthly: $1 first month (code FIRST1)
-Yearly: $39.99/yr forever (code ANNUAL50) - best value
+Monthly: $1 first month (code FIRST1), then $7.99/mo
+Annual:  $23.99/yr forever (code LAUNCH70) - save 70%
 -> https://polar.sh/clouvel
 """)]
 

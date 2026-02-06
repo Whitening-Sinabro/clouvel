@@ -148,9 +148,8 @@ def require_license(func):
 https://polar.sh/clouvel
 
 ## 가격
-- Personal: $19.99/월
-- Team 5: $49.99/월
-- Team 10: $79.99/월
+- Monthly: $7.99/mo ($1 first month with code FIRST1)
+- Annual: $23.99/yr (code LAUNCH70) - save 70%
 """)]
     return wrapper
 

@@ -41,6 +41,10 @@ htmlcov/
 **/*전략*.md
 **/*가격*.md
 
+# 전환율/수익화 전략
+**/*conversion*.md
+**/*전환*.md
+
 # 내부 로드맵
 .claude/ROADMAP_INTERNAL.md
 .claude/plans/PLAN-marketing*.md

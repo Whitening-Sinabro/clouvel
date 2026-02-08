@@ -8,6 +8,8 @@
 
 **Solo coding, team-level review.** 8 AI managers catch your blind spots before code ships.
 
+**Try all Pro features free for 7 days** — no credit card required. Run `start_trial` in Claude Code.
+
 ---
 
 ![Demo](docs/landing/assets/demo.gif)
@@ -57,21 +59,6 @@ AI:  Found decision #42: "JWT chosen for stateless scaling" (2024-01-15)
 
 ---
 
-## FREE vs PRO
-
-| | FREE | PRO ($7.99/mo) |
-|---|---|---|
-| **Projects** | 3 | Unlimited |
-| **Templates** | `lite` (~150 lines) | All (`lite` + `standard` + `detailed`) |
-| **Managers** | 1 (PM only) | 8 (PM, CTO, QA, CDO, CMO, CFO, CSO, Error) |
-| **can_code** | WARN (doesn't block) | BLOCK (enforces PRD) |
-| **Knowledge Base** | - | Remembers all decisions |
-| **Error Learning** | - | Learns from your mistakes |
-
-**[Get Pro →](https://polar.sh/clouvel)** Use code `FIRST1` for first month $1
-
----
-
 ## Quick Start
 
 ```bash
@@ -89,18 +76,44 @@ That's it. No config needed.
 
 ---
 
+## FREE vs PRO
+
+| | FREE | PRO ($7.99/mo) |
+|---|---|---|
+| **Projects** | 1 active (archive to switch) | Unlimited |
+| **Templates** | `lite` + `minimal` | All (`lite` + `standard` + `detailed`) |
+| **Managers** | 1 (PM only) | 8 (PM, CTO, QA, CDO, CMO, CFO, CSO, Error) |
+| **Meeting** | 3 full meetings/month | Unlimited |
+| **can_code** | WARN (doesn't block) | BLOCK (enforces PRD) |
+| **Knowledge Base** | 7-day trial | Persistent across sessions |
+| **Error Learning** | - | Learns from your mistakes |
+| **Execution Plan** | - | `plan` with step-by-step actions |
+
+**Want to try everything?** Start a 7-day free trial — all Pro features, no credit card.
+
+```
+> start_trial
+✅ 7-day Pro trial activated!
+```
+
+**[Get Pro →](https://polar.sh/clouvel)** Use code `LAUNCH70` for 70% off annual ($23.99/yr)
+
+---
+
 ## Key Tools
 
 | Tool | What it does | FREE | PRO |
 |------|--------------|------|-----|
 | `can_code` | Checks if you can start coding | WARN | BLOCK |
 | `start` | Project onboarding + PRD templates | `lite` | All templates |
+| `quick_perspectives` | Quick blind-spot check (3-4 managers) | ✓ | ✓ |
 | `manager` | C-Level review meeting | PM only | 8 managers |
-| `meeting` | Natural meeting transcript | 1 manager | All managers |
-| `plan` | Detailed execution planning | ✓ | ✓ |
+| `meeting` | Natural meeting transcript | 3/month | Unlimited |
+| `plan` | Detailed execution planning | - | ✓ |
 | `ship` | lint → test → build pipeline | - | ✓ |
 | `record_decision` | Save decisions to Knowledge Base | - | ✓ |
 | `error_learn` | Learn from mistakes | - | ✓ |
+| `start_trial` | Activate 7-day Pro trial | ✓ | - |
 
 **7 project types:** web-app, api, cli, chrome-ext, discord-bot, landing-page, saas
 
@@ -126,7 +139,10 @@ pip install clouvel
 clouvel install
 ```
 
-**Manual - Windows:**
+<details>
+<summary>Manual configuration</summary>
+
+**Windows:**
 ```json
 {
   "mcpServers": {
@@ -138,7 +154,7 @@ clouvel install
 }
 ```
 
-**Manual - Mac/Linux:**
+**Mac/Linux:**
 ```json
 {
   "mcpServers": {
@@ -149,6 +165,8 @@ clouvel install
   }
 }
 ```
+
+</details>
 
 ---
 
@@ -194,73 +212,14 @@ You: "Review my login implementation"
 Status: NEEDS_REVISION
 ```
 
-### v1.9 Consolidated Tools
-
-```bash
-# Before: Multiple tools
-get_prd_template(template="web-app")
-get_prd_guide()
-init_docs()
-
-# After: Single tool with options
-start --template=web-app    # Get template
-start --guide               # Get PRD writing guide
-start --init                # Initialize docs folder
-
-# Before: Separate hook tools
-init_rules(template="web")
-hook_design(trigger="pre_code")
-hook_verify(trigger="post_code")
-
-# After: Single tool with options
-setup_cli --rules=web              # Initialize rules
-setup_cli --hook=design            # Create design hook
-setup_cli --hook=verify            # Create verify hook
-```
-
 ---
 
-## Documentation
+## Links
 
-- [Full Documentation](https://whitening-sinabro.github.io/clouvel/)
-- [PRD Templates](https://whitening-sinabro.github.io/clouvel/templates)
-- [FAQ](https://whitening-sinabro.github.io/clouvel/faq)
-
----
-
-## Contributing
-
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
+- [Documentation](https://whitening-sinabro.github.io/clouvel/)
+- [Changelog](CHANGELOG.md)
 - [Report bugs](https://github.com/Whitening-Sinabro/clouvel/issues)
-- [Request features](https://github.com/Whitening-Sinabro/clouvel/issues)
-- [Join discussions](https://github.com/Whitening-Sinabro/clouvel/discussions)
-
----
-
-## Deprecation Notice (v1.9)
-
-The following tools show deprecation warnings and will be removed in v2.0:
-
-| Deprecated | Use Instead |
-|------------|-------------|
-| `scan_docs` | `can_code` |
-| `analyze_docs` | `can_code` |
-| `verify` | `ship` |
-| `gate` | `ship` |
-| `get_prd_template` | `start --template` |
-| `get_prd_guide` | `start --guide` |
-| `init_docs` | `start --init` |
-| `init_rules` | `setup_cli --rules` |
-| `hook_design` | `setup_cli --hook=design` |
-| `hook_verify` | `setup_cli --hook=verify` |
-| `handoff` | `record_decision` + `update_progress` |
-
----
-
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for version history.
+- [Contribute](CONTRIBUTING.md)
 
 ---
 

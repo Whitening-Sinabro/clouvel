@@ -107,12 +107,13 @@ PRO_ONLY_FEATURES = [
     "error_learning",
 ]
 
-# FREE tier project limit
-FREE_PROJECT_LIMIT = 2
+# FREE tier project limit (v3.3: 1 active project)
+FREE_PROJECT_LIMIT = 1  # Legacy: kept for backward compat
+FREE_ACTIVE_PROJECT_LIMIT = 1  # Active projects only
 
 # FREE tier template layout limit
-FREE_LAYOUTS = ["lite"]
-PRO_LAYOUTS = ["lite", "standard", "detailed"]
+FREE_LAYOUTS = ["lite", "minimal"]  # v3.3: minimal added for quick unblock
+PRO_LAYOUTS = ["lite", "minimal", "standard", "detailed"]
 
 
 def is_feature_available(feature: str) -> Dict[str, Any]:
@@ -166,11 +167,33 @@ def get_projects_path() -> Path:
 
 
 def load_projects() -> Dict[str, Any]:
-    """Load registered projects from tracking file."""
+    """Load registered projects from tracking file.
+
+    v3.3: Migrates old format (list of paths) to new format (list of dicts).
+    New format: {"projects": [{"path": "...", "status": "active"|"archived", "registered_at": "..."}]}
+    """
     projects_path = get_projects_path()
     if projects_path.exists():
         try:
-            return json.loads(projects_path.read_text(encoding="utf-8"))
+            data = json.loads(projects_path.read_text(encoding="utf-8"))
+
+            # v3.3: Migrate old format to new format
+            projects = data.get("projects", [])
+            if projects and isinstance(projects[0], str):
+                # Old format: list of path strings
+                migrated = []
+                for p in projects:
+                    migrated.append({
+                        "path": p,
+                        "status": "active",
+                        "registered_at": data.get("last_updated") or datetime.now().isoformat()
+                    })
+                data["projects"] = migrated
+                data["migrated_at"] = datetime.now().isoformat()
+                # Save migrated data
+                save_projects(data)
+
+            return data
         except Exception:
             pass
     return {"projects": [], "last_updated": None}
@@ -193,15 +216,16 @@ def save_projects(data: Dict[str, Any]) -> bool:
 def register_project(project_path: str) -> Dict[str, Any]:
     """Register a project and check if within FREE tier limit.
 
-    v3.0: FREE tier = 1 project only
+    v3.3: FREE tier = 1 ACTIVE project only (archived don't count)
           PRO tier = unlimited
 
     Returns:
         dict with keys:
         - allowed: bool
-        - count: int (current project count)
+        - count: int (active project count)
         - limit: int (project limit)
         - is_new: bool (True if newly registered)
+        - active_projects: list (active project paths)
     """
     # Developers and Pro users have unlimited projects
     if is_developer():
@@ -210,59 +234,282 @@ def register_project(project_path: str) -> Dict[str, Any]:
     cached = load_license_cache()
     has_license = cached is not None and cached.get("tier") is not None
 
-    if has_license:
+    # Full trial active = unlimited
+    if has_license or is_full_trial_active():
         return {"allowed": True, "count": 0, "limit": 999, "is_new": False}
 
-    # FREE tier: check project limit
+    # FREE tier: check ACTIVE project limit
     data = load_projects()
     projects = data.get("projects", [])
 
     # Normalize path for comparison
     normalized_path = str(Path(project_path).resolve())
 
-    # Check if project is already registered
-    if normalized_path in projects:
-        return {
-            "allowed": True,
-            "count": len(projects),
-            "limit": FREE_PROJECT_LIMIT,
-            "is_new": False
-        }
+    # Get active projects only
+    active_projects = [p for p in projects if p.get("status") == "active"]
+    active_paths = [p.get("path") for p in active_projects]
 
-    # Check if we're at the limit
-    if len(projects) >= FREE_PROJECT_LIMIT:
-        # v3.1: Log project limit hit event
+    # Check if this project is already registered
+    existing = next((p for p in projects if p.get("path") == normalized_path), None)
+
+    if existing:
+        if existing.get("status") == "active":
+            # Already active - allowed
+            return {
+                "allowed": True,
+                "count": len(active_projects),
+                "limit": FREE_ACTIVE_PROJECT_LIMIT,
+                "is_new": False,
+                "active_projects": active_paths,
+            }
+        else:
+            # Archived - needs reactivation (counts as new active)
+            if len(active_projects) >= FREE_ACTIVE_PROJECT_LIMIT:
+                return {
+                    "allowed": False,
+                    "count": len(active_projects),
+                    "limit": FREE_ACTIVE_PROJECT_LIMIT,
+                    "is_new": False,
+                    "active_projects": active_paths,
+                    "needs_archive": True,
+                    "message": _get_project_limit_message(active_projects),
+                }
+            # Reactivate archived project
+            existing["status"] = "active"
+            existing["reactivated_at"] = datetime.now().isoformat()
+            save_projects(data)
+            return {
+                "allowed": True,
+                "count": len(active_projects) + 1,
+                "limit": FREE_ACTIVE_PROJECT_LIMIT,
+                "is_new": False,
+                "reactivated": True,
+                "active_projects": active_paths + [normalized_path],
+            }
+
+    # New project - check active limit
+    if len(active_projects) >= FREE_ACTIVE_PROJECT_LIMIT:
+        # v3.3: Log project limit hit event
         try:
             from .analytics import log_event
-            log_event("project_limit_hit", {"count": len(projects), "limit": FREE_PROJECT_LIMIT})
+            log_event("project_limit_hit", {
+                "active_count": len(active_projects),
+                "limit": FREE_ACTIVE_PROJECT_LIMIT,
+                "active_project": active_paths[0] if active_paths else None,
+            })
         except Exception:
             pass
         return {
             "allowed": False,
-            "count": len(projects),
-            "limit": FREE_PROJECT_LIMIT,
+            "count": len(active_projects),
+            "limit": FREE_ACTIVE_PROJECT_LIMIT,
             "is_new": False,
-            "existing_projects": projects,
-            "existing_project": "\n  ".join(projects) if projects else "None"
+            "active_projects": active_paths,
+            "needs_archive": True,
+            "message": _get_project_limit_message(active_projects),
         }
 
-    # Register new project
-    projects.append(normalized_path)
+    # Register new active project
+    projects.append({
+        "path": normalized_path,
+        "status": "active",
+        "registered_at": datetime.now().isoformat(),
+    })
     data["projects"] = projects
     save_projects(data)
 
     return {
         "allowed": True,
-        "count": len(projects),
-        "limit": FREE_PROJECT_LIMIT,
-        "is_new": True
+        "count": len(active_projects) + 1,
+        "limit": FREE_ACTIVE_PROJECT_LIMIT,
+        "is_new": True,
+        "active_projects": active_paths + [normalized_path],
     }
 
 
+def _get_project_limit_message(active_projects: list) -> str:
+    """Generate project limit reached message (Pain Point #1)."""
+    if not active_projects:
+        return "프로젝트 제한에 도달했습니다."
+
+    active_name = Path(active_projects[0].get("path", "Unknown")).name
+
+    return f"""
+🚀 새 프로젝트를 시작하려고 하시네요!
+
+현재 '{active_name}'가 활성화되어 있습니다.
+Free 플랜은 한 번에 하나의 프로젝트에만 집중할 수 있어요.
+
+선택하세요:
+1️⃣ '{active_name}' 아카이브하고 새 프로젝트 시작
+   → clouvel archive_project("{active_projects[0].get('path')}")
+
+2️⃣ Pro로 업그레이드하여 동시에 여러 프로젝트 관리
+
+💡 Pro 개발자들은 평균 3.2개 프로젝트를 동시에 진행합니다.
+   컨텍스트 스위칭 없이 Knowledge Base가 각 프로젝트를 기억해요.
+
+→ clouvel upgrade_pro (월 $7.99, 첫 7일 무료)
+"""
+
+
 def get_project_count() -> int:
-    """Get current registered project count."""
+    """Get current ACTIVE project count."""
     data = load_projects()
-    return len(data.get("projects", []))
+    projects = data.get("projects", [])
+    return len([p for p in projects if p.get("status") == "active"])
+
+
+def archive_project(project_path: str) -> Dict[str, Any]:
+    """Archive a project (remove from active count).
+
+    v3.3: Archived projects don't count toward FREE limit.
+
+    Returns:
+        dict with success, message, archived_at
+    """
+    data = load_projects()
+    projects = data.get("projects", [])
+    normalized_path = str(Path(project_path).resolve())
+
+    # Find project
+    project = next((p for p in projects if p.get("path") == normalized_path), None)
+
+    if not project:
+        return {
+            "success": False,
+            "message": f"프로젝트를 찾을 수 없습니다: {project_path}"
+        }
+
+    if project.get("status") == "archived":
+        return {
+            "success": False,
+            "message": "이미 아카이브된 프로젝트입니다."
+        }
+
+    # Archive
+    project["status"] = "archived"
+    project["archived_at"] = datetime.now().isoformat()
+    save_projects(data)
+
+    # Log event
+    try:
+        from .analytics import log_event
+        log_event("project_archived", {"path": normalized_path[:50]})
+    except Exception:
+        pass
+
+    return {
+        "success": True,
+        "message": f"✅ 프로젝트가 아카이브되었습니다: {Path(project_path).name}\n\n이제 새 프로젝트를 시작할 수 있습니다.",
+        "archived_at": project["archived_at"],
+    }
+
+
+def reactivate_project(project_path: str) -> Dict[str, Any]:
+    """Reactivate an archived project.
+
+    v3.3: If another project is active, it will be archived first.
+
+    Returns:
+        dict with success, message, previously_active (if any)
+    """
+    # Check license/developer status
+    if is_developer():
+        return {"success": True, "message": "[DEV] Developer mode - no limit"}
+
+    cached = load_license_cache()
+    has_license = cached is not None and cached.get("tier") is not None
+
+    if has_license or is_full_trial_active():
+        return {"success": True, "message": "Pro 사용자 - 제한 없음"}
+
+    data = load_projects()
+    projects = data.get("projects", [])
+    normalized_path = str(Path(project_path).resolve())
+
+    # Find project to reactivate
+    project = next((p for p in projects if p.get("path") == normalized_path), None)
+
+    if not project:
+        return {
+            "success": False,
+            "message": f"프로젝트를 찾을 수 없습니다: {project_path}"
+        }
+
+    if project.get("status") == "active":
+        return {
+            "success": True,
+            "message": "이미 활성화된 프로젝트입니다."
+        }
+
+    # Check if we need to archive current active project
+    active_projects = [p for p in projects if p.get("status") == "active"]
+    previously_active = None
+
+    if len(active_projects) >= FREE_ACTIVE_PROJECT_LIMIT:
+        # Auto-archive the oldest active project
+        oldest = min(active_projects, key=lambda x: x.get("registered_at", ""))
+        oldest["status"] = "archived"
+        oldest["archived_at"] = datetime.now().isoformat()
+        previously_active = oldest.get("path")
+
+    # Reactivate
+    project["status"] = "active"
+    project["reactivated_at"] = datetime.now().isoformat()
+    save_projects(data)
+
+    # Log event
+    try:
+        from .analytics import log_event
+        log_event("project_reactivated", {
+            "path": normalized_path[:50],
+            "swapped": previously_active is not None
+        })
+    except Exception:
+        pass
+
+    result = {
+        "success": True,
+        "message": f"✅ 프로젝트가 재활성화되었습니다: {Path(project_path).name}",
+        "reactivated_at": project["reactivated_at"],
+    }
+
+    if previously_active:
+        result["previously_active"] = previously_active
+        result["message"] += f"\n\n📦 '{Path(previously_active).name}'가 자동 아카이브되었습니다."
+
+    return result
+
+
+def list_projects() -> Dict[str, Any]:
+    """List all registered projects with their status.
+
+    Returns:
+        dict with active, archived lists and counts
+    """
+    data = load_projects()
+    projects = data.get("projects", [])
+
+    active = [p for p in projects if p.get("status") == "active"]
+    archived = [p for p in projects if p.get("status") == "archived"]
+
+    # Check tier
+    is_pro = is_developer()
+    if not is_pro:
+        cached = load_license_cache()
+        is_pro = cached is not None and cached.get("tier") is not None
+    if not is_pro:
+        is_pro = is_full_trial_active()
+
+    return {
+        "active": [{"path": p.get("path"), "name": Path(p.get("path", "")).name, "registered_at": p.get("registered_at")} for p in active],
+        "archived": [{"path": p.get("path"), "name": Path(p.get("path", "")).name, "archived_at": p.get("archived_at")} for p in archived],
+        "active_count": len(active),
+        "archived_count": len(archived),
+        "limit": 999 if is_pro else FREE_ACTIVE_PROJECT_LIMIT,
+        "is_pro": is_pro,
+    }
 
 def get_tier_info(tier: str) -> Dict[str, Any]:
     """Get tier info with fallback to Personal."""
@@ -638,6 +885,151 @@ def mark_weekly_meeting_used(project_path: str) -> None:
 
 
 # ============================================================
+# Monthly Meeting Quota (v3.3: 월 3회 Full Meeting 체험)
+# ============================================================
+
+FREE_MONTHLY_MEETINGS = 3
+
+
+def _get_monthly_meeting_path() -> Path:
+    """Get monthly meeting quota tracking file path: ~/.clouvel/monthly_meeting.json"""
+    if os.name == 'nt':
+        base = Path(os.environ.get('USERPROFILE', '~'))
+    else:
+        base = Path.home()
+    clouvel_dir = base / ".clouvel"
+    clouvel_dir.mkdir(parents=True, exist_ok=True)
+    return clouvel_dir / "monthly_meeting.json"
+
+
+def check_meeting_quota() -> Dict[str, Any]:
+    """Check monthly meeting quota for Free users.
+
+    v3.3: Replaces weekly trial with monthly 3-time quota.
+
+    Returns:
+        dict with:
+        - allowed: bool
+        - used: int (used this month)
+        - remaining: int (remaining this month)
+        - limit: int (monthly limit)
+        - current_month: str (YYYY-MM)
+        - notice: str (optional, shown when 1 remaining)
+        - message: str (shown when quota exhausted)
+    """
+    path = _get_monthly_meeting_path()
+    current_month = datetime.now().strftime("%Y-%m")
+
+    data = {"month": current_month, "used": 0, "history": []}
+    if path.exists():
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+            # Reset if month changed
+            if data.get("month") != current_month:
+                data = {"month": current_month, "used": 0, "history": []}
+        except Exception:
+            data = {"month": current_month, "used": 0, "history": []}
+
+    used = data.get("used", 0)
+    remaining = max(0, FREE_MONTHLY_MEETINGS - used)
+
+    result = {
+        "allowed": remaining > 0,
+        "used": used,
+        "remaining": remaining,
+        "limit": FREE_MONTHLY_MEETINGS,
+        "current_month": current_month,
+    }
+
+    # Notice when last meeting remaining
+    if remaining == 1:
+        result["notice"] = (
+            "⚡ 이번 달 마지막 무료 Meeting입니다!\n"
+            "Pro 업그레이드로 무제한 사용하세요.\n"
+            "→ https://polar.sh/clouvel"
+        )
+
+    # Message when quota exhausted (Pain Point #3)
+    if remaining <= 0:
+        result["message"] = f"""
+🎯 이번 달 무료 Meeting {FREE_MONTHLY_MEETINGS}회를 모두 사용했습니다!
+
+8명 C-level 매니저의 피드백이 도움이 되셨나요?
+
+Pro 개발자들의 후기:
+"혼자 개발할 때 놓치기 쉬운 보안 이슈를 CSO가 잡아줘서 좋아요"
+"출시 전 CFO 피드백으로 수익 모델 구멍을 발견했습니다"
+
+다음 달까지 기다리거나, 지금 바로 무제한으로 사용하세요.
+
+💰 월 $7.99 (연간 결제 시 70% 할인)
+→ https://polar.sh/clouvel
+"""
+
+    return result
+
+
+def consume_meeting_quota() -> Dict[str, Any]:
+    """Consume one meeting from monthly quota.
+
+    Returns:
+        dict with used, remaining, notice (if applicable)
+    """
+    path = _get_monthly_meeting_path()
+    current_month = datetime.now().strftime("%Y-%m")
+
+    data = {"month": current_month, "used": 0, "history": []}
+    if path.exists():
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if data.get("month") != current_month:
+                data = {"month": current_month, "used": 0, "history": []}
+        except Exception:
+            data = {"month": current_month, "used": 0, "history": []}
+
+    # Increment usage
+    data["used"] = data.get("used", 0) + 1
+    data["history"] = data.get("history", []) + [datetime.now().isoformat()]
+
+    try:
+        path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+
+    # Log event
+    try:
+        from .analytics import log_event
+        log_event("meeting_quota_used", {
+            "used": data["used"],
+            "remaining": FREE_MONTHLY_MEETINGS - data["used"],
+        })
+    except Exception:
+        pass
+
+    remaining = max(0, FREE_MONTHLY_MEETINGS - data["used"])
+
+    result = {
+        "used": data["used"],
+        "remaining": remaining,
+    }
+
+    # Notice after consumption
+    if remaining == 1:
+        result["notice"] = (
+            "⚡ 이번 달 1회 남았습니다!\n"
+            "Pro 업그레이드로 무제한 사용하세요."
+        )
+    elif remaining == 0:
+        result["notice"] = (
+            "🎯 이번 달 무료 Meeting을 모두 사용했습니다.\n"
+            "Pro: 무제한 Meeting + 8명 매니저\n"
+            "→ https://polar.sh/clouvel"
+        )
+
+    return result
+
+
+# ============================================================
 # Full Pro Trial (v3.2: 7일 전체 기능 체험)
 # ============================================================
 
@@ -743,8 +1135,42 @@ def get_full_trial_status() -> Dict[str, Any]:
 
 
 # ============================================================
-# A/B 테스트 플래그 (v3.1: 전환율 실험)
+# A/B 테스트 플래그 (v3.3: 전환율 실험 확장)
 # ============================================================
+
+# Experiment configurations with multiple variants
+# v3.3: Added rollout_percent for gradual traffic rollout (Week 3)
+EXPERIMENTS = {
+    "project_limit": {
+        "variants": ["control", "variant_a", "variant_b"],
+        "description": "Project limit: 3 vs 1 vs 2 active projects",
+        "values": {"control": 3, "variant_a": 1, "variant_b": 2},
+        "rollout_percent": 50,  # Day 18: 50% rollout
+        "started_at": "2026-02-01",
+    },
+    "meeting_quota": {
+        "variants": ["control", "variant_a"],
+        "description": "Meeting quota: weekly vs monthly 3",
+        "values": {"control": "weekly", "variant_a": "monthly_3"},
+        "rollout_percent": 50,
+        "started_at": "2026-02-01",
+    },
+    "kb_retention": {
+        "variants": ["control", "variant_a"],
+        "description": "KB retention: unlimited vs 7 days",
+        "values": {"control": "unlimited", "variant_a": "7_days"},
+        "rollout_percent": 50,
+        "started_at": "2026-02-01",
+    },
+    "pain_point_message": {
+        "variants": ["control", "variant_a"],
+        "description": "Message style: simple vs detailed",
+        "values": {"control": "simple", "variant_a": "detailed"},
+        "rollout_percent": 100,  # Full rollout - low risk
+        "started_at": "2026-02-01",
+    },
+}
+
 
 def _get_ab_flags_path() -> Path:
     """Get A/B test flags file path: ~/.clouvel/ab_flags.json"""
@@ -758,13 +1184,50 @@ def _get_ab_flags_path() -> Path:
 
 
 def get_ab_group(experiment_name: str) -> str:
-    """Get A/B test group for an experiment.
+    """Get A/B test group for an experiment (legacy).
 
     Returns "control" or "treatment". Assignment is random on first call
     and persisted for consistency.
     """
-    import random
+    return get_experiment_variant(experiment_name)
 
+
+def is_in_rollout(experiment_name: str, user_id: str = None) -> bool:
+    """Check if user is in the experiment's rollout percentage.
+
+    v3.3: Gradual traffic rollout control.
+    - 10% rollout: only 10% of users see the experiment
+    - 50% rollout: 50% of users see the experiment
+    - 100% rollout: all users see the experiment
+
+    Users not in rollout get "control" behavior.
+    """
+    if user_id is None:
+        user_id = get_machine_id()
+
+    config = EXPERIMENTS.get(experiment_name, {})
+    rollout_percent = config.get("rollout_percent", 100)
+
+    # Hash user_id + experiment to get deterministic 0-99 value
+    hash_input = f"{user_id}:rollout:{experiment_name}".encode()
+    hash_value = int(hashlib.sha256(hash_input).hexdigest(), 16) % 100
+
+    return hash_value < rollout_percent
+
+
+def get_experiment_variant(experiment_name: str, user_id: str = None) -> str:
+    """Get experiment variant with deterministic assignment.
+
+    v3.3: Uses hash-based assignment for consistency across sessions.
+    Supports multiple variants per experiment and rollout control.
+
+    Args:
+        experiment_name: Name of the experiment
+        user_id: Optional user ID for deterministic assignment
+
+    Returns:
+        Variant name (e.g., "control", "variant_a", "variant_b")
+    """
     path = _get_ab_flags_path()
     data = {}
     if path.exists():
@@ -773,16 +1236,120 @@ def get_ab_group(experiment_name: str) -> str:
         except Exception:
             data = {}
 
-    if experiment_name in data:
-        return data[experiment_name]
+    # Check if already assigned
+    experiments = data.get("experiments", {})
+    if experiment_name in experiments:
+        return experiments[experiment_name]["variant"]
 
-    # Random assignment (50/50)
-    group = random.choice(["control", "treatment"])
-    data[experiment_name] = group
+    # Get experiment config
+    config = EXPERIMENTS.get(experiment_name, {
+        "variants": ["control", "treatment"],
+        "description": "Unknown experiment",
+    })
+    variants = config.get("variants", ["control", "treatment"])
+
+    # Deterministic assignment based on machine_id + experiment name
+    if user_id is None:
+        user_id = get_machine_id()
+
+    # v3.3: Check rollout percentage first
+    if not is_in_rollout(experiment_name, user_id):
+        variant = "control"  # Users not in rollout get control
+    else:
+        hash_input = f"{user_id}:{experiment_name}".encode()
+        hash_value = int(hashlib.sha256(hash_input).hexdigest(), 16)
+        variant = variants[hash_value % len(variants)]
+
+    # Save assignment
+    if "experiments" not in data:
+        data["experiments"] = {}
+    data["experiments"][experiment_name] = {
+        "variant": variant,
+        "assigned_at": datetime.now().isoformat(),
+        "user_id_hash": user_id[:8],
+    }
 
     try:
         path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
     except Exception:
         pass
 
-    return group
+    # Log assignment
+    try:
+        from .analytics import log_event
+        log_event("experiment_assigned", {
+            "experiment": experiment_name,
+            "variant": variant,
+        })
+    except Exception:
+        pass
+
+    return variant
+
+
+def get_experiment_value(experiment_name: str) -> Any:
+    """Get the actual value for the current variant.
+
+    Example:
+        value = get_experiment_value("project_limit")  # Returns 1, 2, or 3
+    """
+    variant = get_experiment_variant(experiment_name)
+    config = EXPERIMENTS.get(experiment_name, {})
+    values = config.get("values", {})
+    return values.get(variant, values.get("control"))
+
+
+def get_all_experiment_assignments() -> Dict[str, Any]:
+    """Get all experiment assignments for the current user."""
+    path = _get_ab_flags_path()
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return data.get("experiments", {})
+    except Exception:
+        return {}
+
+
+def track_conversion_event(experiment_name: str, event_type: str, metadata: Dict = None) -> None:
+    """Track a conversion event for A/B testing.
+
+    Args:
+        experiment_name: The experiment this event is for
+        event_type: Type of event (e.g., "upgrade_prompt_shown", "pro_conversion")
+        metadata: Additional data about the event
+    """
+    variant = get_experiment_variant(experiment_name)
+
+    event_data = {
+        "experiment": experiment_name,
+        "variant": variant,
+        "event_type": event_type,
+        "timestamp": datetime.now().isoformat(),
+        "metadata": metadata or {},
+    }
+
+    # Log to analytics
+    try:
+        from .analytics import log_event
+        log_event(f"ab_{event_type}", event_data)
+    except Exception:
+        pass
+
+    # Also save to local file for offline analysis
+    path = _get_ab_flags_path()
+    try:
+        data = {}
+        if path.exists():
+            data = json.loads(path.read_text(encoding="utf-8"))
+
+        if "events" not in data:
+            data["events"] = []
+
+        # Keep last 100 events
+        data["events"].append(event_data)
+        data["events"] = data["events"][-100:]
+
+        path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass

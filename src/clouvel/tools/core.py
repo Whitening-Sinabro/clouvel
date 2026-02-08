@@ -322,6 +322,15 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
     # v3.0: Project limit check (FREE = 1 project)
     project_check = register_project(str(project_path))
     if not project_check.get("allowed", True):
+        # v3.3: Track A/B conversion event
+        try:
+            from ..license_common import track_conversion_event
+            track_conversion_event("project_limit", "limit_hit", {
+                "count": project_check["count"],
+                "limit": project_check["limit"],
+            })
+        except Exception:
+            pass
         return [TextContent(type="text", text=CAN_CODE_PROJECT_LIMIT.format(
             count=project_check["count"],
             limit=project_check["limit"],
@@ -330,6 +339,12 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
 
     # v3.0: No docs folder - BLOCK for Pro, WARN for Free
     if not docs_path.exists():
+        # v3.3: Track A/B conversion event
+        try:
+            from ..license_common import track_conversion_event
+            track_conversion_event("pain_point_message", "no_docs_warn", {"path": str(path)})
+        except Exception:
+            pass
         if can_block:
             return [TextContent(type="text", text=CAN_CODE_BLOCK_NO_DOCS.format(path=path))]
         else:

@@ -112,13 +112,28 @@ async def record_decision(
             project_id=project_id
         )
 
-        return {
+        result = {
             "status": "recorded",
             "decision_id": decision_id,
             "category": category,
             "locked": locked,
             "project_id": project_id
         }
+
+        # v3.3: Apply Free tier KB limits
+        if project_path:
+            try:
+                cleanup = db.enforce_free_kb_limits(project_path)
+                if cleanup.get("enforced"):
+                    result["kb_cleanup"] = {
+                        "deleted_old": cleanup.get("deleted_old", 0),
+                        "deleted_excess": cleanup.get("deleted_excess", 0),
+                        "message": cleanup.get("message"),
+                    }
+            except Exception:
+                pass
+
+        return result
 
     except Exception as e:
         return {

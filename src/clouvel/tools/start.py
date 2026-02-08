@@ -577,7 +577,56 @@ def start(
         name = project_name or project_path.name
         today = datetime.now().strftime('%Y-%m-%d')
 
-        # Check layout access (Free=lite only, Pro=all)
+        # Handle "minimal" template specially - fastest way to unblock
+        if template == "minimal" or layout == "minimal":
+            docs_path.mkdir(parents=True, exist_ok=True)
+            minimal_content = f"""# {name} PRD
+
+> Created: {today}
+
+## Summary
+
+[What are you building? 1-2 sentences]
+
+## Acceptance Criteria
+
+- [ ] User can...
+- [ ] System should...
+- [ ] Test: ...
+
+---
+
+_Minimal PRD created by Clouvel. Expand sections as needed._
+"""
+            prd_file = docs_path / "PRD.md"
+            if not prd_file.exists():
+                prd_file.write_text(minimal_content, encoding='utf-8')
+                return {
+                    "status": "MINIMAL_CREATED",
+                    "prd_path": str(prd_file),
+                    "message": f"""✅ Minimal PRD created: {prd_file}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  PRD is ready! You can now code.
+
+  Next steps:
+  1. Fill in Summary (1-2 sentences)
+  2. Fill in Acceptance Criteria
+  3. Run can_code to verify
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 Tip: Expand PRD with more sections later:
+→ start(path=".", template="web-app", layout="standard")
+"""
+                }
+            else:
+                return {
+                    "status": "PRD_EXISTS",
+                    "prd_path": str(prd_file),
+                    "message": f"⚠️ PRD already exists: {prd_file}\n\nRun can_code to check if you can proceed."
+                }
+
+        # Check layout access (Free=lite+minimal, Pro=all)
         from ..license_common import is_developer, load_license_cache, FREE_LAYOUTS, PRO_LAYOUTS
 
         is_pro = is_developer()
@@ -596,7 +645,7 @@ def start(
 
 💎 **Pro Template Requested**
 
-You requested `{requested_layout}` layout, but Free tier only includes `lite`.
+You requested `{requested_layout}` layout, but Free tier only includes `lite` and `minimal`.
 
 **What you're missing in {requested_layout}:**
 - Input/Output Specifications (AI가 정확히 이해)
@@ -606,7 +655,7 @@ You requested `{requested_layout}` layout, but Free tier only includes `lite`.
 - Definition of Done (완료 기준)
 
 → Upgrade to Pro: https://polar.sh/clouvel
-→ Use code `FIRST01` for early adopter pricing
+→ Use code `FIRST1` for early adopter pricing
 
 ---
 """
@@ -685,37 +734,54 @@ You requested `{requested_layout}` layout, but Free tier only includes `lite`.
 
         return result
 
-    # === Check project limit (Free = 3 projects) ===
-    from ..license_common import register_project, FREE_PROJECT_LIMIT
+    # === Check project limit (Free = 1 active project) ===
+    from ..license_common import register_project, FREE_ACTIVE_PROJECT_LIMIT
 
     project_reg = register_project(str(project_path))
 
     if not project_reg["allowed"]:
+        # Use the message from register_project (Pain Point #1)
+        custom_message = project_reg.get("message", "")
+        active_projects = project_reg.get("active_projects", [])
+        active_name = Path(active_projects[0]).name if active_projects else "Unknown"
+
         return {
             "status": "PROJECT_LIMIT",
             "project_path": str(project_path),
             "count": project_reg["count"],
             "limit": project_reg["limit"],
-            "existing_projects": project_reg.get("existing_project"),
-            "message": f"""🚫 **Project Limit Reached**
+            "active_projects": active_projects,
+            "active_project_name": active_name,
+            "needs_archive": project_reg.get("needs_archive", False),
+            "message": custom_message or f"""
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🔒 Active Project Limit ({project_reg['count']}/{project_reg['limit']})
 
-Free tier allows **{FREE_PROJECT_LIMIT} projects**. You have {project_reg['count']}.
+  Currently active: {active_name}
 
-**Options:**
-1. Continue with existing project: `{project_reg.get('existing_project', 'N/A')}`
-2. Upgrade to Pro for unlimited projects
+  Free 플랜은 한 번에 하나의 프로젝트에만 집중할 수 있어요.
 
-→ Upgrade: https://polar.sh/clouvel
-→ Use code `FIRST01` for early adopter pricing ($7.99/mo)
+  선택지:
+  1️⃣ 기존 프로젝트 아카이브 후 새 프로젝트 시작
+  2️⃣ Pro로 업그레이드하여 무제한 프로젝트
 
-**Pro includes:**
-- Unlimited projects
-- standard + detailed templates (not just lite)
-- 8 C-Level manager feedback
-- One-click ship verification
-- Error learning & auto-rules
+  💡 Pro: $7.99/mo - 무제한 프로젝트 + 8명 매니저 + KB
+  → 첫 7일 무료 체험: https://polar.sh/clouvel
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """,
-            "upsell": True
+            "upsell": True,
+            "actions": [
+                {
+                    "label": f"Archive '{active_name}' and start new",
+                    "command": f"archive_project",
+                    "args": {"path": active_projects[0]} if active_projects else {}
+                },
+                {
+                    "label": "Upgrade to Pro",
+                    "command": "upgrade_pro",
+                    "url": "https://polar.sh/clouvel"
+                }
+            ]
         }
 
     result = {
@@ -860,7 +926,7 @@ Pro `detailed` template: ~700+ lines includes:
 - Error Cases 전체 열거 (할루시네이션 방지)
 - Test Scenarios & Definition of Done
 
-→ Upgrade: https://polar.sh/clouvel (code: FIRST01)
+→ Upgrade: https://polar.sh/clouvel (code: FIRST1)
 """
 
     # Check additional docs files

@@ -11,16 +11,51 @@ DOC_NAMES = {
 }
 
 # can_code messages
-CAN_CODE_BLOCK_NO_DOCS = """⛔ BLOCK | No docs folder: {path} | Fix: start(path=".") | 💎 Pro: manager 10, ship 5
+CAN_CODE_BLOCK_NO_DOCS = """⛔ BLOCK | No docs folder: {path}
 
-Why spec first? 10 min spec → 2 hours saved (no rework)
-Next: Run start(path=".") to create PRD template
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Why blocked? PRD-first prevents 2+ hours of rework.
+
+  🚀 Quick Fix (copy & run):
+
+  Option 1: Create PRD template
+  → start(path=".", init=True)
+
+  Option 2: Minimal PRD (fastest)
+  → start(path=".", template="minimal")
+
+  Option 3: Full PRD with guide
+  → start(path=".", guide=True)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After creating PRD, fill in:
+1. ## Summary - What are you building?
+2. ## Acceptance Criteria - When is it done?
+
+Then run can_code again to proceed.
 """
 
-CAN_CODE_BLOCK_MISSING_DOCS = """⛔ BLOCK | Missing: {missing_items} | Fix: start(path=".") | 💎 Pro: manager 10, ship 5
+CAN_CODE_BLOCK_MISSING_DOCS = """⛔ BLOCK | Missing: {missing_items}
 
-Found: {detected_list} | Missing (required): {missing_list}
-Next: Write PRD with Acceptance Criteria section first
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Found: {detected_list}
+  Missing (required): {missing_list}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 Quick Fix:
+
+1. If PRD exists but missing Acceptance Criteria:
+   Add this section to your PRD:
+
+   ## Acceptance Criteria
+   - [ ] User can...
+   - [ ] System should...
+   - [ ] Test: ...
+
+2. If no PRD at all:
+   → start(path=".", template="minimal")
+
+Then run can_code again to proceed.
 """
 
 CAN_CODE_PASS_WITH_WARN = "✅ PASS | ⚠️ WARN {warn_count} | Required: {found_docs} ✓{test_info} | Missing recommended: {warn_summary}{prd_rule}\n\n💎 Pro: `ship` auto-generates evidence & completion report → https://polar.sh/clouvel"
@@ -69,10 +104,21 @@ Pro: Full PRD validation + code blocking + 8 C-Level managers
 
 CAN_CODE_WARN_ACCUMULATED = """
 ---
-{count} warnings and counting.
-Each warning = a spec gap AI will guess at.
-Pro BLOCK mode stops guessing before it starts.
-$1 first month -> https://polar.sh/clouvel (code: FIRST1)
+⚠️ PRD 경고 {count}회 누적
+
+"문서 없이 코딩 시작? 차단됩니다." - Clouvel의 철학
+
+Free에서는 경고만 하지만, 경고가 쌓이면 방향을 잃기 쉬워요.
+지금까지 {count}번 경고 = {count}번의 "AI가 추측한" 구현.
+
+💡 할 수 있는 것:
+- docs/PRD.md 작성: `start(path, guide=True)`
+- Pro BLOCK 모드로 처음부터 실수 방지
+
+Pro BLOCK은 PRD 없으면 시작 자체가 안 됨.
+"이거 왜 만들었지?" 하는 일이 없어요.
+
+→ https://polar.sh/clouvel ($7.99/mo, 첫 7일 무료)
 """
 
 CAN_CODE_KB_TRIAL_EXPIRED = """

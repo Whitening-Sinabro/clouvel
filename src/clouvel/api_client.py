@@ -438,7 +438,7 @@ def _fallback_response(error_message: str) -> Dict[str, Any]:
 ---
 
 **💎 Pro: 7 more managers** (CTO, QA, CDO, CMO, CFO, CSO, ERROR)
-→ https://polar.sh/clouvel (code: FIRST01)
+→ https://polar.sh/clouvel (code: FIRST1)
 """,
         "offline": True,
         "missed_perspectives": {

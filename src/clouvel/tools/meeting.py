@@ -43,6 +43,23 @@ except ImportError:
         "ERROR": "장애 대응, 롤백 전략, 모니터링 관점",
     }
 
+# v3.1: Topic-specific Pro upsell messages
+TOPIC_UPSELL = {
+    "security": "CSO can review auth tokens, XSS/SQL injection, and compliance gaps",
+    "auth": "CSO audits auth flow security + CTO reviews session management architecture",
+    "performance": "CTO advises on DB indexing/caching + QA creates load test scenarios",
+    "api": "CTO reviews API versioning strategy + CSO checks rate limiting",
+    "payment": "CFO optimizes payment fees + CSO ensures PCI DSS compliance",
+    "error": "ERROR creates incident runbooks + QA covers edge case scenarios",
+    "launch": "CMO reviews go-to-market + CFO validates unit economics",
+    "ui": "CDO reviews data-driven UX + CMO checks brand consistency",
+    "feature": "CTO evaluates technical debt + QA plans regression testing",
+    "design": "CDO reviews information architecture + CMO aligns with brand",
+    "cost": "CFO analyzes cost structure + CTO identifies optimization opportunities",
+    "maintenance": "CTO plans technical debt reduction + ERROR reviews monitoring gaps",
+}
+
+
 # License check
 def _can_use_pro(project_path: str = None) -> bool:
     """Check if user can use Pro features."""
@@ -129,15 +146,49 @@ async def meeting(
     # v3.0: Filter managers based on license tier
     is_pro = _can_use_pro(project_path)
     missed_perspectives = []
+    weekly_trial_used = False
 
     if not is_pro:
-        # Track Pro-only managers that were requested but filtered
-        missed_perspectives = [m for m in managers if m in PRO_ONLY_MANAGERS]
-        # Filter to Free tier only (PM only)
-        managers = [m for m in managers if m in FREE_MANAGERS]
-        # Ensure at least PM is included
-        if not managers:
-            managers = FREE_MANAGERS.copy()
+        # v3.3: Monthly meeting quota (3 times per month)
+        monthly_quota_ok = False
+        quota_notice = None
+
+        try:
+            from ..license_common import check_meeting_quota, consume_meeting_quota
+            quota = check_meeting_quota()
+
+            if quota["allowed"]:
+                # Consume one meeting from quota
+                consume_result = consume_meeting_quota()
+                monthly_quota_ok = True
+                quota_notice = consume_result.get("notice")
+            else:
+                # v3.3: Track A/B conversion event
+                try:
+                    from ..license_common import track_conversion_event
+                    track_conversion_event("meeting_quota", "quota_exhausted", {
+                        "used": quota.get("used", 0),
+                        "limit": quota.get("limit", 3),
+                    })
+                except Exception:
+                    pass
+                # Quota exhausted - return error message
+                return [TextContent(type="text", text=quota.get("message", "월별 Meeting 할당량을 모두 사용했습니다."))]
+        except ImportError:
+            # Fallback: allow if import fails
+            monthly_quota_ok = True
+
+        if monthly_quota_ok:
+            # Full meeting allowed - no filtering
+            missed_perspectives = []
+        else:
+            # Track Pro-only managers that were requested but filtered
+            missed_perspectives = [m for m in managers if m in PRO_ONLY_MANAGERS]
+            # Filter to Free tier only (PM only)
+            managers = [m for m in managers if m in FREE_MANAGERS]
+            # Ensure at least PM is included
+            if not managers:
+                managers = FREE_MANAGERS.copy()
 
     # Get enriched KB context (Phase 3)
     kb_context = get_enriched_kb_context(context, topic, project_path)
@@ -155,21 +206,41 @@ async def meeting(
     # Add variant info footer for tracking
     footer = f"\n\n<!-- meeting_variant: {variant} -->"
 
-    # v3.0: Add missed perspectives hint for Free users
+    # v3.1: Add topic-specific Pro hint for Free users
     pro_hint = ""
     if missed_perspectives:
+        # Topic-specific contextual upsell
+        detected = topic or detect_topic(context)
+        topic_specific = TOPIC_UPSELL.get(detected, "")
+
         missed_descriptions = [
             f"- {m}: {PRO_ONLY_DESCRIPTIONS.get(m, '')}"
             for m in missed_perspectives
         ]
-        pro_hint = f"""
+
+        if topic_specific:
+            pro_hint = f"""
 
 ---
 
-💡 **Pro에서 추가 관점 제공**:
+With Pro, {topic_specific}
+
+Missed perspectives:
 {chr(10).join(missed_descriptions)}
 
-[Clouvel Pro](https://whitening-sinabro.github.io/clouvel/) 업그레이드로 8명 전체 매니저 피드백을 받으세요.
+Pro: $7.99/mo - First month $1 with code FIRST1
+-> https://polar.sh/clouvel
+"""
+        else:
+            pro_hint = f"""
+
+---
+
+Missed perspectives:
+{chr(10).join(missed_descriptions)}
+
+Pro: $7.99/mo - First month $1 with code FIRST1
+-> https://polar.sh/clouvel
 """
 
     # Auto-save meeting for feedback (if project_path provided)
@@ -225,7 +296,21 @@ rate_meeting(project_path="{project_path}", meeting_id="{meeting_id}", rating=4,
 ```
 """
 
-    return [TextContent(type="text", text=prompt + footer + pro_hint + rating_prompt)]
+    # v3.1: Log upgrade message shown event
+    if pro_hint and not is_pro:
+        try:
+            from ..analytics import log_event
+            detected_topic = topic or detect_topic(context)
+            log_event("upgrade_message_shown", {"source": "meeting", "topic": detected_topic})
+        except Exception:
+            pass
+
+    # v3.1: Add weekly trial badge
+    weekly_badge = ""
+    if not is_pro and weekly_trial_used:
+        weekly_badge = "\n\n---\n\nThis week's free Full C-Level Meeting trial. Next week's trial resets automatically.\nPro: Unlimited full meetings -> https://polar.sh/clouvel (code: FIRST1)\n"
+
+    return [TextContent(type="text", text=prompt + footer + pro_hint + weekly_badge + rating_prompt)]
 
 
 async def meeting_topics() -> List[TextContent]:

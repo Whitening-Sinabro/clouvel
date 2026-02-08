@@ -208,6 +208,39 @@ TOOL_DEFINITIONS = [
             }
         }
     ),
+    Tool(
+        name="get_ab_report",
+        description="A/B testing analytics report. Shows experiment results, conversion rates, and recommendations. (v3.3)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "days": {"type": "integer", "description": "Analysis period in days (default: 7)"},
+                "experiment": {"type": "string", "description": "Specific experiment name (optional, shows all if not specified)"}
+            }
+        }
+    ),
+    Tool(
+        name="get_monthly_report",
+        description="Monthly KPI dashboard with conversion funnel, pain point effectiveness, and recommendations. (v3.3 Week 4)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "days": {"type": "integer", "description": "Analysis period in days (default: 30)"}
+            }
+        }
+    ),
+    Tool(
+        name="decide_winner",
+        description="Analyze A/B test and decide if a winner can be promoted to 100% rollout. (v3.3 Week 4)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "experiment": {"type": "string", "description": "Experiment name to analyze"},
+                "min_confidence": {"type": "string", "enum": ["low", "medium", "high"], "description": "Minimum confidence level required (default: medium)"}
+            },
+            "required": ["experiment"]
+        }
+    ),
 
     # === Setup Tools ===
     Tool(
@@ -478,6 +511,27 @@ TOOL_DEFINITIONS = [
                 "project_type": {"type": "string", "description": "Project type (optional)"}
             },
             "required": ["path", "content"]
+        }
+    ),
+
+    # === Project Management Tools (Free, v3.3) ===
+    Tool(
+        name="archive_project",
+        description="Archive a project to free up the active slot. Free tier allows 1 active project. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project path to archive"}
+            },
+            "required": ["path"]
+        }
+    ),
+    Tool(
+        name="list_projects",
+        description="List all registered projects with their status (active/archived). (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {}
         }
     ),
 
@@ -1119,6 +1173,10 @@ TOOL_HANDLERS = {
     "start": lambda args: _wrap_start(args),
     "save_prd": lambda args: _wrap_save_prd(args),
 
+    # Project Management (Free, v3.3)
+    "archive_project": lambda args: _wrap_archive_project(args),
+    "list_projects": lambda args: _wrap_list_projects(args),
+
     # Knowledge (Free, v1.4)
     "record_decision": lambda args: _wrap_record_decision(args),
     "record_location": lambda args: _wrap_record_location(args),
@@ -1320,6 +1378,71 @@ async def _wrap_save_prd(args: dict) -> list[TextContent]:
 
         return [TextContent(type="text", text=output)]
     return [TextContent(type="text", text=str(result))]
+
+
+# === Project Management Wrappers (Free, v3.3) ===
+
+async def _wrap_archive_project(args: dict) -> list[TextContent]:
+    """archive_project tool wrapper"""
+    from .license_common import archive_project
+    result = archive_project(args.get("path", ""))
+
+    if isinstance(result, dict):
+        if result.get("success"):
+            output = f"""# 📦 Archive Project
+
+{result.get('message', '')}
+
+**Archived at**: {result.get('archived_at', 'N/A')}
+
+Now you can start a new project with `start` tool.
+"""
+        else:
+            output = f"""# ❌ Archive Failed
+
+{result.get('message', '')}
+"""
+        return [TextContent(type="text", text=output)]
+    return [TextContent(type="text", text=str(result))]
+
+
+async def _wrap_list_projects(args: dict) -> list[TextContent]:
+    """list_projects tool wrapper"""
+    from .license_common import list_projects
+    result = list_projects()
+
+    output = f"""# 📋 Project List
+
+**Active**: {result.get('active_count', 0)}/{result.get('limit', 1)}
+**Archived**: {result.get('archived_count', 0)}
+**Tier**: {'Pro' if result.get('is_pro') else 'Free'}
+
+## Active Projects
+"""
+    active = result.get("active", [])
+    if active:
+        for p in active:
+            output += f"- **{p.get('name', 'Unknown')}** ({p.get('path', 'N/A')})\n"
+    else:
+        output += "_No active projects_\n"
+
+    archived = result.get("archived", [])
+    if archived:
+        output += "\n## Archived Projects\n"
+        for p in archived:
+            output += f"- {p.get('name', 'Unknown')} ({p.get('path', 'N/A')})\n"
+
+    if not result.get('is_pro'):
+        output += f"""
+---
+
+💡 **Free tier**: 1 active project at a time.
+To switch projects, archive the current one first.
+
+**Upgrade to Pro** for unlimited projects: https://polar.sh/clouvel
+"""
+
+    return [TextContent(type="text", text=output)]
 
 
 # === Knowledge Base Wrappers (Free, v1.4) ===
@@ -2160,6 +2283,21 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
     if name == "get_analytics":
         return await _get_analytics(arguments.get("path", None), arguments.get("days", 30))
 
+    # get_ab_report 특별 처리 (v3.3)
+    if name == "get_ab_report":
+        return await _get_ab_report(arguments.get("days", 7), arguments.get("experiment"))
+
+    # get_monthly_report 특별 처리 (v3.3 Week 4)
+    if name == "get_monthly_report":
+        return await _get_monthly_report(arguments.get("days", 30))
+
+    # decide_winner 특별 처리 (v3.3 Week 4)
+    if name == "decide_winner":
+        return await _decide_winner(
+            arguments.get("experiment", ""),
+            arguments.get("min_confidence", "medium")
+        )
+
     # 핸들러 실행
     handler = TOOL_HANDLERS.get(name)
     if handler:
@@ -2185,6 +2323,88 @@ async def _get_analytics(path: str, days: int) -> list[TextContent]:
     """Tool usage statistics"""
     stats = get_stats(days=days, project_path=path)
     return [TextContent(type="text", text=format_stats(stats))]
+
+
+async def _get_ab_report(days: int, experiment: str = None) -> list[TextContent]:
+    """A/B testing analytics report (v3.3)"""
+    from .analytics import get_ab_report, format_ab_report, analyze_ab_experiment
+
+    if experiment:
+        # Single experiment analysis
+        analysis = analyze_ab_experiment(experiment, days)
+        lines = [
+            f"# A/B Test: {experiment}",
+            f"Period: Last {days} days",
+            "",
+        ]
+        if analysis["variants"]:
+            lines.append("| Variant | Impressions | Conversions | Rate |")
+            lines.append("|---------|-------------|-------------|------|")
+            for variant, data in analysis["variants"].items():
+                winner = " *" if variant == analysis.get("winner") else ""
+                lines.append(
+                    f"| {variant}{winner} | {data['impressions']} | "
+                    f"{data['conversions']} | {data['rate']}% |"
+                )
+            lines.append("")
+            lines.append(f"**Uplift:** {analysis['uplift']:+.1f}%")
+            lines.append(f"**Confidence:** {analysis['confidence']}")
+        else:
+            lines.append("_No data collected yet_")
+        return [TextContent(type="text", text="\n".join(lines))]
+    else:
+        # Full report
+        report = get_ab_report(days)
+        return [TextContent(type="text", text=format_ab_report(report))]
+
+
+async def _get_monthly_report(days: int) -> list[TextContent]:
+    """Monthly KPI dashboard (v3.3 Week 4)"""
+    from .analytics import get_monthly_kpis, format_monthly_report
+
+    kpis = get_monthly_kpis(days)
+    return [TextContent(type="text", text=format_monthly_report(kpis))]
+
+
+async def _decide_winner(experiment: str, min_confidence: str) -> list[TextContent]:
+    """Decide if experiment winner can be promoted (v3.3 Week 4)"""
+    from .analytics import decide_experiment_winner, promote_winning_variant
+
+    if not experiment:
+        return [TextContent(type="text", text="Error: experiment name is required")]
+
+    decision = decide_experiment_winner(experiment, min_confidence)
+    promotion = promote_winning_variant(experiment)
+
+    lines = [
+        f"# Experiment Decision: {experiment}",
+        "",
+        f"## Analysis",
+        f"- Decision: **{decision['decision'].upper()}**",
+        f"- Reason: {decision['reason']}",
+        "",
+    ]
+
+    if decision["ready_for_rollout"]:
+        lines.extend([
+            f"## Ready for Promotion",
+            f"- Winner: **{decision['winner']}**",
+            f"- Winner value: `{promotion.get('winner_value')}`",
+            f"- Previous rollout: {promotion.get('previous_rollout')}%",
+            f"- New rollout: {promotion.get('new_rollout')}%",
+            "",
+            "### Code Change Required:",
+            "```python",
+            promotion.get("code_change", "").strip(),
+            "```",
+        ])
+    else:
+        lines.extend([
+            f"## Action Required",
+            f"- {promotion.get('action_required', 'Continue collecting data')}",
+        ])
+
+    return [TextContent(type="text", text="\n".join(lines))]
 
 
 # ============================================================

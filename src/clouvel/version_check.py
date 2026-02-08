@@ -204,7 +204,7 @@ PRO tier is now heavier (full protection):
   - can_code: BLOCK (enforced)
   - Projects: Unlimited
 
-Upgrade: https://polar.sh/clouvel (code: FIRST01)
+Upgrade: https://polar.sh/clouvel (code: FIRST1)
 
 ================================================
 """
@@ -224,7 +224,7 @@ PRO 티어가 강력해졌습니다 (완전 보호):
   - can_code: BLOCK (강제)
   - 프로젝트: 무제한
 
-업그레이드: https://polar.sh/clouvel (코드: FIRST01)
+업그레이드: https://polar.sh/clouvel (코드: FIRST1)
 
 ================================================
 """

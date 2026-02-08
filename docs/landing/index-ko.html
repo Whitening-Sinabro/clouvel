@@ -599,7 +599,7 @@
               </div>
               <div class="space-y-2 text-sm">
                 <div class="flex items-center gap-2 text-slate-300">
-                  <span class="text-emerald-400">PM</span> 제품 관점
+                  <span class="text-emerald-400">✓</span> <span class="text-emerald-400">PM</span> 제품 관점
                 </div>
                 <div class="flex items-center gap-2 text-slate-500 line-through">
                   <span>CTO</span> 기술 검토
@@ -607,7 +607,17 @@
                 <div class="flex items-center gap-2 text-slate-500 line-through">
                   <span>QA</span> 테스트 커버리지
                 </div>
-                <div class="pt-2 text-slate-500 text-xs">Light 모드 - 경고만, 차단 안 함</div>
+                <div class="pt-3 border-t border-slate-700 mt-3 space-y-1.5">
+                  <div class="flex items-center gap-2 text-yellow-400 text-xs">
+                    <span>⚠</span> 1개 활성 프로젝트
+                  </div>
+                  <div class="flex items-center gap-2 text-yellow-400 text-xs">
+                    <span>⚠</span> 월 3회 회의
+                  </div>
+                  <div class="flex items-center gap-2 text-yellow-400 text-xs">
+                    <span>⚠</span> KB: 7일 / 50개
+                  </div>
+                </div>
               </div>
             </div>
             <div class="bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-xl p-6 border border-purple-500/30">
@@ -640,6 +650,17 @@
                 </div>
                 <div class="flex items-center gap-2 text-purple-300">
                   <span class="text-purple-400">+ ERROR</span> 리스크 & 실패 모드
+                </div>
+                <div class="pt-3 border-t border-purple-500/30 mt-3 space-y-1.5">
+                  <div class="flex items-center gap-2 text-emerald-400 text-xs font-medium">
+                    <span>∞</span> 무제한 프로젝트
+                  </div>
+                  <div class="flex items-center gap-2 text-emerald-400 text-xs font-medium">
+                    <span>∞</span> 무제한 회의
+                  </div>
+                  <div class="flex items-center gap-2 text-emerald-400 text-xs font-medium">
+                    <span>∞</span> KB: 영구 보관 / 무제한
+                  </div>
                 </div>
               </div>
             </div>
@@ -1142,7 +1163,7 @@
               </li>
               <li class="flex items-center gap-2">
                 <svg
-                  class="w-4 h-4 text-emerald-500 shrink-0"
+                  class="w-4 h-4 text-yellow-500 shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1151,10 +1172,42 @@
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M5 13l4 4L19 7"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                   />
                 </svg>
-                <span class="text-emerald-700 font-medium">2개 프로젝트</span>
+                <span class="text-yellow-600 font-medium">1개 활성 프로젝트 <span class="text-xs">(아카이브로 전환)</span></span>
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-4 h-4 text-yellow-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+                <span class="text-yellow-600 font-medium">월 3회 회의</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-4 h-4 text-yellow-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+                <span class="text-yellow-600 font-medium">KB: 7일 보관 <span class="text-xs">(최대 50개)</span></span>
               </li>
               <li class="flex items-center gap-2">
                 <svg

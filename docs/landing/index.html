@@ -600,7 +600,7 @@
               </div>
               <div class="space-y-2 text-sm">
                 <div class="flex items-center gap-2 text-slate-300">
-                  <span class="text-emerald-400">PM</span> Product perspective
+                  <span class="text-emerald-400">✓</span> <span class="text-emerald-400">PM</span> Product perspective
                 </div>
                 <div class="flex items-center gap-2 text-slate-500 line-through">
                   <span>CTO</span> Technical review
@@ -608,7 +608,17 @@
                 <div class="flex items-center gap-2 text-slate-500 line-through">
                   <span>QA</span> Test coverage
                 </div>
-                <div class="pt-2 text-slate-500 text-xs">Light mode - warns but doesn't block</div>
+                <div class="pt-3 border-t border-slate-700 mt-3 space-y-1.5">
+                  <div class="flex items-center gap-2 text-yellow-400 text-xs">
+                    <span>⚠</span> 1 active project
+                  </div>
+                  <div class="flex items-center gap-2 text-yellow-400 text-xs">
+                    <span>⚠</span> 3 meetings/month
+                  </div>
+                  <div class="flex items-center gap-2 text-yellow-400 text-xs">
+                    <span>⚠</span> KB: 7 days / 50 items
+                  </div>
+                </div>
               </div>
             </div>
             <div class="bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-xl p-6 border border-purple-500/30">
@@ -641,6 +651,17 @@
                 </div>
                 <div class="flex items-center gap-2 text-purple-300">
                   <span class="text-purple-400">+ ERROR</span> Risk & failure modes
+                </div>
+                <div class="pt-3 border-t border-purple-500/30 mt-3 space-y-1.5">
+                  <div class="flex items-center gap-2 text-emerald-400 text-xs font-medium">
+                    <span>∞</span> Unlimited projects
+                  </div>
+                  <div class="flex items-center gap-2 text-emerald-400 text-xs font-medium">
+                    <span>∞</span> Unlimited meetings
+                  </div>
+                  <div class="flex items-center gap-2 text-emerald-400 text-xs font-medium">
+                    <span>∞</span> KB: Forever / No limit
+                  </div>
                 </div>
               </div>
             </div>
@@ -1143,7 +1164,7 @@
               </li>
               <li class="flex items-center gap-2">
                 <svg
-                  class="w-4 h-4 text-emerald-500 shrink-0"
+                  class="w-4 h-4 text-yellow-500 shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1152,10 +1173,42 @@
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M5 13l4 4L19 7"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                   />
                 </svg>
-                <span class="text-emerald-700 font-medium">2 projects</span>
+                <span class="text-yellow-600 font-medium">1 active project <span class="text-xs">(archive to switch)</span></span>
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-4 h-4 text-yellow-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+                <span class="text-yellow-600 font-medium">3 meetings/month</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  class="w-4 h-4 text-yellow-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+                <span class="text-yellow-600 font-medium">KB: 7-day retention <span class="text-xs">(50 items max)</span></span>
               </li>
               <li class="flex items-center gap-2">
                 <svg

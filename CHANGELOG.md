@@ -5,6 +5,29 @@ All notable changes to Clouvel will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-02-09 (Gate → Memory Pivot)
+
+### Changed
+- **Repositioning**: Gate(enforcement) → Memory(remembrance) pivot
+  - "AI makes it fast. Clouvel makes it right."
+  - "Free to Act, Paid to Remember"
+- **Version Reset**: v4.1 → v1.0.0 (pivot baseline)
+
+### Added
+- **Regression Memory Phase 1+2**: 3-stage error matching engine + management tools
+  - `memory_status`, `memory_list`, `memory_search`, `memory_archive`, `memory_report`
+  - Auto-stale detection for outdated memories
+  - error_record/error_check integration with regression matching
+- **Context Checkpoint**: `context_save` / `context_load` for session continuity
+- **PRD Quality Scoring**: Automated PRD completeness evaluation (Phase 1)
+- **Cross-Project Memory Transfer**: Knowledge transfer between projects
+
+---
+
+## Pre-Pivot (Gate Era)
+
+> Versions below are from the enforcement-focused era before the Memory pivot.
+
 ## [1.9.0] - 2026-01-26
 
 ### Added
@@ -231,7 +254,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rules system (`init_rules`, `get_rule`, `add_rule`)
 - Verification tools (`verify`, `gate`, `handoff`)
 
-## [1.0.0] - 2026-01-18
+## [0.1.0] - 2026-01-18
 
 ### Added
 - Initial release

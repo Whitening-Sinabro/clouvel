@@ -1,16 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Clouvel MCP Server v1.3.0
-MCP server that enforces vibe coding process
-
-v1.2 new tools:
-- start: Project onboarding + PRD enforcement (Free)
-- manager: 8 C-Level managers collaborative feedback (Pro)
-- ship: One-click test→verify→evidence generation (Pro)
+Clouvel MCP Server v1.0.0
+MCP server that remembers AI mistakes and prevents regressions
 
 Free version - For Pro features, see clouvel-pro package
-
-v3.1: Runtime entitlement bootstrap (env var timing fix).
 """
 
 import os

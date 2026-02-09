@@ -4,8 +4,8 @@ from src.api import docs_router, guide_router
 
 app = FastAPI(
     title="Clouvel",
-    description="바이브코딩 프로세스를 강제하는 API",
-    version="0.1.0"
+    description="AI 실수를 기억하고 재발을 방지하는 API",
+    version="1.0.0"
 )
 
 app.add_middleware(
@@ -24,7 +24,7 @@ app.include_router(guide_router)
 def root():
     return {
         "name": "Clouvel",
-        "version": "0.1.0",
+        "version": "1.0.0",
         "status": "running",
         "endpoints": [
             "/docs/scan",

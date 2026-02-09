@@ -1,6 +1,6 @@
 # Clouvel 현재 상태
 
-> **마지막 업데이트**: 2026-02-09 (v4.0 Phase 1 - Regression Memory 구현 완료)
+> **마지막 업데이트**: 2026-02-09 (v1.0.0 — Gate→Memory 피봇 리브랜딩)
 
 ---
 
@@ -20,7 +20,7 @@
 
 | 항목              | 상태                              |
 | ----------------- | --------------------------------- |
-| **clouvel**       | v4.0 Phase 1 Regression Memory 완료 |
+| **clouvel**       | v1.0.0 (피봇 후 리셋, Cross-Project Memory Transfer 포함) |
 | **전환율 개선**   | ✅ 4주 플랜 전체 완료 (Week 1-4) |
 | **아키텍처**      | ✅ Manager Worker API 전환 완료   |
 | **문서 시스템**   | ✅ SSOT 완성 (ENTRYPOINTS + SIDE_EFFECTS + SMOKE_LOGS) |
@@ -33,29 +33,44 @@
 
 ---
 
-## 오늘 완료 (2026-02-09) - v4.0 Phase 2 Regression Memory
+## 오늘 완료 (2026-02-09) - v1.0.0 Regression Memory + 버전 리브랜딩
 
-### Phase 2: 메모리 관리 도구 + 리포트 + Auto-Stale (6단계)
+### Phase 2: 메모리 관리 도구 + 리포트 + Auto-Stale
 
-1. **`db/regression.py`** — search_memories (FTS5+카테고리), mark_stale_memories (0-hit auto-archive), get_memory_report (통계+시간절약)
+1. **`db/regression.py`** — search_memories, mark_stale_memories, get_memory_report
 2. **`db/__init__.py`** — 3개 함수 export 추가
-3. **`tools/errors.py`** — memory_list, memory_search, memory_archive, memory_report 4개 도구 + memory_status에 auto-stale 트리거
+3. **`tools/errors.py`** — memory_list, memory_search, memory_archive, memory_report + memory_status auto-stale
 4. **`tools/__init__.py`** — 4개 함수 export + fallback
 5. **`server.py`** — 4개 Tool 정의 + 핸들러 + 래퍼 + import
 6. **`tests/test_db_regression.py`** — 17개 테스트 추가 (총 52 tests)
 
-**테스트**: 1457 passed, 10 skipped, 0 failed
+### Phase 1: 3단계 매칭 엔진 + error_record/check 통합
 
-### Phase 1 (이전)
+1. **`db/schema.py`** — regression_memory 테이블 + FTS5 + 인덱스 4개
+2. **`db/regression.py`** — CRUD + normalize_error_signature + 3단계 매칭 엔진 + stats
+3. **`tools/errors.py`** — error_record 자동 메모리 생성, error_check regression 매칭, memory_status
+4. **`server.py`** — memory_status Tool 정의 + 핸들러 + wrapper
 
-**커밋**: `ee1ab88 feat(v4.0): regression memory - Phase 1 implementation`
+### 검증 완료
+
+- **pytest**: 1457 passed, 10 skipped, 0 failed
+- **MCP 수동 테스트**: 6개 전부 PASS (memory_list/search/archive/report/status + auto-stale)
+- **보안 체크**: 민감 파일 없음
+- **Import 규칙**: 위반 없음
+
+### 푸시된 커밋 (4개)
+
+```
+ee1ab88 feat(v4.0): regression memory - Phase 1 implementation
+0be9aff feat(v4.0): version bump + Gate→Memory repositioning
+7b1b7b7 feat(v4.1): regression memory Phase 2 - management tools + report + auto-stale
+f6b8449 docs: update README with Phase 2 memory tools
+```
 
 ### 다음 할 일
 
-- [ ] 버전 범프 (pyproject.toml v4.0)
-- [ ] Phase 2 커밋
-- [ ] PRD/README 리포지셔닝 반영 (Gate → Memory)
-- [ ] MCP 서버 재시작 후 memory_status 수동 검증
+- [ ] PyPI 배포 (v1.0.0) — 타이밍 미정
+- [ ] v1.x 기획 — 크로스 프로젝트 기억 전이 (transfer)
 
 ---
 

@@ -86,7 +86,11 @@ from .tools import (
 
 # Error Learning tools (Pro feature - separate import)
 try:
-    from .tools.errors import error_record, error_check, error_learn, memory_status
+    from .tools.errors import (
+        error_record, error_check, error_learn, memory_status,
+        # v4.0 Phase 2
+        memory_list, memory_search, memory_archive, memory_report,
+    )
     _HAS_ERROR_TOOLS = True
 except ImportError:
     _HAS_ERROR_TOOLS = False
@@ -94,6 +98,10 @@ except ImportError:
     error_check = None
     error_learn = None
     memory_status = None
+    memory_list = None
+    memory_search = None
+    memory_archive = None
+    memory_report = None
 # License module import (use Free stub if Pro version not available)
 try:
     from .license import activate_license_cli, get_license_status
@@ -804,6 +812,58 @@ TOOL_DEFINITIONS = [
             "required": ["path"]
         }
     ),
+    Tool(
+        name="memory_list",
+        description="List regression memories. Filter by category, show archived. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project root path"},
+                "category": {"type": "string", "description": "Filter by error category (optional)"},
+                "include_archived": {"type": "boolean", "description": "Include archived memories (default false)"},
+                "limit": {"type": "integer", "description": "Max results (default 20)"},
+            },
+            "required": ["path"]
+        }
+    ),
+    Tool(
+        name="memory_search",
+        description="Search regression memories by keyword. FTS5 full-text search on root cause, prevention rules, and task descriptions. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project root path"},
+                "query": {"type": "string", "description": "Search keyword"},
+                "category": {"type": "string", "description": "Filter by category (optional)"},
+            },
+            "required": ["path", "query"]
+        }
+    ),
+    Tool(
+        name="memory_archive",
+        description="Archive or unarchive a regression memory. Archived memories are excluded from matching. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project root path"},
+                "memory_id": {"type": "integer", "description": "Memory ID to archive/unarchive"},
+                "action": {"type": "string", "enum": ["archive", "unarchive"], "description": "Action (default: archive)"},
+            },
+            "required": ["path", "memory_id"]
+        }
+    ),
+    Tool(
+        name="memory_report",
+        description="Monthly regression memory report. Shows savings, prevention count, top patterns, and time saved estimate. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project root path"},
+                "days": {"type": "integer", "description": "Report period in days (default 30)"},
+            },
+            "required": ["path"]
+        }
+    ),
 
     # === License Tools ===
     Tool(
@@ -1218,6 +1278,10 @@ TOOL_HANDLERS = {
     "error_check": lambda args: _wrap_error_check(args),
     "error_learn": lambda args: _wrap_error_learn(args),
     "memory_status": lambda args: _wrap_memory_status(args),
+    "memory_list": lambda args: _wrap_memory_list(args),
+    "memory_search": lambda args: _wrap_memory_search(args),
+    "memory_archive": lambda args: _wrap_memory_archive(args),
+    "memory_report": lambda args: _wrap_memory_report(args),
 
     # License
     "activate_license": lambda args: _wrap_activate_license(args),
@@ -2015,6 +2079,50 @@ https://polar.sh/clouvel
 """)]
     return await memory_status(
         path=args.get("path", ""),
+    )
+
+
+async def _wrap_memory_list(args: dict) -> list[TextContent]:
+    """memory_list tool wrapper"""
+    if not _HAS_ERROR_TOOLS or memory_list is None:
+        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires a Pro license.\n\n## Purchase\nhttps://polar.sh/clouvel\n")]
+    return await memory_list(
+        path=args.get("path", ""),
+        category=args.get("category", ""),
+        include_archived=args.get("include_archived", False),
+        limit=args.get("limit", 20),
+    )
+
+
+async def _wrap_memory_search(args: dict) -> list[TextContent]:
+    """memory_search tool wrapper"""
+    if not _HAS_ERROR_TOOLS or memory_search is None:
+        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires a Pro license.\n\n## Purchase\nhttps://polar.sh/clouvel\n")]
+    return await memory_search(
+        path=args.get("path", ""),
+        query=args.get("query", ""),
+        category=args.get("category", ""),
+    )
+
+
+async def _wrap_memory_archive(args: dict) -> list[TextContent]:
+    """memory_archive tool wrapper"""
+    if not _HAS_ERROR_TOOLS or memory_archive is None:
+        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires a Pro license.\n\n## Purchase\nhttps://polar.sh/clouvel\n")]
+    return await memory_archive(
+        path=args.get("path", ""),
+        memory_id=args.get("memory_id", 0),
+        action=args.get("action", "archive"),
+    )
+
+
+async def _wrap_memory_report(args: dict) -> list[TextContent]:
+    """memory_report tool wrapper"""
+    if not _HAS_ERROR_TOOLS or memory_report is None:
+        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires a Pro license.\n\n## Purchase\nhttps://polar.sh/clouvel\n")]
+    return await memory_report(
+        path=args.get("path", ""),
+        days=args.get("days", 30),
     )
 
 

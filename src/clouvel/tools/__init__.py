@@ -183,6 +183,11 @@ try:
         error_stats,
         # v4.0 Regression Memory
         memory_status,
+        # v4.0 Phase 2
+        memory_list,
+        memory_search,
+        memory_archive,
+        memory_report,
     )
     _HAS_ERRORS = True
 except ImportError:
@@ -198,6 +203,10 @@ except ImportError:
     error_get = None
     error_stats = None
     memory_status = None
+    memory_list = None
+    memory_search = None
+    memory_archive = None
+    memory_report = None
 
 # Pro 기능은 clouvel-pro 패키지로 분리됨
 # pip install clouvel-pro
@@ -236,6 +245,7 @@ __all__ = [
     "error_record", "error_check", "error_learn", "log_error", "analyze_error", "get_error_summary",
     "error_search", "error_resolve", "error_get", "error_stats",
     "memory_status",
+    "memory_list", "memory_search", "memory_archive", "memory_report",
     # architecture (v1.8 + v3.1)
     "arch_check", "check_imports", "check_duplicates", "check_sync",
     # proactive (v2.0)

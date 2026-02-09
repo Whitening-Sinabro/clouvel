@@ -24,6 +24,10 @@ from clouvel.db.regression import (
     archive_memory,
     unarchive_memory,
     get_memory_stats,
+    # v4.0 Phase 2
+    search_memories,
+    mark_stale_memories,
+    get_memory_report,
 )
 
 
@@ -446,6 +450,238 @@ class TestGetMemoryStats:
         assert stats["total"] == 2
         assert stats["active"] == 1
         assert stats["archived"] == 1
+
+
+# ============================================================
+# search_memories (Phase 2)
+# ============================================================
+
+class TestSearchMemories:
+    """FTS search + category filter tests."""
+
+    def test_fts_search_root_cause(self, temp_project):
+        create_memory(
+            error_signature="E1",
+            root_cause="Null pointer dereference in authentication module",
+            project_path=temp_project,
+        )
+        results = search_memories(query="authentication module", project_path=temp_project)
+        assert len(results) >= 1
+
+    def test_fts_search_prevention(self, temp_project):
+        create_memory(
+            error_signature="E1",
+            root_cause="Test",
+            prevention_rule="Always validate JWT token expiration",
+            project_path=temp_project,
+        )
+        results = search_memories(query="JWT token", project_path=temp_project)
+        assert len(results) >= 1
+
+    def test_search_no_results(self, temp_project):
+        create_memory(
+            error_signature="E1",
+            root_cause="Database timeout",
+            project_path=temp_project,
+        )
+        results = search_memories(query="quantum teleportation", project_path=temp_project)
+        assert len(results) == 0
+
+    def test_search_with_category_filter(self, temp_project):
+        create_memory(
+            error_signature="E1",
+            root_cause="Network connection failed",
+            error_category="network_error",
+            project_path=temp_project,
+        )
+        create_memory(
+            error_signature="E2",
+            root_cause="Network timeout in retry",
+            error_category="type_error",
+            project_path=temp_project,
+        )
+        # Both match "Network" but only one is network_error
+        results = search_memories(query="Network", category="network_error", project_path=temp_project)
+        assert len(results) == 1
+        assert results[0]["error_category"] == "network_error"
+
+    def test_search_excludes_archived_by_default(self, temp_project):
+        r = create_memory(
+            error_signature="E1",
+            root_cause="Archived error pattern",
+            project_path=temp_project,
+        )
+        archive_memory(r["id"], project_path=temp_project)
+        results = search_memories(query="Archived error", project_path=temp_project)
+        assert len(results) == 0
+
+    def test_search_includes_archived_when_requested(self, temp_project):
+        r = create_memory(
+            error_signature="E1",
+            root_cause="Archived error pattern for inclusion",
+            project_path=temp_project,
+        )
+        archive_memory(r["id"], project_path=temp_project)
+        results = search_memories(query="Archived error", include_archived=True, project_path=temp_project)
+        assert len(results) >= 1
+
+    def test_search_empty_query_lists_all(self, temp_project):
+        create_memory(error_signature="E1", root_cause="R1", project_path=temp_project)
+        create_memory(error_signature="E2", root_cause="R2", project_path=temp_project)
+        results = search_memories(query="", project_path=temp_project)
+        assert len(results) == 2
+
+    def test_search_empty_query_with_category(self, temp_project):
+        create_memory(error_signature="E1", root_cause="R1", error_category="type_error", project_path=temp_project)
+        create_memory(error_signature="E2", root_cause="R2", error_category="import_error", project_path=temp_project)
+        results = search_memories(query="", category="type_error", project_path=temp_project)
+        assert len(results) == 1
+
+
+# ============================================================
+# mark_stale_memories (Phase 2)
+# ============================================================
+
+class TestMarkStaleMemories:
+    """Auto-archive stale memories tests."""
+
+    def test_no_stale_with_fresh_memories(self, temp_project):
+        create_memory(error_signature="E1", root_cause="R1", project_path=temp_project)
+        result = mark_stale_memories(days_threshold=60, project_path=temp_project)
+        assert result["archived_count"] == 0
+        assert result["ids"] == []
+
+    def test_archives_old_zero_hit_memories(self, temp_project):
+        """Memories with 0 hits older than threshold should be archived."""
+        from clouvel.db.schema import get_connection, get_db_path
+
+        # Create a memory and manually backdate it
+        r = create_memory(error_signature="Old", root_cause="Old cause", project_path=temp_project)
+        db_path = get_db_path(temp_project)
+        conn = get_connection(db_path)
+        conn.execute(
+            "UPDATE regression_memory SET timestamp = datetime('now', '-90 days') WHERE id = ?",
+            (r["id"],),
+        )
+        conn.commit()
+        conn.close()
+
+        result = mark_stale_memories(days_threshold=60, project_path=temp_project)
+        assert result["archived_count"] == 1
+        assert r["id"] in result["ids"]
+
+        # Verify it's actually archived
+        mem = get_memory(r["id"], project_path=temp_project)
+        assert mem["archived"] == 1
+
+    def test_does_not_archive_if_has_hits(self, temp_project):
+        """Memories with hits should not be archived even if old."""
+        from clouvel.db.schema import get_connection, get_db_path
+
+        r = create_memory(error_signature="HitMem", root_cause="Has hits", project_path=temp_project)
+        increment_hit_count(r["id"], project_path=temp_project)
+
+        db_path = get_db_path(temp_project)
+        conn = get_connection(db_path)
+        conn.execute(
+            "UPDATE regression_memory SET timestamp = datetime('now', '-90 days') WHERE id = ?",
+            (r["id"],),
+        )
+        conn.commit()
+        conn.close()
+
+        result = mark_stale_memories(days_threshold=60, project_path=temp_project)
+        assert result["archived_count"] == 0
+
+    def test_does_not_archive_already_archived(self, temp_project):
+        """Already archived memories should not be counted."""
+        from clouvel.db.schema import get_connection, get_db_path
+
+        r = create_memory(error_signature="AlreadyArch", root_cause="Test", project_path=temp_project)
+        archive_memory(r["id"], project_path=temp_project)
+
+        db_path = get_db_path(temp_project)
+        conn = get_connection(db_path)
+        conn.execute(
+            "UPDATE regression_memory SET timestamp = datetime('now', '-90 days') WHERE id = ?",
+            (r["id"],),
+        )
+        conn.commit()
+        conn.close()
+
+        result = mark_stale_memories(days_threshold=60, project_path=temp_project)
+        assert result["archived_count"] == 0
+
+
+# ============================================================
+# get_memory_report (Phase 2)
+# ============================================================
+
+class TestGetMemoryReport:
+    """Memory report generation tests."""
+
+    def test_empty_report(self, temp_project):
+        report = get_memory_report(days=30, project_path=temp_project)
+        assert report["period_days"] == 30
+        assert report["new_memories"] == 0
+        assert report["active"] == 0
+        assert report["total_hits"] == 0
+        assert report["total_saves"] == 0
+        assert report["time_saved_minutes"] == 0
+        assert report["time_saved_hours"] == 0.0
+
+    def test_report_with_data(self, temp_project):
+        r1 = create_memory(
+            error_signature="E1", root_cause="R1",
+            error_category="type_error",
+            project_path=temp_project,
+        )
+        create_memory(
+            error_signature="E2", root_cause="R2",
+            error_category="import_error",
+            project_path=temp_project,
+        )
+        increment_hit_count(r1["id"], project_path=temp_project)
+        increment_hit_count(r1["id"], project_path=temp_project)
+        increment_times_saved(r1["id"], project_path=temp_project)
+
+        report = get_memory_report(days=30, project_path=temp_project)
+        assert report["new_memories"] == 2
+        assert report["active"] == 2
+        assert report["total_hits"] == 2
+        assert report["total_saves"] == 1
+        assert report["save_rate"] == 50.0
+        assert report["time_saved_minutes"] == 15
+        assert report["time_saved_hours"] == 0.2
+
+    def test_report_top_memories(self, temp_project):
+        r1 = create_memory(error_signature="E1", root_cause="Root 1", project_path=temp_project)
+        increment_hit_count(r1["id"], project_path=temp_project)
+
+        report = get_memory_report(days=30, project_path=temp_project)
+        assert len(report["top_memories"]) >= 1
+        assert report["top_memories"][0]["id"] == r1["id"]
+
+    def test_report_top_categories(self, temp_project):
+        create_memory(error_signature="E1", root_cause="R1", error_category="type_error", project_path=temp_project)
+        create_memory(error_signature="E2", root_cause="R2", error_category="type_error", project_path=temp_project)
+        create_memory(error_signature="E3", root_cause="R3", error_category="import_error", project_path=temp_project)
+
+        report = get_memory_report(days=30, project_path=temp_project)
+        assert len(report["top_categories"]) >= 1
+        # type_error should be first (2 > 1)
+        assert report["top_categories"][0]["category"] == "type_error"
+        assert report["top_categories"][0]["count"] == 2
+
+    def test_report_excludes_archived_from_top(self, temp_project):
+        r1 = create_memory(error_signature="E1", root_cause="R1", project_path=temp_project)
+        increment_hit_count(r1["id"], project_path=temp_project)
+        archive_memory(r1["id"], project_path=temp_project)
+
+        report = get_memory_report(days=30, project_path=temp_project)
+        # Archived memories should not appear in top_memories
+        top_ids = [m["id"] for m in report["top_memories"]]
+        assert r1["id"] not in top_ids
 
 
 if __name__ == "__main__":

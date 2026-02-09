@@ -1,6 +1,6 @@
 # Clouvel 현재 상태
 
-> **마지막 업데이트**: 2026-02-07 (v3.3 Week 4 - 최적화 & KPI 대시보드 완료)
+> **마지막 업데이트**: 2026-02-09 (v4.0 Phase 1 - Regression Memory 구현 완료)
 
 ---
 
@@ -20,7 +20,7 @@
 
 | 항목              | 상태                              |
 | ----------------- | --------------------------------- |
-| **clouvel**       | v3.3 Week 4 최적화 & KPI 대시보드 완료 |
+| **clouvel**       | v4.0 Phase 1 Regression Memory 완료 |
 | **전환율 개선**   | ✅ 4주 플랜 전체 완료 (Week 1-4) |
 | **아키텍처**      | ✅ Manager Worker API 전환 완료   |
 | **문서 시스템**   | ✅ SSOT 완성 (ENTRYPOINTS + SIDE_EFFECTS + SMOKE_LOGS) |
@@ -33,7 +33,33 @@
 
 ---
 
-## 오늘 완료 (2026-02-07) - Week 4 최적화 & KPI 대시보드
+## 오늘 완료 (2026-02-09) - v4.0 Phase 2 Regression Memory
+
+### Phase 2: 메모리 관리 도구 + 리포트 + Auto-Stale (6단계)
+
+1. **`db/regression.py`** — search_memories (FTS5+카테고리), mark_stale_memories (0-hit auto-archive), get_memory_report (통계+시간절약)
+2. **`db/__init__.py`** — 3개 함수 export 추가
+3. **`tools/errors.py`** — memory_list, memory_search, memory_archive, memory_report 4개 도구 + memory_status에 auto-stale 트리거
+4. **`tools/__init__.py`** — 4개 함수 export + fallback
+5. **`server.py`** — 4개 Tool 정의 + 핸들러 + 래퍼 + import
+6. **`tests/test_db_regression.py`** — 17개 테스트 추가 (총 52 tests)
+
+**테스트**: 1457 passed, 10 skipped, 0 failed
+
+### Phase 1 (이전)
+
+**커밋**: `ee1ab88 feat(v4.0): regression memory - Phase 1 implementation`
+
+### 다음 할 일
+
+- [ ] 버전 범프 (pyproject.toml v4.0)
+- [ ] Phase 2 커밋
+- [ ] PRD/README 리포지셔닝 반영 (Gate → Memory)
+- [ ] MCP 서버 재시작 후 memory_status 수동 검증
+
+---
+
+## 이전 완료 (2026-02-07) - Week 4 최적화 & KPI 대시보드
 
 ### v3.3 Week 4: Optimization & KPI Dashboard
 

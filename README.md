@@ -88,7 +88,7 @@ That's it. No config needed.
 | **Meeting** | 3 full meetings/month | Unlimited |
 | **can_code** | WARN (doesn't block) | BLOCK (enforces PRD) |
 | **Knowledge Base** | 7-day retention | Persistent across sessions |
-| **Regression Memory** | - | Records errors, auto-warns on repeat |
+| **Regression Memory** | - | Records errors, auto-warns on repeat, monthly report |
 | **Error Learning** | - | Learns from your mistakes |
 | **Execution Plan** | - | `plan` with step-by-step actions |
 
@@ -117,6 +117,8 @@ That's it. No config needed.
 | `record_decision` | Save decisions to Knowledge Base | - | ✓ |
 | `error_learn` | Learn from mistakes | - | ✓ |
 | `memory_status` | Regression Memory dashboard | - | ✓ |
+| `memory_search` | Search past error patterns | - | ✓ |
+| `memory_report` | Monthly savings report | - | ✓ |
 | `start_trial` | Activate 7-day Pro trial | ✓ | - |
 
 **7 project types:** web-app, api, cli, chrome-ext, discord-bot, landing-page, saas

@@ -158,6 +158,12 @@ from .meeting_tuning import (
     list_variants,
 )
 
+# Context Checkpoint (Free)
+from .checkpoint import (
+    context_save,
+    context_load,
+)
+
 # Meeting Personalization (Free, v2.3)
 from .meeting_personalization import (
     configure_meeting,
@@ -188,6 +194,9 @@ try:
         memory_search,
         memory_archive,
         memory_report,
+        # v5.0 Cross-Project Memory Transfer
+        memory_promote,
+        memory_global_search,
     )
     _HAS_ERRORS = True
 except ImportError:
@@ -207,6 +216,8 @@ except ImportError:
     memory_search = None
     memory_archive = None
     memory_report = None
+    memory_promote = None
+    memory_global_search = None
 
 # Pro 기능은 clouvel-pro 패키지로 분리됨
 # pip install clouvel-pro
@@ -246,6 +257,7 @@ __all__ = [
     "error_search", "error_resolve", "error_get", "error_stats",
     "memory_status",
     "memory_list", "memory_search", "memory_archive", "memory_report",
+    "memory_promote", "memory_global_search",
     # architecture (v1.8 + v3.1)
     "arch_check", "check_imports", "check_duplicates", "check_sync",
     # proactive (v2.0)
@@ -257,4 +269,6 @@ __all__ = [
     "enable_ab_testing", "disable_ab_testing", "get_variant_performance", "list_variants",
     # meeting personalization (Free, v2.3)
     "configure_meeting", "add_persona_override", "add_custom_prompt", "get_meeting_config", "reset_meeting_config",
+    # context checkpoint (Free)
+    "context_save", "context_load",
 ]

@@ -1,36 +1,61 @@
 # Clouvel PRD
 
-> PRD 없으면 코딩 없다.
+> AI makes it fast. Clouvel makes it right.
 
 ## 한 줄 정의
 
-바이브코딩 프로세스를 강제하는 MCP 서버
+AI가 놓치는 것을 기억하고, 같은 실수를 반복하지 않게 만드는 MCP 서버
+
+## 포지셔닝
+
+| | Before (v1-v3) | After (v4+) |
+|---|---|---|
+| 태그라인 | "PRD 없으면 코딩 없다" | "AI makes it fast. Clouvel makes it right." |
+| 핵심 가치 | 문서 강제 (gate) | 축적된 기억 + 실수 방지 (memory) |
+| Free/Paid | 기능 차단 | **"Free to Act, Paid to Remember"** |
+| 타겟 감정 | "차단당해서 짜증" | "기억 덕분에 안 터짐" |
 
 ## 핵심 기능
 
-### Free (v1.3)
+### Free
 
 | 도구              | 설명                                               |
 | ----------------- | -------------------------------------------------- |
-| `can_code`        | 문서 검사 후 코딩 허용/차단                        |
+| `can_code`        | 문서 검사 후 코딩 허용/차단 (기존 유지)            |
 | `start`           | 프로젝트 온보딩                                    |
-| `plan`            | **[NEW]** 상세 실행 계획 생성 (매니저 피드백 기반) |
+| `plan`            | 상세 실행 계획 생성 (매니저 피드백 기반)            |
+| `meeting`         | C-Level 매니저 1명(PM) 피드백                      |
+| `error_check`     | 현재 세션 에러 감지                                |
 | `init_planning`   | 영속적 컨텍스트 초기화                             |
 | `update_progress` | 진행 상황 업데이트                                 |
 | `refresh_goals`   | 목표 리마인드                                      |
 
-### Pro
+### Pro — "Remember"
 
-| 도구         | 설명                              |
-| ------------ | --------------------------------- |
-| `manager`    | 8명 C-Level 매니저 협업 피드백    |
-| `ship`       | 원클릭 검증 (lint → test → build) |
-| `quick_ship` | 빠른 검증 (lint + test)           |
-| `full_ship`  | 전체 검증 + 자동 수정             |
+| 도구                    | 설명                                            |
+| ----------------------- | ----------------------------------------------- |
+| `regression_memory`     | **[NEW]** AI 실수 자동 기록 → 재발 방지 경고     |
+| `negative_knowledge`    | **[NEW]** "왜 X를 안 쓰는지" 기록 + 자동 주입    |
+| `source_tagging`        | **[NEW]** AI 산출물에 의사결정 출처 태그          |
+| `memory_report`         | **[NEW]** 월간 기억 리포트 (절약 시간, 방지 횟수) |
+| `manager` (8명 전체)    | 8명 C-Level 매니저 협업 피드백                    |
+| `knowledge_base`        | 영구 KB: 결정, 코드 위치, 크로스세션 기억          |
+| `error_learn`           | 에러 패턴 학습 + CLAUDE.md 자동 업데이트          |
+| `ship`                  | 원클릭 검증 (lint → test → build)                |
 
 ## 타겟
 
-Claude Code 사용자 중 바이브코딩 초보자
+AI 코딩 도구 사용자 중 "같은 실수 반복"에 지친 개발자
+
+### 1차 타겟: Solo Dev + Vibe Coders
+- AI 코딩 적극 사용, 프로젝트 2-3개 운영
+- "지난번에도 이거 터졌는데..." 경험 반복
+- Clouvel 가치: **기억이 쌓일수록 실수가 줄어듦**
+
+### 2차 타겟: 프리랜서 / 에이전시
+- 여러 클라이언트 프로젝트 운영
+- 프로젝트 간 학습 전이 필요
+- Clouvel 가치: **크로스 프로젝트 기억**
 
 ## Acceptance (완료 기준)
 
@@ -995,3 +1020,89 @@ proactive:
 
 - Claude Code hooks API (현재 지원 확인 필요)
 - MCP streaming 지원 (알림용)
+
+---
+
+## PRD Quality Gating (Phase 1)
+
+> **상태**: 구현 중
+> **목표**: PRD "존재 여부" 체크를 넘어 "품질" 체크로 전환
+> **Tier**: Free
+
+### 배경
+
+AI가 `/create-prd` 한 번이면 PRD를 자동 생성하는 시대.
+현재 `can_code`는 PRD 파일 존재만 확인 → 형식만 갖춘 빈껍데기도 통과.
+
+### DEAD 프레임워크
+
+regex/키워드 기반 정적 분석. LLM/NLP 호출 없음.
+
+| 항목 | 키워드 | 점수 | 의도 |
+|------|--------|------|------|
+| **D**ecision | 결정, 선택, 채택, 기술스택, pricing | +15 | 되돌리기 어려운 기술 결정 |
+| **E**vidence | URL, 인터뷰, 데이터, 조사, 피드백 | +10 | 최소한의 근거 |
+| **A**lternatives | 대안, 비교, vs, 선택하지 않은 | +15 | 무엇을 버렸는지 |
+| **D**oomsday | 실패, 리스크, 만약, fallback, 에러 | +15 | 실패 시나리오 |
+| **Out of Scope** | 안 할, 제외, scope, non-goal | +15 | 범위 제한 |
+
+### 게이밍 방지 (Anti-Gaming)
+
+1. **쌍(pair) 규칙**: Alternatives는 "대안" + "이유/때문/단점"이 인접 2줄 내 공존해야 인정
+2. **If/Then 구조**: Doomsday는 "만약~면 → 대응" 패턴 2개+ 필요
+3. **Fake Detection**: `(키워드).{0,20}(없|TBD|모름)` → 0점
+4. **금지 문구**: "TBD", "추후 결정", "적절히", "필요시" 3개+ → -5점
+5. **밀도 체크**: 키워드 포함 문단 30자 미만 → 무효
+
+### 점수 체계
+
+```
+기본점수: 30 (PRD 파일 존재)
++ Decision:      +15
++ Evidence:      +10
++ Alternatives:  +15 (pair 규칙 적용)
++ Doomsday:      +15 (If/Then 요구)
++ Out of Scope:  +15
+- 추상어 5개+:   -10
+- 숫자 3개 미만: -10
+- 금지 문구 3개+: -5
+
+캡: Out of Scope 없음 → max 55
+    Alternatives 없음 → max 65
+```
+
+### 레벨별 Gate
+
+```
+lite (MVP):       0-39 BLOCK / 40-59 WARN / 60+ PASS
+standard (출시):  0-49 BLOCK / 50-69 WARN / 70+ PASS
+ship (프로덕션):  0-59 BLOCK / 60-74 WARN / 75+ PASS
+```
+
+### Phase 1 범위 (현재)
+
+- `can_code` 호출 시 PRD 내용 스캔 → DEAD 점수 계산
+- 점수는 **informational** (기존 BLOCK/WARN/PASS 행동 변경 없음)
+- 빈 곳 리포트 출력 (채우면 몇 점 오르는지)
+- WARN 표시는 상위 3개만
+
+### Phase 1 완료 기준 (DoD)
+
+- [ ] `prd_scoring.py` — DEAD 스코어링 + 게이밍 방지 엔진
+- [ ] `can_code` 출력에 Quality Score 포함 (참고용)
+- [ ] 빈 곳 리포트 (상위 3개 + 힌트 질문)
+- [ ] "채우면 예상 점수" 표시
+- [ ] `test_prd_scoring.py` — 20+ 테스트
+- [ ] 기존 테스트 전부 PASS
+
+### Phase 2 (예정)
+
+- 대화형 `prd_improve` 도구
+- 레벨 자동 감지 (standard/ship)
+- Hotfix 바이패스
+
+### Phase 3 (예정)
+
+- WARN 시 관련 매니저 자동 질문
+- PRD-코드 연결성 체크 (drift_check 연동)
+- 팀 확장 포인트 (승인, authorship)

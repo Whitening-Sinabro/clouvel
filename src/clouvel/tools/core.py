@@ -33,6 +33,9 @@ try:
 except ImportError:
     _HAS_KNOWLEDGE = False
 
+# PRD Quality Scoring (Phase 1 — informational only)
+from clouvel.tools.prd_scoring import score_prd, format_score_report
+
 from clouvel.messages import (
     DOC_NAMES,
     CAN_CODE_BLOCK_NO_DOCS,
@@ -398,6 +401,13 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
             base_msg = CAN_CODE_PASS_FREE.format(
                 test_count=test_count,
             )
+            # Phase 1: PRD Quality Score (informational — does not change gate behavior)
+            try:
+                prd_content = prd_file.read_text(encoding="utf-8")
+                scoring_result = score_prd(prd_content, level="lite")
+                base_msg += format_score_report(scoring_result)
+            except Exception:
+                pass  # Scoring failure should never block coding
             # v3.2: Show trial expired message if applicable
             if trial_expired:
                 base_msg += CAN_CODE_TRIAL_EXPIRED
@@ -457,6 +467,16 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
     # PRD edit rule
     prd_rule = PRD_RULE_WARNING
 
+    # Phase 1: PRD Quality Score (informational — does not change gate behavior)
+    prd_quality_report = ""
+    if prd_file:
+        try:
+            prd_content = prd_file.read_text(encoding="utf-8")
+            scoring_result = score_prd(prd_content, level="standard")
+            prd_quality_report = format_score_report(scoring_result)
+        except Exception:
+            pass  # Scoring failure should never block coding
+
     # Get context from Knowledge Base (session recovery)
     context_summary = _get_context_summary(project_path)
 
@@ -482,7 +502,7 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
                 next_action=None,
                 pro_hint=None,
             )
-        return [TextContent(type="text", text=output + "\n" + prd_rule + context_summary)]
+        return [TextContent(type="text", text=output + "\n" + prd_rule + prd_quality_report + context_summary)]
 
     # Fallback to plain text
     found_docs_str = ", ".join(found_docs) if found_docs else "None"
@@ -496,13 +516,13 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
             test_info=test_info,
             warn_summary=warn_summary,
             prd_rule=prd_rule
-        ) + context_summary)]
+        ) + prd_quality_report + context_summary)]
     else:
         base = CAN_CODE_PASS.format(
             found_docs=found_docs_str,
             test_info=test_info,
             prd_rule=prd_rule
-        ) + context_summary
+        ) + prd_quality_report + context_summary
         # v3.2: Trial nudge for Pro-via-trial users
         if is_trial:
             if trial_remaining <= 1:

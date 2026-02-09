@@ -82,6 +82,8 @@ from .tools import (
     enable_ab_testing, disable_ab_testing, get_variant_performance, list_variants,
     # meeting personalization (Free, v2.3)
     configure_meeting, add_persona_override, get_meeting_config, reset_meeting_config,
+    # context checkpoint (Free)
+    context_save, context_load,
 )
 
 # Error Learning tools (Pro feature - separate import)
@@ -90,6 +92,8 @@ try:
         error_record, error_check, error_learn, memory_status,
         # v4.0 Phase 2
         memory_list, memory_search, memory_archive, memory_report,
+        # v5.0 Cross-Project Memory Transfer
+        memory_promote, memory_global_search,
     )
     _HAS_ERROR_TOOLS = True
 except ImportError:
@@ -102,6 +106,8 @@ except ImportError:
     memory_search = None
     memory_archive = None
     memory_report = None
+    memory_promote = None
+    memory_global_search = None
 # License module import (use Free stub if Pro version not available)
 try:
     from .license import activate_license_cli, get_license_status
@@ -427,6 +433,38 @@ TOOL_DEFINITIONS = [
             },
             "required": ["path"]
         }
+    ),
+
+    # === Context Checkpoint (Free) ===
+    Tool(
+        name="context_save",
+        description="Pre-emptive context checkpoint. Saves full working state "
+                    "before context compression. One call captures everything "
+                    "needed for recovery. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project root path"},
+                "reason": {"type": "string", "description": "Why saving (e.g., 'before refactor')"},
+                "notes": {"type": "string", "description": "Important context to preserve"},
+                "active_files": {"type": "array", "items": {"type": "string"}, "description": "Files currently being worked on"},
+                "decisions_this_session": {"type": "array", "items": {"type": "string"}, "description": "Decisions made this session"},
+                "depth": {"type": "string", "enum": ["quick", "full"], "description": "quick: current.md + git only, full: everything (default)"},
+            },
+            "required": ["path"],
+        },
+    ),
+    Tool(
+        name="context_load",
+        description="Load context from checkpoint after compression/new session. (Free)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project root path"},
+                "checkpoint": {"type": "string", "description": "\"latest\" (default) or specific filename"},
+            },
+            "required": ["path"],
+        },
     ),
 
     # === Agent Tools (v0.7) ===
@@ -864,6 +902,31 @@ TOOL_DEFINITIONS = [
             "required": ["path"]
         }
     ),
+    Tool(
+        name="memory_promote",
+        description="Promote a local regression memory to global. Shared across all projects. Only root_cause and prevention_rule are promoted (no raw error text). Requires hit_count >= 1. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project root path"},
+                "memory_id": {"type": "integer", "description": "Local memory ID to promote"},
+            },
+            "required": ["path", "memory_id"]
+        }
+    ),
+    Tool(
+        name="memory_global_search",
+        description="Search global regression memories from all projects. Find patterns learned in other projects. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project root path"},
+                "query": {"type": "string", "description": "Search keyword"},
+                "category": {"type": "string", "description": "Filter by error category (optional)"},
+            },
+            "required": ["path", "query"]
+        }
+    ),
 
     # === License Tools ===
     Tool(
@@ -1233,6 +1296,10 @@ TOOL_HANDLERS = {
     "refresh_goals": lambda args: refresh_goals(args.get("path", "")),
     "update_progress": lambda args: update_progress(args.get("path", ""), args.get("completed", []), args.get("in_progress", ""), args.get("blockers", []), args.get("next", "")),
 
+    # Context Checkpoint (Free)
+    "context_save": lambda args: context_save(args.get("path", ""), args.get("reason", ""), args.get("notes", ""), args.get("active_files"), args.get("decisions_this_session"), args.get("depth", "full")),
+    "context_load": lambda args: context_load(args.get("path", ""), args.get("checkpoint", "latest")),
+
     # Agents (v0.7)
     "spawn_explore": lambda args: spawn_explore(args.get("path", ""), args.get("query", ""), args.get("scope", "project"), args.get("save_findings", True)),
     "spawn_librarian": lambda args: spawn_librarian(args.get("path", ""), args.get("topic", ""), args.get("type", "library"), args.get("depth", "standard")),
@@ -1282,6 +1349,8 @@ TOOL_HANDLERS = {
     "memory_search": lambda args: _wrap_memory_search(args),
     "memory_archive": lambda args: _wrap_memory_archive(args),
     "memory_report": lambda args: _wrap_memory_report(args),
+    "memory_promote": lambda args: _wrap_memory_promote(args),
+    "memory_global_search": lambda args: _wrap_memory_global_search(args),
 
     # License
     "activate_license": lambda args: _wrap_activate_license(args),
@@ -2123,6 +2192,27 @@ async def _wrap_memory_report(args: dict) -> list[TextContent]:
     return await memory_report(
         path=args.get("path", ""),
         days=args.get("days", 30),
+    )
+
+
+async def _wrap_memory_promote(args: dict) -> list[TextContent]:
+    """memory_promote tool wrapper"""
+    if not _HAS_ERROR_TOOLS or memory_promote is None:
+        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nCross-Project Memory Transfer requires a Pro license.\n\n## Purchase\nhttps://polar.sh/clouvel\n")]
+    return await memory_promote(
+        path=args.get("path", ""),
+        memory_id=args.get("memory_id", 0),
+    )
+
+
+async def _wrap_memory_global_search(args: dict) -> list[TextContent]:
+    """memory_global_search tool wrapper"""
+    if not _HAS_ERROR_TOOLS or memory_global_search is None:
+        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nCross-Project Memory Transfer requires a Pro license.\n\n## Purchase\nhttps://polar.sh/clouvel\n")]
+    return await memory_global_search(
+        path=args.get("path", ""),
+        query=args.get("query", ""),
+        category=args.get("category", ""),
     )
 
 

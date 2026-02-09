@@ -4,15 +4,15 @@ build-backend = "hatchling.build"
 
 [project]
 name = "clouvel"
-version = "3.2.0"
-description = "MCP server that enforces PRD-first development - No spec, no code"
+version = "4.0.0"
+description = "MCP server that remembers AI mistakes and prevents regressions - AI makes it fast, Clouvel makes it right"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [
     { name = "SINABRO" }
 ]
-keywords = ["mcp", "vibe-coding", "prd", "documentation", "shovel", "claude-code"]
+keywords = ["mcp", "vibe-coding", "prd", "regression-memory", "error-prevention", "claude-code"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",

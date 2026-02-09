@@ -1,12 +1,12 @@
 # Clouvel
 
-> **No spec, no code.** Guardrails that catch what AI misses.
+> **AI makes it fast. Clouvel makes it right.**
 
 [![PyPI](https://img.shields.io/pypi/v/clouvel)](https://pypi.org/project/clouvel/)
 [![Python](https://img.shields.io/pypi/pyversions/clouvel)](https://pypi.org/project/clouvel/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Solo coding, team-level review.** 8 AI managers catch your blind spots before code ships.
+**Your AI remembers its mistakes.** Regression Memory records every error and auto-warns before it happens again.
 
 **Try all Pro features free for 7 days** — no credit card required. Run `start_trial` in Claude Code.
 
@@ -18,28 +18,27 @@
 
 ## Why Clouvel?
 
-AI coding is powerful but dangerous:
+AI coding is fast but forgetful:
 
 | The Pain | What Actually Happens |
 |----------|----------------------|
-| AI skips requirements | "Build login" → No password reset, no social auth |
+| AI repeats mistakes | Fixed a bug yesterday, AI recreates it today |
 | No one reviews your code | Ship bugs you'd catch with a second pair of eyes |
-| You forget past decisions | Repeat the same debates, waste hours rediscovering context |
-| Vibe coding trap | Works today, breaks tomorrow |
+| You forget past decisions | "Why did we do it this way?" — no one remembers |
+| Context resets every session | New chat = new AI = same old mistakes |
 
-**You're building alone. Clouvel makes sure you're not thinking alone.**
+**Free to act. Paid to remember.**
 
 ---
 
 ## What Clouvel Does
 
-### 1. Gate — Think before AI codes
+### 1. Memory — AI that learns from its mistakes
 ```
-You: "Build login"
-AI:  ❌ BLOCKED - No PRD found. Write a spec first.
-
-You: *writes PRD with requirements*
-AI:  ✅ PASS - Ready to code.
+AI:  ⚠️ REGRESSION MATCH: This error happened before.
+     Root cause: Missing null check on DB query result
+     Prevention: Always validate query results before accessing properties
+     (Memory #7 — hit 4 times, saved 3 bugs)
 ```
 
 ### 2. Feedback — 8 managers review in 30 seconds
@@ -49,13 +48,16 @@ AI:  ✅ PASS - Ready to code.
 🔒 CSO: "⚠️ Password hashing not implemented."
 ```
 
-### 3. Memory — Never forget what you decided
+### 3. Gate — Think before AI codes
 ```
-You: "Why did we use JWT instead of sessions?"
-AI:  Found decision #42: "JWT chosen for stateless scaling" (2024-01-15)
+You: "Build login"
+AI:  ❌ BLOCKED - No PRD found. Write a spec first.
+
+You: *writes PRD with requirements*
+AI:  ✅ PASS - Ready to code.
 ```
 
-**Gate + Feedback + Memory = Solo dev with team discipline.**
+**Memory + Feedback + Gate = AI that gets smarter over time.**
 
 ---
 
@@ -85,7 +87,8 @@ That's it. No config needed.
 | **Managers** | 1 (PM only) | 8 (PM, CTO, QA, CDO, CMO, CFO, CSO, Error) |
 | **Meeting** | 3 full meetings/month | Unlimited |
 | **can_code** | WARN (doesn't block) | BLOCK (enforces PRD) |
-| **Knowledge Base** | 7-day trial | Persistent across sessions |
+| **Knowledge Base** | 7-day retention | Persistent across sessions |
+| **Regression Memory** | - | Records errors, auto-warns on repeat |
 | **Error Learning** | - | Learns from your mistakes |
 | **Execution Plan** | - | `plan` with step-by-step actions |
 
@@ -113,6 +116,7 @@ That's it. No config needed.
 | `ship` | lint → test → build pipeline | - | ✓ |
 | `record_decision` | Save decisions to Knowledge Base | - | ✓ |
 | `error_learn` | Learn from mistakes | - | ✓ |
+| `memory_status` | Regression Memory dashboard | - | ✓ |
 | `start_trial` | Activate 7-day Pro trial | ✓ | - |
 
 **7 project types:** web-app, api, cli, chrome-ext, discord-bot, landing-page, saas
@@ -230,7 +234,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 ---
 
 <p align="center">
-  <b>Solo coding, team-level thinking. That's Clouvel.</b><br>
+  <b>AI makes it fast. Clouvel makes it right.</b><br>
   <a href="https://whitening-sinabro.github.io/clouvel/">Website</a> •
   <a href="https://github.com/Whitening-Sinabro/clouvel/issues">Issues</a> •
   <a href="https://polar.sh/clouvel">Get Pro</a>

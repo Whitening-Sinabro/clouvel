@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Clouvel - Solo Coding, Team-Level Thinking",
-    "description": "Guardrails that catch what AI misses. 8 AI managers review in 30 seconds. Gate + Feedback + Memory."
+    "title": "Clouvel - AI Forgets. Clouvel Remembers.",
+    "description": "Memory layer for AI coding. Decisions persist across sessions. Regression prevention."
   },
   "nav": {
     "how_it_works": "How it works",
@@ -13,19 +13,19 @@
   },
   "hero": {
     "badge": "MCP Server for Claude Code",
-    "badge_new": "v3.0",
-    "badge_version": "FREE = Light (PM only, WARN) | PRO = Full (8 managers, BLOCK)",
-    "title_1": "No spec,",
-    "title_2": "no code.",
-    "subtitle": "Guardrails that catch what AI misses.",
-    "desc_solo_text": "You're building alone. Clouvel makes sure you're not thinking alone.",
-    "desc_solo": "Gate + Feedback + Memory = Solo dev with team discipline.",
+    "badge_new": "v1.0",
+    "badge_version": "FREE = Session Memory | PRO = Permanent Memory + Regression Prevention",
+    "title_1": "AI forgets.",
+    "title_2": "You pay the price.",
+    "subtitle": "Clouvel remembers so you don't repeat mistakes.",
+    "desc_solo_text": "You're building alone. Clouvel makes sure yesterday's decisions survive today.",
+    "desc_solo": "Remember + Prevent + Guide = Solo dev with team-level memory.",
     "cta_start": "Get Pro for $1",
     "cta_demo": "See demo"
   },
   "works_with": {
     "title": "Works with:",
-    "subtitle": "Install once, enforce everywhere"
+    "subtitle": "Install once, remember everywhere"
   },
   "prd": {
     "title": "What is a PRD?",
@@ -47,43 +47,43 @@
     "problem_2_desc": "No architecture thinking - straight to code - full refactor later.",
     "problem_3_title": "You forget what you decided last week",
     "problem_3_desc": "No record of decisions. Repeat the same debates. Waste hours rediscovering context.",
-    "conclusion": "<span class=\"text-accent\">Solo coding, team-level thinking.</span> That's Clouvel."
+    "conclusion": "<span class=\"text-accent\">AI makes it fast. Clouvel makes it right.</span>"
   },
   "how": {
     "title": "How it works",
-    "subtitle": "Gate + Feedback + Memory",
-    "step_1_title": "Gate",
-    "step_1_desc": "Think before AI codes. No PRD? Blocked.",
-    "step_2_title": "Feedback",
-    "step_2_desc": "8 managers review in 30 seconds. Catch blind spots.",
-    "step_3_title": "Memory",
-    "step_3_desc": "Never forget decisions. Context persists across sessions."
+    "subtitle": "Remember + Prevent + Guide",
+    "step_1_title": "Remember",
+    "step_1_desc": "Every decision persists. Context survives across sessions.",
+    "step_2_title": "Prevent",
+    "step_2_desc": "Past mistakes surface before they repeat. Regression prevention.",
+    "step_3_title": "Guide",
+    "step_3_desc": "8 AI managers ask the questions you forgot to ask."
   },
   "demo": {
-    "title": "See it actually block",
-    "subtitle": "3-tier quality gate: BLOCK - WARN - PASS",
-    "no_prd": "No PRD",
-    "no_prd_cmd": "$ claude \"build login\"",
-    "no_prd_result": "BLOCK: Coding forbidden",
-    "no_prd_desc": "No PRD - write docs first",
-    "incomplete": "Incomplete PRD",
-    "incomplete_result": "PASS | WARN 2",
-    "incomplete_desc": "Missing: architecture, tests",
-    "complete": "Complete PRD",
-    "complete_result": "PASS | Ready to code",
-    "complete_desc": "Required: PRD OK | 3 tests"
+    "title": "See what Clouvel remembers",
+    "subtitle": "Session memory vs. permanent memory",
+    "no_prd": "Without Clouvel",
+    "no_prd_cmd": "Session 2: \"Why did we choose JWT?\"",
+    "no_prd_result": "Context lost. Rewrites happen.",
+    "no_prd_desc": "Every new session starts from zero",
+    "incomplete": "Free (session memory)",
+    "incomplete_result": "PASS | 7-day retention",
+    "incomplete_desc": "Decisions saved within session",
+    "complete": "Pro (permanent memory)",
+    "complete_result": "PASS | Full context loaded",
+    "complete_desc": "All decisions + regression warnings"
   },
   "features": {
     "title": "Augmentation, not Automation",
-    "subtitle": "AI that helps you think, not thinks for you",
+    "subtitle": "AI that helps you remember, not thinks for you",
     "f1_title": "Quick Perspectives",
     "f1_desc": "3-second sanity check before coding. Surface blind spots instantly.",
     "f2_title": "8 AI Managers",
     "f2_desc": "PM, CTO, QA, Security... They ask the questions you forgot to ask.",
     "f3_title": "Knowledge Base",
     "f3_desc": "Remembers every decision. Stop making the same mistakes twice.",
-    "f4_title": "PRD Enforcement",
-    "f4_desc": "No spec? No code. Forces thinking before typing."
+    "f4_title": "Regression Prevention",
+    "f4_desc": "Fixed a bug? Clouvel remembers. Same pattern? You get warned."
   },
   "getting_started": {
     "title": "Getting Started",
@@ -112,7 +112,7 @@
     "free_price": "$0",
     "free_period": "/ forever",
     "free_f1": "Onboarding (start)",
-    "free_f2": "Doc enforcement (can_code)",
+    "free_f2": "Doc check (can_code)",
     "free_f3": "Detailed planning (plan)",
     "free_f3_new": "NEW",
     "free_f4": "Progress tracking",
@@ -124,7 +124,7 @@
     "personal_f1": "All Free features",
     "personal_f2": "8 AI Managers (ask tough questions)",
     "personal_f3": "Knowledge Base (remembers decisions)",
-    "personal_f4": "One-click Ship + Error Learning",
+    "personal_f4": "Regression Memory + Error Learning",
     "team_5": "Team 5",
     "team_5_desc": "Small team (5 seats)",
     "team_f1": "All Personal Pro features",
@@ -158,7 +158,7 @@
     "q4": "How does it fit my existing workflow?",
     "a4": "It's an MCP server - just add config to Claude Code/Desktop. Doesn't touch your code or project structure.",
     "q5": "Why not just use a prompt or CLAUDE.md?",
-    "a5": "A prompt is a \"request\". A gate is a \"rule\". Requests can be ignored. Gates either pass or block. Rules create consistency."
+    "a5": "A prompt lives in one session. Memory lives forever. CLAUDE.md is static rules. Clouvel learns from your actual decisions and warns when you're about to repeat a mistake."
   },
   "contact": {
     "title": "Contact Us",

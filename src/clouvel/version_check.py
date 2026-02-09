@@ -280,3 +280,102 @@ def reset_v3_notice() -> None:
             V3_MIGRATION_NOTICE_FILE.unlink()
     except Exception:
         pass
+
+
+# ============================================================
+# v1.0 Pivot Notice (Gate → Memory)
+# ============================================================
+
+V1_PIVOT_NOTICE_FILE = CACHE_DIR / "v1_pivot_notice_shown.json"
+
+V1_PIVOT_NOTICE_EN = """
+================================================
+  CLOUVEL v1.0.0 — Gate → Memory Pivot
+================================================
+
+Core value changed:
+  OLD: "No spec, no code" (enforcement-first)
+  NEW: "AI makes it fast. Clouvel makes it right."
+
+What's new:
+  - Regression Memory: never repeat the same mistake
+  - Cross-session context: decisions persist forever
+  - 8 AI managers: catch blind spots before coding
+
+New hierarchy: Remember > Prevent > Guide
+
+Details: https://whitening-sinabro.github.io/clouvel/
+================================================
+"""
+
+V1_PIVOT_NOTICE_KO = """
+================================================
+  CLOUVEL v1.0.0 — Gate → Memory 피봇
+================================================
+
+핵심 가치 전환:
+  기존: "스펙 없이? 코딩 금지." (강제 중심)
+  변경: "AI가 빠르게 만듭니다. Clouvel이 올바르게."
+
+새로운 기능:
+  - 회귀 메모리: 같은 실수를 반복하지 않음
+  - 크로스세션 컨텍스트: 결정이 영구 유지
+  - 8명 AI 매니저: 코딩 전 맹점 발견
+
+새 계층: 기억 > 예방 > 안내
+
+상세: https://whitening-sinabro.github.io/clouvel/
+================================================
+"""
+
+
+def _should_show_v1_pivot_notice() -> bool:
+    """Check if v1.0 pivot notice should be shown."""
+    try:
+        if V1_PIVOT_NOTICE_FILE.exists():
+            data = json.loads(V1_PIVOT_NOTICE_FILE.read_text(encoding="utf-8"))
+            return not data.get("shown", False)
+    except Exception:
+        pass
+    return True
+
+
+def _mark_v1_pivot_notice_shown() -> None:
+    """Mark v1.0 pivot notice as shown."""
+    try:
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        V1_PIVOT_NOTICE_FILE.write_text(
+            json.dumps({"shown": True, "timestamp": time.time()}),
+            encoding="utf-8"
+        )
+    except Exception:
+        pass
+
+
+def get_v1_pivot_notice(lang: str = "en") -> Optional[str]:
+    """
+    Get v1.0 pivot notice if not shown yet.
+
+    Args:
+        lang: "en" or "ko"
+
+    Returns:
+        Notice string or None if already shown
+    """
+    if not _should_show_v1_pivot_notice():
+        return None
+
+    _mark_v1_pivot_notice_shown()
+
+    if lang == "ko":
+        return V1_PIVOT_NOTICE_KO
+    return V1_PIVOT_NOTICE_EN
+
+
+def reset_v1_pivot_notice() -> None:
+    """Reset v1.0 pivot notice (for testing)."""
+    try:
+        if V1_PIVOT_NOTICE_FILE.exists():
+            V1_PIVOT_NOTICE_FILE.unlink()
+    except Exception:
+        pass

@@ -34,7 +34,7 @@ from mcp.types import Tool, TextContent
 
 from .analytics import log_tool_call, get_stats, format_stats
 from .api_client import call_manager_api  # v1.8: Worker API 사용
-from .version_check import get_v3_migration_notice  # v3.0: Migration notice
+from .version_check import get_v3_migration_notice, get_v1_pivot_notice  # v3.0 + v1.0 notices
 from .tools import (
     # core
     can_code, scan_docs, analyze_docs, init_docs, REQUIRED_DOCS,
@@ -1235,22 +1235,28 @@ async def list_tools() -> list[Tool]:
 # Tool Handlers
 # ============================================================
 
-# v3.0: Wrapper to prepend migration notice
-async def _with_v3_notice(coro):
-    """Wrapper that prepends v3.0 migration notice to tool output."""
+# v1.0: Wrapper to prepend migration notices (v3.0 + v1.0 pivot)
+async def _with_notices(coro):
+    """Wrapper that prepends migration notices to tool output."""
     result = await coro
-    notice = get_v3_migration_notice()
-    if notice and result:
-        # Prepend notice to first TextContent
+    # Collect notices (newer first)
+    notices = []
+    pivot = get_v1_pivot_notice()
+    if pivot:
+        notices.append(pivot)
+    v3 = get_v3_migration_notice()
+    if v3:
+        notices.append(v3)
+    if notices and result:
         if isinstance(result, list) and len(result) > 0:
             original_text = result[0].text if hasattr(result[0], 'text') else str(result[0])
-            result[0] = TextContent(type="text", text=notice + "\n" + original_text)
+            result[0] = TextContent(type="text", text="\n".join(notices) + "\n" + original_text)
     return result
 
 
 async def _can_code_with_notice(path: str, mode: str = "pre"):
-    """can_code with v3.0 migration notice."""
-    return await _with_v3_notice(can_code(path, mode))
+    """can_code with migration notices."""
+    return await _with_notices(can_code(path, mode))
 
 
 TOOL_HANDLERS = {
@@ -1917,10 +1923,16 @@ async def _wrap_manager(args: dict) -> list[TextContent]:
     # Auto-record meeting to Knowledge Base
     _auto_record_meeting(context, topic, participants, meeting_output)
 
-    # v3.0: Prepend migration notice
-    notice = get_v3_migration_notice()
-    if notice:
-        meeting_output = notice + "\n" + meeting_output
+    # Prepend migration notices (v1.0 pivot + v3.0)
+    notices = []
+    pivot = get_v1_pivot_notice()
+    if pivot:
+        notices.append(pivot)
+    v3 = get_v3_migration_notice()
+    if v3:
+        notices.append(v3)
+    if notices:
+        meeting_output = "\n".join(notices) + "\n" + meeting_output
 
     return [TextContent(type="text", text=meeting_output)]
 

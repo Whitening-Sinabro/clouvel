@@ -28,6 +28,8 @@ from clouvel.db.regression import (
     search_memories,
     mark_stale_memories,
     get_memory_report,
+    # v5.0: Cross-Project Memory Transfer
+    get_memory_for_promote,
 )
 
 
@@ -682,6 +684,66 @@ class TestGetMemoryReport:
         # Archived memories should not appear in top_memories
         top_ids = [m["id"] for m in report["top_memories"]]
         assert r1["id"] not in top_ids
+
+
+# ============================================================
+# get_memory_for_promote (v5.0)
+# ============================================================
+
+class TestGetMemoryForPromote:
+    """Promote helper tests — ensures sensitive fields are excluded."""
+
+    def test_returns_safe_fields(self, temp_project):
+        r = create_memory(
+            error_signature="TypeError: null ref",
+            root_cause="Missing null check",
+            error_category="type_error",
+            libraries=["flask"],
+            tags=["api"],
+            task_description="Implementing endpoint",
+            code_snippet="x.foo()",
+            fix_snippet="x?.foo()",
+            prevention_rule="Always null check",
+            negative_constraint="Never access without check",
+            severity=4,
+            project_path=temp_project,
+        )
+        promote_data = get_memory_for_promote(r["id"], project_path=temp_project)
+        assert promote_data is not None
+
+        # Safe fields present
+        assert promote_data["error_signature"] == "TypeError: null ref"
+        assert promote_data["root_cause"] == "Missing null check"
+        assert promote_data["prevention_rule"] == "Always null check"
+        assert promote_data["error_category"] == "type_error"
+        assert promote_data["libraries"] == ["flask"]
+        assert promote_data["tags"] == ["api"]
+        assert promote_data["negative_constraint"] == "Never access without check"
+        assert promote_data["severity"] == 4
+        assert promote_data["source_memory_id"] == r["id"]
+
+        # Sensitive fields excluded
+        assert "task_description" not in promote_data
+        assert "code_snippet" not in promote_data
+        assert "fix_snippet" not in promote_data
+        assert "source_error_id" not in promote_data
+
+    def test_returns_none_for_nonexistent(self, temp_project):
+        promote_data = get_memory_for_promote(99999, project_path=temp_project)
+        assert promote_data is None
+
+    def test_returns_defaults_for_empty_fields(self, temp_project):
+        r = create_memory(
+            error_signature="Simple",
+            root_cause="Simple cause",
+            project_path=temp_project,
+        )
+        promote_data = get_memory_for_promote(r["id"], project_path=temp_project)
+        assert promote_data is not None
+        assert promote_data["libraries"] == []
+        assert promote_data["tags"] == []
+        assert promote_data["negative_constraint"] == ""
+        assert promote_data["severity"] == 3
 
 
 if __name__ == "__main__":

@@ -8,6 +8,10 @@
 
 | 파일경로 | 목적 | 삭제가능 |
 |----------|------|----------|
+| `tests/test_prd_scoring.py` | PRD quality scoring engine tests (58 tests) | ❌ |
+| `tests/test_checkpoint.py` | context_save/context_load tests (36 tests) | ❌ |
+| `src/clouvel/tools/prd_scoring.py` | DEAD framework PRD quality scoring engine | ❌ |
+| `src/clouvel/tools/checkpoint.py` | context_save/context_load — pre-emptive context checkpoint before compression | ❌ |
 | `src/clouvel/templates/landing-page/detailed.md` | Pro Landing Page PRD template with conversion funnel, A/B testing, performance | ❌ |
 | `src/clouvel/templates/discord-bot/detailed.md` | Pro Discord Bot PRD template with command spec, permissions, error handling | ❌ |
 | `src/clouvel/templates/chrome-ext/detailed.md` | Pro Chrome Extension PRD template with Input/Output spec, error cases, security | ❌ |
@@ -114,6 +118,10 @@
 
 | 날짜 | 세션 | 생성/수정 파일 |
 |------|------|----------------|
+| 2026-02-09 | auto | `tests/test_prd_scoring.py` |
+| 2026-02-09 | auto | `tests/test_checkpoint.py` |
+| 2026-02-09 | auto | `src/clouvel/tools/prd_scoring.py` |
+| 2026-02-09 | auto | `src/clouvel/tools/checkpoint.py` |
 | 2026-02-01 | auto | `src/clouvel/templates/landing-page/detailed.md` |
 | 2026-02-01 | auto | `src/clouvel/templates/discord-bot/detailed.md` |
 | 2026-02-01 | auto | `src/clouvel/templates/chrome-ext/detailed.md` |

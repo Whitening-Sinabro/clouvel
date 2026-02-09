@@ -239,6 +239,62 @@ class TestInitDb:
             conn.close()
 
 
+class TestRegressionMemoryTable:
+    """regression_memory table tests (v4.0)"""
+
+    def test_table_exists(self, temp_project):
+        """regression_memory table is created"""
+        db_path = init_db(str(temp_project))
+        conn = sqlite3.connect(str(db_path))
+        try:
+            cursor = conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='regression_memory'"
+            )
+            assert cursor.fetchone() is not None
+        finally:
+            conn.close()
+
+    def test_table_columns(self, temp_project):
+        """regression_memory table has expected columns"""
+        db_path = init_db(str(temp_project))
+        conn = sqlite3.connect(str(db_path))
+        try:
+            cursor = conn.execute("PRAGMA table_info(regression_memory)")
+            columns = [row[1] for row in cursor.fetchall()]
+            for col in ["id", "error_signature", "error_category", "file_paths",
+                        "libraries", "tags", "root_cause", "prevention_rule",
+                        "hit_count", "times_saved", "archived", "source_error_id"]:
+                assert col in columns, f"Missing column: {col}"
+        finally:
+            conn.close()
+
+    def test_fts_table_exists(self, temp_project):
+        """regression_memory_fts virtual table is created"""
+        db_path = init_db(str(temp_project))
+        conn = sqlite3.connect(str(db_path))
+        try:
+            cursor = conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='regression_memory_fts'"
+            )
+            assert cursor.fetchone() is not None
+        finally:
+            conn.close()
+
+    def test_indexes_exist(self, temp_project):
+        """regression_memory indexes are created"""
+        db_path = init_db(str(temp_project))
+        conn = sqlite3.connect(str(db_path))
+        try:
+            cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='index'")
+            indexes = [row[0] for row in cursor.fetchall()]
+            assert "idx_regression_signature" in indexes
+            assert "idx_regression_category" in indexes
+            assert "idx_regression_archived" in indexes
+            assert "idx_regression_timestamp" in indexes
+        finally:
+            conn.close()
+
+
 class TestDbIntegration:
     """Integration tests for database operations"""
 

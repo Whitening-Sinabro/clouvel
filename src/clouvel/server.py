@@ -86,13 +86,14 @@ from .tools import (
 
 # Error Learning tools (Pro feature - separate import)
 try:
-    from .tools.errors import error_record, error_check, error_learn
+    from .tools.errors import error_record, error_check, error_learn, memory_status
     _HAS_ERROR_TOOLS = True
 except ImportError:
     _HAS_ERROR_TOOLS = False
     error_record = None
     error_check = None
     error_learn = None
+    memory_status = None
 # License module import (use Free stub if Pro version not available)
 try:
     from .license import activate_license_cli, get_license_status
@@ -792,6 +793,17 @@ TOOL_DEFINITIONS = [
             "required": ["path"]
         }
     ),
+    Tool(
+        name="memory_status",
+        description="Regression Memory status and statistics. Shows active memories, hit counts, save rates, and top patterns. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project root path"},
+            },
+            "required": ["path"]
+        }
+    ),
 
     # === License Tools ===
     Tool(
@@ -1201,10 +1213,11 @@ TOOL_HANDLERS = {
     "quick_ship": lambda args: _wrap_quick_ship(args),
     "full_ship": lambda args: _wrap_full_ship(args),
 
-    # Error Learning (Pro, v1.4)
+    # Error Learning (Pro, v1.4) + Regression Memory (v4.0)
     "error_record": lambda args: _wrap_error_record(args),
     "error_check": lambda args: _wrap_error_check(args),
     "error_learn": lambda args: _wrap_error_learn(args),
+    "memory_status": lambda args: _wrap_memory_status(args),
 
     # License
     "activate_license": lambda args: _wrap_activate_license(args),
@@ -1986,6 +1999,22 @@ https://polar.sh/clouvel
         path=args.get("path", ""),
         auto_update_claude_md=args.get("auto_update_claude_md", True),
         min_count=args.get("min_count", 2)
+    )
+
+
+async def _wrap_memory_status(args: dict) -> list[TextContent]:
+    """memory_status tool wrapper"""
+    if not _HAS_ERROR_TOOLS or memory_status is None:
+        return [TextContent(type="text", text="""
+# Clouvel Pro Feature
+
+Regression Memory requires a Pro license.
+
+## Purchase
+https://polar.sh/clouvel
+""")]
+    return await memory_status(
+        path=args.get("path", ""),
     )
 
 

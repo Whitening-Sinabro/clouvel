@@ -87,6 +87,8 @@ try:
         memory_list, memory_search, memory_archive, memory_report,
         # v5.0 Cross-Project Memory Transfer
         memory_promote, memory_global_search,
+        # v1.0 Domain scoping
+        set_project_domain,
     )
     _HAS_ERROR_TOOLS = True
 except ImportError:
@@ -101,6 +103,7 @@ except ImportError:
     memory_report = None
     memory_promote = None
     memory_global_search = None
+    set_project_domain = None
 # License module import (use Free stub if Pro version not available)
 try:
     from .license import activate_license_cli, get_license_status
@@ -807,7 +810,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="error_check",
-        description="Context-based proactive warning. Check past error patterns before code modification. (Pro)",
+        description="Context-based proactive warning. Check past error patterns and global cross-project memories before code modification. (Pro)",
         inputSchema={
             "type": "object",
             "properties": {
@@ -916,8 +919,22 @@ TOOL_DEFINITIONS = [
                 "path": {"type": "string", "description": "Project root path"},
                 "query": {"type": "string", "description": "Search keyword"},
                 "category": {"type": "string", "description": "Filter by error category (optional)"},
+                "domain": {"type": "string", "description": "Filter by domain (personal/work/client). Auto-detected if not specified.", "enum": ["personal", "work", "client"]},
             },
             "required": ["path", "query"]
+        }
+    ),
+
+    Tool(
+        name="set_project_domain",
+        description="Set the domain for the current project. Domains isolate memories: personal/work/client. (Pro)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project root path"},
+                "domain": {"type": "string", "description": "Domain scope", "enum": ["personal", "work", "client"]},
+            },
+            "required": ["path", "domain"]
         }
     ),
 
@@ -1350,6 +1367,7 @@ TOOL_HANDLERS = {
     "memory_report": lambda args: _wrap_memory_report(args),
     "memory_promote": lambda args: _wrap_memory_promote(args),
     "memory_global_search": lambda args: _wrap_memory_global_search(args),
+    "set_project_domain": lambda args: _wrap_set_project_domain(args),
 
     # License
     "activate_license": lambda args: _wrap_activate_license(args),
@@ -2218,6 +2236,17 @@ async def _wrap_memory_global_search(args: dict) -> list[TextContent]:
         path=args.get("path", ""),
         query=args.get("query", ""),
         category=args.get("category", ""),
+        domain=args.get("domain", ""),
+    )
+
+
+async def _wrap_set_project_domain(args: dict) -> list[TextContent]:
+    """set_project_domain tool wrapper"""
+    if not _HAS_ERROR_TOOLS or set_project_domain is None:
+        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nDomain scoping requires a Pro license.\n\n## Purchase\nhttps://polar.sh/clouvel\n")]
+    return await set_project_domain(
+        path=args.get("path", ""),
+        domain=args.get("domain", ""),
     )
 
 

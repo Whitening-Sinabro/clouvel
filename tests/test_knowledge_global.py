@@ -20,6 +20,8 @@ from clouvel.db.knowledge import (
     unarchive_global_memory,
     increment_global_hit,
     increment_global_save,
+    set_project_domain,
+    get_project_domain,
     KNOWLEDGE_DB_PATH,
 )
 
@@ -396,6 +398,187 @@ class TestGlobalHitSaveCounters:
         """Incrementing a non-existent ID should not raise."""
         increment_global_hit(99999)
         increment_global_save(99999)
+
+
+# ============================================================
+# Domain Scoping (v1.0)
+# ============================================================
+
+class TestDomainScoping:
+    """Domain scoping for memory isolation."""
+
+    def test_domain_column_exists_in_projects(self, clean_knowledge_db):
+        """ALTER TABLE migration adds domain column to projects."""
+        conn = get_connection()
+        try:
+            cursor = conn.execute("PRAGMA table_info(projects)")
+            columns = [r["name"] for r in cursor.fetchall()]
+            assert "domain" in columns
+        finally:
+            conn.close()
+
+    def test_domain_column_exists_in_global_memories(self, clean_knowledge_db):
+        """ALTER TABLE migration adds domain column to global_memories."""
+        conn = get_connection()
+        try:
+            cursor = conn.execute("PRAGMA table_info(global_memories)")
+            columns = [r["name"] for r in cursor.fetchall()]
+            assert "domain" in columns
+        finally:
+            conn.close()
+
+    def test_domain_index_exists(self, clean_knowledge_db):
+        """Index on global_memories.domain should exist."""
+        conn = get_connection()
+        try:
+            cursor = conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='index' AND name='idx_global_memories_domain'"
+            )
+            assert cursor.fetchone() is not None
+        finally:
+            conn.close()
+
+    def test_set_and_get_project_domain(self, clean_knowledge_db):
+        """CRUD: set domain then get it back."""
+        project_id = get_or_create_project("dom-test", path="/tmp/dom")
+        assert get_project_domain(project_id) is None  # default
+
+        result = set_project_domain(project_id, "work")
+        assert result["status"] == "updated"
+        assert result["domain"] == "work"
+
+        assert get_project_domain(project_id) == "work"
+
+    def test_set_domain_not_found(self, clean_knowledge_db):
+        """Setting domain for nonexistent project returns not_found."""
+        result = set_project_domain("nonexistent_id", "personal")
+        assert result["status"] == "not_found"
+
+    def test_get_domain_nonexistent_project(self, clean_knowledge_db):
+        """Getting domain for nonexistent project returns None."""
+        assert get_project_domain("nonexistent_id") is None
+
+    def test_promote_inherits_project_domain(self, clean_knowledge_db):
+        """Promoted memory should carry the domain if passed."""
+        project_id = get_or_create_project("work-proj", path="/tmp/work")
+        set_project_domain(project_id, "work")
+
+        data = _make_memory_data(error_signature="domain_inherit_test")
+        result = promote_memory(data, project_id, "work-proj", domain="work")
+        assert result["status"] == "promoted"
+
+        conn = get_connection()
+        try:
+            row = conn.execute(
+                "SELECT domain FROM global_memories WHERE id = ?", (result["id"],)
+            ).fetchone()
+            assert row["domain"] == "work"
+        finally:
+            conn.close()
+
+    def test_promote_without_domain_is_null(self, clean_knowledge_db):
+        """Promoted memory without domain should have NULL domain."""
+        project_id = get_or_create_project("no-domain", path="/tmp/nodomain")
+        data = _make_memory_data(error_signature="no_domain_test")
+        result = promote_memory(data, project_id, "no-domain")
+        assert result["status"] == "promoted"
+
+        conn = get_connection()
+        try:
+            row = conn.execute(
+                "SELECT domain FROM global_memories WHERE id = ?", (result["id"],)
+            ).fetchone()
+            assert row["domain"] is None
+        finally:
+            conn.close()
+
+    def test_search_filters_by_domain(self, clean_knowledge_db):
+        """Search with domain filter should only return matching domain."""
+        proj_work = get_or_create_project("proj-work", path="/tmp/work")
+        proj_client = get_or_create_project("proj-client", path="/tmp/client")
+
+        promote_memory(
+            _make_memory_data(root_cause="Domain filter work error", error_signature="df_work"),
+            proj_work, "proj-work", domain="work",
+        )
+        promote_memory(
+            _make_memory_data(root_cause="Domain filter client error", error_signature="df_client"),
+            proj_client, "proj-client", domain="client",
+        )
+
+        # Filter by "work" domain
+        results = search_global_memories("Domain filter", domain="work")
+        assert len(results) == 1
+        assert results[0]["domain"] == "work"
+
+        # Filter by "client" domain
+        results = search_global_memories("Domain filter", domain="client")
+        assert len(results) == 1
+        assert results[0]["domain"] == "client"
+
+    def test_search_null_domain_matches_personal(self, clean_knowledge_db):
+        """NULL domain in DB should be treated as 'personal' for filtering."""
+        project_id = get_or_create_project("null-dom", path="/tmp/nulldom")
+        # Promote without explicit domain (NULL in DB)
+        promote_memory(
+            _make_memory_data(root_cause="Null domain personal compat", error_signature="null_personal"),
+            project_id, "null-dom",
+        )
+
+        # Searching with domain="personal" should find it (NULL = personal)
+        results = search_global_memories("Null domain personal", domain="personal")
+        assert len(results) == 1
+
+    def test_search_no_domain_returns_all(self, clean_knowledge_db):
+        """Search without domain filter returns all memories."""
+        proj_work = get_or_create_project("all-work", path="/tmp/allwork")
+        proj_client = get_or_create_project("all-client", path="/tmp/allclient")
+
+        promote_memory(
+            _make_memory_data(root_cause="All search work result", error_signature="all_work"),
+            proj_work, "all-work", domain="work",
+        )
+        promote_memory(
+            _make_memory_data(root_cause="All search client result", error_signature="all_client"),
+            proj_client, "all-client", domain="client",
+        )
+
+        # No domain filter — should return all
+        results = search_global_memories("All search")
+        assert len(results) == 2
+
+    def test_cross_domain_isolation(self, clean_knowledge_db):
+        """Client domain memories should NOT appear in personal domain search."""
+        project_id = get_or_create_project("isolated", path="/tmp/isolated")
+
+        promote_memory(
+            _make_memory_data(root_cause="Cross isolation secret client data", error_signature="iso_client"),
+            project_id, "isolated", domain="client",
+        )
+
+        # Searching from "personal" domain should NOT find "client" memory
+        results = search_global_memories("Cross isolation secret", domain="personal")
+        assert len(results) == 0
+
+        # Searching from "client" domain should find it
+        results = search_global_memories("Cross isolation secret", domain="client")
+        assert len(results) == 1
+
+    def test_get_or_create_project_with_domain(self, clean_knowledge_db):
+        """Creating a project with domain should store it."""
+        project_id = get_or_create_project("dom-create", path="/tmp/domcreate", domain="client")
+
+        assert get_project_domain(project_id) == "client"
+
+    def test_get_or_create_existing_ignores_domain(self, clean_knowledge_db):
+        """Getting existing project should NOT overwrite domain."""
+        project_id_1 = get_or_create_project("existing-dom", path="/tmp/existdom", domain="work")
+        project_id_2 = get_or_create_project("existing-dom", path="/tmp/existdom", domain="client")
+
+        # Same project returned
+        assert project_id_1 == project_id_2
+        # Domain should still be "work" (first creation)
+        assert get_project_domain(project_id_1) == "work"
 
 
 if __name__ == "__main__":

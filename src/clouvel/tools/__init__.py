@@ -197,6 +197,8 @@ try:
         # v5.0 Cross-Project Memory Transfer
         memory_promote,
         memory_global_search,
+        # v1.0 Domain scoping
+        set_project_domain,
     )
     _HAS_ERRORS = True
 except ImportError:
@@ -218,6 +220,7 @@ except ImportError:
     memory_report = None
     memory_promote = None
     memory_global_search = None
+    set_project_domain = None
 
 # Pro 기능은 clouvel-pro 패키지로 분리됨
 # pip install clouvel-pro
@@ -257,7 +260,7 @@ __all__ = [
     "error_search", "error_resolve", "error_get", "error_stats",
     "memory_status",
     "memory_list", "memory_search", "memory_archive", "memory_report",
-    "memory_promote", "memory_global_search",
+    "memory_promote", "memory_global_search", "set_project_domain",
     # architecture (v1.8 + v3.1)
     "arch_check", "check_imports", "check_duplicates", "check_sync",
     # proactive (v2.0)

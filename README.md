@@ -69,6 +69,9 @@ pip install clouvel
 
 # Add to Claude Code (auto-detects your platform)
 clouvel install
+# If 'clouvel' is not recognized, use:
+# py -m clouvel install        (Windows)
+# python3 -m clouvel install   (Mac/Linux)
 
 # Start coding - can_code check runs automatically
 claude
@@ -99,7 +102,7 @@ That's it. No config needed.
 ✅ 7-day Pro trial activated!
 ```
 
-**[Get Pro →](https://polar.sh/clouvel)** Use code `LAUNCH70` for 70% off annual ($23.99/yr)
+**[Get Pro →](https://whitening-sinabro.github.io/clouvel/)**
 
 ---
 
@@ -145,6 +148,10 @@ pip install clouvel
 **Automatic (recommended):**
 ```bash
 clouvel install
+
+# If 'clouvel' is not recognized:
+py -m clouvel install        # Windows
+python3 -m clouvel install   # Mac/Linux
 ```
 
 <details>
@@ -241,5 +248,5 @@ MIT License - see [LICENSE](LICENSE) for details.
   <b>AI makes it fast. Clouvel makes it right.</b><br>
   <a href="https://whitening-sinabro.github.io/clouvel/">Website</a> •
   <a href="https://github.com/Whitening-Sinabro/clouvel/issues">Issues</a> •
-  <a href="https://polar.sh/clouvel">Get Pro</a>
+  <a href="https://whitening-sinabro.github.io/clouvel/">Get Pro</a>
 </p>

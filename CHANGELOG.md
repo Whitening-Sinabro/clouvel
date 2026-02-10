@@ -5,13 +5,13 @@ All notable changes to Clouvel will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2026-02-09 (Gate → Memory Pivot)
+## [4.0.0] - 2026-02-09 (Gate → Memory Pivot)
 
 ### Changed
 - **Repositioning**: Gate(enforcement) → Memory(remembrance) pivot
   - "AI makes it fast. Clouvel makes it right."
   - "Free to Act, Paid to Remember"
-- **Version Reset**: v4.1 → v1.0.0 (pivot baseline)
+- **Version Reset**: v3.2.0 → v4.0.0 (pivot baseline)
 
 ### Added
 - **Regression Memory Phase 1+2**: 3-stage error matching engine + management tools

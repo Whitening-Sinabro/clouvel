@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Clouvel MCP Server v1.0.0
+Clouvel MCP Server v4.0.0
 MCP server that remembers AI mistakes and prevents regressions
 
 Free version - For Pro features, see clouvel-pro package

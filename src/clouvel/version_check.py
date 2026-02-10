@@ -290,7 +290,7 @@ V1_PIVOT_NOTICE_FILE = CACHE_DIR / "v1_pivot_notice_shown.json"
 
 V1_PIVOT_NOTICE_EN = """
 ================================================
-  CLOUVEL v1.0.0 — Gate → Memory Pivot
+  CLOUVEL v4.0.0 — Gate → Memory Pivot
 ================================================
 
 Core value changed:
@@ -310,7 +310,7 @@ Details: https://whitening-sinabro.github.io/clouvel/
 
 V1_PIVOT_NOTICE_KO = """
 ================================================
-  CLOUVEL v1.0.0 — Gate → Memory 피봇
+  CLOUVEL v4.0.0 — Gate → Memory 피봇
 ================================================
 
 핵심 가치 전환:

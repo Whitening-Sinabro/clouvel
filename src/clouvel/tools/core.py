@@ -301,6 +301,32 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
               "post" - check after coding (verify file tracking)
     """
     docs_path = Path(path)
+
+    # Early path validation — exit fast on completely invalid paths
+    # Only triggers when the PARENT directory doesn't exist (clearly wrong path)
+    # If parent exists but docs_path doesn't, fall through to normal BLOCK/WARN logic
+    if not docs_path.exists() and not docs_path.parent.exists():
+        suggestions = []
+        # Walk up to find nearest existing ancestor
+        ancestor = docs_path.parent
+        while not ancestor.exists() and ancestor != ancestor.parent:
+            ancestor = ancestor.parent
+        if ancestor.exists():
+            candidates = [d for d in ancestor.iterdir() if d.is_dir()][:5]
+            suggestions.extend(str(c) for c in candidates[:3])
+
+        msg = f"PATH NOT FOUND: {path}\n\n"
+        msg += "The path does not exist. can_code needs a valid project or docs folder path.\n\n"
+        if suggestions:
+            msg += "Did you mean:\n"
+            for s in suggestions[:3]:
+                msg += f"  -> can_code(path=\"{s}\")\n"
+        else:
+            msg += "Usage:\n"
+            msg += "  can_code(path=\"/your/project\")        # project root\n"
+            msg += "  can_code(path=\"/your/project/docs\")   # docs folder\n"
+        return [TextContent(type="text", text=msg)]
+
     project_path = docs_path.parent if docs_path.name == "docs" else docs_path
 
     # POST mode: check file tracking

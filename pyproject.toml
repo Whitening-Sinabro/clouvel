@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "clouvel"
-version = "4.0.1"
+version = "4.0.2"
 description = "MCP server that remembers AI mistakes and prevents regressions - AI makes it fast, Clouvel makes it right"
 readme = "README.md"
 requires-python = ">=3.10"

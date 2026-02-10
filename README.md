@@ -187,6 +187,20 @@ python3 -m clouvel install   # Mac/Linux
 
 ## Usage Examples
 
+### `can_code` path
+
+```
+# Pass your project root OR docs folder:
+can_code(path="/your/project")
+can_code(path="/your/project/docs")
+
+# Wrong path? Clouvel exits immediately with suggestions:
+can_code(path="/wrong/path")
+→ PATH NOT FOUND: /wrong/path
+  Did you mean:
+    -> can_code(path="/your/project/docs")
+```
+
 ### Block coding without PRD
 
 ```

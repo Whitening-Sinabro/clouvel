@@ -21,6 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Context Checkpoint**: `context_save` / `context_load` for session continuity
 - **PRD Quality Scoring**: Automated PRD completeness evaluation (Phase 1)
 - **Cross-Project Memory Transfer**: Knowledge transfer between projects
+  - `memory_promote`: Promote local memories to global
+  - `memory_global_search`: Search memories from all projects
+  - `error_check` now auto-searches global memories (Step 5)
+- **Domain Scoping**: Memory isolation by domain (personal/work/client)
+  - `set_project_domain`: Assign domain to a project
+  - Global search and promote auto-inherit project domain
+  - NULL domain treated as "personal" for backward compatibility
 
 ---
 

@@ -166,13 +166,21 @@
 
 ---
 
-## (N) Error Learning Tools (3개)
+## (N) Error Learning Tools (3개 + Regression Memory 8개)
 
 | Name | Location | Purpose | Entry | Inputs | Outputs | Side Effects | Dependencies | Runtime | Notes |
 |------|----------|---------|-------|--------|---------|--------------|--------------|---------|-------|
-| `error_record` | `server.py:649-665`, `tools/errors.py` | 5 Whys 에러 기록 | MCP Tool | `path`, `error_text`, `context`, `five_whys`, `root_cause`, `solution`, `prevention` | Error record | File write (.claude/errors/) | None | Local, Sync | Pro |
-| `error_check` | `server.py:666-679`, `tools/errors.py` | 에러 패턴 체크 | MCP Tool | `path`, `context`, `file_path`, `operation` | Warnings | File read | None | Local, Sync | Pro |
-| `error_learn` | `server.py:680-692`, `tools/errors.py` | CLAUDE.md 자동 업데이트 | MCP Tool | `path`, `auto_update_claude_md`, `min_count` | Learned rules | File read/write (CLAUDE.md) | None | Local, Sync | Pro |
+| `error_record` | `server.py`, `tools/errors.py` | 5 Whys 에러 기록 | MCP Tool | `path`, `error_text`, `context`, `five_whys`, `root_cause`, `solution`, `prevention` | Error record | File write (.claude/errors/) | None | Local, Sync | Pro |
+| `error_check` | `server.py`, `tools/errors.py` | 에러 패턴 + 글로벌 메모리 체크 | MCP Tool | `path`, `context`, `file_path`, `operation` | Warnings + Global matches | File read, DB read (knowledge.db) | SQLite | Local, Sync | Pro |
+| `error_learn` | `server.py`, `tools/errors.py` | CLAUDE.md 자동 업데이트 | MCP Tool | `path`, `auto_update_claude_md`, `min_count` | Learned rules | File read/write (CLAUDE.md) | None | Local, Sync | Pro |
+| `memory_status` | `server.py`, `tools/errors.py` | Regression Memory 상태 | MCP Tool | `path` | Stats | DB read | SQLite | Local, Sync | Pro |
+| `memory_list` | `server.py`, `tools/errors.py` | 메모리 목록 | MCP Tool | `path`, `category`, `include_archived`, `limit` | Memory list | DB read | SQLite | Local, Sync | Pro |
+| `memory_search` | `server.py`, `tools/errors.py` | 메모리 검색 (FTS5) | MCP Tool | `path`, `query`, `category` | Search results | DB read | SQLite, FTS5 | Local, Sync | Pro |
+| `memory_archive` | `server.py`, `tools/errors.py` | 메모리 아카이브 | MCP Tool | `path`, `memory_id`, `action` | Status | DB write | SQLite | Local, Sync | Pro |
+| `memory_report` | `server.py`, `tools/errors.py` | 월간 리포트 | MCP Tool | `path`, `days` | Report | DB read | SQLite | Local, Sync | Pro |
+| `memory_promote` | `server.py`, `tools/errors.py` | 로컬→글로벌 승격 | MCP Tool | `path`, `memory_id` | Promote result | DB write (knowledge.db) | SQLite | Local, Sync | Pro |
+| `memory_global_search` | `server.py`, `tools/errors.py` | 크로스프로젝트 검색 | MCP Tool | `path`, `query`, `category`, `domain` | Global memories | DB read (knowledge.db) | SQLite, FTS5 | Local, Sync | Pro |
+| `set_project_domain` | `server.py`, `tools/errors.py` | 프로젝트 도메인 설정 | MCP Tool | `path`, `domain` (personal/work/client) | Status | DB write (knowledge.db) | SQLite | Local, Sync | Pro |
 
 ---
 

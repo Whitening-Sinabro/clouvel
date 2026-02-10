@@ -119,6 +119,8 @@ That's it. No config needed.
 | `memory_status` | Regression Memory dashboard | - | ✓ |
 | `memory_search` | Search past error patterns | - | ✓ |
 | `memory_report` | Monthly savings report | - | ✓ |
+| `memory_global_search` | Search memories across all projects | - | ✓ |
+| `set_project_domain` | Isolate memories by domain (personal/work/client) | - | ✓ |
 | `start_trial` | Activate 7-day Pro trial | ✓ | - |
 
 **7 project types:** web-app, api, cli, chrome-ext, discord-bot, landing-page, saas

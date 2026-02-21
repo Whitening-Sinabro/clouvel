@@ -655,7 +655,7 @@ You requested `{requested_layout}` layout, but Free tier only includes `lite` an
 - Definition of Done (완료 기준)
 
 → Upgrade to Pro: https://polar.sh/clouvel
-→ Use code `FIRST1` for early adopter pricing
+→ Annual: $49/yr — Early Adopter Pricing
 
 ---
 """
@@ -926,7 +926,7 @@ Pro `detailed` template: ~700+ lines includes:
 - Error Cases 전체 열거 (할루시네이션 방지)
 - Test Scenarios & Definition of Done
 
-→ Upgrade: https://polar.sh/clouvel (code: FIRST1)
+→ Upgrade: https://polar.sh/clouvel ($49/yr — Early Adopter Pricing)
 """
 
     # Check additional docs files

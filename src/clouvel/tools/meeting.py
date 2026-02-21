@@ -4,12 +4,9 @@
 MCP tool that returns a prompt for Claude to simulate C-Level meetings.
 No additional API calls needed - uses the host Claude to generate.
 
-Free: PM only (v3.0)
-Pro: All 8 managers
-
-v2.1: Basic meeting simulation
-v2.2: Feedback loop + A/B testing integration
-v3.0: FREE/PRO tier separation (PM only for Free)
+v5.0: First project = all 8 managers (unlimited)
+      Additional projects (Free) = monthly quota + PM only
+      Pro = all 8 managers (unlimited)
 """
 
 from typing import Optional, List, Dict, Any
@@ -85,7 +82,7 @@ async def meeting(
     별도 API 호출 없이 Claude가 직접 회의록을 생성합니다.
 
     **v3.0 티어 구분**:
-    - Free: PM만 참여
+    - Free (추가 프로젝트): PM만 참여. 첫 프로젝트: 8명 전체
     - Pro: 8명 전체 (PM, CTO, QA, CSO, CDO, CMO, CFO, ERROR)
 
     Args:
@@ -94,7 +91,7 @@ async def meeting(
                지원: auth, api, payment, ui, feature, launch, error,
                      security, performance, design, cost, maintenance
         managers: 참여 매니저 목록 (미지정시 토픽에 따라 자동 선택)
-                  Free 사용자는 PM만 사용 가능
+                  Free 추가 프로젝트는 PM만 사용 가능 (첫 프로젝트는 전체)
         project_path: 프로젝트 경로 (Knowledge Base 연동 + 피드백 저장용)
         include_example: few-shot 예시 포함 여부
         variant: 프롬프트 버전 (A/B 테스팅용, 미지정시 자동 선택)
@@ -155,11 +152,11 @@ async def meeting(
 
         try:
             from ..license_common import check_meeting_quota, consume_meeting_quota
-            quota = check_meeting_quota()
+            quota = check_meeting_quota(project_path)
 
             if quota["allowed"]:
                 # Consume one meeting from quota
-                consume_result = consume_meeting_quota()
+                consume_result = consume_meeting_quota(project_path)
                 monthly_quota_ok = True
                 quota_notice = consume_result.get("notice")
             else:
@@ -228,7 +225,7 @@ With Pro, {topic_specific}
 Missed perspectives:
 {chr(10).join(missed_descriptions)}
 
-Pro: $7.99/mo - First month $1 with code FIRST1
+Pro: $7.99/mo (Annual: $49/yr — Early Adopter Pricing)
 -> https://polar.sh/clouvel
 """
         else:
@@ -239,7 +236,7 @@ Pro: $7.99/mo - First month $1 with code FIRST1
 Missed perspectives:
 {chr(10).join(missed_descriptions)}
 
-Pro: $7.99/mo - First month $1 with code FIRST1
+Pro: $7.99/mo (Annual: $49/yr — Early Adopter Pricing)
 -> https://polar.sh/clouvel
 """
 
@@ -308,7 +305,7 @@ rate_meeting(project_path="{project_path}", meeting_id="{meeting_id}", rating=4,
     # v3.1: Add weekly trial badge
     weekly_badge = ""
     if not is_pro and weekly_trial_used:
-        weekly_badge = "\n\n---\n\nThis week's free Full C-Level Meeting trial. Next week's trial resets automatically.\nPro: Unlimited full meetings -> https://polar.sh/clouvel (code: FIRST1)\n"
+        weekly_badge = "\n\n---\n\nThis week's free Full C-Level Meeting trial. Next week's trial resets automatically.\nPro: Unlimited full meetings -> https://polar.sh/clouvel ($49/yr — Early Adopter Pricing)\n"
 
     return [TextContent(type="text", text=prompt + footer + pro_hint + weekly_badge + rating_prompt)]
 

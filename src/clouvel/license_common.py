@@ -89,9 +89,9 @@ def get_license_path() -> Path:
 DEFAULT_TIER = "personal"
 
 TIER_INFO = {
-    "personal": {"name": "Personal", "price": "$29", "seats": 1},
-    "team": {"name": "Team", "price": "$79", "seats": 10},
-    "enterprise": {"name": "Enterprise", "price": "$199", "seats": 999},
+    "personal": {"name": "Personal", "price": "$7.99/mo", "seats": 1},
+    "team": {"name": "Team", "price": "$79/mo", "seats": 10},
+    "enterprise": {"name": "Enterprise", "price": "$199/mo", "seats": 999},
 }
 
 # ============================================================
@@ -107,9 +107,9 @@ PRO_ONLY_FEATURES = [
     "error_learning",
 ]
 
-# FREE tier project limit (v3.3: 1 active project)
+# FREE tier project limit (v5.0: first project unlimited, second+ needs Pro)
 FREE_PROJECT_LIMIT = 1  # Legacy: kept for backward compat
-FREE_ACTIVE_PROJECT_LIMIT = 1  # Active projects only
+FREE_ACTIVE_PROJECT_LIMIT = 1  # First project = unlimited Pro, additional = blocked
 
 # FREE tier template layout limit
 FREE_LAYOUTS = ["lite", "minimal"]  # v3.3: minimal added for quick unblock
@@ -119,8 +119,8 @@ PRO_LAYOUTS = ["lite", "minimal", "standard", "detailed"]
 def is_feature_available(feature: str) -> Dict[str, Any]:
     """Check if feature is available for current license.
 
-    v3.0: FREE tier = light (warns, 1 PM, 1 project)
-          PRO tier = heavy (blocks, 8 managers, unlimited)
+    v5.0: First project = full Pro (8 managers, BLOCK, KB, unlimited)
+          Additional projects = Pro license required
 
     Returns:
         dict with keys:
@@ -151,7 +151,7 @@ def is_feature_available(feature: str) -> Dict[str, Any]:
     if has_license:
         return {"available": True, "reason": "pro"}
 
-    return {"available": False, "reason": "free", "upgrade_hint": "FIRST1"}
+    return {"available": False, "reason": "free", "upgrade_hint": "$49/yr"}
 
 
 def get_projects_path() -> Path:
@@ -216,8 +216,8 @@ def save_projects(data: Dict[str, Any]) -> bool:
 def register_project(project_path: str) -> Dict[str, Any]:
     """Register a project and check if within FREE tier limit.
 
-    v3.3: FREE tier = 1 ACTIVE project only (archived don't count)
-          PRO tier = unlimited
+    v5.1: Single source of truth via get_project_tier().
+          Removes redundant Pro/developer/trial checks.
 
     Returns:
         dict with keys:
@@ -225,131 +225,91 @@ def register_project(project_path: str) -> Dict[str, Any]:
         - count: int (active project count)
         - limit: int (project limit)
         - is_new: bool (True if newly registered)
-        - active_projects: list (active project paths)
+        - tier: str (pro/first/additional)
     """
-    # Developers and Pro users have unlimited projects
-    if is_developer():
-        return {"allowed": True, "count": 0, "limit": 999, "is_new": False}
+    # v5.1: Single tier check (handles developer, license, trial, first, additional)
+    try:
+        tier = get_project_tier(project_path)
+    except Exception:
+        tier = "additional"  # Safe fallback: require Pro
 
-    cached = load_license_cache()
-    has_license = cached is not None and cached.get("tier") is not None
+    # Pro/developer/trial = unlimited
+    if tier == "pro":
+        return {"allowed": True, "count": 0, "limit": 999, "is_new": False, "tier": "pro"}
 
-    # Full trial active = unlimited
-    if has_license or is_full_trial_active():
-        return {"allowed": True, "count": 0, "limit": 999, "is_new": False}
+    # First project = unlimited (all Pro features)
+    if tier == "first":
+        return {"allowed": True, "count": 0, "limit": 999, "is_new": False, "tier": "first"}
 
-    # FREE tier: check ACTIVE project limit
-    data = load_projects()
-    projects = data.get("projects", [])
+    # Additional project = Pro required
+    first = get_first_project()
+    first_path = first.get("path", "Unknown") if first else "Unknown"
 
-    # Normalize path for comparison
-    normalized_path = str(Path(project_path).resolve())
-
-    # Get active projects only
-    active_projects = [p for p in projects if p.get("status") == "active"]
-    active_paths = [p.get("path") for p in active_projects]
-
-    # Check if this project is already registered
-    existing = next((p for p in projects if p.get("path") == normalized_path), None)
-
-    if existing:
-        if existing.get("status") == "active":
-            # Already active - allowed
-            return {
-                "allowed": True,
-                "count": len(active_projects),
-                "limit": FREE_ACTIVE_PROJECT_LIMIT,
-                "is_new": False,
-                "active_projects": active_paths,
-            }
-        else:
-            # Archived - needs reactivation (counts as new active)
-            if len(active_projects) >= FREE_ACTIVE_PROJECT_LIMIT:
-                return {
-                    "allowed": False,
-                    "count": len(active_projects),
-                    "limit": FREE_ACTIVE_PROJECT_LIMIT,
-                    "is_new": False,
-                    "active_projects": active_paths,
-                    "needs_archive": True,
-                    "message": _get_project_limit_message(active_projects),
-                }
-            # Reactivate archived project
-            existing["status"] = "active"
-            existing["reactivated_at"] = datetime.now().isoformat()
-            save_projects(data)
-            return {
-                "allowed": True,
-                "count": len(active_projects) + 1,
-                "limit": FREE_ACTIVE_PROJECT_LIMIT,
-                "is_new": False,
-                "reactivated": True,
-                "active_projects": active_paths + [normalized_path],
-            }
-
-    # New project - check active limit
-    if len(active_projects) >= FREE_ACTIVE_PROJECT_LIMIT:
-        # v3.3: Log project limit hit event
-        try:
-            from .analytics import log_event
-            log_event("project_limit_hit", {
-                "active_count": len(active_projects),
-                "limit": FREE_ACTIVE_PROJECT_LIMIT,
-                "active_project": active_paths[0] if active_paths else None,
-            })
-        except Exception:
-            pass
-        return {
-            "allowed": False,
-            "count": len(active_projects),
+    # Log project limit hit event
+    try:
+        from .analytics import log_event
+        log_event("project_limit_hit", {
+            "active_count": 1,
             "limit": FREE_ACTIVE_PROJECT_LIMIT,
-            "is_new": False,
-            "active_projects": active_paths,
-            "needs_archive": True,
-            "message": _get_project_limit_message(active_projects),
-        }
-
-    # Register new active project
-    projects.append({
-        "path": normalized_path,
-        "status": "active",
-        "registered_at": datetime.now().isoformat(),
-    })
-    data["projects"] = projects
-    save_projects(data)
+            "active_project": first_path,
+            "project_tier": "additional",
+            "user_id_hash": get_machine_id()[:8],
+        })
+    except Exception:
+        pass
 
     return {
-        "allowed": True,
-        "count": len(active_projects) + 1,
+        "allowed": False,
+        "count": 1,
         "limit": FREE_ACTIVE_PROJECT_LIMIT,
-        "is_new": True,
-        "active_projects": active_paths + [normalized_path],
+        "is_new": False,
+        "tier": "additional",
+        "active_projects": [{"path": first_path}],
+        "needs_upgrade": True,
+        "message": _get_project_limit_message([{"path": first_path}]),
     }
 
 
 def _get_project_limit_message(active_projects: list) -> str:
-    """Generate project limit reached message (Pain Point #1)."""
+    """Generate project limit reached message (v3.0.0: first-project-aware)."""
     if not active_projects:
         return "프로젝트 제한에 도달했습니다."
 
+    # v3.0.0: Show first project info
+    first = get_first_project()
+    if first:
+        first_name = Path(first.get("path", "Unknown")).name
+        return f"""
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🔒 Pro Required for Additional Projects
+
+  Your first project ({first_name}) has full Pro features.
+  To unlock Pro for all your projects:
+
+  Monthly: $7.99/mo
+  Annual:  $49/yr (Early Adopter Pricing)
+  → https://polar.sh/clouvel
+
+  💡 Pro developers manage 3.2 projects on average.
+     Knowledge Base remembers each project's context.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
+
     active_name = Path(active_projects[0].get("path", "Unknown")).name
-
     return f"""
-🚀 새 프로젝트를 시작하려고 하시네요!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🔒 Pro Required for Additional Projects
 
-현재 '{active_name}'가 활성화되어 있습니다.
-Free 플랜은 한 번에 하나의 프로젝트에만 집중할 수 있어요.
+  Your first project ({active_name}) has full Pro features.
+  To unlock Pro for all your projects:
 
-선택하세요:
-1️⃣ '{active_name}' 아카이브하고 새 프로젝트 시작
-   → clouvel archive_project("{active_projects[0].get('path')}")
+  Monthly: $7.99/mo
+  Annual:  $49/yr (Early Adopter Pricing)
+  → https://polar.sh/clouvel
 
-2️⃣ Pro로 업그레이드하여 동시에 여러 프로젝트 관리
-
-💡 Pro 개발자들은 평균 3.2개 프로젝트를 동시에 진행합니다.
-   컨텍스트 스위칭 없이 Knowledge Base가 각 프로젝트를 기억해요.
-
-→ clouvel upgrade_pro (월 $7.99, 첫 7일 무료)
+  💡 Pro developers manage 3.2 projects on average.
+     Knowledge Base remembers each project's context.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
 
 
@@ -510,6 +470,151 @@ def list_projects() -> Dict[str, Any]:
         "limit": 999 if is_pro else FREE_ACTIVE_PROJECT_LIMIT,
         "is_pro": is_pro,
     }
+
+# ============================================================
+# v3.0.0: First Project Unlimited (Reverse Trial)
+# ============================================================
+
+def _get_first_project_path() -> Path:
+    """Get first project tracking file: ~/.clouvel/first_project.json"""
+    if os.name == 'nt':
+        base = Path(os.environ.get('USERPROFILE', '~'))
+    else:
+        base = Path.home()
+    clouvel_dir = base / ".clouvel"
+    clouvel_dir.mkdir(parents=True, exist_ok=True)
+    return clouvel_dir / "first_project.json"
+
+
+def _hash_path(path: str) -> str:
+    """SHA256 hash of normalized path."""
+    return hashlib.sha256(path.encode()).hexdigest()[:32]
+
+
+def get_first_project() -> Optional[Dict[str, Any]]:
+    """Load first project data. Returns None if not registered."""
+    fp_path = _get_first_project_path()
+    if not fp_path.exists():
+        return None
+    try:
+        data = json.loads(fp_path.read_text(encoding="utf-8"))
+        # Validate structure
+        if "path_hash" in data and "machine_id" in data:
+            return data
+        return None
+    except Exception:
+        return None
+
+
+def register_first_project(project_path: str) -> Dict[str, Any]:
+    """Register the first project (one-time, per machine).
+
+    Auto-migration: If projects.json has 1 active project and no
+    first_project.json exists, auto-register that project.
+
+    Returns:
+        dict with path_hash, machine_id, registered_at, version
+    """
+    fp_path = _get_first_project_path()
+
+    # Already registered — don't overwrite
+    existing = get_first_project()
+    if existing is not None:
+        return existing
+
+    normalized = str(Path(project_path).resolve())
+
+    data = {
+        "path": normalized,
+        "path_hash": _hash_path(normalized),
+        "machine_id": get_machine_id(),
+        "registered_at": datetime.now().isoformat(),
+        "version": "3.0.0",
+    }
+
+    try:
+        fp_path.write_text(
+            json.dumps(data, indent=2, ensure_ascii=False),
+            encoding="utf-8"
+        )
+    except Exception:
+        pass
+
+    # Log event
+    try:
+        from .analytics import log_event
+        log_event("first_project_registered", {
+            "path_hash": data["path_hash"][:8],
+            "machine_id": data["machine_id"][:8],
+        })
+    except Exception:
+        pass
+
+    return data
+
+
+def _auto_migrate_first_project() -> Optional[str]:
+    """Auto-migrate: if projects.json has exactly 1 active project, return its path.
+
+    Called during get_project_tier when no first_project.json exists.
+    """
+    try:
+        data = load_projects()
+        projects = data.get("projects", [])
+        active = [p for p in projects if p.get("status") == "active"]
+        if len(active) == 1:
+            return active[0].get("path")
+    except Exception:
+        pass
+    return None
+
+
+def get_project_tier(project_path: str) -> str:
+    """Get tier for a specific project.
+
+    Returns:
+        "pro"        — Pro license / developer / trial active
+        "first"      — First project (all Pro features)
+        "additional" — Second+ project (Pro required)
+    """
+    # 1) Developer/License/Trial → "pro"
+    if is_developer():
+        return "pro"
+
+    cached = load_license_cache()
+    if cached and cached.get("tier"):
+        return "pro"
+
+    if is_full_trial_active():
+        return "pro"
+
+    # 2) First project check
+    normalized = str(Path(project_path).resolve())
+    first = get_first_project()
+
+    if first is None:
+        # Auto-migration: check projects.json for existing single active project
+        migrated_path = _auto_migrate_first_project()
+        if migrated_path:
+            register_first_project(migrated_path)
+            first = get_first_project()
+            if first and first.get("path_hash") == _hash_path(normalized):
+                return "first"
+            elif first:
+                return "additional"
+        # No migration candidate — register current project as first
+        register_first_project(normalized)
+        return "first"
+
+    if first.get("path_hash") == _hash_path(normalized):
+        return "first"
+
+    # Machine ID mismatch → additional (anti-abuse)
+    if first.get("machine_id") != get_machine_id():
+        return "additional"
+
+    return "additional"
+
 
 def get_tier_info(tier: str) -> Dict[str, Any]:
     """Get tier info with fallback to Personal."""
@@ -806,7 +911,18 @@ def start_kb_trial(project_path: str) -> str:
 
 
 def is_kb_trial_active(project_path: str) -> bool:
-    """Check if KB trial is still active (within 7 days)."""
+    """Check if KB trial is still active (within 7 days).
+
+    v5.0: First project always has KB access (no trial needed).
+    """
+    # v5.0: First project gets unlimited KB
+    try:
+        tier = get_project_tier(project_path)
+        if tier in ("pro", "first"):
+            return True
+    except Exception:
+        pass
+
     start = get_kb_trial_start(project_path)
     if start is None:
         return True  # No trial started yet = can start one
@@ -902,10 +1018,11 @@ def _get_monthly_meeting_path() -> Path:
     return clouvel_dir / "monthly_meeting.json"
 
 
-def check_meeting_quota() -> Dict[str, Any]:
+def check_meeting_quota(project_path: str = None) -> Dict[str, Any]:
     """Check monthly meeting quota for Free users.
 
     v3.3: Replaces weekly trial with monthly 3-time quota.
+    v5.0: First project bypasses quota entirely.
 
     Returns:
         dict with:
@@ -917,6 +1034,14 @@ def check_meeting_quota() -> Dict[str, Any]:
         - notice: str (optional, shown when 1 remaining)
         - message: str (shown when quota exhausted)
     """
+    # v5.0: First project gets unlimited meetings
+    if project_path:
+        try:
+            tier = get_project_tier(project_path)
+            if tier in ("pro", "first"):
+                return {"allowed": True, "used": 0, "remaining": 999, "limit": 999, "current_month": datetime.now().strftime("%Y-%m")}
+        except Exception:
+            pass
     path = _get_monthly_meeting_path()
     current_month = datetime.now().strftime("%Y-%m")
 
@@ -969,12 +1094,22 @@ Pro 개발자들의 후기:
     return result
 
 
-def consume_meeting_quota() -> Dict[str, Any]:
+def consume_meeting_quota(project_path: str = None) -> Dict[str, Any]:
     """Consume one meeting from monthly quota.
+
+    v5.0: First project bypasses quota entirely.
 
     Returns:
         dict with used, remaining, notice (if applicable)
     """
+    # v5.0: First project gets unlimited meetings
+    if project_path:
+        try:
+            tier = get_project_tier(project_path)
+            if tier in ("pro", "first"):
+                return {"used": 0, "remaining": 999}
+        except Exception:
+            pass
     path = _get_monthly_meeting_path()
     current_month = datetime.now().strftime("%Y-%m")
 
@@ -999,9 +1134,17 @@ def consume_meeting_quota() -> Dict[str, Any]:
     # Log event
     try:
         from .analytics import log_event
+        _tier = "unknown"
+        try:
+            if project_path:
+                _tier = get_project_tier(project_path)
+        except Exception:
+            pass
         log_event("meeting_quota_used", {
             "used": data["used"],
             "remaining": FREE_MONTHLY_MEETINGS - data["used"],
+            "project_tier": _tier,
+            "user_id_hash": get_machine_id()[:8],
         })
     except Exception:
         pass
@@ -1141,23 +1284,16 @@ def get_full_trial_status() -> Dict[str, Any]:
 # Experiment configurations with multiple variants
 # v3.3: Added rollout_percent for gradual traffic rollout (Week 3)
 EXPERIMENTS = {
-    "project_limit": {
-        "variants": ["control", "variant_a", "variant_b"],
-        "description": "Project limit: 3 vs 1 vs 2 active projects",
-        "values": {"control": 3, "variant_a": 1, "variant_b": 2},
-        "rollout_percent": 50,  # Day 18: 50% rollout
-        "started_at": "2026-02-01",
-    },
     "meeting_quota": {
         "variants": ["control", "variant_a"],
-        "description": "Meeting quota: weekly vs monthly 3",
+        "description": "Meeting quota for additional projects: weekly vs monthly 3",
         "values": {"control": "weekly", "variant_a": "monthly_3"},
         "rollout_percent": 50,
         "started_at": "2026-02-01",
     },
     "kb_retention": {
         "variants": ["control", "variant_a"],
-        "description": "KB retention: unlimited vs 7 days",
+        "description": "KB retention for additional projects: unlimited vs 7 days",
         "values": {"control": "unlimited", "variant_a": "7_days"},
         "rollout_percent": 50,
         "started_at": "2026-02-01",
@@ -1252,6 +1388,21 @@ def get_experiment_variant(experiment_name: str, user_id: str = None) -> str:
     if user_id is None:
         user_id = get_machine_id()
 
+    # v5.1: Detect license tier for analytics filtering
+    # Pro-equivalent users get variant assigned but marked as "pro" to avoid data contamination
+    _license_tier = "free"
+    try:
+        if is_developer():
+            _license_tier = "developer"
+        elif is_full_trial_active():
+            _license_tier = "trial"
+        else:
+            cached = load_license_cache()
+            if cached and cached.get("tier"):
+                _license_tier = "pro"
+    except Exception:
+        pass
+
     # v3.3: Check rollout percentage first
     if not is_in_rollout(experiment_name, user_id):
         variant = "control"  # Users not in rollout get control
@@ -1267,6 +1418,7 @@ def get_experiment_variant(experiment_name: str, user_id: str = None) -> str:
         "variant": variant,
         "assigned_at": datetime.now().isoformat(),
         "user_id_hash": user_id[:8],
+        "license_tier": _license_tier,
     }
 
     try:
@@ -1280,6 +1432,8 @@ def get_experiment_variant(experiment_name: str, user_id: str = None) -> str:
         log_event("experiment_assigned", {
             "experiment": experiment_name,
             "variant": variant,
+            "user_id_hash": user_id[:8],
+            "license_tier": _license_tier,
         })
     except Exception:
         pass

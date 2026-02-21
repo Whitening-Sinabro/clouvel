@@ -191,40 +191,38 @@ def get_cached_update_info() -> Optional[Dict[str, Any]]:
 
 V3_NOTICE_EN = """
 ================================================
-  CLOUVEL v3.0 - FREE/PRO TIER CHANGES
+  CLOUVEL v5.0 - FIRST PROJECT UNLIMITED
 ================================================
 
-FREE tier is now lighter (easier to start):
-  - Managers: 3 -> 1 (PM only)
-  - can_code: BLOCK -> WARN (you can proceed)
-  - Projects: 1 limit
+NEW: Your first project gets ALL Pro features:
+  - 8 C-Level managers (PM, CTO, QA, CSO, CDO, CMO, CFO, ERROR)
+  - BLOCK mode (enforced spec-first coding)
+  - Knowledge Base (context across sessions)
+  - Error Learning (never repeat mistakes)
+  - Unlimited meetings
 
-PRO tier is now heavier (full protection):
-  - Managers: 8 (all C-Level)
-  - can_code: BLOCK (enforced)
-  - Projects: Unlimited
+Additional projects require Pro license.
 
-Upgrade: https://polar.sh/clouvel (code: FIRST1)
+Upgrade for all projects: https://polar.sh/clouvel ($49/yr — Early Adopter Pricing)
 
 ================================================
 """
 
 V3_NOTICE_KO = """
 ================================================
-  CLOUVEL v3.0 - FREE/PRO 티어 변경
+  CLOUVEL v5.0 - 첫 프로젝트 무제한
 ================================================
 
-FREE 티어가 가벼워졌습니다 (시작이 쉬워짐):
-  - 매니저: 3명 -> 1명 (PM만)
-  - can_code: BLOCK -> WARN (진행 가능)
-  - 프로젝트: 1개 제한
+NEW: 첫 프로젝트에서 모든 Pro 기능을 사용할 수 있습니다:
+  - 매니저: 8명 전체 (PM, CTO, QA, CSO, CDO, CMO, CFO, ERROR)
+  - can_code: BLOCK 모드 (스펙 없으면 차단)
+  - Knowledge Base (세션 간 컨텍스트 유지)
+  - Error Learning (같은 실수 반복 방지)
+  - 무제한 회의
 
-PRO 티어가 강력해졌습니다 (완전 보호):
-  - 매니저: 8명 (전체 C-Level)
-  - can_code: BLOCK (강제)
-  - 프로젝트: 무제한
+추가 프로젝트는 Pro 라이선스가 필요합니다.
 
-업그레이드: https://polar.sh/clouvel (코드: FIRST1)
+모든 프로젝트 잠금 해제: https://polar.sh/clouvel ($49/년 — 얼리 어답터 가격)
 
 ================================================
 """
@@ -304,7 +302,7 @@ What's new:
 
 New hierarchy: Remember > Prevent > Guide
 
-Details: https://whitening-sinabro.github.io/clouvel/
+Details: https://clouvels.com/
 ================================================
 """
 
@@ -324,7 +322,7 @@ V1_PIVOT_NOTICE_KO = """
 
 새 계층: 기억 > 예방 > 안내
 
-상세: https://whitening-sinabro.github.io/clouvel/
+상세: https://clouvels.com/
 ================================================
 """
 

@@ -136,10 +136,10 @@ Clouvel v3.0+ is required. Your version: {CLIENT_VERSION}
 
 Run: pip install --upgrade clouvel
 
-Changes in v3.0:
-- FREE: PM only (was 3 managers)
-- FREE: WARN mode (was BLOCK)
-- PRO: Full 8 managers + BLOCK mode
+Changes in v5.0:
+- First project: ALL Pro features (8 managers, BLOCK, KB, Error Learning)
+- Additional projects: Pro license required
+- PRO: All projects unlocked
 
 ==================================================
 """
@@ -412,7 +412,7 @@ def _dev_mode_response(
 def _fallback_response(error_message: str) -> Dict[str, Any]:
     """Fallback response when API is unavailable.
 
-    v3.0: FREE tier = PM only (1 manager)
+    v5.0: First project = all managers, additional projects = PM only
     """
     return {
         "topic": "feature",
@@ -438,7 +438,7 @@ def _fallback_response(error_message: str) -> Dict[str, Any]:
 ---
 
 **💎 Pro: 7 more managers** (CTO, QA, CDO, CMO, CFO, CSO, ERROR)
-→ https://polar.sh/clouvel (code: FIRST1)
+→ https://polar.sh/clouvel ($49/yr — Early Adopter Pricing)
 """,
         "offline": True,
         "missed_perspectives": {

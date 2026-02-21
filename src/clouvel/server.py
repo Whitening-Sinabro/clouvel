@@ -110,6 +110,7 @@ try:
 except ImportError:
     from .license_free import activate_license_cli, get_license_status
 from .version_check import init_version_check, get_cached_update_info, get_update_banner
+from .registry import filter_tools_by_tier, is_tool_allowed, get_redirect_message
 
 server = Server("clouvel")
 
@@ -125,7 +126,7 @@ TOOL_DEFINITIONS = [
     # === Core Tools ===
     Tool(
         name="can_code",
-        description="Must call before writing code. Checks document status and determines if coding is allowed.",
+        description="Check before writing code. Verifies project docs exist so you don't start coding without a plan.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -335,7 +336,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="gate",
-        description="v0.5: lint -> test -> build automation.",
+        description="Run lint, test, and build in sequence. Catches broken code before you commit.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -378,7 +379,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="plan",
-        description="v1.3: Generate detailed execution plan. Synthesize manager feedback to create plan with step-by-step action items, dependencies, and verification points. Can reference previous meeting results via meeting_file. (Pro)",
+        description="Generate a detailed execution plan with action items, dependencies, and verification points.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -434,9 +435,7 @@ TOOL_DEFINITIONS = [
     # === Context Checkpoint (Free) ===
     Tool(
         name="context_save",
-        description="Pre-emptive context checkpoint. Saves full working state "
-                    "before context compression. One call captures everything "
-                    "needed for recovery. (Free)",
+        description="Save your working state before context runs out. One call captures everything needed for recovery.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -446,18 +445,23 @@ TOOL_DEFINITIONS = [
                 "active_files": {"type": "array", "items": {"type": "string"}, "description": "Files currently being worked on"},
                 "decisions_this_session": {"type": "array", "items": {"type": "string"}, "description": "Decisions made this session"},
                 "depth": {"type": "string", "enum": ["quick", "full"], "description": "quick: current.md + git only, full: everything (default)"},
+                "task": {"type": "string", "description": "Current task description (initializes planning context)"},
+                "goals": {"type": "array", "items": {"type": "string"}, "description": "Session goals to track"},
+                "findings": {"type": "string", "description": "Research findings to preserve"},
+                "handoff": {"type": "string", "description": "Handoff notes for next session (what was done, what's next)"},
             },
             "required": ["path"],
         },
     ),
     Tool(
         name="context_load",
-        description="Load context from checkpoint after compression/new session. (Free)",
+        description="Restore your working state after context compression or a new session.",
         inputSchema={
             "type": "object",
             "properties": {
                 "path": {"type": "string", "description": "Project root path"},
                 "checkpoint": {"type": "string", "description": "\"latest\" (default) or specific filename"},
+                "show_goals": {"type": "boolean", "description": "Include saved goals in the loaded context (default: true)"},
             },
             "required": ["path"],
         },
@@ -527,7 +531,7 @@ TOOL_DEFINITIONS = [
     # === Start Tool (Free, v1.2 → v1.9 extended) ===
     Tool(
         name="start",
-        description="Project onboarding. PRD check, auto-detect project type, interactive PRD writing guide. Now includes: --template, --guide, --init options. (Free)",
+        description="Set up a new project. Auto-detects project type, checks for PRD, and guides you through onboarding.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -537,14 +541,15 @@ TOOL_DEFINITIONS = [
                 "template": {"type": "string", "description": "Get PRD template (replaces get_prd_template)", "enum": ["web-app", "api", "cli", "chrome-ext", "discord-bot", "landing-page", "saas", "generic"]},
                 "layout": {"type": "string", "description": "Template layout", "enum": ["lite", "standard", "detailed"], "default": "standard"},
                 "guide": {"type": "boolean", "description": "Show PRD writing guide (replaces get_prd_guide)", "default": False},
-                "init": {"type": "boolean", "description": "Initialize docs folder with templates (replaces init_docs)", "default": False}
+                "init": {"type": "boolean", "description": "Initialize docs folder with templates", "default": False},
+                "rules": {"type": "string", "description": "Initialize coding rules template (web, api, fullstack, minimal)", "enum": ["web", "api", "fullstack", "minimal"]},
             },
             "required": ["path"]
         }
     ),
     Tool(
         name="save_prd",
-        description="Save PRD content. Save PRD written through conversation with Claude. (Free)",
+        description="Save your PRD to the project docs folder. Write requirements through conversation, then persist them.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -581,7 +586,7 @@ TOOL_DEFINITIONS = [
     # === Knowledge Base Tools (Pro, v1.4) ===
     Tool(
         name="record_decision",
-        description="Record a decision to the knowledge base. Persists across sessions for context recovery. (Pro)",
+        description="Save an architectural or design decision. Persists across sessions so context is never lost.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -614,7 +619,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="search_knowledge",
-        description="Search the knowledge base. Find past decisions, locations, and context. (Pro)",
+        description="Search past decisions, code locations, and context from your knowledge base.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -737,7 +742,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="quick_perspectives",
-        description="Quick, lightweight perspective check before coding. Returns key questions from 3-4 relevant managers. Call this BEFORE starting any coding task to surface blind spots. (Free)",
+        description="Get 3-4 critical questions before coding. Surfaces blind spots you might miss.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -752,7 +757,7 @@ TOOL_DEFINITIONS = [
     # === Ship Tool (Pro, v1.2) ===
     Tool(
         name="ship",
-        description="One-click test->verify->evidence generation. Sequential execution of lint/typecheck/test/build. (Pro)",
+        description="One-click ship: lint, typecheck, test, build in sequence. Generates verification evidence.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -793,7 +798,7 @@ TOOL_DEFINITIONS = [
     # === Error Learning Tools (Pro, v1.4) ===
     Tool(
         name="error_record",
-        description="5 Whys structured error recording + MD file generation. Root cause analysis when errors occur. (Pro)",
+        description="Record an error with 5 Whys root cause analysis. Builds your project's error memory.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -810,7 +815,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="error_check",
-        description="Context-based proactive warning. Check past error patterns and global cross-project memories before code modification. (Pro)",
+        description="Check for known error patterns before modifying code. Warns you before repeating past mistakes.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -824,7 +829,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="error_learn",
-        description="Session analysis + CLAUDE.md auto update. Learn NEVER/ALWAYS rules from error patterns. (Pro)",
+        description="Analyze error patterns and auto-generate NEVER/ALWAYS rules for CLAUDE.md.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -837,7 +842,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="memory_status",
-        description="Regression Memory status and statistics. Shows active memories, hit counts, save rates, and top patterns. (Pro)",
+        description="See your error memory dashboard: active patterns, hit counts, and time saved.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -862,7 +867,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="memory_search",
-        description="Search regression memories by keyword. FTS5 full-text search on root cause, prevention rules, and task descriptions. (Pro)",
+        description="Search your error memories by keyword. Find past root causes and prevention rules.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -912,7 +917,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="memory_global_search",
-        description="Search global regression memories from all projects. Find patterns learned in other projects. (Pro)",
+        description="Search error patterns across all your projects. Reuse lessons learned everywhere.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -952,8 +957,21 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="license_status",
-        description="Check current license status.",
-        inputSchema={"type": "object", "properties": {}}
+        description="Check your Clouvel license, trial status, and available features.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "enum": ["status", "activate", "trial", "upgrade"],
+                    "description": "Action: status (default), activate (with license_key), trial (start 7-day), upgrade (show Pro guide)",
+                },
+                "license_key": {
+                    "type": "string",
+                    "description": "License key (required when action=activate)",
+                },
+            },
+        },
     ),
     Tool(
         name="start_trial",
@@ -1027,7 +1045,7 @@ TOOL_DEFINITIONS = [
     # v2.0: Proactive MCP tools
     Tool(
         name="drift_check",
-        description="v2.0: Detect context drift - check if current work deviates from original goals. Compares recent actions against task plan. (Pro)",
+        description="Detect when your work drifts from original goals. Catches scope creep early.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -1066,30 +1084,30 @@ TOOL_DEFINITIONS = [
     # Meeting (Free, v2.1)
     Tool(
         name="meeting",
-        description="C-Level 회의 시뮬레이션. 8명 매니저(PM/CTO/QA/CSO/CDO/CMO/CFO/ERROR)가 참여하는 회의록 생성. 별도 API 호출 없이 Claude가 직접 회의를 시뮬레이션합니다. (Free)",
+        description="Simulate a C-Level review with 8 virtual managers (PM, CTO, QA, CSO, CDO, CMO, CFO, Error). Get multi-perspective feedback on your plan or code.",
         inputSchema={
             "type": "object",
             "properties": {
-                "context": {"description": "회의 주제/상황 설명", "type": "string"},
+                "context": {"description": "Meeting topic or situation to review", "type": "string"},
                 "topic": {
-                    "description": "토픽 힌트 (미지정시 자동 감지). 지원: auth, api, payment, ui, feature, launch, error, security, performance, design, cost, maintenance",
+                    "description": "Topic hint for auto-selecting relevant managers",
                     "type": "string",
                     "enum": ["auth", "api", "payment", "ui", "feature", "launch", "error", "security", "performance", "design", "cost", "maintenance"],
                 },
                 "managers": {
-                    "description": "참여 매니저 목록 (미지정시 토픽에 따라 자동 선택). 지원: PM, CTO, QA, CSO, CDO, CMO, CFO, ERROR",
+                    "description": "Specific managers to include (auto-selected if omitted): PM, CTO, QA, CSO, CDO, CMO, CFO, ERROR",
                     "type": "array",
                     "items": {"type": "string"},
                 },
-                "project_path": {"description": "프로젝트 경로 (Knowledge Base 연동용)", "type": "string"},
-                "include_example": {"description": "few-shot 예시 포함 여부 (기본: true)", "type": "boolean"},
+                "project_path": {"description": "Project path (for Knowledge Base integration)", "type": "string"},
+                "include_example": {"description": "Include few-shot examples (default: true)", "type": "boolean"},
             },
             "required": ["context"],
         }
     ),
     Tool(
         name="meeting_topics",
-        description="meeting 도구에서 지원하는 토픽 목록 반환. (Free)",
+        description="List available meeting topics.",
         inputSchema={
             "type": "object",
             "properties": {},
@@ -1098,81 +1116,81 @@ TOOL_DEFINITIONS = [
     # Meeting Feedback & Tuning (Free, v2.2)
     Tool(
         name="rate_meeting",
-        description="회의 품질 평가. 1-5점 평가 + 피드백으로 프롬프트 개선에 기여. (Free)",
+        description="Rate meeting quality (1-5) with optional feedback.",
         inputSchema={
             "type": "object",
             "properties": {
-                "project_path": {"description": "프로젝트 경로", "type": "string"},
-                "meeting_id": {"description": "회의 ID (meeting 도구 실행 후 표시됨)", "type": "string"},
-                "rating": {"description": "품질 평가 (1-5). 1:전혀 도움 안됨, 3:보통, 5:매우 유용", "type": "integer", "minimum": 1, "maximum": 5},
-                "feedback": {"description": "텍스트 피드백 (선택)", "type": "string"},
-                "tags": {"description": "태그 목록 (예: natural, actionable, specific)", "type": "array", "items": {"type": "string"}},
+                "project_path": {"description": "Project path", "type": "string"},
+                "meeting_id": {"description": "Meeting ID (shown after running meeting tool)", "type": "string"},
+                "rating": {"description": "Quality rating (1-5). 1: not helpful, 3: average, 5: very useful", "type": "integer", "minimum": 1, "maximum": 5},
+                "feedback": {"description": "Text feedback (optional)", "type": "string"},
+                "tags": {"description": "Tags (e.g., natural, actionable, specific)", "type": "array", "items": {"type": "string"}},
             },
             "required": ["project_path", "meeting_id", "rating"],
         }
     ),
     Tool(
         name="get_meeting_stats",
-        description="회의 품질 통계. 토픽별/버전별 평균 평점, 높은 품질 후보 등. (Free)",
+        description="Meeting quality statistics by topic and version.",
         inputSchema={
             "type": "object",
             "properties": {
-                "project_path": {"description": "프로젝트 경로", "type": "string"},
-                "days": {"description": "분석 기간 (일)", "type": "integer"},
+                "project_path": {"description": "Project path", "type": "string"},
+                "days": {"description": "Analysis period in days", "type": "integer"},
             },
             "required": ["project_path"],
         }
     ),
     Tool(
         name="export_training_data",
-        description="고품질 회의록 추출. rating >= 4인 회의록을 EXAMPLES 후보로 내보내기. (Free)",
+        description="Export high-quality meeting transcripts (rating >= 4).",
         inputSchema={
             "type": "object",
             "properties": {
-                "project_path": {"description": "프로젝트 경로", "type": "string"},
-                "min_rating": {"description": "최소 평점 (기본: 4)", "type": "integer"},
+                "project_path": {"description": "Project path", "type": "string"},
+                "min_rating": {"description": "Minimum rating (default: 4)", "type": "integer"},
             },
             "required": ["project_path"],
         }
     ),
     Tool(
         name="enable_ab_testing",
-        description="A/B 테스팅 활성화. 여러 프롬프트 버전을 테스트하여 최적 버전 찾기. (Free)",
+        description="Enable A/B testing for prompt variants.",
         inputSchema={
             "type": "object",
             "properties": {
-                "project_path": {"description": "프로젝트 경로", "type": "string"},
-                "variants": {"description": "테스트할 버전 목록 (기본: 전체)", "type": "array", "items": {"type": "string"}},
+                "project_path": {"description": "Project path", "type": "string"},
+                "variants": {"description": "Variants to test (default: all)", "type": "array", "items": {"type": "string"}},
             },
             "required": ["project_path"],
         }
     ),
     Tool(
         name="disable_ab_testing",
-        description="A/B 테스팅 비활성화. 선택적으로 우승 버전 설정. (Free)",
+        description="Disable A/B testing. Optionally set a winner.",
         inputSchema={
             "type": "object",
             "properties": {
-                "project_path": {"description": "프로젝트 경로", "type": "string"},
-                "set_winner": {"description": "활성 버전으로 설정할 버전", "type": "string"},
+                "project_path": {"description": "Project path", "type": "string"},
+                "set_winner": {"description": "Variant to set as active", "type": "string"},
             },
             "required": ["project_path"],
         }
     ),
     Tool(
         name="get_variant_performance",
-        description="프롬프트 버전별 성능 비교. 사용 횟수, 평균 평점 등. (Free)",
+        description="Compare prompt variant performance.",
         inputSchema={
             "type": "object",
             "properties": {
-                "project_path": {"description": "프로젝트 경로", "type": "string"},
+                "project_path": {"description": "Project path", "type": "string"},
             },
             "required": ["project_path"],
         }
     ),
     Tool(
         name="list_variants",
-        description="사용 가능한 프롬프트 버전 목록. (Free)",
+        description="List available prompt variants.",
         inputSchema={
             "type": "object",
             "properties": {},
@@ -1181,21 +1199,21 @@ TOOL_DEFINITIONS = [
     # Meeting Personalization (Free, v2.3)
     Tool(
         name="configure_meeting",
-        description="프로젝트별 회의 설정. 매니저 비중, 토픽별 기본 매니저, 언어/형식 설정. (Free)",
+        description="Configure meeting settings per project: manager weights, default managers by topic, language/format.",
         inputSchema={
             "type": "object",
             "properties": {
-                "project_path": {"description": "프로젝트 경로", "type": "string"},
+                "project_path": {"description": "Project path", "type": "string"},
                 "manager_weights": {
-                    "description": "매니저별 가중치 (0.0-2.0). 예: {\"CSO\": 1.5, \"CDO\": 0.5}",
+                    "description": "Weight per manager (0.0-2.0). Example: {\"CSO\": 1.5, \"CDO\": 0.5}",
                     "type": "object",
                 },
                 "default_managers": {
-                    "description": "토픽별 기본 매니저. 예: {\"auth\": [\"PM\", \"CTO\", \"CSO\"]}",
+                    "description": "Default managers per topic. Example: {\"auth\": [\"PM\", \"CTO\", \"CSO\"]}",
                     "type": "object",
                 },
                 "preferences": {
-                    "description": "언어(ko/en), 형식(formal/casual), 상세도(full/summary/minimal)",
+                    "description": "Language (ko/en), format (formal/casual), detail (full/summary/minimal)",
                     "type": "object",
                 },
             },
@@ -1204,14 +1222,14 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="add_persona_override",
-        description="매니저 페르소나 커스터마이징. 프로젝트에 맞는 말투/질문 추가. (Free)",
+        description="Customize a manager persona with project-specific phrases and focus areas.",
         inputSchema={
             "type": "object",
             "properties": {
-                "project_path": {"description": "프로젝트 경로", "type": "string"},
-                "manager": {"description": "매니저 키 (PM, CTO, QA, CSO, CDO, CMO, CFO, ERROR)", "type": "string"},
+                "project_path": {"description": "Project path", "type": "string"},
+                "manager": {"description": "Manager key (PM, CTO, QA, CSO, CDO, CMO, CFO, ERROR)", "type": "string"},
                 "overrides": {
-                    "description": "오버라이드 설정. 예: {\"pet_phrases\": [\"기술 부채 조심\"], \"focus_areas\": [\"보안\"]}",
+                    "description": "Override settings. Example: {\"pet_phrases\": [\"watch tech debt\"], \"focus_areas\": [\"security\"]}",
                     "type": "object",
                 },
             },
@@ -1220,22 +1238,22 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="get_meeting_config",
-        description="현재 회의 설정 확인. (Free)",
+        description="View current meeting configuration.",
         inputSchema={
             "type": "object",
             "properties": {
-                "project_path": {"description": "프로젝트 경로", "type": "string"},
+                "project_path": {"description": "Project path", "type": "string"},
             },
             "required": ["project_path"],
         }
     ),
     Tool(
         name="reset_meeting_config",
-        description="회의 설정 초기화. (Free)",
+        description="Reset meeting configuration to defaults.",
         inputSchema={
             "type": "object",
             "properties": {
-                "project_path": {"description": "프로젝트 경로", "type": "string"},
+                "project_path": {"description": "Project path", "type": "string"},
             },
             "required": ["project_path"],
         }
@@ -1243,9 +1261,73 @@ TOOL_DEFINITIONS = [
 ]
 
 
+def _get_list_tools_tier() -> str:
+    """Determine license tier for list_tools() filtering.
+
+    Only developer/license/trial → "pro".
+    Everyone else (including "first" project) → "free".
+    Free users see 10 Core tools only.
+    """
+    try:
+        from .license_common import (
+            is_developer, load_license_cache,
+            is_full_trial_active,
+        )
+
+        if is_developer():
+            return "pro"
+
+        cached = load_license_cache()
+        if cached and cached.get("tier"):
+            return "pro"
+
+        if is_full_trial_active():
+            return "pro"
+
+        return "free"
+    except ImportError:
+        return "free"
+
+
+def _get_call_tool_tier(project_path: str) -> str:
+    """Determine tier for call_tool() defense-in-depth.
+
+    Only developer/license/trial → "pro". Everything else → "free".
+    Consistent with _get_list_tools_tier() and _is_pro().
+    """
+    if _is_pro(project_path):
+        return "pro"
+    return "free"
+
+
+def _is_pro(project_path: str) -> bool:
+    """Check if user has actual Pro access (license or trial).
+
+    Returns True ONLY for paid Pro users.
+    "first" project without license = False (Free limitations apply).
+    """
+    try:
+        from .license_common import is_developer, load_license_cache, is_full_trial_active
+        if is_developer():
+            return True
+        cached = load_license_cache()
+        if cached and cached.get("tier"):
+            return True
+        if is_full_trial_active():
+            return True
+        return False
+    except ImportError:
+        return False
+
+
 @server.list_tools()
 async def list_tools() -> list[Tool]:
-    return TOOL_DEFINITIONS
+    # Debug override: show all tools (for development/testing)
+    if os.getenv("CLOUVEL_SHOW_ALL_TOOLS"):
+        return TOOL_DEFINITIONS
+
+    tier = _get_list_tools_tier()
+    return filter_tools_by_tier(TOOL_DEFINITIONS, tier)
 
 
 # ============================================================
@@ -1313,8 +1395,8 @@ TOOL_HANDLERS = {
     "update_progress": lambda args: update_progress(args.get("path", ""), args.get("completed", []), args.get("in_progress", ""), args.get("blockers", []), args.get("next", "")),
 
     # Context Checkpoint (Free)
-    "context_save": lambda args: context_save(args.get("path", ""), args.get("reason", ""), args.get("notes", ""), args.get("active_files"), args.get("decisions_this_session"), args.get("depth", "full")),
-    "context_load": lambda args: context_load(args.get("path", ""), args.get("checkpoint", "latest")),
+    "context_save": lambda args: _wrap_context_save(args),
+    "context_load": lambda args: _wrap_context_load(args),
 
     # Agents (v0.7)
     "spawn_explore": lambda args: spawn_explore(args.get("path", ""), args.get("query", ""), args.get("scope", "project"), args.get("save_findings", True)),
@@ -1371,7 +1453,7 @@ TOOL_HANDLERS = {
 
     # License
     "activate_license": lambda args: _wrap_activate_license(args),
-    "license_status": lambda args: _wrap_license_status(),
+    "license_status": lambda args: _wrap_license_status(args),
     "start_trial": lambda args: _wrap_start_trial(),
 
     # Pro 안내
@@ -1459,8 +1541,71 @@ def _check_version_once():
         _version_check_done = True
 
 
+async def _wrap_context_save(args: dict) -> list[TextContent]:
+    """context_save wrapper — absorbs init_planning, save_finding, handoff."""
+    # Build enriched notes from absorbed parameters
+    extra_notes = []
+    if args.get("task"):
+        extra_notes.append(f"## Current Task\n{args['task']}")
+    if args.get("goals"):
+        goals_str = "\n".join(f"- {g}" for g in args["goals"])
+        extra_notes.append(f"## Goals\n{goals_str}")
+    if args.get("findings"):
+        extra_notes.append(f"## Research Findings\n{args['findings']}")
+    if args.get("handoff"):
+        extra_notes.append(f"## Handoff Notes\n{args['handoff']}")
+
+    # Merge extra notes into the notes parameter
+    notes = args.get("notes", "") or ""
+    if extra_notes:
+        notes = notes + "\n\n" + "\n\n".join(extra_notes) if notes else "\n\n".join(extra_notes)
+
+    project_path = args.get("path", "")
+    return await context_save(
+        path=project_path,
+        reason=args.get("reason", ""),
+        notes=notes,
+        active_files=args.get("active_files"),
+        decisions_this_session=args.get("decisions_this_session"),
+        depth=args.get("depth", "full"),
+        is_pro=_is_pro(project_path),
+    )
+
+
+async def _wrap_context_load(args: dict) -> list[TextContent]:
+    """context_load wrapper — absorbs refresh_goals."""
+    result = await context_load(
+        path=args.get("path", ""),
+        checkpoint=args.get("checkpoint", "latest"),
+    )
+
+    # Append goals reminder if requested (default: true)
+    if args.get("show_goals", True):
+        try:
+            goals_result = await refresh_goals(args.get("path", ""))
+            if goals_result and len(goals_result) > 0:
+                goals_text = goals_result[0].text if hasattr(goals_result[0], 'text') else str(goals_result[0])
+                if result and len(result) > 0:
+                    original = result[0].text if hasattr(result[0], 'text') else str(result[0])
+                    result[0] = TextContent(type="text", text=original + "\n\n---\n" + goals_text)
+        except Exception:
+            pass  # Goals not available — that's fine
+
+    return result
+
+
 async def _wrap_start(args: dict) -> list[TextContent]:
-    """start tool wrapper"""
+    """start tool wrapper — absorbs init_docs, get_prd_template, init_rules, setup_cli."""
+    # Handle rules initialization if requested
+    rules_template = args.get("rules")
+    rules_msg = None
+    if rules_template:
+        try:
+            rules_result = init_rules(args.get("path", ""), rules_template)
+            rules_msg = rules_result.get("message", "Rules initialized.") if isinstance(rules_result, dict) else str(rules_result)
+        except Exception as e:
+            rules_msg = f"Rules init failed: {e}"
+
     result = start(
         args.get("path", ""),
         args.get("project_name", ""),
@@ -1512,6 +1657,10 @@ async def _wrap_start(args: dict) -> list[TextContent]:
             output += "\n## Created Files\n"
             for f in result['created_files']:
                 output += f"- {f}\n"
+
+        # Append rules result if requested
+        if rules_msg:
+            output += f"\n## Rules\n{rules_msg}\n"
 
         return [TextContent(type="text", text=output)]
     return [TextContent(type="text", text=str(result))]
@@ -1596,14 +1745,11 @@ async def _wrap_list_projects(args: dict) -> list[TextContent]:
             output += f"- {p.get('name', 'Unknown')} ({p.get('path', 'N/A')})\n"
 
     if not result.get('is_pro'):
-        output += f"""
----
-
-💡 **Free tier**: 1 active project at a time.
-To switch projects, archive the current one first.
-
-**Upgrade to Pro** for unlimited projects: https://polar.sh/clouvel
-"""
+        output += (
+            "\n---\n\n"
+            "Unlock full error history, 8 managers, and 10 more tools with Pro.\n\n"
+            "→ `license_status(action=\"trial\")` (7 days free)\n"
+        )
 
     return [TextContent(type="text", text=output)]
 
@@ -1612,12 +1758,13 @@ To switch projects, archive the current one first.
 
 async def _wrap_record_decision(args: dict) -> list[TextContent]:
     """record_decision tool wrapper"""
-    # v3.1: KB trial check for Free users
+    # v5.0: KB access check — first project gets unlimited KB
     try:
-        from .license_common import is_developer, is_kb_trial_active, start_kb_trial
+        from .license_common import is_developer, is_kb_trial_active, start_kb_trial, get_project_tier
         project_path = args.get("project_path", ".")
         if not is_developer():
-            start_kb_trial(project_path)  # Start trial on first use
+            # v5.0: First project bypasses trial via is_kb_trial_active
+            start_kb_trial(project_path)  # Start trial on first use (no-op for first project)
             if not is_kb_trial_active(project_path):
                 from .messages.en import CAN_CODE_KB_TRIAL_EXPIRED
                 return [TextContent(type="text", text=CAN_CODE_KB_TRIAL_EXPIRED.format(
@@ -1657,11 +1804,12 @@ Decision saved to knowledge base. Use `search_knowledge` to retrieve later.
 
 async def _wrap_record_location(args: dict) -> list[TextContent]:
     """record_location tool wrapper"""
-    # v3.1: KB trial check for Free users
+    # v5.0: KB access check — first project gets unlimited KB
     try:
         from .license_common import is_developer, is_kb_trial_active, start_kb_trial
         project_path = args.get("project_path", ".")
         if not is_developer():
+            # v5.0: First project bypasses trial via is_kb_trial_active
             start_kb_trial(project_path)
             if not is_kb_trial_active(project_path):
                 from .messages.en import CAN_CODE_KB_TRIAL_EXPIRED
@@ -2023,40 +2171,60 @@ async def _wrap_list_managers() -> list[TextContent]:
 
 
 async def _wrap_quick_perspectives(args: dict) -> list[TextContent]:
-    """quick_perspectives tool wrapper - Worker API 사용 (v1.8)
-
-    quick_perspectives는 manager의 간소화 버전.
-    Worker API 호출 후 간략한 포맷으로 변환.
-    """
+    """quick_perspectives tool wrapper — Free: 2 managers, 1 question each."""
     context = args.get("context", "")
-    max_managers = args.get("max_managers", 4)
+    is_pro_user = _is_pro("")  # No project path for this tool
+
+    # Free: 2 managers, 1 question | Pro: up to 4 managers, 2 questions
+    free_max_managers = 2
+    free_max_questions = 1
+    pro_max_managers = args.get("max_managers", 4)
+    pro_max_questions = args.get("questions_per_manager", 2)
+
+    max_managers = pro_max_managers if is_pro_user else free_max_managers
+    max_questions = pro_max_questions if is_pro_user else free_max_questions
 
     # Worker API 호출 (manager와 동일)
     result = call_manager_api(
         context=context,
-        mode="auto",  # 자동 매니저 선택
+        mode="auto",
     )
 
-    # 응답을 quick format으로 변환
     if isinstance(result, dict):
         if result.get("error"):
             return [TextContent(type="text", text=f"## Quick Perspectives Error\n\n{result.get('message', result.get('error'))}")]
 
-        # 간략한 포맷으로 출력
         feedback = result.get("feedback", {})
-        active = result.get("active_managers", [])[:max_managers]
+        all_active = result.get("active_managers", [])
+        visible = all_active[:max_managers]
+        hidden = all_active[max_managers:]
 
         lines = [f"## Quick Perspectives\n\n_Before: **{context[:80]}{'...' if len(context) > 80 else ''}**_\n"]
-        for mgr_key in active:
+        for mgr_key in visible:
             mgr = feedback.get(mgr_key, {})
             emoji = mgr.get("emoji", "")
             title = mgr.get("title", mgr_key)
-            questions = mgr.get("questions", [])[:2]  # 매니저당 2개 질문
+            questions = mgr.get("questions", [])[:max_questions]
             if questions:
                 lines.append(f"**{emoji} {title}**:")
                 for q in questions:
                     lines.append(f"  - {q}")
                 lines.append("")
+
+        # Free nudge: show hidden managers as teaser
+        if not is_pro_user and hidden:
+            hidden_names = []
+            for mgr_key in hidden:
+                mgr = feedback.get(mgr_key, {})
+                hidden_names.append(mgr.get("title", mgr_key))
+            lines.append("---")
+            lines.append(f"**{len(hidden)} more perspectives available** ({', '.join(hidden_names)})")
+            # Show first hidden manager's first question as a teaser
+            first_hidden = feedback.get(hidden[0], {})
+            hint_q = first_hidden.get("questions", [""])[0]
+            if hint_q:
+                lines.append(f"_Hint: {first_hidden.get('title', '')} asks: \"{hint_q[:60]}...\"_")
+            lines.append(f"\nUnlock all managers with Pro → `license_status(action=\"trial\")`")
 
         return [TextContent(type="text", text="\n".join(lines))]
 
@@ -2099,18 +2267,89 @@ async def _wrap_full_ship(args: dict) -> list[TextContent]:
     return [TextContent(type="text", text=str(result))]
 
 
+FREE_ERROR_LIMIT = 5
+
+
+def _apply_free_error_limit(result: list[TextContent], project_path: str) -> list[TextContent]:
+    """Limit error_check output for Free users.
+
+    Counts total error entries in error_log.jsonl,
+    shows only the last FREE_ERROR_LIMIT entries in output,
+    and appends a soft nudge with the total count.
+    """
+    if not result or len(result) == 0:
+        return result
+
+    # Count total errors from log
+    total_errors = 0
+    try:
+        from pathlib import Path as _P
+        log_file = _P(project_path) / ".claude" / "errors" / "error_log.jsonl"
+        if log_file.exists():
+            total_errors = sum(1 for _ in open(log_file, "r", encoding="utf-8"))
+    except Exception:
+        pass
+
+    if total_errors > FREE_ERROR_LIMIT:
+        text = result[0].text if hasattr(result[0], 'text') else str(result[0])
+        nudge = (
+            f"\n\n---\n"
+            f"Checked **{FREE_ERROR_LIMIT} of {total_errors}** error records (Free limit).\n"
+            f"Older errors may contain relevant patterns.\n\n"
+            f"Unlock full error history with Pro → `license_status(action=\"trial\")`"
+        )
+        result[0] = TextContent(type="text", text=text + nudge)
+
+    return result
+
+
+def _append_ghost_data(
+    result: list[TextContent], project_path: str, tool_name: str
+) -> list[TextContent]:
+    """Append ghost data teaser to Free user's error tool output.
+
+    Shows hints about Pro features (pattern learning, memory search)
+    to naturally drive conversion from error_record/error_check usage.
+    """
+    # Only append for non-Pro users
+    try:
+        if _is_pro(project_path):
+            return result
+    except Exception:
+        return result
+
+    teasers = {
+        "error_record": (
+            "\n\n---\n"
+            "**Pro**: Auto-generate NEVER/ALWAYS rules from your error patterns "
+            "→ `license_status(action=\"trial\")`"
+        ),
+        "error_check": (
+            "\n\n---\n"
+            "**Pro**: Search all past errors by keyword + share lessons across projects "
+            "→ `license_status(action=\"trial\")`"
+        ),
+    }
+
+    teaser = teasers.get(tool_name)
+    if teaser and result and len(result) > 0:
+        original = result[0].text if hasattr(result[0], 'text') else str(result[0])
+        result[0] = TextContent(type="text", text=original + teaser)
+
+    return result
+
+
 async def _wrap_error_record(args: dict) -> list[TextContent]:
     """error_record tool wrapper"""
     if not _HAS_ERROR_TOOLS or error_record is None:
         return [TextContent(type="text", text="""
 # Clouvel Pro Feature
 
-Error Learning requires a Pro license.
+Error Learning requires **Clouvel Pro**.
 
-## Purchase
-https://polar.sh/clouvel
+Start a free 7-day trial: `license_status(action="trial")`
 """)]
-    return await error_record(
+    result = await error_record(
         path=args.get("path", ""),
         error_text=args.get("error_text", ""),
         context=args.get("context", ""),
@@ -2119,25 +2358,32 @@ https://polar.sh/clouvel
         solution=args.get("solution", ""),
         prevention=args.get("prevention", "")
     )
+    return _append_ghost_data(result, args.get("path", ""), "error_record")
 
 
 async def _wrap_error_check(args: dict) -> list[TextContent]:
-    """error_check tool wrapper"""
+    """error_check tool wrapper — Free: recent 5 errors only."""
     if not _HAS_ERROR_TOOLS or error_check is None:
         return [TextContent(type="text", text="""
 # Clouvel Pro Feature
 
-Error Learning requires a Pro license.
+Error Learning requires **Clouvel Pro**.
 
-## Purchase
-https://polar.sh/clouvel
+Start a free 7-day trial: `license_status(action="trial")`
 """)]
-    return await error_check(
+    result = await error_check(
         path=args.get("path", ""),
         context=args.get("context", ""),
         file_path=args.get("file_path", ""),
         operation=args.get("operation", "")
     )
+
+    # Free limit: cap visible errors and add nudge
+    project_path = args.get("path", "")
+    if not _is_pro(project_path):
+        result = _apply_free_error_limit(result, project_path)
+
+    return _append_ghost_data(result, project_path, "error_check")
 
 
 async def _wrap_error_learn(args: dict) -> list[TextContent]:
@@ -2146,10 +2392,9 @@ async def _wrap_error_learn(args: dict) -> list[TextContent]:
         return [TextContent(type="text", text="""
 # Clouvel Pro Feature
 
-Error Learning requires a Pro license.
+Error Learning requires **Clouvel Pro**.
 
-## Purchase
-https://polar.sh/clouvel
+Start a free 7-day trial: `license_status(action="trial")`
 """)]
     return await error_learn(
         path=args.get("path", ""),
@@ -2164,10 +2409,9 @@ async def _wrap_memory_status(args: dict) -> list[TextContent]:
         return [TextContent(type="text", text="""
 # Clouvel Pro Feature
 
-Regression Memory requires a Pro license.
+Regression Memory requires **Clouvel Pro**.
 
-## Purchase
-https://polar.sh/clouvel
+Start a free 7-day trial: `license_status(action="trial")`
 """)]
     return await memory_status(
         path=args.get("path", ""),
@@ -2177,7 +2421,7 @@ https://polar.sh/clouvel
 async def _wrap_memory_list(args: dict) -> list[TextContent]:
     """memory_list tool wrapper"""
     if not _HAS_ERROR_TOOLS or memory_list is None:
-        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires a Pro license.\n\n## Purchase\nhttps://polar.sh/clouvel\n")]
+        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires **Clouvel Pro**.\n\nStart a free 7-day trial: `license_status(action=\"trial\")`\n")]
     return await memory_list(
         path=args.get("path", ""),
         category=args.get("category", ""),
@@ -2189,7 +2433,7 @@ async def _wrap_memory_list(args: dict) -> list[TextContent]:
 async def _wrap_memory_search(args: dict) -> list[TextContent]:
     """memory_search tool wrapper"""
     if not _HAS_ERROR_TOOLS or memory_search is None:
-        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires a Pro license.\n\n## Purchase\nhttps://polar.sh/clouvel\n")]
+        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires **Clouvel Pro**.\n\nStart a free 7-day trial: `license_status(action=\"trial\")`\n")]
     return await memory_search(
         path=args.get("path", ""),
         query=args.get("query", ""),
@@ -2200,7 +2444,7 @@ async def _wrap_memory_search(args: dict) -> list[TextContent]:
 async def _wrap_memory_archive(args: dict) -> list[TextContent]:
     """memory_archive tool wrapper"""
     if not _HAS_ERROR_TOOLS or memory_archive is None:
-        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires a Pro license.\n\n## Purchase\nhttps://polar.sh/clouvel\n")]
+        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires **Clouvel Pro**.\n\nStart a free 7-day trial: `license_status(action=\"trial\")`\n")]
     return await memory_archive(
         path=args.get("path", ""),
         memory_id=args.get("memory_id", 0),
@@ -2211,7 +2455,7 @@ async def _wrap_memory_archive(args: dict) -> list[TextContent]:
 async def _wrap_memory_report(args: dict) -> list[TextContent]:
     """memory_report tool wrapper"""
     if not _HAS_ERROR_TOOLS or memory_report is None:
-        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires a Pro license.\n\n## Purchase\nhttps://polar.sh/clouvel\n")]
+        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires **Clouvel Pro**.\n\nStart a free 7-day trial: `license_status(action=\"trial\")`\n")]
     return await memory_report(
         path=args.get("path", ""),
         days=args.get("days", 30),
@@ -2221,7 +2465,7 @@ async def _wrap_memory_report(args: dict) -> list[TextContent]:
 async def _wrap_memory_promote(args: dict) -> list[TextContent]:
     """memory_promote tool wrapper"""
     if not _HAS_ERROR_TOOLS or memory_promote is None:
-        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nCross-Project Memory Transfer requires a Pro license.\n\n## Purchase\nhttps://polar.sh/clouvel\n")]
+        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nCross-project memory requires **Clouvel Pro**.\n\nStart a free 7-day trial: `license_status(action=\"trial\")`\n")]
     return await memory_promote(
         path=args.get("path", ""),
         memory_id=args.get("memory_id", 0),
@@ -2231,7 +2475,7 @@ async def _wrap_memory_promote(args: dict) -> list[TextContent]:
 async def _wrap_memory_global_search(args: dict) -> list[TextContent]:
     """memory_global_search tool wrapper"""
     if not _HAS_ERROR_TOOLS or memory_global_search is None:
-        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nCross-Project Memory Transfer requires a Pro license.\n\n## Purchase\nhttps://polar.sh/clouvel\n")]
+        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nCross-project memory requires **Clouvel Pro**.\n\nStart a free 7-day trial: `license_status(action=\"trial\")`\n")]
     return await memory_global_search(
         path=args.get("path", ""),
         query=args.get("query", ""),
@@ -2243,7 +2487,7 @@ async def _wrap_memory_global_search(args: dict) -> list[TextContent]:
 async def _wrap_set_project_domain(args: dict) -> list[TextContent]:
     """set_project_domain tool wrapper"""
     if not _HAS_ERROR_TOOLS or set_project_domain is None:
-        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nDomain scoping requires a Pro license.\n\n## Purchase\nhttps://polar.sh/clouvel\n")]
+        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nDomain scoping requires **Clouvel Pro**.\n\nStart a free 7-day trial: `license_status(action=\"trial\")`\n")]
     return await set_project_domain(
         path=args.get("path", ""),
         domain=args.get("domain", ""),
@@ -2259,11 +2503,10 @@ async def _wrap_activate_license(args: dict) -> list[TextContent]:
 
 ## Usage
 ```
-activate_license(license_key="YOUR-LICENSE-KEY")
+license_status(action="activate", license_key="YOUR-KEY")
 ```
 
-## Purchase
-https://polar.sh/clouvel
+Or start a free trial: `license_status(action="trial")`
 """)]
 
     result = activate_license_cli(license_key)
@@ -2312,30 +2555,43 @@ To use on another machine, deactivate the existing machine or upgrade to a highe
 - Check network connection
 - Check activation limit (Personal: 1)
 
-## Purchase
-https://polar.sh/clouvel
+Need a key? `license_status(action="upgrade")`
 """)]
 
 
-async def _wrap_license_status() -> list[TextContent]:
-    """license_status tool wrapper"""
+async def _wrap_license_status(args: dict = None) -> list[TextContent]:
+    """Unified license_status tool wrapper.
+
+    Absorbs: activate_license, start_trial, upgrade_pro.
+    Dispatches based on 'action' parameter.
+    """
+    args = args or {}
+    action = args.get("action", "status")
+
+    if action == "activate":
+        return await _wrap_activate_license(args)
+
+    if action == "trial":
+        return await _wrap_start_trial()
+
+    if action == "upgrade":
+        return await _upgrade_pro()
+
+    # Default: status
     result = get_license_status()
 
     if not result.get("has_license"):
         return [TextContent(type="text", text=f"""
-# 📋 License Status
+# License Status
 
-**Status**: ❌ Not activated
+**Status**: Not activated
 
 {result.get('message', '')}
 
-## How to activate
-```
-activate_license(license_key="YOUR-LICENSE-KEY")
-```
-
-## Purchase
-https://polar.sh/clouvel
+## Quick Actions
+- **Free trial**: `license_status(action="trial")` — 7 days, no credit card
+- **Activate key**: `license_status(action="activate", license_key="YOUR-KEY")`
+- **Pricing**: `license_status(action="upgrade")`
 """)]
 
     tier_info = result.get("tier_info", {})
@@ -2345,12 +2601,12 @@ https://polar.sh/clouvel
     premium_unlocked = result.get("premium_unlocked", False)
     remaining = result.get("premium_unlock_remaining", 0)
 
-    unlock_status = "✅ Unlocked" if premium_unlocked else f"⏳ {remaining} days remaining"
+    unlock_status = "Unlocked" if premium_unlocked else f"{remaining} days remaining"
 
     return [TextContent(type="text", text=f"""
-# 📋 License Status
+# License Status
 
-**Status**: ✅ Activated
+**Status**: Active
 
 ## Info
 - **Tier**: {tier_info.get('name', 'Unknown')} ({tier_info.get('price', '?')})
@@ -2392,10 +2648,11 @@ Included:
 - ship (lint -> test -> build -> evidence)
 - Unlimited projects
 
-Like it? Lock in now:
-Monthly: $1 first month (code FIRST1), then $7.99/mo
-Annual:  $23.99/yr forever (code LAUNCH70) - save 70%
--> https://polar.sh/clouvel
+Like it? Keep it:
+- Monthly: **$7.99/mo**
+- Annual: **$49/yr** (Early Adopter Pricing)
+
+→ `license_status(action="upgrade")`
 """)]
 
     # Trial already expired?
@@ -2403,12 +2660,12 @@ Annual:  $23.99/yr forever (code LAUNCH70) - save 70%
         return [TextContent(type="text", text="""
 # Pro Trial Expired
 
-Your 7-day trial has ended. Subscribe to keep all Pro features:
+Your 7-day trial has ended.
 
-- Monthly: $1 first month (code FIRST1), then $7.99/mo
-- Annual:  $23.99/yr forever (code LAUNCH70) - save 70%
+- Monthly: **$7.99/mo**
+- Annual: **$49/yr** (Early Adopter Pricing)
 
--> https://polar.sh/clouvel
+→ `license_status(action="upgrade")`
 """)]
 
     # Start new trial
@@ -2434,9 +2691,9 @@ You now have:
 3. `ship(path=".")` - run full verification
 
 ## After trial
-Monthly: $1 first month (code FIRST1), then $7.99/mo
-Annual:  $23.99/yr forever (code LAUNCH70) - save 70%
--> https://polar.sh/clouvel
+- Monthly: **$7.99/mo**
+- Annual: **$49/yr** (Early Adopter Pricing)
+→ `license_status(action="upgrade")`
 """)]
 
 
@@ -2445,40 +2702,40 @@ async def _upgrade_pro() -> list[TextContent]:
     return [TextContent(type="text", text="""
 # Clouvel Pro
 
-For more powerful features, check out Clouvel Pro.
+10 more tools that make Claude Code reliable.
 
-## Pro Features
+## What You Get
 
-### Shovel Auto-Install
-- Auto-generate `.claude/` workflow structure
-- Slash commands (/start, /plan, /gate...)
-- Config files + templates
+| Tool | What it does |
+|------|-------------|
+| `error_learn` | Auto-generate NEVER/ALWAYS rules from error patterns |
+| `memory_status` | Error memory dashboard with hit counts |
+| `memory_search` | Search past errors by keyword |
+| `memory_global_search` | Share error patterns across all projects |
+| `drift_check` | Detect when work drifts from goals |
+| `plan` | Detailed execution plans with dependencies |
+| `meeting` | Full 8-manager C-Level review |
+| `ship` | One-click lint+test+build with evidence |
+| `record_decision` | Persistent knowledge base for decisions |
+| `search_knowledge` | Search past decisions and context |
 
-### Error Learning
-- Auto-classify error patterns
-- Auto-generate prevention rules
-- Log file monitoring
-
-### Command Sync
-- Shovel command updates
+## Also Unlocked
+- Full error history (not just last 5)
+- 50 checkpoint slots (not 1)
+- 4 managers + 2 questions each (not 2+1)
 
 ## Pricing
 
-| Tier | Price | Users |
-|------|-------|-------|
-| Personal | $29 | 1 |
-| Team | $79 | 10 |
-| Enterprise | $199 | Unlimited |
+| Plan | Price |
+|------|-------|
+| Monthly | **$7.99/mo** |
+| Annual | **$49/yr** (Early Adopter Pricing) |
 
 ## Purchase
 
 https://polar.sh/clouvel
 
-## Install
-
-```bash
-pip install clouvel-pro
-```
+Or start a free 7-day trial first: `license_status(action="trial")`
 """)]
 
 
@@ -2532,8 +2789,20 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
     if not _version_check_done:
         _check_version_once()
 
+    # Deprecated tool redirect
+    redirect = get_redirect_message(name)
+    if redirect:
+        return [TextContent(type="text", text=f"⚠️ `{name}` is deprecated.\n\n{redirect}")]
+
+    # Defense-in-depth: PRO tool gating
+    project_path = arguments.get("path", arguments.get("project_path", None))
+    if project_path and not is_tool_allowed(name, _get_call_tool_tier(project_path)):
+        return [TextContent(type="text", text=(
+            f"`{name}` requires **Clouvel Pro**.\n\n"
+            "Start a free 7-day trial: `license_status(action=\"trial\")`"
+        ))]
+
     # Analytics 기록
-    project_path = arguments.get("path", None)
     if name != "get_analytics":
         try:
             log_tool_call(name, success=True, project_path=project_path)
@@ -2736,7 +3005,7 @@ CREATED_MD=".claude/files/created.md"
 NEW_FILES=$(git diff --cached --name-only --diff-filter=A 2>/dev/null)
 
 # Skip certain files/patterns from tracking requirement
-SKIP_PATTERNS="(\.md$|\.txt$|\.json$|\.yml$|\.yaml$|\.gitignore|\.env|__pycache__|\.pyc$|node_modules|\.git)"
+SKIP_PATTERNS="(\\.md$|\\.txt$|\\.json$|\\.yml$|\\.yaml$|\\.gitignore|\\.env|__pycache__|\\.pyc$|node_modules|\\.git)"
 
 if [ -n "$NEW_FILES" ] && [ -f "$CREATED_MD" ]; then
     UNTRACKED=""
@@ -3100,7 +3369,8 @@ Status: [X] Not activated
 
 {result.get('message', '')}
 
-Purchase: https://polar.sh/clouvel
+Start trial: clouvel activate --trial
+Purchase:    https://polar.sh/clouvel
 ================================================================
 """)
     elif args.command == "deactivate":

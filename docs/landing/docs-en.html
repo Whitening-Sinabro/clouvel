@@ -552,6 +552,16 @@
                 <p class="text-yellow-400">WARN - PRD exists but missing recommended docs</p>
                 <p class="text-emerald-400">PASS - All docs ready, start coding</p>
               </div>
+              <div class="mt-4 bg-slate-50 border border-slate-200 rounded-lg p-4">
+                <p class="text-xs font-semibold text-slate-500 uppercase mb-2">Example output</p>
+                <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                  <p class="text-red-400">Status: BLOCK</p>
+                  <p class="text-slate-400 mt-1">No PRD found in docs/</p>
+                  <p class="text-slate-400">Checked: docs/PRD.md, docs/prd.md, docs/requirements.md</p>
+                  <p class="text-slate-500 mt-2">Action: Create a PRD first.</p>
+                  <p class="text-slate-500">Run: start(path="/your/project", init=true)</p>
+                </div>
+              </div>
             </div>
 
             <!-- start -->
@@ -708,6 +718,19 @@
                 <p>path: str - project root</p>
                 <p>auto_update_claude_md: bool (optional)</p>
               </div>
+              <div class="mt-4 bg-slate-50 border border-slate-200 rounded-lg p-4">
+                <p class="text-xs font-semibold text-slate-500 uppercase mb-2">Example output</p>
+                <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                  <p class="text-white"># Error Learning Analysis</p>
+                  <p class="text-slate-400 mt-1">Pattern Analysis:</p>
+                  <p class="text-slate-300">&nbsp; import_error &nbsp; 3x &nbsp; <span class="text-yellow-400">Learning needed</span></p>
+                  <p class="text-slate-300">&nbsp; null_check &nbsp;&nbsp;&nbsp; 2x &nbsp; <span class="text-slate-500">Observing</span></p>
+                  <p class="text-slate-400 mt-2">CLAUDE.md Updated:</p>
+                  <p class="text-emerald-400">&nbsp; + NEVER: import from deleted module</p>
+                  <p class="text-emerald-400">&nbsp; + ALWAYS: validate query result before .data access</p>
+                  <p class="text-slate-500 mt-2">Learned: 2 rules &middot; Analyzed: 5 errors</p>
+                </div>
+              </div>
             </div>
 
             <!-- memory_status -->
@@ -803,6 +826,18 @@
                 <p>context: str - meeting topic/situation</p>
                 <p>topic: str (optional) - auth, api, payment, ui, etc.</p>
                 <p>managers: list (optional) - specific managers</p>
+              </div>
+              <div class="mt-4 bg-slate-50 border border-slate-200 rounded-lg p-4">
+                <p class="text-xs font-semibold text-slate-500 uppercase mb-2">Example output</p>
+                <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                  <p class="text-white"># C-Level Meeting: Auth System</p>
+                  <p class="text-slate-400 mt-1">Topic: auth &middot; Managers: PM, CTO, CSO, QA</p>
+                  <p class="text-slate-300 mt-2"><span class="text-accent">PM:</span> "What happens when the token expires mid-session?"</p>
+                  <p class="text-slate-300"><span class="text-purple-400">CTO:</span> "Are we hashing passwords with bcrypt or argon2?"</p>
+                  <p class="text-slate-300"><span class="text-red-400">CSO:</span> "Rate limiting on login? Brute force is day-one risk."</p>
+                  <p class="text-slate-300"><span class="text-emerald-400">QA:</span> "Edge case: user logs in on two devices simultaneously?"</p>
+                  <p class="text-slate-500 mt-2">4 managers &middot; 8 blind spots surfaced</p>
+                </div>
               </div>
             </div>
 

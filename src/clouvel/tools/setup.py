@@ -287,7 +287,7 @@ async def setup_cli(
                             "hooks": [
                                 {
                                     "type": "command",
-                                    "command": f"clouvel can_code --path {docs_path} --silent"
+                                    "command": "clouvel-gate || python -m clouvel.gate_check"
                                 }
                             ]
                         }
@@ -295,7 +295,7 @@ async def setup_cli(
                 }
             }
             tier_msg = "Free"
-            features = ["Auto PRD check before Edit/Write"]
+            features = ["Auto PRD check before Edit/Write (via gate_check)"]
 
         elif proactive == "pro":
             # Pro: Full proactive features
@@ -307,7 +307,7 @@ async def setup_cli(
                             "hooks": [
                                 {
                                     "type": "command",
-                                    "command": f"clouvel can_code --path {docs_path} --silent"
+                                    "command": "clouvel-gate || python -m clouvel.gate_check"
                                 }
                             ]
                         }

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "clouvel"
-version = "4.0.2"
+version = "5.0.0"
 description = "MCP server that remembers AI mistakes and prevents regressions - AI makes it fast, Clouvel makes it right"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -63,6 +63,7 @@ full = [
 
 [project.scripts]
 clouvel = "clouvel:main"
+clouvel-gate = "clouvel.gate_check:main"
 
 [project.urls]
 Homepage = "https://github.com/Whitening-Sinabro/clouvel"

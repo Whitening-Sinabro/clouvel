@@ -3240,6 +3240,9 @@ def main():
     # status command (license status)
     status_parser = subparsers.add_parser("status", help="Check license status")
 
+    # gate_check command (lightweight hook check)
+    gate_check_parser = subparsers.add_parser("gate_check", help="Lightweight gate check for PreToolUse hooks")
+
     # deactivate command (license deactivation)
     deactivate_parser = subparsers.add_parser("deactivate", help="Deactivate license (delete local cache)")
 
@@ -3373,6 +3376,10 @@ Start trial: clouvel activate --trial
 Purchase:    https://polar.sh/clouvel
 ================================================================
 """)
+    elif args.command == "gate_check":
+        # Lightweight gate check — calls main() directly
+        from .gate_check import main as gate_main
+        sys.exit(gate_main())
     elif args.command == "deactivate":
         try:
             from .license import deactivate_license_cli

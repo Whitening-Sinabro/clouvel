@@ -2,6 +2,8 @@
 """Core tools: can_code, scan_docs, analyze_docs, init_docs"""
 
 import re
+import json
+import time
 from pathlib import Path
 from datetime import datetime
 from mcp.types import TextContent
@@ -221,6 +223,23 @@ def _check_tests(project_path: Path) -> tuple[int, list[str]]:
     return len(test_files), test_files[:5]  # 최대 5개만 반환
 
 
+def _write_gate_status(project_path: Path, status: str, reason: str = ""):
+    """Write gate status for PreToolUse hook enforcement.
+
+    The PreToolUse hook (gate_check.py) reads this file to decide
+    whether to allow Edit/Write tool execution at the runtime level.
+    """
+    gate_dir = project_path / ".clouvel"
+    gate_dir.mkdir(parents=True, exist_ok=True)
+    gate_file = gate_dir / "gate.json"
+    gate_file.write_text(json.dumps({
+        "status": status,       # "PASS" or "BLOCK"
+        "reason": reason,
+        "timestamp": time.time(),
+        "ttl": 600,             # 10 minutes
+    }), encoding="utf-8")
+
+
 async def _check_file_tracking(project_path: Path) -> list[TextContent]:
     """Check if new files are tracked in created.md (post-coding check)"""
     import subprocess
@@ -372,6 +391,7 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
             })
         except Exception:
             pass
+        _write_gate_status(project_path, "BLOCK", "Project limit reached")
         return [TextContent(type="text", text=CAN_CODE_PROJECT_LIMIT)]
 
     # v3.0: No docs folder - BLOCK for Pro, WARN for Free
@@ -383,8 +403,10 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
         except Exception:
             pass
         if can_block:
+            _write_gate_status(project_path, "BLOCK", "No docs folder")
             return [TextContent(type="text", text=CAN_CODE_BLOCK_NO_DOCS.format(path=path))]
         else:
+            _write_gate_status(project_path, "PASS", "WARN - no docs (free)")
             return [TextContent(type="text", text=CAN_CODE_WARN_NO_DOCS_FREE.format(
                 path=path, upgrade_hint="$49/yr"
             ))]
@@ -454,6 +476,7 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
                     log_event("warn_accumulated", {"count": warn_count, "project": str(project_path)})
                 except Exception:
                     pass
+            _write_gate_status(project_path, "PASS", "")
             return [TextContent(type="text", text=base_msg)]
         else:
             # v3.1: Track WARN count for no-PRD case too
@@ -461,6 +484,7 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
             base_msg = CAN_CODE_WARN_NO_PRD_FREE.format(upgrade_hint="$49/yr")
             if warn_count >= 3:
                 base_msg += CAN_CODE_WARN_ACCUMULATED.format(count=warn_count)
+            _write_gate_status(project_path, "PASS", "WARN - no PRD (free)")
             return [TextContent(type="text", text=base_msg)]
 
     # PRO tier: BLOCK condition - No PRD OR no acceptance section
@@ -479,10 +503,12 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
                 next_action=f"Fix: start(path=\"{path}\")",
                 pro_hint="manager 10, ship 5",
             )
+            _write_gate_status(project_path, "BLOCK", "Missing critical docs")
             return [TextContent(type="text", text=output)]
 
         # Fallback to plain text
         detected_list = "\n".join(f"- {d}" for d in found_list) if found_list else "None"
+        _write_gate_status(project_path, "BLOCK", "Missing critical docs")
         return [TextContent(type="text", text=CAN_CODE_BLOCK_MISSING_DOCS.format(
             detected_list=detected_list,
             missing_list=chr(10).join(f'- {m}' for m in all_missing_critical),
@@ -536,6 +562,7 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
                 next_action=None,
                 pro_hint=None,
             )
+        _write_gate_status(project_path, "PASS", "")
         return [TextContent(type="text", text=output + "\n" + prd_rule + prd_quality_report + context_summary)]
 
     # Fallback to plain text
@@ -544,6 +571,7 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
     test_info = f" | {TEST_COUNT.format(count=test_count)}" if test_count > 0 else ""
 
     if warn_count > 0:
+        _write_gate_status(project_path, "PASS", "")
         return [TextContent(type="text", text=CAN_CODE_PASS_WITH_WARN.format(
             warn_count=warn_count,
             found_docs=found_docs_str,
@@ -565,6 +593,7 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
                 base += CAN_CODE_TRIAL_NUDGE_5.format(remaining_days=trial_remaining)
             else:
                 base += CAN_CODE_TRIAL_ACTIVE.format(remaining_days=trial_remaining)
+        _write_gate_status(project_path, "PASS", "")
         return [TextContent(type="text", text=base)]
 
 

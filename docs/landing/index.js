@@ -13,18 +13,18 @@ document
     formSuccess.classList.add("hidden");
     formError.classList.add("hidden");
     submitBtn.disabled = true;
-    submitBtn.innerHTML = "<span>전송 중...</span>";
+    submitBtn.innerHTML = "<span>Sending...</span>";
 
     const email = document.getElementById("email").value;
     const issueType = document.getElementById("issueType").value;
     const message = document.getElementById("message").value;
 
     const issueTypeLabels = {
-      machine_reset: "PC 교체 / 머신 리셋",
-      license_issue: "라이선스 문제",
-      bug_report: "버그 리포트",
-      feature_request: "기능 요청",
-      other: "기타",
+      machine_reset: "Machine Reset / New PC",
+      license_issue: "License Issue",
+      bug_report: "Bug Report",
+      feature_request: "Feature Request",
+      other: "Other",
     };
 
     const webhookUrl =
@@ -59,10 +59,6 @@ document
       if (response.ok) {
         formSuccess.classList.remove("hidden");
         document.getElementById("contactForm").reset();
-        // Track successful contact form submission
-        if (typeof trackCTA === 'function') {
-          trackCTA('submit', 'contact_form_' + issueType);
-        }
       } else {
         formError.classList.remove("hidden");
       }
@@ -72,102 +68,21 @@ document
 
     submitBtn.disabled = false;
     submitBtn.innerHTML =
-      '<span>문의 보내기</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>';
+      '<span>Send Inquiry</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>';
   });
 
 // Mobile Menu Toggle
 const mobileMenuBtn = document.getElementById("mobileMenuBtn");
 const mobileMenu = document.getElementById("mobileMenu");
 
-mobileMenuBtn.addEventListener("click", () => {
-  mobileMenu.classList.toggle("hidden");
-});
-
-// Close menu when clicking a link
-mobileMenu.querySelectorAll("a").forEach((link) => {
-  link.addEventListener("click", () => {
-    mobileMenu.classList.add("hidden");
+if (mobileMenuBtn && mobileMenu) {
+  mobileMenuBtn.addEventListener("click", () => {
+    mobileMenu.classList.toggle("hidden");
   });
-});
 
-// Tab Switching
-document.querySelectorAll(".tab-btn").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    // Remove active from all buttons
-    document.querySelectorAll(".tab-btn").forEach((b) => {
-      b.classList.remove("active");
-      b.classList.add("bg-slate-700");
+  mobileMenu.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      mobileMenu.classList.add("hidden");
     });
-    // Add active to clicked button
-    btn.classList.add("active");
-    btn.classList.remove("bg-slate-700");
-
-    // Hide all tab contents
-    document.querySelectorAll(".tab-content").forEach((content) => {
-      content.classList.remove("active");
-    });
-    // Show selected tab content
-    const tabId = "tab-" + btn.dataset.tab;
-    document.getElementById(tabId).classList.add("active");
   });
-});
-
-// Pricing Billing Toggle
-function toggleBilling(type) {
-  const monthlyBtn = document.getElementById("monthly-btn");
-  const yearlyBtn = document.getElementById("yearly-btn");
-  const monthlyPrices = document.querySelectorAll(".monthly-price");
-  const yearlyPrices = document.querySelectorAll(".yearly-price");
-  const checkoutLinks = document.querySelectorAll(".checkout-link");
-
-  // Track billing toggle in GA4
-  if (typeof trackCTA === 'function') {
-    trackCTA('toggle', 'billing_' + type);
-  }
-
-  if (type === "monthly") {
-    // Update button styles
-    monthlyBtn.classList.add("bg-white", "text-dark-slate", "shadow-sm");
-    monthlyBtn.classList.remove("text-slate-500");
-    yearlyBtn.classList.remove("bg-white", "text-dark-slate", "shadow-sm");
-    yearlyBtn.classList.add("text-slate-500");
-
-    // Show monthly, hide yearly
-    monthlyPrices.forEach((el) => el.classList.remove("hidden"));
-    yearlyPrices.forEach((el) => el.classList.add("hidden"));
-
-    // Update checkout links to monthly
-    checkoutLinks.forEach((link) => {
-      if (link.dataset.monthly) {
-        link.href = link.dataset.monthly;
-      }
-    });
-  } else {
-    // Update button styles
-    yearlyBtn.classList.add("bg-white", "text-dark-slate", "shadow-sm");
-    yearlyBtn.classList.remove("text-slate-500");
-    monthlyBtn.classList.remove("bg-white", "text-dark-slate", "shadow-sm");
-    monthlyBtn.classList.add("text-slate-500");
-
-    // Show yearly, hide monthly
-    yearlyPrices.forEach((el) => el.classList.remove("hidden"));
-    monthlyPrices.forEach((el) => el.classList.add("hidden"));
-
-    // Update checkout links to yearly
-    checkoutLinks.forEach((link) => {
-      if (link.dataset.yearly) {
-        link.href = link.dataset.yearly;
-      }
-    });
-  }
 }
-
-// Store original monthly links on load
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".checkout-link").forEach((link) => {
-    link.dataset.monthly = link.href;
-  });
-});
-
-// Make toggleBilling globally available
-window.toggleBilling = toggleBilling;

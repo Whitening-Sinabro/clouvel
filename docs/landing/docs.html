@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Clouvel Docs - Technical Documentation</title>
+    <title>Clouvel Docs - 기술 문서</title>
     <meta
       name="description"
-      content="Clouvel 기술 문서. 아키텍처, 통합 가이드, API 레퍼런스, 보안 모델."
+      content="Clouvel 기술 문서. 무료 도구 10개 + Pro 도구 10개. 아키텍처, API 레퍼런스, 보안."
     />
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -35,7 +35,6 @@
     </script>
     <link rel="stylesheet" href="styles.css" />
     <style>
-      /* docs.html specific styles */
       .sidebar-link.active {
         background: rgba(14, 165, 233, 0.1);
         border-left-color: #0ea5e9;
@@ -64,15 +63,19 @@
         class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center"
       >
         <div class="flex items-center gap-4">
-          <a href="index.html" class="text-xl font-bold text-dark-slate"
+          <a href="index-ko.html" class="text-xl font-bold text-dark-slate"
             >Clouvel</a
           >
           <span class="text-slate-400">/</span>
           <span class="text-slate-600">Docs</span>
+          <span
+            class="bg-accent/10 text-accent text-xs font-semibold px-2 py-0.5 rounded-full"
+            >v5.0</span
+          >
         </div>
         <div class="flex items-center gap-6">
           <a
-            href="index.html"
+            href="index-ko.html"
             class="text-sm text-slate-600 hover:text-dark-slate transition"
             >Home</a
           >
@@ -101,55 +104,50 @@
           <a
             href="#quickstart"
             class="sidebar-link active block px-3 py-2 text-sm font-medium text-accent border-l-2 border-accent transition"
-            >Quickstart (60 sec)</a
+            >빠른 시작 (60초)</a
           >
 
           <p
             class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 mt-6"
           >
-            Concepts
+            개념
           </p>
           <a
             href="#architecture"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Architecture</a
+            >아키텍처</a
           >
           <a
             href="#requirements"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >System Requirements</a
+            >시스템 요구사항</a
           >
 
           <p
             class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 mt-6"
           >
-            Setup
+            설정
           </p>
           <a
             href="#installation"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Installation</a
+            >설치</a
           >
           <a
             href="#configuration"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Configuration</a
+            >환경 설정</a
           >
 
           <p
             class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 mt-6"
           >
-            Integration
+            연동
           </p>
           <a
             href="#integration-claude-code"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
             >Claude Code</a
-          >
-          <a
-            href="#integration-cli"
-            class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >CLI</a
           >
           <a
             href="#integration-desktop"
@@ -161,79 +159,65 @@
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
             >VS Code / Cursor</a
           >
-          <a
-            href="#integration-antigravity"
-            class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Antigravity (Google)</a
-          >
 
           <p
             class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 mt-6"
           >
-            API Reference
+            API 레퍼런스
           </p>
           <a
             href="#api-free"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Free Tools (6)</a
+            >Free 도구 (10개)</a
           >
           <a
             href="#api-pro"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Pro Tools (15+)</a
-          >
-          <a
-            href="#api-team"
-            class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Team Tools (10)</a
-          >
-          <a
-            href="#api-shovel"
-            class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Shovel Commands (24)</a
+            >Pro 도구 (10개)</a
           >
 
           <p
             class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 mt-6"
           >
-            Licensing
+            라이선스
           </p>
           <a
             href="#licensing"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >License & Activation</a
+            >라이선스 & 활성화</a
           >
 
           <p
             class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 mt-6"
           >
-            Security
+            보안
           </p>
           <a
             href="#security"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Security Model</a
+            >보안 모델</a
           >
 
           <p
             class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 mt-6"
           >
-            Reference
+            도움말
           </p>
           <a
-            href="#deprecation"
+            href="#troubleshooting"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >지원 종료 (v1.9)</a
+            >문제 해결</a
           >
+
+          <p
+            class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 mt-6"
+          >
+            레퍼런스
+          </p>
           <a
             href="#changelog"
             class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Changelog</a
-          >
-          <a
-            href="#roadmap"
-            class="sidebar-link block px-3 py-2 text-sm text-slate-600 hover:text-dark-slate border-l-2 border-transparent hover:border-slate-300 transition"
-            >Roadmap</a
+            >변경 로그</a
           >
         </nav>
       </aside>
@@ -242,18 +226,12 @@
       <main class="ml-64 flex-1 p-8 max-w-4xl">
         <!-- Quickstart -->
         <section id="quickstart" class="mb-16">
-          <h1 class="text-3xl font-bold mb-6">Quickstart (60 seconds)</h1>
+          <h1 class="text-3xl font-bold mb-6">빠른 시작 (60초)</h1>
 
-          <p class="text-slate-600 mb-4">
-            <strong>지원 환경:</strong> CLI(Command Line Interface), Claude
-            Desktop, VS Code(Visual Studio Code), Cursor
-          </p>
-
-          <!-- Works with badges -->
           <div class="flex gap-2 flex-wrap mb-8">
             <span
               class="px-3 py-1.5 border border-slate-200 rounded-full text-sm text-slate-700 bg-white"
-              >CLI</span
+              >Claude Code</span
             >
             <span
               class="px-3 py-1.5 border border-slate-200 rounded-full text-sm text-slate-700 bg-white"
@@ -271,27 +249,13 @@
 
           <ol class="space-y-6 mb-8">
             <li>
-              <p class="font-semibold text-dark-slate mb-3">1. Install</p>
+              <p class="font-semibold text-dark-slate mb-3">1. 설치</p>
               <div class="code-block rounded-lg p-4 font-mono text-sm">
                 <p class="text-slate-300">pip install clouvel</p>
               </div>
             </li>
             <li>
-              <p class="font-semibold text-dark-slate mb-3">
-                2. Activate
-                <span class="text-accent text-sm font-normal">(Pro만)</span>
-              </p>
-              <div class="code-block rounded-lg p-4 font-mono text-sm">
-                <p class="text-slate-300">clouvel activate 라이선스키</p>
-                <p class="text-slate-500 mt-2 text-xs">
-                  # Free 사용자는 이 단계 스킵
-                </p>
-              </div>
-            </li>
-            <li>
-              <p class="font-semibold text-dark-slate mb-3">
-                3. Setup (자동 설정)
-              </p>
+              <p class="font-semibold text-dark-slate mb-3">2. Claude Code에 추가</p>
               <div class="code-block rounded-lg p-4 font-mono text-sm">
                 <p class="text-emerald-400">clouvel setup</p>
                 <p class="text-slate-500 mt-3"># 이 명령 하나로:</p>
@@ -302,94 +266,58 @@
                   - claude mcp add clouvel 자동 실행
                 </p>
               </div>
-              <p class="text-slate-600 text-sm mt-3">
-                설정 확인: Claude Code에서
-                <code class="bg-slate-100 px-2 py-0.5 rounded">/mcp</code> 실행
-                후 도구 목록에 clouvel이 보이면 연결 완료
-              </p>
             </li>
             <li>
-              <p class="font-semibold text-dark-slate mb-3">
-                4. Verify (품질 게이트)
-              </p>
-              <ul class="text-slate-600 space-y-2 ml-4">
-                <li class="flex items-start gap-2">
-                  <span class="text-red-500">&#8226;</span>
-                  <span
-                    >PRD 없음 →
-                    <strong class="text-red-500">BLOCK</strong> (코딩
-                    차단)</span
-                  >
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-yellow-500">&#8226;</span>
-                  <span
-                    >PRD 있지만 권장 문서 부족 →
-                    <strong class="text-yellow-500">WARN</strong> (진행 가능,
-                    권장 안내)</span
-                  >
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-emerald-500">&#8226;</span>
-                  <span
-                    >모든 문서 완비 →
-                    <strong class="text-emerald-500">PASS</strong> (코딩 시작
-                    가능)</span
-                  >
-                </li>
-              </ul>
+              <p class="font-semibold text-dark-slate mb-3">3. 코딩 시작</p>
+              <div class="code-block rounded-lg p-4 font-mono text-sm">
+                <p class="text-slate-500"># Claude Code가 코드 작성 전 자동으로 can_code 호출</p>
+                <p class="text-slate-300 mt-2">PRD 없음 &rarr; <span class="text-red-400">BLOCK</span> (코딩 차단)</p>
+                <p class="text-slate-300">PRD 있음 &rarr; <span class="text-emerald-400">PASS</span> (코딩 시작)</p>
+              </div>
             </li>
           </ol>
 
-          <!-- License warning box -->
-          <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
-            <p class="text-amber-800 text-sm">
-              <strong>주의(라이선스/잠금):</strong> Pro/Team은 라이선스 활성화
-              후에도 일부 프리미엄 기능(예: install_shovel)이
-              <strong>7일간 잠금</strong>될 수 있습니다.
+          <div class="bg-accent/5 border border-accent/20 rounded-xl p-4">
+            <p class="text-slate-700 text-sm">
+              <strong>Pro 사용자:</strong> 구매 후 Claude Code에서
+              <code class="bg-white px-2 py-0.5 rounded">activate_license</code>
+              실행하면 Pro 도구 10개가 추가 해제됩니다.
             </p>
           </div>
         </section>
 
         <!-- Architecture -->
         <section id="architecture" class="mb-16">
-          <h1 class="text-3xl font-bold mb-6">Architecture</h1>
+          <h1 class="text-3xl font-bold mb-6">아키텍처</h1>
           <p class="text-slate-600 mb-8">
-            Clouvel은 MCP (Model Context Protocol) 서버로 동작하며, Claude
-            Code와 통합되어 문서 기반 개발을 강제합니다.
+            Clouvel은 MCP (Model Context Protocol) 서버입니다. Claude Code에 에러 메모리, 스펙 게이트,
+            맹점 탐지 도구를 제공합니다.
           </p>
 
-          <!-- Architecture Diagram -->
           <div class="code-block rounded-xl p-8 mb-8">
-            <p class="text-slate-400 text-sm mb-6 font-mono">
-              // System Architecture
-            </p>
+            <p class="text-slate-400 text-sm mb-6 font-mono">// System Architecture</p>
             <div class="text-slate-300 font-mono text-sm space-y-4">
               <div class="flex items-center justify-center gap-4 flex-wrap">
                 <div class="diagram-box px-4 py-3 rounded-lg text-center">
                   <div class="text-accent font-semibold">Claude Code</div>
                   <div class="text-xs text-slate-500">CLI / IDE</div>
                 </div>
-                <div class="diagram-arrow text-2xl">→</div>
-                <div
-                  class="diagram-box px-4 py-3 rounded-lg text-center border-accent"
-                >
+                <div class="diagram-arrow text-2xl">&rarr;</div>
+                <div class="diagram-box px-4 py-3 rounded-lg text-center border-accent">
                   <div class="text-accent font-semibold">Clouvel MCP</div>
                   <div class="text-xs text-slate-500">stdio server</div>
                 </div>
-                <div class="diagram-arrow text-2xl">→</div>
+                <div class="diagram-arrow text-2xl">&rarr;</div>
                 <div class="diagram-box px-4 py-3 rounded-lg text-center">
                   <div class="text-emerald-400 font-semibold">Local Files</div>
-                  <div class="text-xs text-slate-500">docs/, PRD.md</div>
+                  <div class="text-xs text-slate-500">.claude/, docs/</div>
                 </div>
               </div>
               <div class="flex items-center justify-center gap-4 mt-6">
-                <div class="text-slate-500">Pro/Team:</div>
+                <div class="text-slate-500">Pro만:</div>
                 <div class="diagram-box px-4 py-3 rounded-lg text-center">
-                  <div class="text-violet-400 font-semibold">
-                    License Server
-                  </div>
-                  <div class="text-xs text-slate-500">api.clouvel.dev</div>
+                  <div class="text-violet-400 font-semibold">License Server</div>
+                  <div class="text-xs text-slate-500">Polar.sh 검증</div>
                 </div>
               </div>
             </div>
@@ -398,53 +326,31 @@
           <h3 class="text-xl font-semibold mb-4">동작 원리</h3>
           <div class="space-y-4 text-slate-600">
             <div class="flex gap-4">
-              <span
-                class="flex-shrink-0 w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center font-semibold"
-                >1</span
-              >
+              <span class="flex-shrink-0 w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center font-semibold">1</span>
               <div>
                 <p class="font-medium text-dark-slate">MCP 서버 시작</p>
-                <p class="text-sm">
-                  Claude Code가 시작될 때 `.claude.json`에 설정된 Clouvel MCP
-                  서버가 stdio로 실행됩니다.
-                </p>
+                <p class="text-sm">Claude Code 시작 시 Clouvel MCP 서버가 stdio로 실행됩니다.</p>
               </div>
             </div>
             <div class="flex gap-4">
-              <span
-                class="flex-shrink-0 w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center font-semibold"
-                >2</span
-              >
+              <span class="flex-shrink-0 w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center font-semibold">2</span>
               <div>
                 <p class="font-medium text-dark-slate">도구 호출</p>
-                <p class="text-sm">
-                  Claude가 코딩 작업을 시작하기 전 `can_code` 도구를 호출합니다.
-                </p>
+                <p class="text-sm">코딩 전 Claude가 <code class="bg-slate-100 px-1 rounded">can_code</code>를 호출하여 스펙을 확인합니다.</p>
               </div>
             </div>
             <div class="flex gap-4">
-              <span
-                class="flex-shrink-0 w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center font-semibold"
-                >3</span
-              >
+              <span class="flex-shrink-0 w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center font-semibold">3</span>
               <div>
                 <p class="font-medium text-dark-slate">문서 검사</p>
-                <p class="text-sm">
-                  로컬 파일 시스템에서 PRD.md, Architecture.md 등 필수 문서 존재
-                  여부를 확인합니다.
-                </p>
+                <p class="text-sm">로컬 파일 시스템에서 PRD.md와 필수 문서 존재 여부를 확인합니다.</p>
               </div>
             </div>
             <div class="flex gap-4">
-              <span
-                class="flex-shrink-0 w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center font-semibold"
-                >4</span
-              >
+              <span class="flex-shrink-0 w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center font-semibold">4</span>
               <div>
                 <p class="font-medium text-dark-slate">결과 반환</p>
-                <p class="text-sm">
-                  문서가 없으면 차단 메시지, 있으면 허용 메시지를 반환합니다.
-                </p>
+                <p class="text-sm">BLOCK (문서 없음), WARN (일부 부족), PASS (코딩 가능)을 반환합니다.</p>
               </div>
             </div>
           </div>
@@ -452,7 +358,7 @@
 
         <!-- System Requirements -->
         <section id="requirements" class="mb-16">
-          <h2 class="text-2xl font-bold mb-6">System Requirements</h2>
+          <h2 class="text-2xl font-bold mb-6">시스템 요구사항</h2>
 
           <div class="grid md:grid-cols-2 gap-6">
             <div class="bg-white border border-slate-200 rounded-xl p-6">
@@ -473,7 +379,7 @@
               </ul>
             </div>
             <div class="bg-white border border-slate-200 rounded-xl p-6">
-              <h3 class="font-semibold mb-4">OS Support</h3>
+              <h3 class="font-semibold mb-4">OS 지원</h3>
               <ul class="space-y-2 text-sm text-slate-600">
                 <li class="flex items-center gap-2">
                   <span class="text-emerald-500">&#10003;</span>
@@ -492,353 +398,114 @@
           </div>
 
           <div class="mt-6 bg-slate-50 border border-slate-200 rounded-xl p-6">
-            <h3 class="font-semibold mb-4">Dependencies</h3>
-            <div
-              class="code-block rounded-lg p-4 text-sm font-mono text-slate-300"
-            >
-              <p class="text-slate-500"># clouvel (free)</p>
+            <h3 class="font-semibold mb-4">의존성</h3>
+            <div class="code-block rounded-lg p-4 text-sm font-mono text-slate-300">
+              <p class="text-slate-500"># clouvel</p>
               <p>mcp>=1.0.0</p>
               <p>pydantic>=2.0.0</p>
-              <p class="mt-4 text-slate-500"># clouvel (paid)</p>
-              <p>mcp>=1.0.0</p>
-              <p>pydantic>=2.0.0</p>
-              <p>httpx>=0.25.0</p>
-              <p>aiofiles>=23.0.0</p>
             </div>
           </div>
         </section>
 
         <!-- Installation -->
         <section id="installation" class="mb-16">
-          <h2 class="text-2xl font-bold mb-6">Installation</h2>
+          <h2 class="text-2xl font-bold mb-6">설치</h2>
 
           <div class="space-y-6">
-            <!-- Free -->
             <div class="bg-white border border-slate-200 rounded-xl p-6">
               <div class="flex items-center gap-2 mb-4">
-                <span
-                  class="bg-emerald-100 text-emerald-700 text-xs font-semibold px-2 py-1 rounded"
-                  >FREE</span
-                >
-                <span class="font-semibold">clouvel</span>
+                <span class="font-semibold">모든 사용자 하나의 패키지</span>
               </div>
               <div class="code-block rounded-lg p-4 font-mono text-sm">
                 <p class="text-slate-500"># pip</p>
                 <p class="text-slate-300">pip install clouvel</p>
-                <p class="text-slate-500 mt-3"># pipx (isolated)</p>
+                <p class="text-slate-500 mt-3"># pipx (격리 설치)</p>
                 <p class="text-slate-300">pipx install clouvel</p>
               </div>
-            </div>
-
-            <!-- Pro -->
-            <div class="bg-white border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-2 mb-4">
-                <span
-                  class="bg-accent text-white text-xs font-semibold px-2 py-1 rounded"
-                  >PRO</span
-                >
-                <span class="font-semibold">clouvel</span>
-              </div>
-              <div class="code-block rounded-lg p-4 font-mono text-sm">
-                <p class="text-slate-500"># pip</p>
-                <p class="text-slate-300">pip install clouvel</p>
-                <p class="text-slate-500 mt-3">
-                  # 라이선스 활성화 (Claude Code에서)
-                </p>
-                <p class="text-accent">&gt; activate_license 도구 사용</p>
-              </div>
+              <p class="text-slate-500 text-sm mt-4">
+                Free 사용자는 즉시 도구 10개 사용 가능. Pro 사용자는
+                <code class="bg-slate-100 px-1 rounded">activate_license</code>로
+                10개 추가 해제.
+              </p>
             </div>
           </div>
         </section>
 
         <!-- Integration -->
         <section id="integration" class="mb-16">
-          <h2 class="text-2xl font-bold mb-6">Integration</h2>
-          <p class="text-slate-600 mb-8">
-            Clouvel은 다양한 환경에서 사용할 수 있습니다. 각 환경별 설정 방법을
-            확인하세요.
-          </p>
+          <h2 class="text-2xl font-bold mb-6">연동</h2>
 
           <!-- Claude Code -->
-          <div
-            id="integration-claude-code"
-            class="bg-white border border-slate-200 rounded-xl p-6 mb-6"
-          >
+          <div id="integration-claude-code" class="bg-white border border-slate-200 rounded-xl p-6 mb-6">
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-              <span
-                class="w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center text-sm"
-                >1</span
-              >
+              <span class="w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center text-sm">1</span>
               Claude Code
             </h3>
-            <ol class="space-y-4 text-slate-600">
-              <li class="flex gap-3">
-                <span class="font-semibold text-dark-slate whitespace-nowrap"
-                  >어디에 설정함:</span
-                >
-                <span
-                  >터미널에서
-                  <code class="bg-slate-100 px-2 py-0.5 rounded"
-                    >claude mcp add</code
-                  >
-                  명령어 실행</span
-                >
-              </li>
-              <li class="flex gap-3">
-                <span class="font-semibold text-dark-slate whitespace-nowrap"
-                  >무엇을 추가함:</span
-                >
-                <span
-                  ><code class="bg-slate-100 px-2 py-0.5 rounded"
-                    >~/.claude.json</code
-                  >에 mcpServers 설정 자동 추가</span
-                >
-              </li>
-              <li class="flex gap-3">
-                <span class="font-semibold text-dark-slate whitespace-nowrap"
-                  >어떻게 검증함:</span
-                >
-                <span
-                  ><code class="bg-slate-100 px-2 py-0.5 rounded">/mcp</code>
-                  실행 후 clouvel 도구 목록 확인</span
-                >
-              </li>
-            </ol>
             <div class="code-block rounded-lg p-4 font-mono text-sm mt-4">
               <p class="text-slate-500"># 등록</p>
               <p class="text-slate-300">claude mcp add clouvel</p>
-              <p class="text-slate-500 mt-3">
-                # ~/.claude.json에 추가되는 내용
-              </p>
+              <p class="text-slate-500 mt-3"># 확인</p>
+              <p class="text-slate-300">/mcp</p>
+              <p class="text-slate-500 mt-3"># ~/.claude.json 결과</p>
               <p class="text-slate-300">{</p>
-              <p class="text-slate-300">"mcpServers": {</p>
-              <p class="text-slate-300">"clouvel": {</p>
-              <p class="text-slate-300">"type": "stdio",</p>
-              <p class="text-slate-300">"command": "clouvel",</p>
-              <p class="text-slate-300">"args": []</p>
-              <p class="text-slate-300">}</p>
-              <p class="text-slate-300">}</p>
+              <p class="text-slate-300 pl-4">"mcpServers": {</p>
+              <p class="text-slate-300 pl-8">"clouvel": {</p>
+              <p class="text-slate-300 pl-12">"type": "stdio",</p>
+              <p class="text-slate-300 pl-12">"command": "clouvel",</p>
+              <p class="text-slate-300 pl-12">"args": []</p>
+              <p class="text-slate-300 pl-8">}</p>
+              <p class="text-slate-300 pl-4">}</p>
               <p class="text-slate-300">}</p>
             </div>
           </div>
 
-          <!-- CLI -->
-          <div
-            id="integration-cli"
-            class="bg-white border border-slate-200 rounded-xl p-6 mb-6"
-          >
-            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-              <span
-                class="w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center text-sm"
-                >2</span
-              >
-              CLI
-            </h3>
-            <ol class="space-y-4 text-slate-600">
-              <li class="flex gap-3">
-                <span class="font-semibold text-dark-slate whitespace-nowrap"
-                  >어디에 설정함:</span
-                >
-                <span>프로젝트 루트에서 실행</span>
-              </li>
-              <li class="flex gap-3">
-                <span class="font-semibold text-dark-slate whitespace-nowrap"
-                  >무엇을 추가함:</span
-                >
-                <span
-                  >(필요 시) 환경변수/설정 파일에
-                  <code class="bg-slate-100 px-2 py-0.5 rounded"
-                    >project_path</code
-                  >
-                  지정</span
-                >
-              </li>
-              <li class="flex gap-3">
-                <span class="font-semibold text-dark-slate whitespace-nowrap"
-                  >어떻게 검증함:</span
-                >
-                <span
-                  ><code class="bg-slate-100 px-2 py-0.5 rounded"
-                    >can_code</code
-                  >
-                  실행 결과가 BLOCK/PASS로 나뉘는지 확인</span
-                >
-              </li>
-            </ol>
-          </div>
-
           <!-- Claude Desktop -->
-          <div
-            id="integration-desktop"
-            class="bg-white border border-slate-200 rounded-xl p-6 mb-6"
-          >
+          <div id="integration-desktop" class="bg-white border border-slate-200 rounded-xl p-6 mb-6">
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-              <span
-                class="w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center text-sm"
-                >3</span
-              >
+              <span class="w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center text-sm">2</span>
               Claude Desktop
             </h3>
-            <ol class="space-y-4 text-slate-600">
-              <li class="flex gap-3">
-                <span class="font-semibold text-dark-slate whitespace-nowrap"
-                  >어디에 설정함:</span
-                >
-                <span>Claude Desktop 설정의 MCP 서버 등록 영역</span>
-              </li>
-              <li class="flex gap-3">
-                <span class="font-semibold text-dark-slate whitespace-nowrap"
-                  >무엇을 추가함:</span
-                >
-                <span>clouvel stdio MCP 서버 (command/env) 등록</span>
-              </li>
-              <li class="flex gap-3">
-                <span class="font-semibold text-dark-slate whitespace-nowrap"
-                  >어떻게 검증함:</span
-                >
-                <span
-                  >도구 목록에 표시되고
-                  <code class="bg-slate-100 px-2 py-0.5 rounded">can_code</code
-                  >가 호출되는지 확인</span
-                >
-              </li>
-            </ol>
             <div class="code-block rounded-lg p-4 font-mono text-sm mt-4">
               <p class="text-slate-500">// claude_desktop_config.json</p>
               <p class="text-slate-300">{</p>
-              <p class="text-slate-300">"mcpServers": {</p>
-              <p class="text-slate-300">"clouvel": {</p>
-              <p class="text-slate-300">"command": "clouvel",</p>
-              <p class="text-slate-300">"args": [],</p>
-              <p class="text-slate-300">"env": {</p>
-              <p class="text-slate-300">"PROJECT_PATH": "/path/to/project"</p>
-              <p class="text-slate-300">}</p>
-              <p class="text-slate-300">}</p>
-              <p class="text-slate-300">}</p>
+              <p class="text-slate-300 pl-4">"mcpServers": {</p>
+              <p class="text-slate-300 pl-8">"clouvel": {</p>
+              <p class="text-slate-300 pl-12">"command": "clouvel",</p>
+              <p class="text-slate-300 pl-12">"args": [],</p>
+              <p class="text-slate-300 pl-12">"env": {</p>
+              <p class="text-slate-300 pl-16">"PROJECT_PATH": "/path/to/project"</p>
+              <p class="text-slate-300 pl-12">}</p>
+              <p class="text-slate-300 pl-8">}</p>
+              <p class="text-slate-300 pl-4">}</p>
               <p class="text-slate-300">}</p>
             </div>
           </div>
 
           <!-- VS Code / Cursor -->
-          <div
-            id="integration-vscode"
-            class="bg-white border border-slate-200 rounded-xl p-6"
-          >
+          <div id="integration-vscode" class="bg-white border border-slate-200 rounded-xl p-6">
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-              <span
-                class="w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center text-sm"
-                >4</span
-              >
+              <span class="w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center text-sm">3</span>
               VS Code / Cursor
             </h3>
-            <ol class="space-y-4 text-slate-600">
-              <li class="flex gap-3">
-                <span class="font-semibold text-dark-slate whitespace-nowrap"
-                  >어디에 설정함:</span
-                >
-                <span>에디터 내 MCP/툴 연결 설정 (확장/설정 파일)</span>
-              </li>
-              <li class="flex gap-3">
-                <span class="font-semibold text-dark-slate whitespace-nowrap"
-                  >무엇을 추가함:</span
-                >
-                <span>clouvel MCP 서버 (command/env) 등록</span>
-              </li>
-              <li class="flex gap-3">
-                <span class="font-semibold text-dark-slate whitespace-nowrap"
-                  >어떻게 검증함:</span
-                >
-                <span
-                  >에디터에서
-                  <code class="bg-slate-100 px-2 py-0.5 rounded">can_code</code>
-                  실행 또는 연결 확인</span
-                >
-              </li>
-            </ol>
             <div class="code-block rounded-lg p-4 font-mono text-sm mt-4">
               <p class="text-slate-500">// .vscode/mcp.json 또는 Cursor 설정</p>
               <p class="text-slate-300">{</p>
-              <p class="text-slate-300">"servers": {</p>
-              <p class="text-slate-300">"clouvel": {</p>
-              <p class="text-slate-300">"command": "clouvel",</p>
-              <p class="text-slate-300">"type": "stdio"</p>
-              <p class="text-slate-300">}</p>
-              <p class="text-slate-300">}</p>
-              <p class="text-slate-300">}</p>
-            </div>
-          </div>
-
-          <!-- Antigravity (Google) -->
-          <div
-            id="integration-antigravity"
-            class="bg-white border border-slate-200 rounded-xl p-6"
-          >
-            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-              <span
-                class="w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center text-sm"
-                >5</span
-              >
-              Antigravity (Google)
-            </h3>
-            <p class="text-slate-600 mb-4">
-              Google Antigravity IDE는 VS Code 기반으로 MCP를 네이티브
-              지원합니다. Gemini와 Claude 모델 모두 사용 가능합니다.
-            </p>
-            <ol class="space-y-4 text-slate-600">
-              <li class="flex gap-3">
-                <span class="font-semibold text-dark-slate whitespace-nowrap"
-                  >설정 파일 위치:</span
-                >
-                <code class="bg-slate-100 px-2 py-0.5 rounded text-sm"
-                  >~/.gemini/antigravity/mcp_config.json</code
-                >
-              </li>
-              <li class="flex gap-3">
-                <span class="font-semibold text-dark-slate whitespace-nowrap"
-                  >UI로 열기:</span
-                >
-                <span
-                  >Agent → "..." → MCP Servers → Manage → View raw config</span
-                >
-              </li>
-            </ol>
-            <div class="code-block rounded-lg p-4 font-mono text-sm mt-4">
-              <p class="text-slate-500">
-                // ~/.gemini/antigravity/mcp_config.json
-              </p>
-              <p class="text-slate-300">{</p>
-              <p class="text-slate-300 pl-4">"mcpServers": {</p>
+              <p class="text-slate-300 pl-4">"servers": {</p>
               <p class="text-slate-300 pl-8">"clouvel": {</p>
-              <p class="text-slate-300 pl-12">"command": "clouvel"</p>
+              <p class="text-slate-300 pl-12">"command": "clouvel",</p>
+              <p class="text-slate-300 pl-12">"type": "stdio"</p>
               <p class="text-slate-300 pl-8">}</p>
               <p class="text-slate-300 pl-4">}</p>
               <p class="text-slate-300">}</p>
-            </div>
-            <div
-              class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg"
-            >
-              <p class="text-sm text-amber-800">
-                <strong>Windows 사용자:</strong> Python 전체 경로를 사용해야 할
-                수 있습니다.
-                <code class="bg-amber-100 px-1 rounded"
-                  >C:\\Users\\사용자명\\AppData\\Local\\Programs\\Python\\Python310\\Scripts\\clouvel.exe</code
-                >
-              </p>
-            </div>
-            <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <p class="text-sm text-blue-800">
-                <strong>기존 설정이 있는 경우:</strong> mcpServers 안에
-                "clouvel" 블록만 추가하세요. 기존 서버 설정을 덮어쓰지 마세요.
-              </p>
             </div>
           </div>
         </section>
 
         <!-- Configuration -->
         <section id="configuration" class="mb-16">
-          <h2 class="text-2xl font-bold mb-6">Configuration</h2>
+          <h2 class="text-2xl font-bold mb-6">환경 설정</h2>
 
-          <h3 class="text-lg font-semibold mb-4">Environment Variables</h3>
+          <h3 class="text-lg font-semibold mb-4">환경 변수</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-sm">
               <thead>
@@ -855,352 +522,169 @@
                   <td class="py-3 px-4">개발 모드 (라이선스 검증 스킵)</td>
                 </tr>
                 <tr class="border-b border-slate-100">
-                  <td class="py-3 px-4 font-mono text-xs">
-                    CLOUVEL_LICENSE_PATH
-                  </td>
+                  <td class="py-3 px-4 font-mono text-xs">CLOUVEL_LICENSE_PATH</td>
                   <td class="py-3 px-4">~/.clouvel-license</td>
                   <td class="py-3 px-4">라이선스 파일 경로</td>
                 </tr>
-                <tr class="border-b border-slate-100">
-                  <td class="py-3 px-4 font-mono text-xs">CLOUVEL_API_URL</td>
-                  <td class="py-3 px-4">https://api.clouvel.dev</td>
-                  <td class="py-3 px-4">API 서버 URL</td>
-                </tr>
               </tbody>
             </table>
-          </div>
-
-          <h3 class="text-lg font-semibold mb-4 mt-8">DEV_MODE 설정</h3>
-          <p class="text-slate-600 mb-4">
-            개발/테스트 시 라이선스 검증을 스킵하려면:
-          </p>
-          <div class="code-block rounded-lg p-4 font-mono text-sm">
-            <p class="text-slate-500">// ~/.claude.json</p>
-            <p class="text-slate-300">{</p>
-            <p class="text-slate-300">"mcpServers": {</p>
-            <p class="text-slate-300">"clouvel": {</p>
-            <p class="text-slate-300">"type": "stdio",</p>
-            <p class="text-slate-300">"command": "clouvel",</p>
-            <p class="text-slate-300">"env": {</p>
-            <p class="text-accent">"CLOUVEL_DEV_MODE": "1"</p>
-            <p class="text-slate-300">}</p>
-            <p class="text-slate-300">}</p>
-            <p class="text-slate-300">}</p>
-            <p class="text-slate-300">}</p>
           </div>
         </section>
 
         <!-- API Reference: Free -->
         <section id="api-free" class="mb-16">
-          <h2 class="text-2xl font-bold mb-6">API Reference: Free Tools</h2>
+          <h2 class="text-2xl font-bold mb-6">API 레퍼런스: Free 도구 (10개)</h2>
+          <p class="text-slate-600 mb-6">항상 사용 가능. 라이선스 불필요.</p>
 
-          <!-- 처음엔 4개만 가이드 -->
-          <div class="bg-accent/5 border border-accent/20 rounded-xl p-4 mb-6">
-            <p class="text-slate-700">
-              <strong>처음 시작할 때 이 4개만 쓰면 됩니다:</strong>
-              <code class="bg-white px-2 py-0.5 rounded mx-1">start</code>
-              (온보딩 + PRD 생성),
-              <code class="bg-white px-2 py-0.5 rounded mx-1">can_code</code>
-              (게이트),
-              <code class="bg-white px-2 py-0.5 rounded mx-1">get_goal</code>
-              (목표 리마인드),
-              <code class="bg-white px-2 py-0.5 rounded mx-1"
-                >get_progress</code
-              >
-              (진행 확인)
-            </p>
-          </div>
+          <div class="space-y-4">
+            <!-- can_code -->
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm">can_code</code>
+                <span class="text-slate-500 text-sm">스펙 게이트 (BLOCK / WARN / PASS)</span>
+              </div>
+              <p class="text-slate-600 text-sm mb-3">코딩 전 필수 문서 존재 여부 확인. 코드 작성 전 반드시 호출.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>path: str - docs 폴더 경로</p>
+                <p class="text-slate-500 mt-2"># 반환</p>
+                <p class="text-red-400">BLOCK - PRD 없음, 코딩 차단</p>
+                <p class="text-yellow-400">WARN - PRD 있지만 권장 문서 부족</p>
+                <p class="text-emerald-400">PASS - 모든 문서 준비됨, 코딩 시작</p>
+              </div>
+            </div>
 
-          <p class="text-slate-600 mb-6">
-            clouvel 패키지에 포함된 무료 도구 (6개)
-          </p>
+            <!-- start -->
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm">start</code>
+                <span class="text-slate-500 text-sm">프로젝트 온보딩 + PRD 생성</span>
+              </div>
+              <p class="text-slate-600 text-sm mb-3">프로젝트 타입 자동 감지, PRD 템플릿 생성. --template, --guide, --init 옵션 포함.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>path: str - 프로젝트 루트 경로</p>
+                <p>template: str (선택) - web-app, api, cli, generic</p>
+                <p>layout: str (선택) - lite, standard, detailed</p>
+                <p>guide: bool (선택) - PRD 작성 가이드 표시</p>
+                <p>init: bool (선택) - docs 폴더 초기화</p>
+              </div>
+            </div>
 
-          <!-- start -->
-          <div class="bg-white border border-slate-200 rounded-xl p-6 mb-6">
-            <div class="flex items-center gap-3 mb-4">
-              <code
-                class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm"
-                >start</code
-              >
-              <span
-                class="bg-accent text-white text-xs px-2 py-0.5 rounded"
-                >UPDATED v1.9</span
-              >
-              <span class="text-slate-500 text-sm"
-                >프로젝트 온보딩 + PRD 자동 생성 (통합 도구)</span
-              >
-            </div>
-            <div class="space-y-4">
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
-                  Parameters
-                </p>
-                <div
-                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-                >
-                  <p>path: str - 프로젝트 루트 경로</p>
-                  <p>project_name: str (optional) - 프로젝트 이름</p>
-                  <p class="text-accent">template: str (optional) - PRD 템플릿 타입 (web-app, api, cli, generic)</p>
-                  <p class="text-accent">layout: str (optional) - 템플릿 레이아웃 (lite, standard, detailed)</p>
-                  <p class="text-accent">guide: bool (optional) - PRD 작성 가이드 표시</p>
-                  <p class="text-accent">init: bool (optional) - docs 폴더 초기화</p>
-                </div>
+            <!-- save_prd -->
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm">save_prd</code>
+                <span class="text-slate-500 text-sm">PRD 저장</span>
               </div>
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
-                  v1.9 통합된 기능
-                </p>
-                <div class="text-sm text-slate-600 space-y-1">
-                  <p>• <code class="text-red-400 line-through">get_prd_template</code> → <code class="text-emerald-500">start --template=web-app</code></p>
-                  <p>• <code class="text-red-400 line-through">get_prd_guide</code> → <code class="text-emerald-500">start --guide</code></p>
-                  <p>• <code class="text-red-400 line-through">init_docs</code> → <code class="text-emerald-500">start --init</code></p>
-                </div>
-              </div>
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
-                  Returns
-                </p>
-                <div
-                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300 space-y-3"
-                >
-                  <div>
-                    <p class="text-emerald-400"># PRD 없으면 자동 생성</p>
-                    <p class="text-emerald-300">CREATED: PRD 템플릿 생성됨</p>
-                    <p class="text-slate-500">docs/PRD.md 생성 완료</p>
-                  </div>
-                  <div>
-                    <p class="text-emerald-400"># PRD 있으면 검증</p>
-                    <p class="text-emerald-300">READY: 코딩 시작 가능</p>
-                  </div>
-                </div>
+              <p class="text-slate-600 text-sm mb-3">Claude와의 대화를 통해 작성된 PRD를 저장합니다.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>path: str - 프로젝트 경로</p>
+                <p>content: str - PRD 내용 (마크다운)</p>
               </div>
             </div>
-          </div>
 
-          <!-- can_code -->
-          <div class="bg-white border border-slate-200 rounded-xl p-6 mb-6">
-            <div class="flex items-center gap-3 mb-4">
-              <code
-                class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm"
-                >can_code</code
-              >
-              <span class="text-slate-500 text-sm"
-                >3단계 품질 게이트 (BLOCK/WARN/PASS)</span
-              >
-            </div>
-            <div class="space-y-4">
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
-                  Parameters
-                </p>
-                <div
-                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-                >
-                  <p>
-                    path: str - docs 폴더 경로 (예: "docs" 또는
-                    "/path/to/project/docs")
-                  </p>
-                </div>
+            <!-- error_check -->
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm">error_check</code>
+                <span class="text-slate-500 text-sm">선제적 에러 경고</span>
               </div>
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
-                  Returns (3단계)
-                </p>
-                <div
-                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300 space-y-3"
-                >
-                  <div>
-                    <p class="text-red-400"># BLOCK - 코딩 금지</p>
-                    <p class="text-red-300">⛔ BLOCK: 코딩 금지</p>
-                    <p class="text-slate-500">
-                      PRD 없음 또는 acceptance 섹션 누락
-                    </p>
-                  </div>
-                  <div>
-                    <p class="text-yellow-400"># WARN - 진행 가능, 권장 안내</p>
-                    <p class="text-yellow-300">
-                      ✅ PASS | ⚠️ WARN 2개 | 필수: PRD ✓ | 권장 없음: 아키텍처,
-                      테스트
-                    </p>
-                  </div>
-                  <div>
-                    <p class="text-emerald-400"># PASS - 코딩 시작 가능</p>
-                    <p class="text-emerald-300">
-                      ✅ PASS | 필수: PRD ✓ | 테스트 3개 | 코딩 시작 가능
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
-                  검사 항목
-                </p>
-                <ul class="text-sm text-slate-600 space-y-1">
-                  <li>
-                    <strong class="text-red-500">필수 (BLOCK)</strong>: PRD
-                    파일, acceptance(완료 기준) 섹션
-                  </li>
-                  <li>
-                    <strong class="text-yellow-600">권장 (WARN)</strong>:
-                    아키텍처, API 스펙, DB 스키마, 검증 계획, 테스트 파일
-                  </li>
-                </ul>
+              <p class="text-slate-600 text-sm mb-3">코드 수정 전 과거 에러 패턴을 확인합니다. 비슷한 실수가 있었다면 경고.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>path: str - 프로젝트 루트</p>
+                <p>context: str - 현재 작업 컨텍스트</p>
+                <p>file_path: str (선택) - 수정할 파일</p>
               </div>
             </div>
-          </div>
 
-          <!-- save_prd (NEW v1.3.4) -->
-          <div class="bg-white border border-slate-200 rounded-xl p-6 mb-6">
-            <div class="flex items-center gap-3 mb-4">
-              <code
-                class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm"
-                >save_prd</code
-              >
-              <span
-                class="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded"
-                >NEW v1.3</span
-              >
-              <span class="text-slate-500 text-sm">PRD 저장</span>
-            </div>
-            <div class="space-y-4">
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
-                  Parameters
-                </p>
-                <div
-                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-                >
-                  <p>path: str - 프로젝트 경로</p>
-                  <p>content: str - PRD 내용</p>
-                  <p>project_name: str (optional) - 프로젝트 이름</p>
-                  <p>project_type: str (optional) - 프로젝트 타입</p>
-                </div>
+            <!-- error_record -->
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm">error_record</code>
+                <span class="text-slate-500 text-sm">5 Whys 에러 기록</span>
               </div>
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
-                  Returns
-                </p>
-                <div
-                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-                >
-                  <p class="text-emerald-400"># PRD 저장 완료</p>
-                  <p>✅ docs/PRD.md 저장됨</p>
-                  <p class="text-slate-500">이제 can_code가 PASS됩니다</p>
-                </div>
+              <p class="text-slate-600 text-sm mb-3">에러를 구조화된 근본 원인 분석과 함께 기록합니다. 예방 규칙 자동 생성.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>path: str - 프로젝트 루트</p>
+                <p>error_text: str - 에러 메시지</p>
+                <p>root_cause: str (선택) - 근본 원인</p>
+                <p>five_whys: list (선택) - 5 Whys 분석</p>
               </div>
             </div>
-          </div>
 
-          <!-- get_progress -->
-          <div class="bg-white border border-slate-200 rounded-xl p-6 mb-6">
-            <div class="flex items-center gap-3 mb-4">
-              <code
-                class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm"
-                >get_progress</code
-              >
-              <span class="text-slate-500 text-sm">진행 상황 확인</span>
-            </div>
-            <div class="space-y-4">
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
-                  Parameters
-                </p>
-                <div
-                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-                >
-                  <p>project_path: str (optional) - 프로젝트 경로</p>
-                </div>
+            <!-- context_save -->
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm">context_save</code>
+                <span class="text-slate-500 text-sm">컨텍스트 체크포인트</span>
               </div>
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
-                  Returns
-                </p>
-                <div
-                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-                >
-                  <p>## 진행 상황</p>
-                  <p>- 완료: 3/10 태스크</p>
-                  <p>- 현재: "인증 기능 구현"</p>
-                  <p>- 다음: "API 엔드포인트 추가"</p>
-                </div>
+              <p class="text-slate-600 text-sm mb-3">컨텍스트 압축 전 작업 상태를 저장합니다. 한 번 호출로 복구에 필요한 모든 것을 캡처.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>path: str - 프로젝트 루트</p>
+                <p>reason: str (선택) - 저장 이유</p>
+                <p>active_files: list (선택) - 작업 중인 파일</p>
               </div>
             </div>
-          </div>
 
-          <!-- get_goal -->
-          <div class="bg-white border border-slate-200 rounded-xl p-6">
-            <div class="flex items-center gap-3 mb-4">
-              <code
-                class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm"
-                >get_goal</code
-              >
-              <span class="text-slate-500 text-sm">프로젝트 목표 리마인드</span>
-            </div>
-            <div class="space-y-4">
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
-                  Parameters
-                </p>
-                <div
-                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-                >
-                  <p>project_path: str (optional) - 프로젝트 경로</p>
-                </div>
+            <!-- context_load -->
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm">context_load</code>
+                <span class="text-slate-500 text-sm">컨텍스트 복원</span>
               </div>
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
-                  Returns
-                </p>
-                <div
-                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-                >
-                  <p>## 프로젝트 목표</p>
-                  <p>PRD.md에서 추출한 핵심 목표:</p>
-                  <p>- 바이브코딩 프로세스 강제</p>
-                  <p>- 문서 기반 개발 자동화</p>
-                </div>
+              <p class="text-slate-600 text-sm mb-3">압축 후 또는 새 세션에서 체크포인트를 로드합니다.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>path: str - 프로젝트 루트</p>
+                <p>checkpoint: str (선택) - "latest" 또는 특정 파일명</p>
               </div>
             </div>
-          </div>
 
-          <!-- plan (NEW v1.3 - Free) -->
-          <div class="bg-white border border-slate-200 rounded-xl p-6">
-            <div class="flex items-center gap-3 mb-4">
-              <code
-                class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm"
-                >plan</code
-              >
-              <span
-                class="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded"
-                >NEW v1.3</span
-              >
-              <span class="text-slate-500 text-sm">상세 실행 계획 생성</span>
-            </div>
-            <div class="space-y-4">
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
-                  Parameters
-                </p>
-                <div
-                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-                >
-                  <p>path: str - 프로젝트 루트 경로</p>
-                  <p>task: str - 수행할 작업</p>
-                  <p>goals: list[str] - 달성 목표</p>
-                </div>
+            <!-- quick_perspectives -->
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm">quick_perspectives</code>
+                <span class="text-slate-500 text-sm">빠른 맹점 체크</span>
               </div>
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase mb-2">
-                  Returns
-                </p>
-                <div
-                  class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-                >
-                  <p class="text-emerald-400">## 상세 실행 계획</p>
-                  <p>### Phase: 준비 → 설계 → 구현 → 검증</p>
-                  <p class="text-slate-500">| # | 액션 | 담당 | 완료조건 |</p>
-                  <p class="text-slate-500">매니저 피드백 기반 자동 구성</p>
-                </div>
+              <p class="text-slate-600 text-sm mb-3">3~4명 매니저가 10초 안에 핵심 질문. 코딩 전 맹점을 발견합니다.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>context: str - 무엇을 만들려는지</p>
+                <p>max_managers: int (선택) - 최대 4</p>
+              </div>
+            </div>
+
+            <!-- gate -->
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm">gate</code>
+                <span class="text-slate-500 text-sm">lint &rarr; test &rarr; build 자동화</span>
+              </div>
+              <p class="text-slate-600 text-sm mb-3">순차 품질 게이트. 첫 실패에서 중단.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>path: str - 프로젝트 루트</p>
+                <p>steps: list (선택) - ["lint", "test", "build"]</p>
+                <p>fix: bool (선택) - 린트 에러 자동 수정</p>
+              </div>
+            </div>
+
+            <!-- license_status -->
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-mono text-sm">license_status</code>
+                <span class="text-slate-500 text-sm">라이선스 관리</span>
+              </div>
+              <p class="text-slate-600 text-sm mb-3">라이선스 상태 확인, 활성화, 무료 체험 시작.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>license_key: str (선택) - 활성화용</p>
+                <p>action: str (선택) - "trial"로 7일 무료 체험</p>
               </div>
             </div>
           </div>
@@ -1208,615 +692,165 @@
 
         <!-- API Reference: Pro -->
         <section id="api-pro" class="mb-16">
-          <h2 class="text-2xl font-bold mb-6">API Reference: Pro Tools</h2>
-          <p class="text-slate-600 mb-6">clouvel Pro 기능 (15개+) - 자동화가 아닌 증강</p>
+          <h2 class="text-2xl font-bold mb-6">API 레퍼런스: Pro 도구 (10개)</h2>
+          <p class="text-slate-600 mb-6">Pro 라이선스 필요 ($7.99/월 또는 $23.99/년). 7일 무료 체험 가능.</p>
 
           <div class="space-y-4">
-            <!-- quick_perspectives (NEW v1.4) -->
-            <div class="bg-white border border-emerald-500/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded font-mono text-sm"
-                  >quick_perspectives</code
-                >
-                <span class="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded"
-                  >NEW v1.4</span
-                >
-              </div>
-              <p class="text-slate-600 text-sm mb-3">
-                코딩 전 3초 관점 체크. 3-4명 매니저가 핵심 질문을 던집니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># Parameters</p>
-                <p>context: str - 무엇을 만들려는지</p>
-                <p>max_managers: int - 최대 매니저 수 (기본 4)</p>
-                <p class="text-slate-500 mt-2"># Output</p>
-                <p class="text-emerald-400">## 💡 Quick Perspectives</p>
-                <p class="text-slate-400">**👔 PM**: 이게 MVP 스코프인가요?</p>
-                <p class="text-slate-400">**🔒 CSO**: 사용자 인증은 어떻게?</p>
-                <p class="text-slate-500">💡 관련 과거 결정: auth...</p>
-              </div>
-            </div>
-
-            <!-- manager (v1.4 Augmentation) -->
+            <!-- error_learn -->
             <div class="bg-white border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
-                  >manager</code
-                >
-                <span class="bg-accent text-white text-xs px-2 py-0.5 rounded"
-                  >v1.4 Augmentation</span
-                >
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm">error_learn</code>
+                <span class="text-slate-500 text-sm">에러 패턴 학습</span>
               </div>
-              <p class="text-slate-600 text-sm mb-3">
-                8명의 AI 매니저가 <strong>답을 주는 대신 질문을 던집니다</strong>.
-                당신이 놓친 관점을 발견하게 도와줍니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># 철학: 자동화가 아닌 증강</p>
-                <p class="text-red-400">❌ "인증은 OAuth 쓰세요"</p>
-                <p class="text-emerald-400">✅ "유저층이 어떻게 되나요? 소셜 로그인? 이메일?"</p>
-                <p class="text-slate-500 mt-2"># 8명의 매니저가 어려운 질문을 던집니다</p>
-                <p class="text-accent">PM: 스코프, 우선순위, 사용자 가치</p>
-                <p class="text-accent">CTO: 아키텍처, 트레이드오프, 기술 부채</p>
-                <p class="text-accent">QA: 엣지 케이스, 실패 모드, 테스팅</p>
-                <p class="text-accent">CSO: 인증, 권한, 취약점</p>
-                <p class="text-accent">CDO: UX, 접근성, 디자인 패턴</p>
-                <p class="text-accent">CMO: 포지셔닝, 경쟁사, GTM</p>
-                <p class="text-accent">CFO: 비용, 수익화, ROI</p>
-                <p class="text-accent">Error: 과거 실수, 예방 규칙</p>
-                <p class="text-slate-500 mt-2"># Output Format</p>
-                <p class="text-slate-400">## 🤔 당신이 결정할 것들</p>
-                <p class="text-slate-400">| 인증 | OAuth / Email / Magic Link | _____ |</p>
+              <p class="text-slate-600 text-sm mb-3">에러 히스토리 분석, NEVER/ALWAYS 규칙 생성, CLAUDE.md 자동 업데이트.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>path: str - 프로젝트 루트</p>
+                <p>auto_update_claude_md: bool (선택)</p>
               </div>
             </div>
 
-            <!-- knowledge_base (NEW v1.4) -->
-            <div class="bg-white border border-violet-500/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-violet-500/10 text-violet-600 px-3 py-1 rounded font-mono text-sm"
-                  >record_decision / search_knowledge</code
-                >
-                <span class="bg-violet-500 text-white text-xs px-2 py-0.5 rounded"
-                  >NEW v1.4</span
-                >
-              </div>
-              <p class="text-slate-600 text-sm mb-3">
-                Knowledge Base: 모든 결정을 기억합니다. 같은 실수 두 번 하지 않기.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># 6개 Knowledge Base 도구</p>
-                <p class="text-accent">record_decision - 결정 저장</p>
-                <p class="text-accent">record_location - 중요 코드 위치 저장</p>
-                <p class="text-accent">search_knowledge - FTS5 전문 검색</p>
-                <p class="text-accent">get_context - 세션 복구 컨텍스트</p>
-                <p class="text-accent">init_knowledge - DB 초기화</p>
-                <p class="text-accent">rebuild_index - 검색 인덱스 재구축</p>
-                <p class="text-slate-500 mt-2"># 저장소</p>
-                <p class="text-slate-400">~/.clouvel/knowledge.db (SQLite)</p>
-                <p class="text-slate-400">50MB 제한, 30일 이상 데이터 자동 아카이브</p>
-              </div>
-            </div>
-
-            <!-- ship (NEW) -->
+            <!-- memory_status -->
             <div class="bg-white border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
-                  >ship</code
-                >
-                <span class="bg-accent text-white text-xs px-2 py-0.5 rounded"
-                  >NEW v1.2</span
-                >
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm">memory_status</code>
+                <span class="text-slate-500 text-sm">회귀 메모리 통계</span>
               </div>
-              <p class="text-slate-600 text-sm mb-3">
-                원클릭으로 테스트 → 검증 → 증거 생성을 실행합니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># Parameters</p>
-                <p>path: str - 프로젝트 루트 경로</p>
-                <p>feature: str (optional) - 검증할 기능명</p>
-                <p>steps: ["lint", "typecheck", "test", "build"]</p>
-                <p class="text-slate-500 mt-2"># Returns</p>
-                <p class="text-emerald-400">PASS | 코딩 시작 가능</p>
-                <p class="text-slate-400">[====] 4/4 PASS</p>
-                <p class="text-slate-400">lint (120ms), test (450ms)...</p>
-                <p class="text-slate-500 mt-2"># 증거 파일 생성</p>
-                <p>.claude/evidence/feature_20260121.md</p>
-              </div>
+              <p class="text-slate-600 text-sm mb-3">활성 메모리, 히트 수, 절약률, 상위 에러 패턴을 표시합니다.</p>
             </div>
 
-            <!-- activate_license -->
+            <!-- memory_search -->
             <div class="bg-white border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
-                  >activate_license</code
-                >
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm">memory_search</code>
+                <span class="text-slate-500 text-sm">회귀 메모리 검색</span>
               </div>
-              <p class="text-slate-600 text-sm mb-3">
-                Polar.sh에서 구매한 라이선스 키를 활성화합니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># Parameters</p>
-                <p>license_key: str - "CLOUVEL-XXXX-XXXX-XXXX"</p>
-                <p class="text-slate-500 mt-2"># Returns</p>
-                <p>✓ 라이선스 활성화됨 (Personal, 영구)</p>
+              <p class="text-slate-600 text-sm mb-3">근본 원인, 예방 규칙, 작업 설명에 대한 전문 검색.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>path: str - 프로젝트 루트</p>
+                <p>query: str - 검색 키워드</p>
               </div>
             </div>
 
-            <!-- check_license -->
+            <!-- memory_global_search -->
             <div class="bg-white border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
-                  >check_license</code
-                >
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm">memory_global_search</code>
+                <span class="text-slate-500 text-sm">크로스 프로젝트 메모리</span>
               </div>
-              <p class="text-slate-600 text-sm mb-3">
-                현재 라이선스 상태를 확인합니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># Parameters</p>
-                <p>None</p>
-                <p class="text-slate-500 mt-2"># Returns</p>
-                <p>티어: Team | 인원: 10명 | 프리미엄 잠금: 7일 남음</p>
-              </div>
+              <p class="text-slate-600 text-sm mb-3">모든 프로젝트에서 학습한 패턴을 검색합니다. 프로젝트 A의 실수가 프로젝트 B에서 반복되지 않게.</p>
             </div>
 
-            <!-- install_shovel -->
+            <!-- drift_check -->
             <div class="bg-white border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
-                  >install_shovel</code
-                >
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm">drift_check</code>
+                <span class="text-slate-500 text-sm">컨텍스트 드리프트 감지</span>
               </div>
-              <p class="text-slate-600 text-sm mb-3">
-                Shovel 워크플로우 (24개 슬래시 커맨드)를 설치합니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># Parameters</p>
-                <p>project_path: str (optional) - 설치 경로</p>
-                <p>force: bool (optional) - 덮어쓰기 여부</p>
-                <p class="text-slate-500 mt-2"># Creates</p>
-                <p>.claude/commands/ - 24개 슬래시 커맨드</p>
-                <p>CLAUDE.md - 프로젝트 규칙</p>
-                <p>scripts/ - Gate 스크립트</p>
-              </div>
+              <p class="text-slate-600 text-sm mb-3">현재 작업이 원래 목표에서 벗어나는지 감지합니다. 최근 액션과 계획을 비교.</p>
             </div>
 
-            <!-- sync_commands -->
+            <!-- record_decision -->
             <div class="bg-white border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
-                  >sync_commands</code
-                >
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm">record_decision</code>
+                <span class="text-slate-500 text-sm">의사결정 기록</span>
               </div>
-              <p class="text-slate-600 text-sm mb-3">
-                최신 Shovel 커맨드로 동기화합니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># Parameters</p>
-                <p>project_path: str (optional)</p>
-                <p>mode: "merge" | "overwrite" - 동기화 모드</p>
+              <p class="text-slate-600 text-sm mb-3">세션을 넘어 의사결정을 보존합니다. 잠금(lock)으로 변경 방지 가능.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>category: str - architecture, pricing, security 등</p>
+                <p>decision: str - 결정 내용</p>
+                <p>reasoning: str (선택) - 이유</p>
+                <p>locked: bool (선택) - 변경 방지</p>
               </div>
             </div>
 
-            <!-- log_error -->
+            <!-- search_knowledge -->
             <div class="bg-white border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
-                  >log_error</code
-                >
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm">search_knowledge</code>
+                <span class="text-slate-500 text-sm">지식 베이스 검색</span>
               </div>
-              <p class="text-slate-600 text-sm mb-3">
-                에러를 ERROR_LOG.md에 기록합니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># Parameters</p>
-                <p>error_type: str - "TypeError", "RuntimeError" 등</p>
-                <p>message: str - 에러 메시지</p>
-                <p>context: str (optional) - 발생 컨텍스트</p>
-                <p>solution: str (optional) - 해결 방법</p>
-              </div>
+              <p class="text-slate-600 text-sm mb-3">과거 의사결정, 코드 위치, 컨텍스트를 검색합니다. FTS5 전문 검색.</p>
             </div>
 
-            <!-- analyze_error -->
+            <!-- plan -->
             <div class="bg-white border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
-                  >analyze_error</code
-                >
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm">plan</code>
+                <span class="text-slate-500 text-sm">실행 계획 생성</span>
               </div>
-              <p class="text-slate-600 text-sm mb-3">
-                ERROR_LOG.md를 분석하여 패턴을 찾습니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># Returns</p>
-                <p>가장 빈번한 에러: TypeError (5회)</p>
-                <p>최근 트렌드: import 관련 에러 증가</p>
+              <p class="text-slate-600 text-sm mb-3">단계별 액션 아이템, 의존성, 검증 포인트가 포함된 상세 실행 계획을 생성합니다.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>path: str - 프로젝트 루트</p>
+                <p>task: str - 수행할 작업</p>
+                <p>goals: list (선택) - 달성 목표</p>
               </div>
             </div>
 
-            <!-- get_error_summary -->
+            <!-- meeting -->
             <div class="bg-white border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
-                  >get_error_summary</code
-                >
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm">meeting</code>
+                <span class="text-slate-500 text-sm">C-Level 회의 시뮬레이션</span>
               </div>
-              <p class="text-slate-600 text-sm mb-3">
-                에러 통계 요약을 반환합니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p>총 에러: 12개 | TypeError: 5 | ImportError: 3 | ...</p>
+              <p class="text-slate-600 text-sm mb-3">8명 AI 매니저 (PM, CTO, QA, CSO, CDO, CMO, CFO, Error)가 어려운 질문을 던집니다. 답을 주지 않고 맹점을 드러냅니다.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>context: str - 회의 주제/상황</p>
+                <p>topic: str (선택) - auth, api, payment, ui 등</p>
+                <p>managers: list (선택) - 특정 매니저 지정</p>
               </div>
             </div>
 
-            <!-- add_prevention_rule -->
+            <!-- ship -->
             <div class="bg-white border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
-                  >add_prevention_rule</code
-                >
+              <div class="flex items-center gap-3 mb-3">
+                <code class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm">ship</code>
+                <span class="text-slate-500 text-sm">원클릭 검증 + 증거</span>
               </div>
-              <p class="text-slate-600 text-sm mb-3">
-                CLAUDE.md에 NEVER/ALWAYS 규칙을 추가합니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># Parameters</p>
-                <p>rule_type: "never" | "always"</p>
-                <p>rule: str - 규칙 내용</p>
+              <p class="text-slate-600 text-sm mb-3">lint &rarr; typecheck &rarr; test &rarr; build 순차 실행. 성공 시 증거 파일 생성.</p>
+              <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                <p class="text-slate-500"># 파라미터</p>
+                <p>path: str - 프로젝트 루트</p>
+                <p>feature: str (선택) - 검증할 기능</p>
+                <p>steps: list (선택) - ["lint", "typecheck", "test", "build"]</p>
+                <p>auto_fix: bool (선택) - 린트 에러 수정</p>
               </div>
-            </div>
-
-            <!-- watch_logs / check_logs -->
-            <div class="bg-white border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
-                  >watch_logs</code
-                >
-                <code
-                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
-                  >check_logs</code
-                >
-              </div>
-              <p class="text-slate-600 text-sm mb-3">
-                로그 감시 설정 및 상태 확인.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># watch_logs</p>
-                <p>patterns: list[str] - 감시할 패턴</p>
-                <p class="text-slate-500 mt-2"># check_logs</p>
-                <p>감시 중: ["error", "warning"] | 마지막 확인: 5분 전</p>
-              </div>
-            </div>
-
-            <!-- setup_auto_recovery -->
-            <div class="bg-white border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-accent/10 text-accent px-3 py-1 rounded font-mono text-sm"
-                  >setup_auto_recovery</code
-                >
-                <span
-                  class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded"
-                  >NEW</span
-                >
-              </div>
-              <p class="text-slate-600 text-sm mb-3">
-                자동 컨텍스트 복구 기능 설정. 컴팩션 후에도 프로젝트 맥락이
-                유지됩니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># Parameters</p>
-                <p>project_path: str (optional) - 프로젝트 경로</p>
-                <p class="text-slate-500 mt-2"># Creates</p>
-                <p>.claude/hooks/PreCompact.ps1 - 상태 저장 훅</p>
-                <p>.claude/hooks/SessionStart.ps1 - 상태 복구 훅</p>
-                <p class="text-slate-500 mt-2"># How it works</p>
-                <p>1. PreCompact: 현재 상태를 session-state.json에 저장</p>
-                <p>2. SessionStart: 저장된 상태를 additionalContext로 주입</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- API Reference: Team -->
-        <section id="api-team" class="mb-16">
-          <h2 class="text-2xl font-bold mb-6">API Reference: Team Tools</h2>
-          <p class="text-slate-600 mb-6">Team 티어 전용 도구 (10개)</p>
-
-          <div class="space-y-4">
-            <!-- team_invite -->
-            <div class="bg-white border border-violet-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-violet-100 text-violet-700 px-3 py-1 rounded font-mono text-sm"
-                  >team_invite</code
-                >
-              </div>
-              <p class="text-slate-600 text-sm mb-3">
-                이메일로 팀원을 초대합니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p>email: str - 초대할 이메일</p>
-                <p>role: "member" | "admin" (optional)</p>
-              </div>
-            </div>
-
-            <!-- team_members -->
-            <div class="bg-white border border-violet-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-violet-100 text-violet-700 px-3 py-1 rounded font-mono text-sm"
-                  >team_members</code
-                >
-              </div>
-              <p class="text-slate-600 text-sm mb-3">
-                팀원 목록을 조회합니다. (최대 10명)
-              </p>
-            </div>
-
-            <!-- team_remove -->
-            <div class="bg-white border border-violet-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-violet-100 text-violet-700 px-3 py-1 rounded font-mono text-sm"
-                  >team_remove</code
-                >
-              </div>
-              <p class="text-slate-600 text-sm mb-3">
-                팀원을 제거합니다. (오너 전용)
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p>email: str - 제거할 멤버 이메일</p>
-              </div>
-            </div>
-
-            <!-- team_settings -->
-            <div class="bg-white border border-violet-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-violet-100 text-violet-700 px-3 py-1 rounded font-mono text-sm"
-                  >team_settings</code
-                >
-              </div>
-              <p class="text-slate-600 text-sm mb-3">
-                C-Level 역할 설정을 조회합니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p>CTO: ON | CDO: ON | CPO: ON | CFO: ON | CMO: ON</p>
-              </div>
-            </div>
-
-            <!-- team_toggle_role -->
-            <div class="bg-white border border-violet-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-violet-100 text-violet-700 px-3 py-1 rounded font-mono text-sm"
-                  >team_toggle_role</code
-                >
-              </div>
-              <p class="text-slate-600 text-sm mb-3">
-                C-Level 역할을 ON/OFF 합니다.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p>role: "CTO" | "CDO" | "CPO" | "CFO" | "CMO"</p>
-              </div>
-            </div>
-
-            <!-- sync_team_errors -->
-            <div class="bg-white border border-violet-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-violet-100 text-violet-700 px-3 py-1 rounded font-mono text-sm"
-                  >sync_team_errors</code
-                >
-              </div>
-              <p class="text-slate-600 text-sm mb-3">
-                로컬 에러 패턴을 팀에 공유합니다.
-              </p>
-            </div>
-
-            <!-- get_team_rules / apply_team_rules -->
-            <div class="bg-white border border-violet-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-violet-100 text-violet-700 px-3 py-1 rounded font-mono text-sm"
-                  >get_team_rules</code
-                >
-                <code
-                  class="bg-violet-100 text-violet-700 px-3 py-1 rounded font-mono text-sm"
-                  >apply_team_rules</code
-                >
-              </div>
-              <p class="text-slate-600 text-sm mb-3">
-                팀 공유 NEVER/ALWAYS 규칙 조회 및 로컬 적용.
-              </p>
-            </div>
-
-            <!-- sync_project_context / get_project_context -->
-            <div class="bg-white border border-violet-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <code
-                  class="bg-violet-100 text-violet-700 px-3 py-1 rounded font-mono text-sm"
-                  >sync_project_context</code
-                >
-                <code
-                  class="bg-violet-100 text-violet-700 px-3 py-1 rounded font-mono text-sm"
-                  >get_project_context</code
-                >
-              </div>
-              <p class="text-slate-600 text-sm mb-3">
-                프로젝트 컨텍스트 (PRD, 파일 구조)를 팀에 업로드/조회.
-              </p>
-              <div
-                class="code-block rounded-lg p-3 font-mono text-xs text-slate-300"
-              >
-                <p class="text-slate-500"># sync_project_context</p>
-                <p>project_path: str (optional)</p>
-                <p class="text-slate-500 mt-2"># get_project_context</p>
-                <p>project_id: str - 조회할 프로젝트 ID</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- API Reference: Shovel -->
-        <section id="api-shovel" class="mb-16">
-          <h2 class="text-2xl font-bold mb-6">
-            API Reference: Shovel Commands
-          </h2>
-          <p class="text-slate-600 mb-6">
-            install_shovel로 설치되는 24개 슬래시 커맨드
-          </p>
-
-          <div class="grid md:grid-cols-2 gap-4">
-            <div
-              class="bg-slate-900 text-slate-300 rounded-xl p-4 font-mono text-sm"
-            >
-              <p class="text-accent mb-2"># Core Workflow</p>
-              <p>/start - 프로젝트 온보딩</p>
-              <p>/plan - 계획 수립</p>
-              <p>/implement - 구현 실행</p>
-              <p>/gate - Gate 검증</p>
-              <p>/verify - 검증 (Shovel + Boris)</p>
-              <p>/commit - 커밋 (Gate PASS 필수)</p>
-            </div>
-            <div
-              class="bg-slate-900 text-slate-300 rounded-xl p-4 font-mono text-sm"
-            >
-              <p class="text-accent mb-2"># Quality Checks</p>
-              <p>/lint - ESLint 검사</p>
-              <p>/typecheck - TypeScript 검사</p>
-              <p>/test - 테스트 실행</p>
-              <p>/build - 프로덕션 빌드</p>
-              <p>/review - 코드 리뷰</p>
-              <p>/ssot-check - SSOT 검사</p>
-            </div>
-            <div
-              class="bg-slate-900 text-slate-300 rounded-xl p-4 font-mono text-sm"
-            >
-              <p class="text-accent mb-2"># Error Management</p>
-              <p>/error-log - 에러 학습</p>
-              <p>/learn-error - 에러 학습 자동화</p>
-              <p>/deep-debug - 근본 원인 분석</p>
-            </div>
-            <div
-              class="bg-slate-900 text-slate-300 rounded-xl p-4 font-mono text-sm"
-            >
-              <p class="text-accent mb-2"># Advanced</p>
-              <p>/sync - 프로젝트 동기화</p>
-              <p>/interview - 스펙 인터뷰</p>
-              <p>/design - UI 탈피 가이드</p>
-              <p>/pm - PM 모드 활성화</p>
-              <p>/verify-server - 서버 정밀 검증</p>
-            </div>
-            <div
-              class="bg-slate-900 text-slate-300 rounded-xl p-4 font-mono text-sm"
-            >
-              <p class="text-accent mb-2"># Completion</p>
-              <p>/step-done - Step 완료 시</p>
-              <p>/handoff - 의도 기록</p>
-              <p>/check-complete - 미연결 검사</p>
             </div>
           </div>
         </section>
 
         <!-- Security -->
         <section id="security" class="mb-16">
-          <h2 class="text-2xl font-bold mb-6">Security Model</h2>
+          <h2 class="text-2xl font-bold mb-6">보안 모델</h2>
 
-          <!-- 요약 3줄 -->
-          <div
-            class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6"
-          >
+          <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6">
             <ul class="text-emerald-800 text-sm space-y-1">
-              <li>
-                <strong>1. 기본은 로컬 실행</strong> - 모든 문서 검사/게이트
-                검증은 로컬에서 수행
-              </li>
-              <li>
-                <strong>2. 라이선스/팀 기능만 서버 통신</strong> - 코드/문서는
-                서버로 전송되지 않음
-              </li>
-              <li>
-                <strong>3. 전송 데이터는 아래 표 참고</strong> - 최소한의
-                메타데이터만 전송
-              </li>
+              <li><strong>1. 로컬 실행</strong> - 모든 문서 검사와 게이트가 로컬에서 실행</li>
+              <li><strong>2. 라이선스만</strong> - 라이선스 검증만 서버 통신</li>
+              <li><strong>3. 코드 업로드 없음</strong> - 코드와 문서가 절대 외부로 전송되지 않음</li>
             </ul>
           </div>
 
           <div class="space-y-6">
             <div class="bg-white border border-slate-200 rounded-xl p-6">
-              <h3 class="font-semibold mb-4">Data Privacy</h3>
+              <h3 class="font-semibold mb-4">데이터 프라이버시</h3>
               <ul class="space-y-2 text-sm text-slate-600">
                 <li class="flex items-start gap-2">
                   <span class="text-emerald-500 mt-0.5">&#10003;</span>
-                  <span
-                    ><strong>로컬 실행</strong>: 모든 문서 검사는 로컬에서
-                    수행됩니다. 코드/문서가 서버로 전송되지 않습니다.</span
-                  >
+                  <span><strong>로컬 실행</strong>: 모든 검사가 사용자 머신에서 실행됩니다. 코드나 문서가 서버로 전송되지 않습니다.</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <span class="text-emerald-500 mt-0.5">&#10003;</span>
-                  <span
-                    ><strong>라이선스 검증만</strong>: 서버와 통신하는 것은
-                    라이선스 키 검증뿐입니다.</span
-                  >
+                  <span><strong>라이선스만</strong>: 서버 통신은 라이선스 키 검증에 한정됩니다.</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <span class="text-emerald-500 mt-0.5">&#10003;</span>
-                  <span
-                    ><strong>Team 컨텍스트</strong>: sync_project_context 사용
-                    시에만 PRD 요약, 파일 구조가 서버에 저장됩니다.</span
-                  >
+                  <span><strong>활성화 후 오프라인</strong>: Pro 라이선스 활성화에 인터넷이 한 번만 필요합니다. 이후 완전 오프라인 동작.</span>
                 </li>
               </ul>
             </div>
@@ -1838,18 +872,6 @@
                       <td class="py-2 px-3">라이선스 검증</td>
                       <td class="py-2 px-3">license_key, machine_id</td>
                     </tr>
-                    <tr class="border-b border-slate-100">
-                      <td class="py-2 px-3 font-mono text-xs">/api/team/*</td>
-                      <td class="py-2 px-3">팀 관리</td>
-                      <td class="py-2 px-3">license_key, email</td>
-                    </tr>
-                    <tr class="border-b border-slate-100">
-                      <td class="py-2 px-3 font-mono text-xs">
-                        /api/context/*
-                      </td>
-                      <td class="py-2 px-3">팀 컨텍스트</td>
-                      <td class="py-2 px-3">PRD 요약, 파일 목록</td>
-                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -1859,336 +881,222 @@
 
         <!-- Licensing -->
         <section id="licensing" class="mb-16">
-          <h2 class="text-2xl font-bold mb-6">Licensing</h2>
+          <h2 class="text-2xl font-bold mb-6">라이선스</h2>
 
           <div class="space-y-6">
-            <!-- activate_license -->
             <div class="bg-white border border-slate-200 rounded-xl p-6">
-              <h3 class="font-semibold mb-4 flex items-center gap-2">
-                <code class="bg-accent/10 text-accent px-2 py-1 rounded text-sm"
-                  >activate_license</code
-                >
-                라이선스 활성화
-              </h3>
-              <p class="text-slate-600 mb-4">
-                Polar.sh에서 구매한 라이선스 키를 활성화합니다.
+              <h3 class="font-semibold mb-4">Free vs Pro</h3>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="border-b border-slate-200">
+                      <th class="text-left py-2 px-3"></th>
+                      <th class="text-left py-2 px-3">Free</th>
+                      <th class="text-left py-2 px-3">Pro</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-slate-600">
+                    <tr class="border-b border-slate-100">
+                      <td class="py-2 px-3 font-medium">가격</td>
+                      <td class="py-2 px-3">$0 영원히</td>
+                      <td class="py-2 px-3">$7.99/월 또는 $23.99/년</td>
+                    </tr>
+                    <tr class="border-b border-slate-100">
+                      <td class="py-2 px-3 font-medium">도구</td>
+                      <td class="py-2 px-3">10개</td>
+                      <td class="py-2 px-3">10 + 10 = 20개</td>
+                    </tr>
+                    <tr class="border-b border-slate-100">
+                      <td class="py-2 px-3 font-medium">에러 메모리</td>
+                      <td class="py-2 px-3">기록 + 체크</td>
+                      <td class="py-2 px-3">+ 학습 + 검색 + 크로스 프로젝트</td>
+                    </tr>
+                    <tr class="border-b border-slate-100">
+                      <td class="py-2 px-3 font-medium">매니저 리뷰</td>
+                      <td class="py-2 px-3">Quick Perspectives</td>
+                      <td class="py-2 px-3">+ 전체 회의 (8명 매니저)</td>
+                    </tr>
+                    <tr>
+                      <td class="py-2 px-3 font-medium">체험</td>
+                      <td class="py-2 px-3">-</td>
+                      <td class="py-2 px-3">7일 무료, 카드 불필요</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <h3 class="font-semibold mb-4">활성화 흐름</h3>
+              <div class="code-block rounded-lg p-4 font-mono text-sm text-slate-300 space-y-1">
+                <p>1. polar.sh/clouvel에서 구매</p>
+                <p class="text-slate-500">&darr;</p>
+                <p>2. Claude Code에서: <span class="text-accent">activate_license YOUR_KEY</span></p>
+                <p class="text-slate-500">&darr;</p>
+                <p>3. 서버가 Polar.sh API로 검증</p>
+                <p class="text-slate-500">&darr;</p>
+                <p>4. 라이선스 로컬 캐시 (~/.clouvel-license)</p>
+                <p class="text-slate-500">&darr;</p>
+                <p>5. Pro 도구 10개 해제. 오프라인 동작.</p>
+              </div>
+            </div>
+
+            <div class="bg-accent/5 border border-accent/20 rounded-xl p-6">
+              <h3 class="font-semibold mb-3">무료 체험</h3>
+              <p class="text-slate-600 text-sm mb-3">
+                모든 20개 도구를 7일간 무료 체험. 카드 불필요.
               </p>
               <div class="code-block rounded-lg p-4 font-mono text-sm">
-                <p class="text-slate-500"># 입력값</p>
-                <p class="text-slate-300">
-                  license_key: "CLOUVEL-XXXX-XXXX-XXXX"
-                </p>
-                <p class="text-slate-500 mt-3"># 반환</p>
-                <p class="text-emerald-400">
-                  ✓ 라이선스 활성화됨 (Personal, 영구)
-                </p>
-              </div>
-            </div>
-
-            <!-- check_license -->
-            <div class="bg-white border border-slate-200 rounded-xl p-6">
-              <h3 class="font-semibold mb-4 flex items-center gap-2">
-                <code class="bg-accent/10 text-accent px-2 py-1 rounded text-sm"
-                  >check_license</code
-                >
-                라이선스 상태 확인
-              </h3>
-              <p class="text-slate-600 mb-4">
-                현재 라이선스 상태와 잠금 기간을 확인합니다.
-              </p>
-              <div class="code-block rounded-lg p-4 font-mono text-sm">
-                <p class="text-slate-300">
-                  티어: Team | 인원: 10명 | 프리미엄 잠금: 7일 남음
-                </p>
-              </div>
-            </div>
-
-            <!-- Validation Flow -->
-            <div class="bg-white border border-slate-200 rounded-xl p-6">
-              <h3 class="font-semibold mb-4">검증 흐름</h3>
-              <div
-                class="code-block rounded-lg p-4 font-mono text-sm text-slate-300 space-y-1"
-              >
-                <p>1. activate_license("CLOUVEL-XXXX-XXXX")</p>
-                <p class="text-slate-500">↓</p>
-                <p>2. POST /api/validate {key, machine_id}</p>
-                <p class="text-slate-500">↓</p>
-                <p>3. Server: Polar.sh API 검증</p>
-                <p class="text-slate-500">↓</p>
-                <p>4. Response: {tier, seats, features}</p>
-                <p class="text-slate-500">↓</p>
-                <p>5. Save to ~/.clouvel-license (로컬 캐시)</p>
-              </div>
-            </div>
-
-            <!-- 7일 잠금 정책 -->
-            <div class="bg-amber-50 border border-amber-200 rounded-xl p-6">
-              <h3 class="font-semibold text-amber-800 mb-3">
-                7일 프리미엄 잠금 정책
-              </h3>
-              <div class="text-amber-700 text-sm space-y-3">
-                <p>
-                  <strong>왜?</strong> 결제 사기 방지 및 정상 사용자 보호를 위해
-                  최초 7일간 일부 기능이 잠깁니다.
-                </p>
-                <p>
-                  <strong>무엇이?</strong> install_shovel, sync_commands, 에러
-                  관리 도구 (log_error, analyze_error 등)
-                </p>
-                <p>
-                  <strong>언제 풀림?</strong> 라이선스 활성화 후 7일 경과 시
-                  자동 해제. check_license로 남은 기간 확인 가능.
-                </p>
-                <p>
-                  <strong>사용 가능:</strong> watch_logs, check_logs는 즉시 사용
-                  가능합니다.
-                </p>
+                <p class="text-slate-500"># Claude Code에서</p>
+                <p class="text-accent">license_status action="trial"</p>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- Deprecation Notice (v1.9) -->
-        <section id="deprecation" class="mb-16">
-          <h2 class="text-2xl font-bold mb-6">지원 종료 안내 (v1.9)</h2>
+        <!-- Troubleshooting -->
+        <section id="troubleshooting" class="mb-16">
+          <h2 class="text-2xl font-bold mb-6">문제 해결</h2>
+          <p class="text-slate-600 mb-8">자주 발생하는 문제와 해결 방법입니다.</p>
 
-          <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-6">
-            <div class="flex items-center gap-3 mb-4">
-              <span class="bg-amber-500 text-white text-xs font-semibold px-2 py-1 rounded">WARNING</span>
-              <span class="font-semibold text-amber-800">v1.9 도구 통합</span>
+          <div class="space-y-6">
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <h3 class="font-semibold mb-3 flex items-center gap-2">
+                <span class="text-red-500">&bull;</span>
+                <code class="text-sm">clouvel: command not found</code>
+              </h3>
+              <p class="text-slate-600 text-sm mb-3"><code>pip install</code> 후 <code>clouvel</code> 명령어가 PATH에 없는 경우입니다.</p>
+              <div class="code-block rounded-lg p-4 font-mono text-sm text-slate-300 space-y-1">
+                <p class="text-slate-500"># Windows - Python 모듈 구문 사용</p>
+                <p>py -m clouvel install</p>
+                <p class="text-slate-500 mt-3"># Mac/Linux - python3 사용</p>
+                <p>python3 -m clouvel install</p>
+                <p class="text-slate-500 mt-3"># 또는 pipx로 설치 (자동으로 PATH에 추가)</p>
+                <p>pipx install clouvel</p>
+              </div>
             </div>
-            <p class="text-amber-700 text-sm mb-4">
-              v1.9에서 52개 도구가 12개 표준 도구(옵션 포함)로 통합됩니다.
-              지원 종료된 도구는 경고와 함께 동작하며, v2.0에서 제거됩니다.
-            </p>
+
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <h3 class="font-semibold mb-3 flex items-center gap-2">
+                <span class="text-red-500">&bull;</span>
+                <code class="text-sm">claude mcp add clouvel</code> 실패
+              </h3>
+              <p class="text-slate-600 text-sm mb-3">Claude Code가 Clouvel 실행 파일을 찾지 못하는 경우입니다.</p>
+              <div class="code-block rounded-lg p-4 font-mono text-sm text-slate-300 space-y-1">
+                <p class="text-slate-500"># 1. clouvel 설치 위치 확인</p>
+                <p>pip show clouvel</p>
+                <p class="text-slate-500 mt-3"># 2. 전체 경로로 등록</p>
+                <p>claude mcp add clouvel -- py -m clouvel</p>
+                <p class="text-slate-500 mt-3"># 3. 등록 확인</p>
+                <p>claude mcp list</p>
+              </div>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <h3 class="font-semibold mb-3 flex items-center gap-2">
+                <span class="text-red-500">&bull;</span>
+                Python 버전 오류
+              </h3>
+              <p class="text-slate-600 text-sm mb-3">Clouvel은 Python 3.10 이상이 필요합니다.</p>
+              <div class="code-block rounded-lg p-4 font-mono text-sm text-slate-300 space-y-1">
+                <p class="text-slate-500"># Python 버전 확인</p>
+                <p>python --version</p>
+                <p class="text-slate-500 mt-3"># 3.10 미만이면 Python 업그레이드 필요</p>
+              </div>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <h3 class="font-semibold mb-3 flex items-center gap-2">
+                <span class="text-red-500">&bull;</span>
+                Pro 라이선스 활성화 실패
+              </h3>
+              <p class="text-slate-600 text-sm mb-3">라이선스 검증 서버에 연결할 수 없거나 키가 유효하지 않은 경우입니다.</p>
+              <div class="code-block rounded-lg p-4 font-mono text-sm text-slate-300 space-y-1">
+                <p class="text-slate-500"># 1. 인터넷 연결 확인</p>
+                <p class="text-slate-500"># 2. 라이선스 키 확인 (Polar.sh 이메일)</p>
+                <p class="text-slate-500"># 3. 다시 시도</p>
+                <p>activate_license YOUR_KEY</p>
+                <p class="text-slate-500 mt-3"># 계속 실패? GitHub Issue에 키와 함께 문의</p>
+              </div>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <h3 class="font-semibold mb-3 flex items-center gap-2">
+                <span class="text-red-500">&bull;</span>
+                Windows 경로 문제
+              </h3>
+              <p class="text-slate-600 text-sm mb-3">Windows 경로의 백슬래시가 문제를 일으킬 수 있습니다.</p>
+              <div class="code-block rounded-lg p-4 font-mono text-sm text-slate-300 space-y-1">
+                <p class="text-slate-500"># 경로 인자에 슬래시 사용</p>
+                <p>can_code path="D:/myproject/docs"</p>
+                <p class="text-slate-500 mt-3"># 또는 이스케이프 사용</p>
+                <p>can_code path="D:\\myproject\\docs"</p>
+              </div>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-xl p-6">
+              <h3 class="font-semibold mb-3 flex items-center gap-2">
+                <span class="text-red-500">&bull;</span>
+                <code class="text-sm">can_code</code>가 항상 BLOCK을 반환
+              </h3>
+              <p class="text-slate-600 text-sm mb-3">예상 위치에 PRD가 없는 경우입니다.</p>
+              <div class="code-block rounded-lg p-4 font-mono text-sm text-slate-300 space-y-1">
+                <p class="text-slate-500"># 1. docs 폴더와 PRD 생성</p>
+                <p>start path="/your/project" init=true</p>
+                <p class="text-slate-500 mt-3"># 2. 또는 대화에서 PRD 저장</p>
+                <p>save_prd path="/your/project" content="# My PRD\n..."</p>
+                <p class="text-slate-500 mt-3"># 3. path가 docs/가 아닌 프로젝트 루트를 가리키는지 확인</p>
+              </div>
+            </div>
           </div>
 
-          <div class="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 class="font-semibold mb-4">마이그레이션 가이드</h3>
-            <div class="overflow-x-auto">
-              <table class="w-full text-sm">
-                <thead>
-                  <tr class="border-b border-slate-200">
-                    <th class="text-left py-2 px-3 text-slate-600">지원 종료 도구</th>
-                    <th class="text-left py-2 px-3 text-slate-600">새 사용법</th>
-                  </tr>
-                </thead>
-                <tbody class="font-mono text-xs">
-                  <tr class="border-b border-slate-100">
-                    <td class="py-2 px-3 text-red-500 line-through">get_prd_template</td>
-                    <td class="py-2 px-3 text-emerald-600">start --template=web-app</td>
-                  </tr>
-                  <tr class="border-b border-slate-100">
-                    <td class="py-2 px-3 text-red-500 line-through">get_prd_guide</td>
-                    <td class="py-2 px-3 text-emerald-600">start --guide</td>
-                  </tr>
-                  <tr class="border-b border-slate-100">
-                    <td class="py-2 px-3 text-red-500 line-through">init_docs</td>
-                    <td class="py-2 px-3 text-emerald-600">start --init</td>
-                  </tr>
-                  <tr class="border-b border-slate-100">
-                    <td class="py-2 px-3 text-red-500 line-through">list_templates</td>
-                    <td class="py-2 px-3 text-emerald-600">start --template (사용 가능 목록 표시)</td>
-                  </tr>
-                  <tr class="border-b border-slate-100">
-                    <td class="py-2 px-3 text-red-500 line-through">init_rules</td>
-                    <td class="py-2 px-3 text-emerald-600">setup_cli --rules</td>
-                  </tr>
-                  <tr class="border-b border-slate-100">
-                    <td class="py-2 px-3 text-red-500 line-through">hook_design</td>
-                    <td class="py-2 px-3 text-emerald-600">setup_cli --hook=design</td>
-                  </tr>
-                  <tr class="border-b border-slate-100">
-                    <td class="py-2 px-3 text-red-500 line-through">hook_verify</td>
-                    <td class="py-2 px-3 text-emerald-600">setup_cli --hook=verify</td>
-                  </tr>
-                  <tr class="border-b border-slate-100">
-                    <td class="py-2 px-3 text-red-500 line-through">quick_ship</td>
-                    <td class="py-2 px-3 text-emerald-600">ship --quick</td>
-                  </tr>
-                  <tr class="border-b border-slate-100">
-                    <td class="py-2 px-3 text-red-500 line-through">full_ship</td>
-                    <td class="py-2 px-3 text-emerald-600">ship --full</td>
-                  </tr>
-                  <tr class="border-b border-slate-100">
-                    <td class="py-2 px-3 text-red-500 line-through">init_planning</td>
-                    <td class="py-2 px-3 text-emerald-600">plan --init</td>
-                  </tr>
-                  <tr class="border-b border-slate-100">
-                    <td class="py-2 px-3 text-red-500 line-through">refresh_goals</td>
-                    <td class="py-2 px-3 text-emerald-600">plan --refresh</td>
-                  </tr>
-                  <tr>
-                    <td class="py-2 px-3 text-red-500 line-through">update_progress</td>
-                    <td class="py-2 px-3 text-emerald-600">plan --update</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="mt-8 bg-accent/5 border border-accent/20 rounded-xl p-4">
+            <p class="text-slate-700 text-sm">
+              해결되지 않나요?
+              <a href="https://github.com/Whitening-Sinabro/clouvel/issues" target="_blank" class="text-accent hover:underline">GitHub Issues</a>
+              또는 <a href="https://clouvels.com/#contact" class="text-accent hover:underline">문의 양식</a>을 이용하세요. 보통 24~48시간 내에 응답합니다.
+            </p>
           </div>
         </section>
 
         <!-- Changelog -->
         <section id="changelog" class="mb-16">
-          <h2 class="text-2xl font-bold mb-6">Changelog</h2>
+          <h2 class="text-2xl font-bold mb-6">변경 로그</h2>
 
-          <!-- Free Version -->
-          <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-            <span
-              class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded"
-              >FREE</span
-            >
-            clouvel
-          </h3>
-          <div class="space-y-6 mb-10">
-            <div class="border-l-4 border-emerald-500 pl-6">
-              <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v1.9.0</span>
-                <span class="text-slate-500 text-sm">2026-01-26</span>
-                <span
-                  class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded"
-                  >Latest</span
-                >
-              </div>
-              <ul class="text-sm text-slate-600 space-y-1">
-                <li>
-                  - <strong>도구 통합</strong>: 52개 도구 → 12개 표준 도구(옵션 포함)
-                </li>
-                <li>
-                  - <strong>지원 종료 경고</strong>: 기존 도구 경고 표시, v2.0까지 동작
-                </li>
-                <li>
-                  - <strong>개발자 모드 수정</strong>: 동적 회의 기능 개발자 모드에서 동작
-                </li>
-              </ul>
-            </div>
-            <div class="border-l-4 border-slate-300 pl-6">
-              <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v1.8.0</span>
-                <span class="text-slate-500 text-sm">2026-01-25</span>
-              </div>
-              <ul class="text-sm text-slate-600 space-y-1">
-                <li>
-                  - <strong>Manager Worker API</strong>: Manager가 로컬 모듈 대신 Worker API 사용
-                </li>
-                <li>
-                  - <strong>아키텍처 문서</strong>: Manager 아키텍처 문서 추가
-                </li>
-              </ul>
-            </div>
-            <div class="border-l-4 border-slate-300 pl-6">
-              <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v1.3.4</span>
-                <span class="text-slate-500 text-sm">2026-01-22</span>
-              </div>
-              <ul class="text-sm text-slate-600 space-y-1">
-                <li>
-                  - <strong>템플릿 8종</strong>: web-app, api, cli, chrome-ext,
-                  discord-bot, landing-page, saas, generic (16개 파일)
-                </li>
-                <li>
-                  - <strong>start 개선</strong>: 프로젝트 타입 자동 감지 +
-                  대화형 PRD 가이드
-                </li>
-                <li>- <strong>save_prd</strong>: PRD 저장 도구 추가</li>
-                <li>
-                  - <strong>버전 체크</strong>: PyPI 최신 버전 알림 (24시간
-                  캐싱)
-                </li>
-              </ul>
-            </div>
-            <div class="border-l-4 border-slate-300 pl-6">
-              <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v0.6.1</span>
-                <span class="text-slate-500 text-sm">2026-01-18</span>
-              </div>
-              <ul class="text-sm text-slate-600 space-y-1">
-                <li>
-                  - <strong>clouvel setup</strong>: 원커맨드 설정 (글로벌 규칙 +
-                  MCP 자동 등록)
-                </li>
-                <li>
-                  - <strong>3단계 품질 게이트</strong>: BLOCK / WARN / PASS
-                </li>
-                <li>- can_code 자동 호출 메커니즘 (B0)</li>
-                <li>- 출력 간소화 (한 줄 요약)</li>
-              </ul>
-            </div>
-            <div class="border-l-4 border-slate-300 pl-6">
-              <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v0.5.0</span>
-                <span class="text-slate-500 text-sm">2026-01-17</span>
-              </div>
-              <ul class="text-sm text-slate-600 space-y-1">
-                <li>- 초기 릴리즈</li>
-                <li>- can_code, get_progress, get_goal 도구</li>
-                <li>- PRD 기반 코딩 게이트</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Pro Version -->
-          <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-            <span class="bg-accent text-white text-xs px-2 py-1 rounded"
-              >PRO</span
-            >
-            clouvel
-          </h3>
           <div class="space-y-6">
             <div class="border-l-4 border-accent pl-6">
               <div class="flex items-center gap-3 mb-2">
+                <span class="font-mono font-bold">v5.0.0</span>
+                <span class="text-slate-500 text-sm">2026-02</span>
+                <span class="bg-accent text-white text-xs px-2 py-0.5 rounded">최신</span>
+              </div>
+              <ul class="text-sm text-slate-600 space-y-1">
+                <li>- <strong>리부트</strong>: Free 10개 + Pro 10개 깔끔한 아키텍처</li>
+                <li>- <strong>가격 단순화</strong>: $7.99/월 또는 $23.99/년 (얼리 어답터 가격)</li>
+                <li>- <strong>티어 게이팅</strong>: 방어적 심층 (list_tools + call_tool)</li>
+                <li>- <strong>고스트 데이터</strong>: Free 사용자에게 에러 도구 Pro 티저</li>
+                <li>- <strong>CTA 통일</strong>: 모든 메시지에 단일 체험 CTA</li>
+              </ul>
+            </div>
+            <div class="border-l-4 border-slate-300 pl-6">
+              <div class="flex items-center gap-3 mb-2">
                 <span class="font-mono font-bold">v1.9.0</span>
                 <span class="text-slate-500 text-sm">2026-01-26</span>
-                <span
-                  class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded"
-                  >Latest</span
-                >
               </div>
               <ul class="text-sm text-slate-600 space-y-1">
-                <li>
-                  - <strong>도구 통합</strong>: 52개 도구 → 12개 표준 도구(옵션 포함)
-                </li>
-                <li>
-                  - <strong>지원 종료 경고</strong>: 기존 도구 경고 표시, v2.0까지 동작
-                </li>
-                <li>
-                  - <strong>개발자 모드 수정</strong>: 동적 회의 기능 개발자 모드에서 동작
-                </li>
+                <li>- 도구 통합: 52개 &rarr; 12개 표준 도구</li>
+                <li>- 구 도구 지원 종료 경고</li>
               </ul>
             </div>
             <div class="border-l-4 border-slate-300 pl-6">
               <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v1.8.0</span>
-                <span class="text-slate-500 text-sm">2026-01-25</span>
-              </div>
-              <ul class="text-sm text-slate-600 space-y-1">
-                <li>
-                  - <strong>Manager Worker API</strong>: Manager가 로컬 모듈 대신 Worker API 사용
-                </li>
-                <li>
-                  - <strong>아키텍처 문서</strong>: Manager 아키텍처 문서 추가
-                </li>
-              </ul>
-            </div>
-            <div class="border-l-4 border-slate-300 pl-6">
-              <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v1.3.4</span>
+                <span class="font-mono font-bold">v1.4.0</span>
                 <span class="text-slate-500 text-sm">2026-01-22</span>
               </div>
               <ul class="text-sm text-slate-600 space-y-1">
-                <li>
-                  - <strong>템플릿 8종</strong>: web-app, api, cli, chrome-ext,
-                  discord-bot, landing-page, saas, generic
-                </li>
-                <li>
-                  - <strong>start 개선</strong>: 프로젝트 타입 자동 감지 +
-                  대화형 PRD 가이드 (5-6개 질문)
-                </li>
-                <li>- <strong>save_prd</strong>: PRD 저장 도구 추가</li>
-                <li>
-                  - <strong>버전 체크</strong>: PyPI 최신 버전 알림 (24시간
-                  캐싱)
-                </li>
+                <li>- Knowledge Base: record_decision, search_knowledge</li>
+                <li>- Error Learning: 회귀 메모리, 패턴 감지</li>
+                <li>- Quick Perspectives: 10초 맹점 체크</li>
               </ul>
             </div>
             <div class="border-l-4 border-slate-300 pl-6">
@@ -2197,155 +1105,21 @@
                 <span class="text-slate-500 text-sm">2026-01-21</span>
               </div>
               <ul class="text-sm text-slate-600 space-y-1">
-                <li>
-                  - <strong>start</strong>: 프로젝트 온보딩 + PRD 자동 생성
-                  (Free)
-                </li>
-                <li>
-                  - <strong>manager</strong>: 8명 C-Level 매니저 협업 피드백
-                  (Pro)
-                </li>
-                <li>
-                  - <strong>ship</strong>: 원클릭 테스트→검증→증거 생성 (Pro)
-                </li>
-                <li>- 컨텍스트 기반 매니저 자동 그룹핑</li>
-                <li>- PM/CTO/QA/CDO/CMO/CFO/CSO/Error 8명 매니저</li>
+                <li>- 8명 C-Level 매니저 회의 시뮬레이션</li>
+                <li>- Ship: 원클릭 검증 + 증거</li>
+                <li>- 프로젝트 온보딩 (start 도구)</li>
               </ul>
             </div>
             <div class="border-l-4 border-slate-300 pl-6">
               <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v1.1.0</span>
-                <span class="text-slate-500 text-sm">2026-01-19</span>
-              </div>
-              <ul class="text-sm text-slate-600 space-y-1">
-                <li>- <strong>clouvel install</strong>: MCP 설치 간소화</li>
-                <li>- 보안 hook 추가 (민감 파일 커밋 차단)</li>
-                <li>- pre-commit hook 자동 설치</li>
-              </ul>
-            </div>
-            <div class="border-l-4 border-slate-300 pl-6">
-              <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v1.4.2</span>
-                <span class="text-slate-500 text-sm">2026-01-18</span>
-              </div>
-              <ul class="text-sm text-slate-600 space-y-1">
-                <li>- DEV_MODE 경로 수정</li>
-                <li>- 모든 20개 MCP 도구 테스트 완료</li>
-                <li>- 랜딩 페이지 인터랙티브 모달 추가</li>
-              </ul>
-            </div>
-            <div class="border-l-4 border-slate-300 pl-6">
-              <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v1.4.0</span>
+                <span class="font-mono font-bold">v0.5.0</span>
                 <span class="text-slate-500 text-sm">2026-01-17</span>
               </div>
               <ul class="text-sm text-slate-600 space-y-1">
-                <li>- Team API 구현 (F7-F10)</li>
-                <li>- DEV_MODE 로컬 Shovel 직접 복사</li>
-                <li>- C-Level 역할 토글 기능</li>
+                <li>- 최초 릴리즈</li>
+                <li>- can_code 스펙 게이트 (BLOCK / WARN / PASS)</li>
+                <li>- PRD 기반 코딩 게이트</li>
               </ul>
-            </div>
-            <div class="border-l-4 border-slate-300 pl-6">
-              <div class="flex items-center gap-3 mb-2">
-                <span class="font-mono font-bold">v1.3.0</span>
-                <span class="text-slate-500 text-sm">2026-01-15</span>
-              </div>
-              <ul class="text-sm text-slate-600 space-y-1">
-                <li>- 에러 관리 도구 추가</li>
-                <li>- 로그 감시 기능</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <!-- Roadmap -->
-        <section id="roadmap" class="mb-16">
-          <h2 class="text-2xl font-bold mb-6">Roadmap</h2>
-
-          <div class="space-y-4">
-            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-3">
-                <span
-                  class="bg-emerald-500 text-white text-xs font-semibold px-2 py-1 rounded"
-                  >DONE</span
-                >
-                <span class="font-semibold">v1.4 - Knowledge Base + Error Learning</span>
-              </div>
-              <p class="text-slate-600 text-sm">
-                의사결정 기록, 컨텍스트 복구, 에러 패턴 학습
-              </p>
-            </div>
-            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-3">
-                <span
-                  class="bg-emerald-500 text-white text-xs font-semibold px-2 py-1 rounded"
-                  >DONE</span
-                >
-                <span class="font-semibold">v1.6 - Locked Decisions + File Tracking</span>
-              </div>
-              <p class="text-slate-600 text-sm">
-                결정 잠금/해제, 파일 생성 추적
-              </p>
-            </div>
-            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-3">
-                <span
-                  class="bg-emerald-500 text-white text-xs font-semibold px-2 py-1 rounded"
-                  >DONE</span
-                >
-                <span class="font-semibold">v1.7 - Architecture Guard</span>
-              </div>
-              <p class="text-slate-600 text-sm">
-                아키텍처 검증, import 규칙 강제
-              </p>
-            </div>
-            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-3">
-                <span
-                  class="bg-emerald-500 text-white text-xs font-semibold px-2 py-1 rounded"
-                  >DONE</span
-                >
-                <span class="font-semibold">v1.8 - Manager Worker API</span>
-              </div>
-              <p class="text-slate-600 text-sm">
-                Manager가 로컬 모듈 대신 Worker API 사용
-              </p>
-            </div>
-            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-3">
-                <span
-                  class="bg-emerald-500 text-white text-xs font-semibold px-2 py-1 rounded"
-                  >DONE</span
-                >
-                <span class="font-semibold">v1.9 - Tool Consolidation</span>
-              </div>
-              <p class="text-slate-600 text-sm">
-                52개 도구 → 12개 표준 도구(옵션 포함), 지원 종료 경고
-              </p>
-            </div>
-            <div class="bg-accent/10 border border-accent/30 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-3">
-                <span
-                  class="bg-accent text-white text-xs font-semibold px-2 py-1 rounded"
-                  >NEXT</span
-                >
-                <span class="font-semibold">v2.0 - Major Release</span>
-              </div>
-              <p class="text-slate-600 text-sm">
-                지원 종료 도구 제거, 분석 대시보드, 팀 기능
-              </p>
-            </div>
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
-              <div class="flex items-center gap-3 mb-3">
-                <span
-                  class="bg-slate-400 text-white text-xs font-semibold px-2 py-1 rounded"
-                  >PLANNED</span
-                >
-                <span class="font-semibold">v2.1 - Enterprise</span>
-              </div>
-              <p class="text-slate-600 text-sm">
-                SSO 통합, 감사 로그, 온프레미스 배포 옵션
-              </p>
             </div>
           </div>
         </section>
@@ -2368,7 +1142,7 @@
               >PyPI</a
             >
             &middot;
-            <a href="index.html" class="text-accent hover:underline">Home</a>
+            <a href="index-ko.html" class="text-accent hover:underline">Home</a>
           </p>
         </footer>
       </main>

@@ -3,43 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Clouvel - AI Forgets. Clouvel Remembers.</title>
+    <title>Clouvel - Stop Claude Code from breaking your code</title>
     <meta
       name="description"
-      content="Memory layer for AI coding. Decisions persist across sessions. Regression prevention. 8 AI managers catch blind spots."
+      content="Clouvel remembers every error, warns before repeats, and blocks coding without a spec. 10 free tools + 10 Pro tools for Claude Code."
     />
 
     <!-- Open Graph / Social -->
     <meta property="og:type" content="website" />
-    <meta
-      property="og:url"
-      content="https://whitening-sinabro.github.io/clouvel/index-en.html"
-    />
-    <meta property="og:title" content="Clouvel - AI Forgets. Clouvel Remembers." />
-    <meta
-      property="og:description"
-      content="Memory layer for AI coding. Decisions persist across sessions. Regression prevention."
-    />
-    <meta
-      property="og:image"
-      content="https://whitening-sinabro.github.io/clouvel/og-image.png"
-    />
+    <meta property="og:url" content="https://clouvels.com/" />
+    <meta property="og:title" content="Clouvel - Stop Claude Code from breaking your code" />
+    <meta property="og:description" content="Clouvel remembers every error, warns before repeats, and blocks coding without a spec." />
+    <meta property="og:image" content="https://clouvels.com/og-image.png" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta
-      name="twitter:url"
-      content="https://whitening-sinabro.github.io/clouvel/index-en.html"
-    />
-    <meta name="twitter:title" content="Clouvel - AI Forgets. Clouvel Remembers." />
-    <meta
-      name="twitter:description"
-      content="Memory layer for AI coding. Decisions persist across sessions. Regression prevention."
-    />
-    <meta
-      name="twitter:image"
-      content="https://whitening-sinabro.github.io/clouvel/og-image.png"
-    />
+    <meta name="twitter:url" content="https://clouvels.com/" />
+    <meta name="twitter:title" content="Clouvel - Stop Claude Code from breaking your code" />
+    <meta name="twitter:description" content="Clouvel remembers every error, warns before repeats, and blocks coding without a spec." />
+    <meta name="twitter:image" content="https://clouvels.com/og-image.png" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
@@ -64,121 +47,41 @@
       };
     </script>
     <link rel="stylesheet" href="styles.css" />
-    <link
-      rel="stylesheet"
-      href="themes/default.css"
-      id="theme-stylesheet-preload"
-    />
+    <link rel="stylesheet" href="themes/default.css" id="theme-stylesheet-preload" />
   </head>
   <body class="bg-warm-white text-dark-slate font-sans antialiased">
     <!-- Nav -->
-    <nav
-      class="fixed top-0 left-0 right-0 z-50 bg-warm-white/90 backdrop-blur-md border-b border-slate-200/50"
-    >
-      <div
-        class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center"
-      >
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-warm-white/90 backdrop-blur-md border-b border-slate-200/50">
+      <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
         <div class="text-xl font-bold text-dark-slate">Clouvel</div>
         <!-- Desktop Menu -->
         <div class="hidden md:flex items-center gap-6">
-          <a
-            href="#how-it-works"
-            class="text-sm text-slate-600 hover:text-dark-slate transition"
-            >How it works</a
-          >
-          <a
-            href="docs-en.html"
-            class="text-sm text-slate-600 hover:text-dark-slate transition"
-            >Docs</a
-          >
-          <a
-            href="#pricing"
-            class="text-sm text-slate-600 hover:text-dark-slate transition"
-            >Pricing</a
-          >
-          <a
-            href="#faq"
-            class="text-sm text-slate-600 hover:text-dark-slate transition"
-            >FAQ</a
-          >
-          <a
-            href="https://github.com/Whitening-Sinabro/clouvel"
-            target="_blank"
-            class="text-sm text-slate-600 hover:text-dark-slate transition"
-            >GitHub</a
-          >
-          <a
-            href="index-ko.html"
-            class="text-sm text-slate-600 hover:text-dark-slate transition"
-            >Korean</a
-          >
-          <a
-            href="#getting-started"
-            class="text-sm bg-accent text-white px-4 py-2 rounded-full hover:bg-accent-dark transition"
-            >Get Started</a
-          >
+          <a href="#how-it-works" class="text-sm text-slate-600 hover:text-dark-slate transition">How it works</a>
+          <a href="#tools" class="text-sm text-slate-600 hover:text-dark-slate transition">Tools</a>
+          <a href="docs-en.html" class="text-sm text-slate-600 hover:text-dark-slate transition">Docs</a>
+          <a href="#pricing" class="text-sm text-slate-600 hover:text-dark-slate transition">Pricing</a>
+          <a href="#faq" class="text-sm text-slate-600 hover:text-dark-slate transition">FAQ</a>
+          <a href="https://github.com/Whitening-Sinabro/clouvel" target="_blank" class="text-sm text-slate-600 hover:text-dark-slate transition">GitHub</a>
+          <a href="index-ko.html" class="text-sm text-slate-600 hover:text-dark-slate transition">Korean</a>
+          <a href="#getting-started" class="text-sm bg-accent text-white px-4 py-2 rounded-full hover:bg-accent-dark transition">Get Started</a>
         </div>
         <!-- Mobile Menu Button -->
-        <button
-          id="mobileMenuBtn"
-          class="md:hidden p-2 text-slate-600 hover:text-dark-slate"
-        >
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
+        <button id="mobileMenuBtn" class="md:hidden p-2 text-slate-600 hover:text-dark-slate">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
       </div>
       <!-- Mobile Menu -->
-      <div
-        id="mobileMenu"
-        class="hidden md:hidden bg-warm-white border-t border-slate-200/50 px-6 py-4 space-y-3"
-      >
-        <a
-          href="#how-it-works"
-          class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
-          >How it works</a
-        >
-        <a
-          href="docs-en.html"
-          class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
-          >Docs</a
-        >
-        <a
-          href="#pricing"
-          class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
-          >Pricing</a
-        >
-        <a
-          href="#faq"
-          class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
-          >FAQ</a
-        >
-        <a
-          href="https://github.com/Whitening-Sinabro/clouvel"
-          target="_blank"
-          class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
-          >GitHub</a
-        >
-        <a
-          href="index.html"
-          class="block text-sm text-slate-600 hover:text-dark-slate transition py-2"
-          >Korean</a
-        >
-        <a
-          href="#getting-started"
-          class="block text-sm bg-accent text-white px-4 py-3 rounded-xl text-center hover:bg-accent-dark transition mt-2"
-          >Get Started</a
-        >
+      <div id="mobileMenu" class="hidden md:hidden bg-warm-white border-t border-slate-200/50 px-6 py-4 space-y-3">
+        <a href="#how-it-works" class="block text-sm text-slate-600 hover:text-dark-slate transition py-2">How it works</a>
+        <a href="#tools" class="block text-sm text-slate-600 hover:text-dark-slate transition py-2">Tools</a>
+        <a href="docs-en.html" class="block text-sm text-slate-600 hover:text-dark-slate transition py-2">Docs</a>
+        <a href="#pricing" class="block text-sm text-slate-600 hover:text-dark-slate transition py-2">Pricing</a>
+        <a href="#faq" class="block text-sm text-slate-600 hover:text-dark-slate transition py-2">FAQ</a>
+        <a href="https://github.com/Whitening-Sinabro/clouvel" target="_blank" class="block text-sm text-slate-600 hover:text-dark-slate transition py-2">GitHub</a>
+        <a href="index-ko.html" class="block text-sm text-slate-600 hover:text-dark-slate transition py-2">Korean</a>
+        <a href="#getting-started" class="block text-sm bg-accent text-white px-4 py-3 rounded-xl text-center hover:bg-accent-dark transition mt-2">Get Started</a>
       </div>
     </nav>
 
@@ -186,112 +89,48 @@
     <section class="pt-32 pb-12 px-6">
       <div class="max-w-4xl mx-auto text-center">
         <div class="flex flex-wrap items-center justify-center gap-3 mb-6">
-          <div
-            class="inline-flex items-center gap-2 bg-accent/10 text-accent text-sm px-4 py-2 rounded-full"
-          >
+          <div class="inline-flex items-center gap-2 bg-accent/10 text-accent text-sm px-4 py-2 rounded-full">
             <span class="w-2 h-2 bg-accent rounded-full animate-pulse"></span>
             MCP Server for Claude Code
           </div>
-          <div
-            class="inline-flex items-center gap-2 bg-orange-500/10 text-orange-600 text-sm px-4 py-2 rounded-full"
-          >
-            <span class="font-semibold">v1.0</span>
-            FREE = Session Memory | PRO = Permanent Memory + Regression Prevention
+          <div class="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-600 text-sm px-4 py-2 rounded-full">
+            <span class="font-semibold">v5.0</span>
+            10 Free tools + 10 Pro tools
           </div>
         </div>
-        <h1
-          class="text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.1] mb-6"
-        >
-          AI forgets.<br />
-          <span class="accent-text">You pay the price.</span>
+        <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.1] mb-6">
+          Stop Claude Code<br />
+          <span class="accent-text">from breaking your code.</span>
         </h1>
         <p class="text-lg md:text-xl text-slate-600 mb-3 leading-relaxed">
-          Clouvel remembers so you don't repeat mistakes.
+          It remembers every error, warns before repeats, and blocks coding without a spec.
         </p>
         <p class="text-base md:text-lg text-slate-500 mb-8">
-          You're building alone. Clouvel makes sure yesterday's decisions survive today.<br/>
-          <strong class="text-dark-slate">Remember + Prevent + Guide = Solo dev with team-level memory.</strong>
+          Claude Code is fast. But it forgets what it broke yesterday and breaks it again today.<br/>
+          <strong class="text-dark-slate">Clouvel remembers.</strong>
         </p>
         <div class="flex flex-wrap gap-3 md:gap-4 justify-center">
           <a
-            href="#pricing"
+            href="#getting-started"
             class="cta-pulse inline-flex items-center gap-2 bg-accent text-white px-6 py-3 md:px-8 md:py-4 rounded-full font-medium hover:bg-accent-dark transition text-base md:text-lg"
           >
-            Get Pro for $1
-            <span class="bg-white/20 text-xs px-2 py-0.5 rounded-full ml-1">FIRST1</span>
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"
-              />
+            Start Free
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
           </a>
           <a
-            href="#demo"
+            href="#how-it-works"
             class="inline-flex items-center gap-2 border-2 border-dark-slate/20 px-6 py-3 md:px-8 md:py-4 rounded-full font-medium hover:border-dark-slate/40 transition text-base md:text-lg"
           >
-            See demo
+            See how it works
           </a>
         </div>
-        <p class="text-center text-orange-600 text-sm mt-4 font-medium">
-          <span class="bg-orange-100 text-orange-700 px-2 py-0.5 rounded font-bold">NEW</span>
-          7-day Full Pro trial (no card required) | Then $1/mo (FIRST1) or $23.99/yr (LAUNCH70) — only <span id="spots-left">47</span> spots left
+        <p class="text-center text-slate-500 text-sm mt-4">
+          Free forever with 10 tools. Try Pro free for 7 days (no card required).
         </p>
       </div>
     </section>
-
-    <!-- 1.5 Launch Week Countdown -->
-    <section id="launch-countdown" class="py-4 px-6 bg-gradient-to-r from-orange-500 to-red-500 text-white">
-      <div class="max-w-4xl mx-auto text-center">
-        <div class="flex flex-wrap items-center justify-center gap-4 text-sm font-medium">
-          <span>Launch Week Offer ends in:</span>
-          <div id="countdown" class="flex gap-2">
-            <div class="bg-white/20 backdrop-blur px-3 py-1 rounded-lg">
-              <span id="cd-days" class="font-bold text-lg">00</span><span class="text-xs ml-0.5">d</span>
-            </div>
-            <div class="bg-white/20 backdrop-blur px-3 py-1 rounded-lg">
-              <span id="cd-hours" class="font-bold text-lg">00</span><span class="text-xs ml-0.5">h</span>
-            </div>
-            <div class="bg-white/20 backdrop-blur px-3 py-1 rounded-lg">
-              <span id="cd-mins" class="font-bold text-lg">00</span><span class="text-xs ml-0.5">m</span>
-            </div>
-            <div class="bg-white/20 backdrop-blur px-3 py-1 rounded-lg">
-              <span id="cd-secs" class="font-bold text-lg">00</span><span class="text-xs ml-0.5">s</span>
-            </div>
-          </div>
-          <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold"><span id="spots-counter">47</span>/50 spots left</span>
-          <a href="#pricing" class="bg-white text-orange-600 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-orange-50 transition">Get $1 First Month</a>
-        </div>
-      </div>
-    </section>
-    <script>
-    (function(){
-      // Launch Week: 2 weeks from Feb 5, 2026
-      var end = new Date('2026-02-19T23:59:59');
-      function update(){
-        var now = new Date();
-        var diff = Math.max(0, end - now);
-        var d = Math.floor(diff/86400000);
-        var h = Math.floor((diff%86400000)/3600000);
-        var m = Math.floor((diff%3600000)/60000);
-        var s = Math.floor((diff%60000)/1000);
-        document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
-        document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
-        document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
-        document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
-        if(diff <= 0) document.getElementById('launch-countdown').style.display='none';
-      }
-      update();
-      setInterval(update, 1000);
-    })();
-    </script>
 
     <!-- 2. Works with -->
     <section class="py-8 px-6 border-t border-b border-slate-200/50 bg-white">
@@ -299,989 +138,362 @@
         <div class="flex flex-wrap items-center justify-center gap-6">
           <span class="text-slate-500 text-sm font-medium">Works with:</span>
           <div class="flex flex-wrap items-center gap-4">
-            <span
-              class="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full text-sm font-medium"
-            >
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                  d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-                />
-              </svg>
-              CLI
+            <span class="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full text-sm font-medium">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              Claude Code CLI
             </span>
-            <span
-              class="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full text-sm font-medium"
-            >
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                  d="M20 3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14H4v-2h7v2zm9-4H4v-2h16v2zm0-4H4V7h16v2z"
-                />
-              </svg>
+            <span class="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full text-sm font-medium">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20 3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14H4v-2h7v2zm9-4H4v-2h16v2zm0-4H4V7h16v2z"/></svg>
               Claude Desktop
             </span>
-            <span
-              class="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full text-sm font-medium"
-            >
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                  d="M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479L1.65 17.94a.999.999 0 0 0 1.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 20.06V3.939a1.5 1.5 0 0 0-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z"
-                />
-              </svg>
+            <span class="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full text-sm font-medium">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479L1.65 17.94a.999.999 0 0 0 1.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 20.06V3.939a1.5 1.5 0 0 0-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z"/></svg>
               VS Code
             </span>
-            <span
-              class="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full text-sm font-medium"
-            >
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                  d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm-1-6h2v2h-2v-2zm0-10h2v8h-2V6z"
-                />
-              </svg>
+            <span class="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full text-sm font-medium">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm-1-6h2v2h-2v-2zm0-10h2v8h-2V6z"/></svg>
               Cursor
             </span>
           </div>
         </div>
-        <p class="text-center text-slate-500 text-sm mt-4">
-          Install once, remember everywhere
-        </p>
+        <p class="text-center text-slate-500 text-sm mt-4">pip install clouvel &middot; works everywhere MCP is supported</p>
       </div>
     </section>
 
-    <!-- 2.3 Social Proof -->
+    <!-- 3. Social Proof -->
     <section class="py-6 px-6">
       <div class="max-w-4xl mx-auto">
         <div class="flex flex-wrap items-center justify-center gap-4 md:gap-6">
-          <!-- GitHub Stars -->
-          <a
-            href="https://github.com/Whitening-Sinabro/clouvel"
-            target="_blank"
-            class="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition"
-          >
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-            <span class="font-medium" id="github-stars">Star on GitHub</span>
+          <a href="https://github.com/Whitening-Sinabro/clouvel" target="_blank" class="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            <span class="font-medium">Star on GitHub</span>
           </a>
-          <!-- PyPI Downloads -->
-          <a
-            href="https://pypi.org/project/clouvel/"
-            target="_blank"
-            class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-          >
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 0L1.75 6v12L12 24l10.25-6V6L12 0zm-1.775 18l-3.975-2.3V9.7l3.975 2.3V18zm0-7.7l-3.975-2.3L12 5.7l3.975 2.3-5.75 2.3zm7.725 5.4l-3.975 2.3V12l3.975-2.3v6z"/>
-            </svg>
+          <a href="https://pypi.org/project/clouvel/" target="_blank" class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0L1.75 6v12L12 24l10.25-6V6L12 0zm-1.775 18l-3.975-2.3V9.7l3.975 2.3V18zm0-7.7l-3.975-2.3L12 5.7l3.975 2.3-5.75 2.3zm7.725 5.4l-3.975 2.3V12l3.975-2.3v6z"/></svg>
             <span class="font-medium">pip install clouvel</span>
           </a>
-          <!-- Product Hunt Badge -->
-          <a
-            href="https://www.producthunt.com/posts/clouvel"
-            target="_blank"
-            class="inline-flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition"
-          >
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M13.604 8.4h-3.405V12h3.405c.995 0 1.801-.806 1.801-1.801 0-.993-.806-1.799-1.801-1.799zM12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm1.604 14.4h-3.405V18H7.801V6h5.803c2.319 0 4.2 1.88 4.2 4.199 0 2.321-1.881 4.201-4.2 4.201z"/>
-            </svg>
-            <span class="font-medium">View on Product Hunt</span>
-          </a>
-        </div>
-        <p class="text-center text-slate-400 text-xs mt-3">
-          Trusted by solo developers who value their time
-        </p>
-      </div>
-    </section>
-
-    <!-- 2.5 What is PRD (for beginners) -->
-    <section class="py-16 md:py-20 px-6">
-      <div class="max-w-4xl mx-auto">
-        <div class="text-center mb-8 md:mb-12">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4">What is a PRD?</h2>
-          <p class="text-slate-600 text-base md:text-lg max-w-2xl mx-auto">
-            <strong class="text-dark-slate"
-              >A spec document that AI reads before coding.</strong
-            ><br />
-            With a PRD, AI knows exactly "what to build" and helps you accurately.
-          </p>
-        </div>
-        <!-- Before / After comparison -->
-        <div class="grid md:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-12">
-          <div class="bg-red-50 border border-red-200 rounded-xl p-5 md:p-6">
-            <div class="flex items-center gap-2 mb-3">
-              <span class="text-red-500 text-lg font-bold">Without PRD</span>
-            </div>
-            <p class="text-slate-700 text-sm md:text-base mb-3">
-              "Build a login feature"
-            </p>
-            <p class="text-slate-500 text-xs md:text-sm">
-              AI guesses and builds something. Password reset? Social login? Skipped.
-            </p>
-          </div>
-          <div
-            class="bg-emerald-50 border border-emerald-200 rounded-xl p-5 md:p-6"
-          >
-            <div class="flex items-center gap-2 mb-3">
-              <span class="text-emerald-600 text-lg font-bold">With PRD</span>
-            </div>
-            <p class="text-slate-700 text-sm md:text-base mb-3">
-              AI reads PRD and implements exactly
-            </p>
-            <p class="text-slate-500 text-xs md:text-sm">
-              "Email login, password reset, Google OAuth" - all included. Nothing missed.
-            </p>
-          </div>
-        </div>
-        <!-- Key point -->
-        <div class="text-center">
-          <p class="text-slate-600 text-sm md:text-base">
-            PRD = <strong class="text-dark-slate">AI's work order</strong>.
-            Clear instructions, clear results.
-          </p>
         </div>
       </div>
     </section>
 
-    <!-- 3. Problem -->
+    <!-- 4. The Problem -->
     <section class="py-16 md:py-20 px-6 bg-white">
       <div class="max-w-4xl mx-auto">
         <div class="text-center mb-8 md:mb-12">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4">
-            Why does AI coding keep going wrong?
-          </h2>
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">The Problem</h2>
+          <p class="text-slate-600 text-base md:text-lg">Claude Code is fast. But without memory, speed creates chaos.</p>
         </div>
         <div class="space-y-4 md:space-y-6">
-          <div
-            class="flex items-start gap-3 md:gap-4 p-4 md:p-6 bg-red-50 border border-red-200 rounded-xl"
-          >
-            <span class="text-red-500 text-xl md:text-2xl mt-0.5">1</span>
+          <div class="flex items-start gap-3 md:gap-4 p-4 md:p-6 bg-red-50 border border-red-200 rounded-xl">
+            <span class="text-red-500 text-xl md:text-2xl mt-0.5 font-bold">1</span>
             <div>
-              <h3 class="font-semibold text-base md:text-lg mb-1">
-                AI arbitrarily skips requirements
-              </h3>
-              <p class="text-slate-600 text-sm md:text-base">
-                "Build login" - Password reset? Social login? Silently omitted.
-              </p>
+              <h3 class="font-semibold text-base md:text-lg mb-1">AI recreates bugs it fixed yesterday</h3>
+              <p class="text-slate-600 text-sm md:text-base">No error memory between sessions. Same mistake, different day.</p>
             </div>
           </div>
-          <div
-            class="flex items-start gap-3 md:gap-4 p-4 md:p-6 bg-red-50 border border-red-200 rounded-xl"
-          >
-            <span class="text-red-500 text-xl md:text-2xl mt-0.5">2</span>
+          <div class="flex items-start gap-3 md:gap-4 p-4 md:p-6 bg-red-50 border border-red-200 rounded-xl">
+            <span class="text-red-500 text-xl md:text-2xl mt-0.5 font-bold">2</span>
             <div>
-              <h3 class="font-semibold text-base md:text-lg mb-1">
-                Jumps straight to coding, skipping design
-              </h3>
-              <p class="text-slate-600 text-sm md:text-base">
-                No architecture thinking - straight to code - full refactor later.
-              </p>
+              <h3 class="font-semibold text-base md:text-lg mb-1">You ship without anyone reviewing</h3>
+              <p class="text-slate-600 text-sm md:text-base">No second pair of eyes. Blind spots go straight to production.</p>
             </div>
           </div>
-          <div
-            class="flex items-start gap-3 md:gap-4 p-4 md:p-6 bg-red-50 border border-red-200 rounded-xl"
-          >
-            <span class="text-red-500 text-xl md:text-2xl mt-0.5">3</span>
+          <div class="flex items-start gap-3 md:gap-4 p-4 md:p-6 bg-red-50 border border-red-200 rounded-xl">
+            <span class="text-red-500 text-xl md:text-2xl mt-0.5 font-bold">3</span>
             <div>
-              <h3 class="font-semibold text-base md:text-lg mb-1">
-                You forget what you decided last week
-              </h3>
-              <p class="text-slate-600 text-sm md:text-base">
-                No record of decisions. Repeat the same debates. Waste hours rediscovering context.
-              </p>
+              <h3 class="font-semibold text-base md:text-lg mb-1">"Why did we do it this way?"</h3>
+              <p class="text-slate-600 text-sm md:text-base">Decisions lost when context resets. Waste hours rediscovering context.</p>
             </div>
           </div>
-        </div>
-        <div class="mt-8 md:mt-10 text-center">
-          <p class="text-lg md:text-xl font-semibold text-dark-slate">
-            <span class="text-accent">AI makes it fast. Clouvel makes it right.</span>
-          </p>
+          <div class="flex items-start gap-3 md:gap-4 p-4 md:p-6 bg-red-50 border border-red-200 rounded-xl">
+            <span class="text-red-500 text-xl md:text-2xl mt-0.5 font-bold">4</span>
+            <div>
+              <h3 class="font-semibold text-base md:text-lg mb-1">New session = same old mistakes</h3>
+              <p class="text-slate-600 text-sm md:text-base">AI starts from zero every time. No learning, no improvement.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 4. How it works -->
-    <section id="how-it-works" class="py-16 md:py-20 px-6 bg-white">
-      <div class="max-w-4xl mx-auto">
+    <!-- 5. How it works -->
+    <section id="how-it-works" class="py-16 md:py-20 px-6">
+      <div class="max-w-5xl mx-auto">
         <div class="text-center mb-10 md:mb-16">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4">How it works</h2>
-          <p class="text-slate-600 text-base md:text-lg">Remember + Prevent + Guide</p>
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">What Clouvel Does</h2>
+          <p class="text-slate-600 text-base md:text-lg">Three things. All automatic.</p>
         </div>
         <div class="grid md:grid-cols-3 gap-6 md:gap-8">
-          <div class="text-center">
-            <div
-              class="w-14 h-14 md:w-16 md:h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4"
-            >
-              1
+          <!-- Error Memory -->
+          <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 hover:border-accent hover:shadow-lg transition-all">
+            <div class="w-12 h-12 bg-red-500/10 rounded-lg flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
             </div>
-            <h3 class="font-semibold text-lg md:text-xl mb-2">Remember</h3>
-            <p class="text-slate-600 text-sm md:text-base">
-              Every decision persists. Context survives across sessions.
-            </p>
+            <h3 class="font-bold text-lg mb-3">1. Error Memory</h3>
+            <p class="text-slate-600 text-sm mb-4">AI that learns from mistakes.</p>
+            <div class="bg-slate-900 rounded-lg p-4 font-mono text-xs text-slate-300 leading-relaxed">
+              <p class="text-yellow-400">Warning: This error happened before.</p>
+              <p class="text-slate-400 mt-1">Root cause: Missing null check on DB query</p>
+              <p class="text-slate-400">Prevention: Always validate query results</p>
+              <p class="text-emerald-400 mt-1">(Memory #7 - prevented 3 times)</p>
+            </div>
           </div>
-          <div class="text-center">
-            <div
-              class="w-14 h-14 md:w-16 md:h-16 bg-purple-500 text-white rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4"
-            >
-              2
+          <!-- Spec Gate -->
+          <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 hover:border-accent hover:shadow-lg transition-all">
+            <div class="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
             </div>
-            <h3 class="font-semibold text-lg md:text-xl mb-2">Prevent</h3>
-            <p class="text-slate-600 text-sm md:text-base">
-              Past mistakes surface before they repeat. Regression prevention.
-            </p>
+            <h3 class="font-bold text-lg mb-3">2. Spec Gate</h3>
+            <p class="text-slate-600 text-sm mb-4">Think before AI codes.</p>
+            <div class="bg-slate-900 rounded-lg p-4 font-mono text-xs text-slate-300 leading-relaxed">
+              <p class="text-slate-400">You: "Build login"</p>
+              <p class="text-red-400 mt-1">BLOCKED - No PRD found.</p>
+              <p class="text-slate-400 mt-2">You: <span class="text-slate-300">*writes PRD*</span></p>
+              <p class="text-emerald-400 mt-1">PASS - Ready to code.</p>
+            </div>
           </div>
-          <div class="text-center">
-            <div
-              class="w-14 h-14 md:w-16 md:h-16 bg-blue-500 text-white rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4"
-            >
-              3
+          <!-- Quick Check -->
+          <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 hover:border-accent hover:shadow-lg transition-all">
+            <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
             </div>
-            <h3 class="font-semibold text-lg md:text-xl mb-2">Guide</h3>
-            <p class="text-slate-600 text-sm md:text-base">
-              8 AI managers ask the questions you forgot to ask.
-            </p>
+            <h3 class="font-bold text-lg mb-3">3. Quick Check</h3>
+            <p class="text-slate-600 text-sm mb-4">Blind spots in 10 seconds.</p>
+            <div class="bg-slate-900 rounded-lg p-4 font-mono text-xs text-slate-300 leading-relaxed">
+              <p><span class="text-accent">PM:</span> "What happens when login fails 5 times?"</p>
+              <p class="mt-1"><span class="text-purple-400">CTO:</span> "Rate limiting needed for brute force."</p>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 5. Demo -->
+    <!-- 6. Demo Screenshots -->
     <section id="demo" class="py-16 md:py-20 px-6 bg-dark-slate text-white">
-      <div class="max-w-6xl mx-auto">
+      <div class="max-w-5xl mx-auto">
         <div class="text-center mb-8 md:mb-12">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4">
-            See what Clouvel remembers
-          </h2>
-          <p class="text-slate-400 text-base md:text-lg">
-            Session memory vs. permanent memory
-          </p>
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">See it in action</h2>
+          <p class="text-slate-400 text-base md:text-lg">Real output from Clouvel</p>
         </div>
-        <!-- Screenshot Grid -->
         <div class="grid md:grid-cols-2 gap-6 md:gap-8">
-          <!-- No PRD - BLOCK -->
           <div class="rounded-2xl overflow-hidden border border-red-500/30 shadow-2xl">
             <div class="bg-slate-800/80 px-4 py-2 flex items-center gap-2">
-              <span class="text-red-400 font-bold">Without Clouvel</span>
-              <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">LOST</span>
+              <span class="text-red-400 font-bold">No spec = BLOCKED</span>
+              <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">BLOCK</span>
             </div>
             <img src="assets/can_code_block.png" alt="Clouvel BLOCK - No PRD" class="w-full" loading="lazy" />
           </div>
-          <!-- Complete PRD - PASS -->
           <div class="rounded-2xl overflow-hidden border border-emerald-500/30 shadow-2xl">
             <div class="bg-slate-800/80 px-4 py-2 flex items-center gap-2">
-              <span class="text-emerald-400 font-bold">With Clouvel</span>
+              <span class="text-emerald-400 font-bold">Spec found = PASS</span>
               <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded">PASS</span>
             </div>
             <img src="assets/can_code_pass.png" alt="Clouvel PASS - Ready to code" class="w-full" loading="lazy" />
           </div>
         </div>
-
-        <!-- Manager Review Section -->
-        <div class="mt-12">
-          <div class="text-center mb-6">
-            <h3 class="text-xl md:text-2xl font-bold mb-2">
-              <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">NEW:</span>
-              30-Second C-Level Meeting Transcripts
-            </h3>
-            <p class="text-slate-400">8 AI managers discuss your code like a real meeting - PM, CTO, QA, CSO and more</p>
-          </div>
-          <div class="rounded-2xl overflow-hidden border border-purple-500/30 shadow-2xl max-w-4xl mx-auto">
-            <div class="bg-slate-800/80 px-4 py-2 flex items-center gap-2">
-              <span class="text-purple-400 font-bold">Manager Meeting</span>
-              <span class="bg-purple-500/20 text-purple-400 text-xs px-2 py-1 rounded">PRO</span>
-            </div>
-            <img src="assets/manager_feedback.png" alt="Clouvel Manager Review" class="w-full" loading="lazy" />
-          </div>
-
-          <!-- Free vs Pro Comparison -->
-          <div class="mt-8 grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
-            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-              <div class="flex items-center gap-2 mb-4">
-                <span class="text-emerald-400 font-bold text-lg">Free</span>
-                <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded">1 Manager</span>
-                <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">WARN</span>
-              </div>
-              <div class="space-y-2 text-sm">
-                <div class="flex items-center gap-2 text-slate-300">
-                  <span class="text-emerald-400">✓</span> <span class="text-emerald-400">PM</span> Product perspective
-                </div>
-                <div class="flex items-center gap-2 text-slate-500 line-through">
-                  <span>CTO</span> Technical review
-                </div>
-                <div class="flex items-center gap-2 text-slate-500 line-through">
-                  <span>QA</span> Test coverage
-                </div>
-                <div class="pt-3 border-t border-slate-700 mt-3 space-y-1.5">
-                  <div class="flex items-center gap-2 text-yellow-400 text-xs">
-                    <span>⚠</span> 1 active project
-                  </div>
-                  <div class="flex items-center gap-2 text-yellow-400 text-xs">
-                    <span>⚠</span> 3 meetings/month
-                  </div>
-                  <div class="flex items-center gap-2 text-yellow-400 text-xs">
-                    <span>⚠</span> KB: 7 days / 50 items
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-xl p-6 border border-purple-500/30">
-              <div class="flex items-center gap-2 mb-4">
-                <span class="text-purple-400 font-bold text-lg">Pro</span>
-                <span class="bg-purple-500/20 text-purple-400 text-xs px-2 py-1 rounded">8 Managers</span>
-                <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded">MEMORY</span>
-              </div>
-              <div class="space-y-2 text-sm">
-                <div class="flex items-center gap-2 text-slate-300">
-                  <span class="text-emerald-400">PM</span> (included)
-                </div>
-                <div class="flex items-center gap-2 text-purple-300">
-                  <span class="text-purple-400">+ CTO</span> Technical architecture
-                </div>
-                <div class="flex items-center gap-2 text-purple-300">
-                  <span class="text-purple-400">+ QA</span> Test strategy
-                </div>
-                <div class="flex items-center gap-2 text-purple-300">
-                  <span class="text-purple-400">+ CDO</span> Design & UX review
-                </div>
-                <div class="flex items-center gap-2 text-purple-300">
-                  <span class="text-purple-400">+ CMO</span> Marketing & messaging
-                </div>
-                <div class="flex items-center gap-2 text-purple-300">
-                  <span class="text-purple-400">+ CFO</span> Cost & ROI analysis
-                </div>
-                <div class="flex items-center gap-2 text-purple-300">
-                  <span class="text-purple-400">+ CSO</span> Security review
-                </div>
-                <div class="flex items-center gap-2 text-purple-300">
-                  <span class="text-purple-400">+ ERROR</span> Risk & failure modes
-                </div>
-                <div class="pt-3 border-t border-purple-500/30 mt-3 space-y-1.5">
-                  <div class="flex items-center gap-2 text-emerald-400 text-xs font-medium">
-                    <span>∞</span> Unlimited projects
-                  </div>
-                  <div class="flex items-center gap-2 text-emerald-400 text-xs font-medium">
-                    <span>∞</span> Unlimited meetings
-                  </div>
-                  <div class="flex items-center gap-2 text-emerald-400 text-xs font-medium">
-                    <span>∞</span> KB: Forever / No limit
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <p class="text-center text-slate-500 text-sm mt-4">
-            Pro = Full memory. Every decision remembered + 8 managers prevent repeat mistakes.
-          </p>
-        </div>
       </div>
     </section>
 
-    <!-- 6. Features -->
-    <section id="features" class="py-16 md:py-20 px-6">
-      <div class="max-w-6xl mx-auto">
-        <div class="text-center mb-10 md:mb-16">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4">Augmentation, not Automation</h2>
-          <p class="text-slate-600 text-base md:text-lg">AI that helps you remember, not thinks for you</p>
-          <p class="text-accent text-sm mt-3 font-medium">⚡ Solo dev = Fast iteration. Feedback reflected within 24-48 hours.</p>
-        </div>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <div
-            class="bg-white p-5 md:p-8 rounded-xl border border-slate-200/80 hover:border-accent hover:shadow-lg transition-all"
-          >
-            <div
-              class="w-10 h-10 md:w-12 md:h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4 md:mb-6"
-            >
-              <svg
-                class="w-5 h-5 md:w-6 md:h-6 text-accent"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
-              </svg>
-            </div>
-            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2">
-              Quick Perspectives
-            </h3>
-            <p class="text-slate-600 text-sm md:text-base">
-              3-second sanity check before coding. Surface blind spots instantly.
-            </p>
-          </div>
-          <div
-            class="bg-white p-5 md:p-8 rounded-xl border border-slate-200/80 hover:border-accent hover:shadow-lg transition-all"
-          >
-            <div
-              class="w-10 h-10 md:w-12 md:h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center mb-4 md:mb-6"
-            >
-              <svg
-                class="w-5 h-5 md:w-6 md:h-6 text-emerald-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-            </div>
-            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2">
-              AI Team Orchestration
-            </h3>
-            <p class="text-slate-600 text-sm md:text-base">
-              8 virtual C-Levels review simultaneously. Solo coding, team feedback.
-            </p>
-          </div>
-          <div
-            class="bg-white p-5 md:p-8 rounded-xl border border-slate-200/80 hover:border-accent hover:shadow-lg transition-all"
-          >
-            <div
-              class="w-10 h-10 md:w-12 md:h-12 bg-violet-500/10 rounded-lg flex items-center justify-center mb-4 md:mb-6"
-            >
-              <svg
-                class="w-5 h-5 md:w-6 md:h-6 text-violet-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
-                />
-              </svg>
-            </div>
-            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2">
-              Knowledge Base
-            </h3>
-            <p class="text-slate-600 text-sm md:text-base">
-              Remembers every decision. Stop making the same mistakes twice.
-            </p>
-          </div>
-          <div
-            class="bg-white p-5 md:p-8 rounded-xl border border-slate-200/80 hover:border-accent hover:shadow-lg transition-all"
-          >
-            <div
-              class="w-10 h-10 md:w-12 md:h-12 bg-orange-500/10 rounded-lg flex items-center justify-center mb-4 md:mb-6"
-            >
-              <svg
-                class="w-5 h-5 md:w-6 md:h-6 text-orange-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-            </div>
-            <h3 class="font-semibold text-base md:text-lg mb-1 md:mb-2">
-              Regression Prevention
-            </h3>
-            <p class="text-slate-600 text-sm md:text-base">
-              Fixed a bug? Clouvel remembers. Same pattern? You get warned.
-              Cross-project memories share lessons across all your projects, scoped by domain.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 7. Getting Started -->
-    <section id="getting-started" class="py-20 px-6 bg-dark-slate text-white">
+    <!-- 7. Free vs Pro -->
+    <section class="py-16 md:py-20 px-6 bg-white">
       <div class="max-w-4xl mx-auto">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl font-bold mb-4">Getting Started</h2>
-          <p class="text-slate-400 text-lg">
-            Free: 3 steps. Pro: 4 steps (+ activate)
-          </p>
+        <div class="text-center mb-8 md:mb-12">
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">Free vs Pro</h2>
+          <p class="text-slate-600 text-base md:text-lg">Free is real. Pro is more.</p>
         </div>
-        <!-- Tabs -->
-        <div
-          class="grid grid-cols-2 md:flex md:flex-wrap md:justify-center gap-2 mb-8"
-        >
-          <button
-            class="tab-btn active px-4 py-3 md:px-6 md:py-2 rounded-xl md:rounded-full font-medium text-sm md:text-base transition"
-            data-tab="cli"
-          >
-            CLI
-          </button>
-          <button
-            class="tab-btn px-4 py-3 md:px-6 md:py-2 rounded-xl md:rounded-full font-medium text-sm md:text-base bg-slate-700 hover:bg-slate-600 transition"
-            data-tab="claude-desktop"
-          >
-            Claude Desktop
-          </button>
-          <button
-            class="tab-btn px-4 py-3 md:px-6 md:py-2 rounded-xl md:rounded-full font-medium text-sm md:text-base bg-slate-700 hover:bg-slate-600 transition"
-            data-tab="vscode"
-          >
-            VS Code
-          </button>
-          <button
-            class="tab-btn px-4 py-3 md:px-6 md:py-2 rounded-xl md:rounded-full font-medium text-sm md:text-base bg-slate-700 hover:bg-slate-600 transition"
-            data-tab="cursor"
-          >
-            Cursor
-          </button>
-        </div>
-        <!-- Tab Contents -->
-        <div id="tab-cli" class="tab-content active">
-          <div class="bg-slate-800 rounded-xl p-6 font-mono text-sm space-y-4">
-            <div>
-              <p class="text-slate-400 mb-2"># 1. Install</p>
-              <p class="text-emerald-400">pip install clouvel</p>
-            </div>
-            <div>
-              <p class="text-slate-400 mb-2">
-                # 2. Activate
-                <span class="text-accent">(Pro only)</span>
-              </p>
-              <p class="text-emerald-400">clouvel activate YOUR_LICENSE_KEY</p>
-            </div>
-            <div>
-              <p class="text-slate-400 mb-2"># 3. Setup (auto-config)</p>
-              <p class="text-emerald-400">clouvel install</p>
-              <p class="text-slate-500 text-xs mt-1">
-                # If 'clouvel' not recognized:<br>
-                # py -m clouvel install &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Windows)<br>
-                # python3 -m clouvel install (Mac/Linux)
-              </p>
-            </div>
-            <div>
-              <p class="text-slate-400 mb-2"># 4. Run</p>
-              <p class="text-slate-300">claude</p>
-              <p class="text-slate-500 text-xs mt-1">
-                # can_code check runs automatically on code requests
-              </p>
-            </div>
-          </div>
-        </div>
-        <div id="tab-claude-desktop" class="tab-content">
-          <div class="bg-slate-800 rounded-xl p-6 font-mono text-sm space-y-4">
-            <div>
-              <p class="text-slate-400 mb-2"># 1. Install</p>
-              <p class="text-emerald-400">pip install clouvel</p>
-            </div>
-            <div>
-              <p class="text-slate-400 mb-2">
-                # 2. Activate
-                <span class="text-accent">(Pro only)</span>
-              </p>
-              <p class="text-emerald-400">clouvel activate YOUR_LICENSE_KEY</p>
-            </div>
-            <div>
-              <p class="text-slate-400 mb-2"># 3. Setup (auto-config)</p>
-              <p class="text-emerald-400">clouvel install</p>
-              <p class="text-slate-500 text-xs mt-1">
-                # If 'clouvel' not recognized:<br>
-                # py -m clouvel install &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Windows)<br>
-                # python3 -m clouvel install (Mac/Linux)
-              </p>
-            </div>
-            <div>
-              <p class="text-slate-400 mb-2"># 4. Run</p>
-              <p class="text-slate-300">Restart Claude Desktop - auto-connected</p>
-            </div>
-          </div>
-        </div>
-        <div id="tab-vscode" class="tab-content">
-          <div class="bg-slate-800 rounded-xl p-6 font-mono text-sm space-y-4">
-            <div>
-              <p class="text-slate-400 mb-2"># 1. Install</p>
-              <p class="text-emerald-400">pip install clouvel</p>
-            </div>
-            <div>
-              <p class="text-slate-400 mb-2">
-                # 2. Activate
-                <span class="text-accent">(Pro only)</span>
-              </p>
-              <p class="text-emerald-400">clouvel activate YOUR_LICENSE_KEY</p>
-            </div>
-            <div>
-              <p class="text-slate-400 mb-2"># 3. Setup (auto-config)</p>
-              <p class="text-emerald-400">clouvel install</p>
-              <p class="text-slate-500 text-xs mt-1">
-                # If 'clouvel' not recognized:<br>
-                # py -m clouvel install &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Windows)<br>
-                # python3 -m clouvel install (Mac/Linux)
-              </p>
-            </div>
-            <div>
-              <p class="text-slate-400 mb-2"># 4. Run</p>
-              <p class="text-slate-300">Use with Claude extension in VS Code</p>
-            </div>
-          </div>
-        </div>
-        <div id="tab-cursor" class="tab-content">
-          <div class="bg-slate-800 rounded-xl p-6 font-mono text-sm space-y-4">
-            <div>
-              <p class="text-slate-400 mb-2"># 1. Install</p>
-              <p class="text-emerald-400">pip install clouvel</p>
-            </div>
-            <div>
-              <p class="text-slate-400 mb-2">
-                # 2. Activate
-                <span class="text-accent">(Pro only)</span>
-              </p>
-              <p class="text-emerald-400">clouvel activate YOUR_LICENSE_KEY</p>
-            </div>
-            <div>
-              <p class="text-slate-400 mb-2"># 3. Setup (auto-config)</p>
-              <p class="text-emerald-400">clouvel install</p>
-              <p class="text-slate-500 text-xs mt-1">
-                # If 'clouvel' not recognized:<br>
-                # py -m clouvel install &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Windows)<br>
-                # python3 -m clouvel install (Mac/Linux)
-              </p>
-            </div>
-            <div>
-              <p class="text-slate-400 mb-2"># 4. Run</p>
-              <p class="text-slate-300">Use with Claude extension in Cursor</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 7.5 Social Proof -->
-    <section id="testimonials" class="py-16 px-6 bg-slate-50/50">
-      <div class="max-w-6xl mx-auto">
-        <div class="text-center mb-10">
-          <h2 class="text-2xl font-bold mb-2">Developers ship faster with Clouvel</h2>
-          <p class="text-slate-500 text-sm">Solo devs and indie hackers who tried spec-first</p>
-        </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Testimonial 1 -->
-          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
-            <div class="flex gap-1 mb-3">
-              <span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span>
-            </div>
-            <p class="text-slate-700 text-sm leading-relaxed mb-4">
-              "I used to jump straight into code. Now the 8-manager review catches blind spots I'd only find in production.
-              <strong>Saved me a full weekend of debugging.</strong>"
-            </p>
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent font-bold text-sm">J</div>
-              <div>
-                <p class="text-sm font-medium">Jake M.</p>
-                <p class="text-xs text-slate-400">Indie hacker &middot; SaaS</p>
-              </div>
-            </div>
-          </div>
-          <!-- Testimonial 2 -->
-          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
-            <div class="flex gap-1 mb-3">
-              <span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span>
-            </div>
-            <p class="text-slate-700 text-sm leading-relaxed mb-4">
-              "The Knowledge Base remembers decisions across sessions. No more re-explaining context to Claude every morning.
-              <strong>My velocity doubled.</strong>"
-            </p>
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 font-bold text-sm">S</div>
-              <div>
-                <p class="text-sm font-medium">Sarah K.</p>
-                <p class="text-xs text-slate-400">Full-stack solo dev</p>
-              </div>
-            </div>
-          </div>
-          <!-- Testimonial 3 -->
-          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
-            <div class="flex gap-1 mb-3">
-              <span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-yellow-400">&#9733;</span><span class="text-slate-300">&#9733;</span>
-            </div>
-            <p class="text-slate-700 text-sm leading-relaxed mb-4">
-              "can_code forced me to write a PRD before touching code. Felt annoying at first.
-              <strong>Then I realized I hadn't rewritten a feature in 3 weeks.</strong>"
-            </p>
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-600 font-bold text-sm">D</div>
-              <div>
-                <p class="text-sm font-medium">Daniel R.</p>
-                <p class="text-xs text-slate-400">Chrome extension dev</p>
-              </div>
-            </div>
-          </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm md:text-base">
+            <thead>
+              <tr class="border-b-2 border-slate-200">
+                <th class="text-left py-3 pr-4"></th>
+                <th class="text-center py-3 px-4 text-emerald-600 font-bold">Free</th>
+                <th class="text-center py-3 px-4 text-accent font-bold">Pro ($7.99/mo)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr>
+                <td class="py-3 pr-4 font-medium">Error history</td>
+                <td class="py-3 px-4 text-center">Last 5 errors</td>
+                <td class="py-3 px-4 text-center text-accent font-medium">Full history + patterns</td>
+              </tr>
+              <tr>
+                <td class="py-3 pr-4 font-medium">Context slots</td>
+                <td class="py-3 px-4 text-center">1 (overwrites)</td>
+                <td class="py-3 px-4 text-center text-accent font-medium">50 + timeline</td>
+              </tr>
+              <tr>
+                <td class="py-3 pr-4 font-medium">Manager feedback</td>
+                <td class="py-3 px-4 text-center">2 managers, 1 question</td>
+                <td class="py-3 px-4 text-center text-accent font-medium">8 managers, 2+ questions</td>
+              </tr>
+              <tr>
+                <td class="py-3 pr-4 font-medium">Error learning</td>
+                <td class="py-3 px-4 text-center text-slate-400">-</td>
+                <td class="py-3 px-4 text-center text-accent font-medium">Auto-generates rules</td>
+              </tr>
+              <tr>
+                <td class="py-3 pr-4 font-medium">Cross-project memory</td>
+                <td class="py-3 px-4 text-center text-slate-400">-</td>
+                <td class="py-3 px-4 text-center text-accent font-medium">Share lessons everywhere</td>
+              </tr>
+              <tr>
+                <td class="py-3 pr-4 font-medium">Drift detection</td>
+                <td class="py-3 px-4 text-center text-slate-400">-</td>
+                <td class="py-3 px-4 text-center text-accent font-medium">Catches scope creep</td>
+              </tr>
+              <tr>
+                <td class="py-3 pr-4 font-medium">Ship pipeline</td>
+                <td class="py-3 px-4 text-center">gate (basic)</td>
+                <td class="py-3 px-4 text-center text-accent font-medium">Full verify + evidence</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <div class="text-center mt-8">
-          <a href="https://github.com/Whitening-Sinabro/clouvel/discussions" target="_blank" class="inline-flex items-center gap-2 text-accent text-sm font-medium hover:underline">
-            Read more on GitHub Discussions
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          <a href="#pricing" class="inline-flex items-center gap-2 text-accent font-medium hover:underline">
+            Try Pro free for 7 days
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
           </a>
         </div>
       </div>
     </section>
 
-    <!-- 8. Pricing -->
-    <section id="pricing" class="py-20 px-6">
-      <div class="max-w-6xl mx-auto">
-        <div class="text-center mb-8">
-          <h2 class="text-3xl font-bold mb-4">Simple Pricing</h2>
-          <p class="text-slate-600 text-lg mb-4">
-            Start free, upgrade when you need more
-          </p>
-          <p class="text-slate-500 text-sm max-w-2xl mx-auto mb-6">
-            If your team uses AI coding but keeps losing time to requirement gaps and debugging,
-            this pays for itself.
-          </p>
-          <!-- Billing Toggle -->
-          <div class="inline-flex items-center bg-slate-100 rounded-full p-1">
-            <button
-              id="monthly-btn"
-              onclick="toggleBilling('monthly')"
-              class="px-6 py-2 rounded-full text-sm font-medium transition bg-white text-dark-slate shadow-sm"
-            >
-              Monthly
-            </button>
-            <button
-              id="yearly-btn"
-              onclick="toggleBilling('yearly')"
-              class="px-6 py-2 rounded-full text-sm font-medium transition text-slate-500 hover:text-slate-700"
-            >
-              Yearly <span class="text-accent text-xs ml-1">17% off</span> <span class="text-orange-500 text-xs font-bold ml-0.5">+ LAUNCH70 = 70% off!</span>
-            </button>
+    <!-- 8. Tools -->
+    <section id="tools" class="py-16 md:py-20 px-6">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-10 md:mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">Tools</h2>
+          <p class="text-slate-600 text-base md:text-lg">10 Free + 10 Pro. That's it.</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 md:gap-8">
+          <!-- Free Tools -->
+          <div class="bg-emerald-50 p-6 md:p-8 rounded-2xl border border-emerald-200">
+            <h3 class="text-lg font-bold text-emerald-700 mb-4">Free (10 tools - always available)</h3>
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between items-start gap-2"><code class="text-emerald-700 font-medium shrink-0">can_code</code><span class="text-slate-600 text-right">Blocks coding without a spec</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-emerald-700 font-medium shrink-0">start</code><span class="text-slate-600 text-right">Set up project with PRD templates</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-emerald-700 font-medium shrink-0">save_prd</code><span class="text-slate-600 text-right">Save PRD from conversation</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-emerald-700 font-medium shrink-0">error_check</code><span class="text-slate-600 text-right">Warns before repeating mistakes</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-emerald-700 font-medium shrink-0">error_record</code><span class="text-slate-600 text-right">Records errors with root cause</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-emerald-700 font-medium shrink-0">context_save</code><span class="text-slate-600 text-right">Saves state before context runs out</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-emerald-700 font-medium shrink-0">context_load</code><span class="text-slate-600 text-right">Restores state in new session</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-emerald-700 font-medium shrink-0">quick_perspectives</code><span class="text-slate-600 text-right">Quick blind-spot check</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-emerald-700 font-medium shrink-0">gate</code><span class="text-slate-600 text-right">Run lint, test, build in sequence</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-emerald-700 font-medium shrink-0">license_status</code><span class="text-slate-600 text-right">Check plan, start trial</span></div>
+            </div>
+          </div>
+          <!-- Pro Tools -->
+          <div class="bg-accent/5 p-6 md:p-8 rounded-2xl border border-accent/20">
+            <h3 class="text-lg font-bold text-accent mb-4">Pro (10 more tools - $7.99/mo)</h3>
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between items-start gap-2"><code class="text-accent font-medium shrink-0">error_learn</code><span class="text-slate-600 text-right">Auto-generates NEVER/ALWAYS rules</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-accent font-medium shrink-0">memory_status</code><span class="text-slate-600 text-right">Error memory dashboard</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-accent font-medium shrink-0">memory_search</code><span class="text-slate-600 text-right">Search past errors by keyword</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-accent font-medium shrink-0">memory_global_search</code><span class="text-slate-600 text-right">Cross-project error patterns</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-accent font-medium shrink-0">drift_check</code><span class="text-slate-600 text-right">Detects scope drift from goals</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-accent font-medium shrink-0">plan</code><span class="text-slate-600 text-right">Detailed execution plans</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-accent font-medium shrink-0">meeting</code><span class="text-slate-600 text-right">Full 8-manager C-Level review</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-accent font-medium shrink-0">ship</code><span class="text-slate-600 text-right">One-click lint+test+build+evidence</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-accent font-medium shrink-0">record_decision</code><span class="text-slate-600 text-right">Persistent knowledge base</span></div>
+              <div class="flex justify-between items-start gap-2"><code class="text-accent font-medium shrink-0">search_knowledge</code><span class="text-slate-600 text-right">Search past decisions</span></div>
+            </div>
           </div>
         </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+      </div>
+    </section>
+
+    <!-- 9. Getting Started -->
+    <section id="getting-started" class="py-16 md:py-20 px-6 bg-dark-slate text-white">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Quick Start</h2>
+          <p class="text-slate-400 text-lg">3 commands. Under 60 seconds.</p>
+        </div>
+        <div class="bg-slate-800 rounded-xl p-6 font-mono text-sm space-y-4 max-w-2xl mx-auto">
+          <div>
+            <p class="text-slate-400 mb-2"># 1. Install</p>
+            <p class="text-emerald-400">pip install clouvel</p>
+          </div>
+          <div>
+            <p class="text-slate-400 mb-2"># 2. Auto-configure for your client</p>
+            <p class="text-emerald-400">clouvel install</p>
+            <p class="text-slate-500 text-xs mt-1">
+              # If 'clouvel' not recognized:<br>
+              # py -m clouvel install &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Windows)<br>
+              # python3 -m clouvel install (Mac/Linux)
+            </p>
+          </div>
+          <div>
+            <p class="text-slate-400 mb-2"># 3. Start coding</p>
+            <p class="text-slate-300">claude</p>
+            <p class="text-slate-500 text-xs mt-1"># Clouvel runs automatically</p>
+          </div>
+        </div>
+        <div class="text-center mt-8">
+          <p class="text-slate-400 text-sm">That's it. Clouvel runs automatically when you use Claude Code.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. How it plays out -->
+    <section class="py-16 md:py-20 px-6 bg-white">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-8 md:mb-12">
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">How it plays out</h2>
+        </div>
+        <div class="bg-slate-50 rounded-xl p-6 font-mono text-sm space-y-2 text-slate-600">
+          <p><span class="text-slate-400">Day 1:</span>&nbsp; Install &rarr; start &rarr; write PRD &rarr; can_code PASS &rarr; code</p>
+          <p><span class="text-slate-400">Day 3:</span>&nbsp; Error happens &rarr; error_record saves it</p>
+          <p><span class="text-slate-400">Day 5:</span>&nbsp; Same file &rarr; error_check warns "this broke before"</p>
+          <p><span class="text-slate-400">Day 7:</span>&nbsp; 5+ errors &rarr; "Full history available in Pro"</p>
+          <p><span class="text-slate-400">Day 10:</span> Context runs out &rarr; context_save/load preserves everything</p>
+          <p><span class="text-slate-400">Day 14:</span> Decide: <span class="text-accent">$7.99/mo</span> or stay Free</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. Pricing -->
+    <section id="pricing" class="py-16 md:py-20 px-6">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold mb-4">Simple Pricing</h2>
+          <p class="text-slate-600 text-lg">Start free. Upgrade when you need more.</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 md:gap-8 max-w-3xl mx-auto">
           <!-- Free -->
-          <div
-            class="bg-emerald-50 p-6 md:p-8 rounded-2xl border-2 border-emerald-200"
-          >
+          <div class="bg-emerald-50 p-6 md:p-8 rounded-2xl border-2 border-emerald-200">
             <h3 class="font-semibold text-lg mb-1">Free</h3>
-            <p class="text-slate-500 text-sm mb-6">Open Source</p>
+            <p class="text-slate-500 text-sm mb-6">Open source, forever</p>
             <div class="flex items-baseline gap-1 mb-6">
               <span class="text-4xl font-bold text-emerald-600">$0</span>
               <span class="text-slate-500">/ forever</span>
             </div>
             <ul class="space-y-3 mb-8 text-sm">
               <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-emerald-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-emerald-700 font-medium">Onboarding (start)</span>
+                <svg class="w-5 h-5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                10 tools, always available
               </li>
               <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-emerald-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-emerald-700 font-medium"
-                  >Meeting transcripts
-                  <span
-                    class="text-xs bg-emerald-100 text-emerald-600 px-1.5 py-0.5 rounded ml-1"
-                    >NEW</span
-                  ></span
-                >
+                <svg class="w-5 h-5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Error check + record (last 5)
               </li>
               <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-emerald-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Doc check (can_code)
+                <svg class="w-5 h-5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Spec gate (can_code)
               </li>
               <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-emerald-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-emerald-700 font-medium"
-                  >Detailed planning (plan)
-                  <span
-                    class="text-xs bg-emerald-100 text-emerald-600 px-1.5 py-0.5 rounded ml-1"
-                    >NEW</span
-                  ></span
-                >
+                <svg class="w-5 h-5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Context save/load (1 slot)
               </li>
               <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-emerald-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Progress tracking
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-emerald-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Goal reminder
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-4 h-4 text-yellow-500 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-                <span class="text-yellow-600 font-medium">1 active project <span class="text-xs">(archive to switch)</span></span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-4 h-4 text-yellow-500 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-                <span class="text-yellow-600 font-medium">3 meetings/month</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-4 h-4 text-yellow-500 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-                <span class="text-yellow-600 font-medium">KB: 7-day retention <span class="text-xs">(50 items max)</span></span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-4 h-4 text-emerald-500 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-emerald-700 font-medium">Lite templates (~150 lines)</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-4 h-4 text-emerald-500 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-emerald-700 font-medium">1 AI Manager (PM only)</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-4 h-4 text-yellow-500 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-                <span class="text-yellow-600 font-medium">WARN mode (doesn't block)</span>
-              </li>
-              <li class="flex items-center gap-2 text-slate-400">
-                <svg
-                  class="w-4 h-4 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-                <span class="line-through">CTO, QA, CDO, CMO, CFO, CSO, ERROR</span>
+                <svg class="w-5 h-5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Quick perspectives (2 managers)
               </li>
             </ul>
             <a
@@ -1289,385 +501,149 @@
               target="_blank"
               class="block w-full py-3 rounded-full text-center font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition"
             >
-              Start on GitHub
+              Start Free
             </a>
           </div>
-          <!-- Personal Pro -->
+          <!-- Pro -->
           <div class="border-2 border-accent p-6 md:p-8 rounded-2xl relative">
-            <div
-              class="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-medium px-3 py-1 rounded-full"
-            >
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-medium px-3 py-1 rounded-full">
               Recommended
             </div>
-            <h3 class="font-semibold text-lg mb-1">Personal Pro</h3>
-            <p class="text-slate-500 text-sm mb-6">Solo developer (1 seat)</p>
-            <div
-              class="price-display monthly-price flex items-baseline gap-1 mb-1"
-            >
+            <h3 class="font-semibold text-lg mb-1">Pro</h3>
+            <p class="text-slate-500 text-sm mb-6">Full power, no limits</p>
+            <div class="flex items-baseline gap-1 mb-1">
               <span class="text-4xl font-bold">$7.99</span>
               <span class="text-slate-500">/ mo</span>
             </div>
-            <div
-              class="price-display yearly-price hidden flex items-baseline gap-1 mb-1"
-            >
-              <span class="text-4xl font-bold">$79.99</span>
-              <span class="text-slate-500">/ yr</span>
-            </div>
-            <p class="monthly-price text-emerald-600 text-sm font-medium mb-2">
-              Use code <span class="font-bold">FIRST1</span> for first month $1
-              <span class="text-orange-500 text-xs ml-1">(50 left!)</span>
-            </p>
-            <p class="monthly-price text-slate-400 text-xs mb-6">
-              17% off with yearly billing
-            </p>
-            <p class="yearly-price hidden text-accent text-sm font-medium mb-1">
-              <span class="line-through text-slate-400">$79.99/yr</span> → <span class="text-orange-600 font-bold">$23.99/yr</span> with code <span class="font-bold">LAUNCH70</span>
-            </p>
-            <p class="yearly-price hidden text-orange-600 text-xs font-bold mb-2">
-              Save 70% — lock in this price forever
-            </p>
-            <p class="yearly-price hidden text-red-500 text-xs font-medium mb-6">
-              <span id="yearly-spots-left">1</span>/51 spots left
+            <p class="text-slate-400 text-xs mb-6">
+              or $23.99/yr — Early Adopter Pricing
             </p>
             <ul class="space-y-3 mb-8 text-sm">
               <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Everything in Free
+                <svg class="w-5 h-5 text-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span class="text-accent font-medium">Everything in Free + 10 more tools</span>
               </li>
               <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-accent font-medium">Unlimited projects</span>
+                <svg class="w-5 h-5 text-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span class="text-accent font-medium">Full error history + auto-learning</span>
               </li>
               <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-accent font-medium">All templates (lite + standard + detailed)</span>
+                <svg class="w-5 h-5 text-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span class="text-accent font-medium">Cross-project memory sharing</span>
               </li>
               <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-accent font-medium">All 8 AI Managers (+CTO, QA, CDO, CMO, CFO, CSO, ERROR)</span>
+                <svg class="w-5 h-5 text-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span class="text-accent font-medium">8-manager C-Level review</span>
               </li>
               <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-red-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                  />
-                </svg>
-                <span class="text-red-500 font-medium">BLOCK mode (no PRD = no code)</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-accent font-medium"
-                  >Knowledge Base (remembers decisions)</span
-                >
-              </li>
-              <li class="flex items-center gap-2">
-                <svg
-                  class="w-5 h-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span class="text-accent font-medium">Regression Memory + Error Learning</span>
+                <svg class="w-5 h-5 text-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span class="text-accent font-medium">One-click ship + evidence</span>
               </li>
             </ul>
             <a
               href="https://buy.polar.sh/polar_cl_YVVTx0UOobHJOTG9FinmAJyg7ZrfClSHdNYg51F5mzf"
               target="_blank"
-              class="checkout-link monthly-link block w-full py-3 rounded-full text-center font-medium bg-accent text-white hover:bg-sky-600 shadow-lg transition"
-              data-yearly="https://buy.polar.sh/polar_cl_gbyXvdUeXsKDnIgUssiv7ptFuSc0FNms8Iafs31ftjD"
+              class="checkout-link block w-full py-3 rounded-full text-center font-medium bg-accent text-white hover:bg-sky-600 shadow-lg transition"
             >
               Subscribe
             </a>
-            <div class="mt-4 text-center">
-              <p class="text-accent font-semibold text-lg">
-                Upgrade to Pro — First month $1 with code FIRST1
-              </p>
-              <p class="text-slate-500 text-sm mt-1">
-                Unlimited projects + 8 AI managers + Knowledge Base
-              </p>
-            </div>
+            <p class="text-center text-slate-500 text-xs mt-3">
+              7-day free trial available. No credit card required.
+            </p>
           </div>
-          <!-- Team Coming Soon -->
-          <div
-            class="bg-slate-50 p-6 md:p-8 rounded-2xl border border-dashed border-slate-300 relative flex flex-col items-center justify-center text-center"
-          >
-            <div class="text-slate-400 mb-4">
-              <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-              </svg>
-            </div>
-            <h3 class="font-semibold text-lg mb-2 text-slate-600">Team Plans</h3>
-            <p class="text-slate-500 text-sm">Coming Soon</p>
-          </div>
-        </div>
-        <!-- Team Interest -->
-        <div class="mt-8 text-center">
-          <p class="text-slate-600">
-            Need team features?
-            <a
-              href="https://github.com/Whitening-Sinabro/clouvel/issues"
-              target="_blank"
-              class="text-accent hover:underline"
-              >Let us know</a
-            >
-            - We're building based on your feedback
-          </p>
         </div>
       </div>
     </section>
 
-    <!-- 9. FAQ -->
+    <!-- 12. FAQ -->
     <section id="faq" class="py-16 md:py-20 px-6 bg-white">
       <div class="max-w-3xl mx-auto">
         <div class="text-center mb-8 md:mb-12">
           <h2 class="text-2xl md:text-3xl font-bold mb-4">FAQ</h2>
-          <p class="text-slate-600 text-base md:text-lg">Frequently Asked Questions</p>
         </div>
         <div class="space-y-3 md:space-y-4">
-          <details
-            class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group"
-          >
-            <summary
-              class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
-            >
-              <span>Does it force a specific PRD format?</span>
-              <svg
-                class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
+          <details class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group">
+            <summary class="font-semibold text-base md:text-lg flex items-center justify-between gap-2">
+              <span>What exactly does Clouvel do?</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </summary>
             <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
-              We provide templates, but don't force them. Just need required sections
-              (goals, scope, requirements).
+              Clouvel is an MCP server that runs alongside Claude Code. It records every error with root cause analysis, warns you before repeating past mistakes, and blocks coding until you have a spec document. Think of it as persistent memory for your AI coding assistant.
             </p>
           </details>
-          <details
-            class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group"
-          >
-            <summary
-              class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
-            >
-              <span>Can I use my own PRD template?</span>
-              <svg
-                class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
+          <details class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group">
+            <summary class="font-semibold text-base md:text-lg flex items-center justify-between gap-2">
+              <span>Why not just use CLAUDE.md?</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </summary>
             <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
-              Yes. Use your existing template as-is. Clouvel just gates on document
-              "existence", not specific format.
+              CLAUDE.md is static rules you write by hand. Clouvel <strong>learns automatically</strong> from your actual errors and decisions. It detects patterns across sessions and warns you before you repeat a mistake. You can't write a CLAUDE.md rule for a bug you haven't encountered yet.
             </p>
           </details>
-          <details
-            class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group"
-          >
-            <summary
-              class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
-            >
-              <span>Does it work offline/locally?</span>
-              <svg
-                class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
+          <details class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group">
+            <summary class="font-semibold text-base md:text-lg flex items-center justify-between gap-2">
+              <span>Does it work offline?</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </summary>
             <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
-              License activation needs internet once. After that, works fully offline.
+              Yes. Pro license activation needs internet once. After that, everything works fully offline. All data stays local on your machine.
             </p>
           </details>
-          <details
-            class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group"
-          >
-            <summary
-              class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
-            >
-              <span>How does it fit my existing workflow?</span>
-              <svg
-                class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
+          <details class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group">
+            <summary class="font-semibold text-base md:text-lg flex items-center justify-between gap-2">
+              <span>Does it touch my code or project files?</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </summary>
             <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
-              It's an MCP server - just add config to Claude Code/Desktop.
-              Doesn't touch your code or project structure.
+              No. Clouvel is an MCP server - it provides tools to Claude Code but never modifies your source code. It stores its data in a <code>.claude/</code> folder. Your project structure stays untouched.
             </p>
           </details>
-          <details
-            class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group"
-          >
-            <summary
-              class="font-semibold text-base md:text-lg flex items-center justify-between gap-2"
-            >
-              <span>Why not just use a prompt or CLAUDE.md?</span>
-              <svg
-                class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
+          <details class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group">
+            <summary class="font-semibold text-base md:text-lg flex items-center justify-between gap-2">
+              <span>Is Free actually usable?</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </summary>
             <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
-              <strong>A prompt lives in one session. Memory lives forever.</strong>
-              CLAUDE.md is static rules. Clouvel learns from your actual decisions and warns when you're about to repeat a mistake.
+              Yes. 10 real tools that work. You get spec gating, error tracking (last 5), context save/load, quick perspectives, and more. Pro adds full history, pattern learning, cross-project memory, and the complete manager review.
+            </p>
+          </details>
+          <details class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group">
+            <summary class="font-semibold text-base md:text-lg flex items-center justify-between gap-2">
+              <span>What data does Clouvel send to the server?</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
+              Only two things: your <strong>license key</strong> and a <strong>machine ID</strong> (a SHA-256 hash derived from your hardware &mdash; no raw hardware info is ever sent). This happens once during Pro activation. After that, everything runs fully offline. Your code, documents, and error history never leave your machine.
+            </p>
+          </details>
+          <details class="bg-slate-50 rounded-xl p-4 md:p-6 cursor-pointer group">
+            <summary class="font-semibold text-base md:text-lg flex items-center justify-between gap-2">
+              <span>What if I change my computer?</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-3 md:mt-4 text-slate-600 text-sm md:text-base">
+              Use the contact form above or open a GitHub Issue with your license key. We'll reset your machine ID, typically within 24&ndash;48 hours.
             </p>
           </details>
         </div>
       </div>
     </section>
 
-    <!-- 10. Contact -->
+    <!-- 13. Contact -->
     <section id="contact" class="py-16 md:py-20 px-6">
       <div class="max-w-2xl mx-auto">
         <div class="text-center mb-8 md:mb-12">
           <h2 class="text-2xl md:text-3xl font-bold mb-4">Contact Us</h2>
-          <p class="text-slate-600 text-base md:text-lg">
-            Machine reset, license issues - we'll help you quickly
-          </p>
+          <p class="text-slate-600 text-base md:text-lg">Machine reset, license issues - we'll help you quickly</p>
         </div>
         <form id="contactForm" class="space-y-4 md:space-y-6">
           <div>
-            <label
-              for="email"
-              class="block text-sm font-medium text-slate-700 mb-2"
-              >Email (required)</label
-            >
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition"
-              placeholder="Email used for purchase"
-            />
+            <label for="email" class="block text-sm font-medium text-slate-700 mb-2">Email (required)</label>
+            <input type="email" id="email" name="email" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition" placeholder="Your email" />
           </div>
           <div>
-            <label
-              for="issueType"
-              class="block text-sm font-medium text-slate-700 mb-2"
-              >Issue Type</label
-            >
-            <select
-              id="issueType"
-              name="issueType"
-              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition"
-            >
+            <label for="issueType" class="block text-sm font-medium text-slate-700 mb-2">Issue Type</label>
+            <select id="issueType" name="issueType" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition">
               <option value="machine_reset">Machine Reset / New PC</option>
               <option value="license_issue">License Issue</option>
               <option value="bug_report">Bug Report</option>
@@ -1676,100 +652,39 @@
             </select>
           </div>
           <div>
-            <label
-              for="message"
-              class="block text-sm font-medium text-slate-700 mb-2"
-              >Details (optional)</label
-            >
-            <textarea
-              id="message"
-              name="message"
-              rows="4"
-              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition resize-none"
-              placeholder="Describe the issue"
-            ></textarea>
+            <label for="message" class="block text-sm font-medium text-slate-700 mb-2">Details (optional)</label>
+            <textarea id="message" name="message" rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition resize-none" placeholder="Describe the issue"></textarea>
           </div>
-          <button
-            type="submit"
-            id="submitBtn"
-            class="w-full py-4 rounded-full font-medium bg-accent text-white hover:bg-accent-dark transition flex items-center justify-center gap-2"
-          >
+          <button type="submit" id="submitBtn" class="w-full py-4 rounded-full font-medium bg-accent text-white hover:bg-accent-dark transition flex items-center justify-center gap-2">
             <span>Send Inquiry</span>
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
           </button>
         </form>
-        <div
-          id="formSuccess"
-          class="hidden mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-center"
-        >
-          <p class="text-emerald-700 font-medium">
-            Inquiry received! We'll get back to you soon.
-          </p>
+        <div id="formSuccess" class="hidden mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
+          <p class="text-emerald-700 font-medium">Inquiry received! We'll get back to you soon.</p>
         </div>
-        <div
-          id="formError"
-          class="hidden mt-6 p-4 bg-red-50 border border-red-200 rounded-xl text-center"
-        >
-          <p class="text-red-700 font-medium">
-            Failed to send. Try again later or use GitHub Issues.
-          </p>
+        <div id="formError" class="hidden mt-6 p-4 bg-red-50 border border-red-200 rounded-xl text-center">
+          <p class="text-red-700 font-medium">Failed to send. Try again later or use GitHub Issues.</p>
         </div>
         <p class="text-center text-slate-500 text-sm mt-6">
-          Or reach us at
-          <a
-            href="https://github.com/Whitening-Sinabro/clouvel/issues"
-            target="_blank"
-            class="text-accent hover:underline"
-            >GitHub Issues</a
-          >
+          Or reach us at <a href="https://github.com/Whitening-Sinabro/clouvel/issues" target="_blank" class="text-accent hover:underline">GitHub Issues</a>
         </p>
       </div>
     </section>
 
     <!-- Footer -->
-    <footer
-      class="py-8 md:py-12 px-6 border-t border-slate-200/50 bg-warm-white"
-    >
+    <footer class="py-8 md:py-12 px-6 border-t border-slate-200/50 bg-warm-white">
       <div class="max-w-6xl mx-auto">
-        <div
-          class="flex flex-col md:flex-row justify-between items-center gap-4 mb-4 md:mb-6"
-        >
-          <div class="text-sm text-slate-500">
-            &copy; 2026 Clouvel. Made by SINABRO.
-          </div>
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-4 md:mb-6">
+          <div class="text-sm text-slate-500">&copy; 2026 Clouvel. Made by SINABRO.</div>
           <div class="flex gap-4 md:gap-6 text-sm text-slate-500">
-            <a
-              href="https://github.com/Whitening-Sinabro/clouvel"
-              target="_blank"
-              class="hover:text-dark-slate transition"
-              >GitHub</a
-            >
-            <a
-              href="https://github.com/Whitening-Sinabro/clouvel/issues"
-              target="_blank"
-              class="hover:text-dark-slate transition"
-              >Support</a
-            >
-            <a href="terms.html" class="hover:text-dark-slate transition"
-              >Terms</a
-            >
+            <a href="https://github.com/Whitening-Sinabro/clouvel" target="_blank" class="hover:text-dark-slate transition">GitHub</a>
+            <a href="https://github.com/Whitening-Sinabro/clouvel/issues" target="_blank" class="hover:text-dark-slate transition">Support</a>
+            <a href="terms.html" class="hover:text-dark-slate transition">Terms</a>
           </div>
         </div>
         <p class="text-center text-slate-400 text-xs px-4">
-          Disclaimer: Results may vary depending on usage environment.
-          Clouvel does not guarantee specific outcomes.
+          Disclaimer: Results may vary depending on usage environment. Clouvel does not guarantee specific outcomes.
         </p>
       </div>
     </footer>

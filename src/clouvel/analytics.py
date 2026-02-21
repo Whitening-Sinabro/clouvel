@@ -481,7 +481,7 @@ def decide_experiment_winner(experiment_name: str, min_confidence: str = "medium
     return result
 
 
-def get_conversion_funnel(days: int = 30) -> dict:
+def get_conversion_funnel(days: int = 30, exclude_pro: bool = True) -> dict:
     """Get conversion funnel metrics.
 
     Funnel stages:
@@ -490,8 +490,24 @@ def get_conversion_funnel(days: int = 30) -> dict:
     3. Limit hit (project_limit, meeting_quota, kb_blocked)
     4. Upgrade prompt shown
     5. Pro conversion
+
+    Args:
+        days: Number of days to look back
+        exclude_pro: If True, exclude Pro/developer/trial users from funnel
+                     to avoid data contamination (default: True)
     """
     events = get_ab_events(days)
+
+    # v5.1: Collect Pro user hashes to exclude from funnel
+    pro_user_hashes = set()
+    if exclude_pro:
+        for event in events:
+            metadata = event.get("metadata", {})
+            license_tier = metadata.get("license_tier", "")
+            if license_tier in ("pro", "developer", "trial"):
+                user_hash = metadata.get("user_id_hash", "")
+                if user_hash:
+                    pro_user_hashes.add(user_hash)
 
     # Count unique users at each stage
     stages = {
@@ -502,6 +518,9 @@ def get_conversion_funnel(days: int = 30) -> dict:
         "converted": set(),
     }
 
+    # v5.1: Separate tier tracking for breakdown
+    tier_breakdown = {"free": set(), "pro": set(), "first": set(), "additional": set()}
+
     for event in events:
         event_type = event.get("type", "")
         metadata = event.get("metadata", {})
@@ -509,6 +528,20 @@ def get_conversion_funnel(days: int = 30) -> dict:
 
         if not user_hash:
             continue
+
+        # v5.1: Skip Pro-equivalent users if exclude_pro
+        if exclude_pro and user_hash in pro_user_hashes:
+            tier_breakdown["pro"].add(user_hash)
+            continue
+
+        # v5.1: Track project tier
+        project_tier = metadata.get("project_tier", "")
+        if project_tier == "first":
+            tier_breakdown["first"].add(user_hash)
+        elif project_tier == "additional":
+            tier_breakdown["additional"].add(user_hash)
+        else:
+            tier_breakdown["free"].add(user_hash)
 
         # Stage 1: First touch
         if event_type in ["experiment_assigned"]:
@@ -535,6 +568,7 @@ def get_conversion_funnel(days: int = 30) -> dict:
         "period_days": days,
         "stages": {},
         "overall_conversion": 0,
+        "excluded_pro_users": len(pro_user_hashes),
     }
 
     stage_names = ["first_touch", "engaged", "limit_hit", "upgrade_shown", "converted"]
@@ -557,6 +591,11 @@ def get_conversion_funnel(days: int = 30) -> dict:
     converted = len(stages["converted"])
     if first_touch > 0:
         funnel["overall_conversion"] = round(converted / first_touch * 100, 2)
+
+    # v5.1: Tier breakdown
+    funnel["tier_breakdown"] = {
+        k: len(v) for k, v in tier_breakdown.items()
+    }
 
     return funnel
 
@@ -587,6 +626,22 @@ def get_monthly_kpis(days: int = 30) -> dict:
         "unit": "%",
         "status": "on_track" if funnel["overall_conversion"] >= 5 else "needs_attention",
     }
+
+    # v5.1: Add tier breakdown from funnel
+    if "tier_breakdown" in funnel:
+        kpis["metrics"]["tier_breakdown"] = {
+            "value": funnel["tier_breakdown"],
+            "unit": "users",
+            "status": "info",
+        }
+
+    # v5.1: Track excluded Pro users
+    if "excluded_pro_users" in funnel:
+        kpis["metrics"]["excluded_pro_users"] = {
+            "value": funnel["excluded_pro_users"],
+            "unit": "users",
+            "status": "info",
+        }
 
     # 2. Pain point effectiveness (conversions within 24h of limit hit)
     limit_events = [e for e in events if e.get("type") in ["project_limit_hit", "ab_limit_hit", "ab_quota_exhausted"]]
@@ -659,7 +714,27 @@ def format_monthly_report(kpis: dict) -> str:
     status_icon = "[OK]" if te.get("status") == "on_track" else "[!!]"
     lines.append(f"| Total Events | {te.get('value', 0)} | {te.get('target', 0)}+ | {status_icon} |")
 
+    # v5.1: Excluded pro users
+    excluded = metrics.get("excluded_pro_users", {})
+    if excluded and excluded.get("value", 0) > 0:
+        lines.append(f"| Excluded Pro Users | {excluded.get('value', 0)} | - | [info] |")
+
     lines.append("")
+
+    # v5.1: Tier breakdown
+    tier_data = metrics.get("tier_breakdown", {}).get("value", {})
+    if tier_data and any(v > 0 for v in tier_data.values()):
+        lines.extend([
+            "## User Tier Breakdown",
+            "",
+            "| Tier | Users |",
+            "|------|-------|",
+        ])
+        tier_labels = {"free": "Free", "pro": "Pro (excluded)", "first": "First Project", "additional": "Additional Project"}
+        for tier, count in tier_data.items():
+            label = tier_labels.get(tier, tier)
+            lines.append(f"| {label} | {count} |")
+        lines.append("")
 
     # Funnel breakdown
     funnel = metrics.get("funnel_drop_rates", {}).get("value", {})

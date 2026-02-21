@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clouvel — PH Gallery: Problem → Solution</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            width: 1270px; height: 760px;
+            background: #0F172A;
+            font-family: 'Space Grotesk', sans-serif;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        .header {
+            text-align: center; margin-bottom: 48px;
+        }
+        .header h2 {
+            font-size: 36px; color: #F8FAFC; font-weight: 700;
+        }
+        .header h2 span { color: #0EA5E9; }
+        .panels {
+            display: flex; gap: 40px; padding: 0 80px;
+        }
+        .panel {
+            flex: 1; border-radius: 16px; padding: 36px;
+        }
+        .panel.before {
+            background: linear-gradient(135deg, #1E293B, #1a1f2e);
+            border: 1px solid #334155;
+        }
+        .panel.after {
+            background: linear-gradient(135deg, #0c2d1b, #0f2833);
+            border: 1px solid #166534;
+        }
+        .panel-label {
+            display: inline-block; padding: 4px 14px;
+            border-radius: 20px; font-size: 13px; font-weight: 600;
+            margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .before .panel-label { background: #7f1d1d; color: #fca5a5; }
+        .after .panel-label { background: #14532d; color: #86efac; }
+        .panel h3 {
+            font-size: 22px; font-weight: 700; color: #F8FAFC;
+            margin-bottom: 24px;
+        }
+        .timeline { list-style: none; }
+        .timeline li {
+            display: flex; align-items: flex-start; gap: 14px;
+            margin-bottom: 18px; font-size: 15px; line-height: 1.5;
+        }
+        .before .timeline li { color: #94A3B8; }
+        .after .timeline li { color: #86efac; }
+        .icon {
+            flex: 0 0 32px; height: 32px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+        }
+        .before .icon { background: rgba(239, 68, 68, 0.15); }
+        .after .icon { background: rgba(34, 197, 94, 0.15); }
+        .arrow {
+            position: absolute; left: 50%; top: 55%;
+            transform: translate(-50%, -50%);
+            font-size: 48px; color: #0EA5E9;
+        }
+        .wrapper { position: relative; width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Without Clouvel → <span>With Clouvel</span></h2>
+    </div>
+    <div class="wrapper">
+        <div class="panels">
+            <div class="panel before">
+                <span class="panel-label">Without Clouvel</span>
+                <h3>Same bugs, every session</h3>
+                <ul class="timeline">
+                    <li>
+                        <div class="icon">🔴</div>
+                        <div><strong>Session 1:</strong> Auth breaks due to missing null check</div>
+                    </li>
+                    <li>
+                        <div class="icon">🔧</div>
+                        <div><strong>You fix it.</strong> Spend 30 min debugging.</div>
+                    </li>
+                    <li>
+                        <div class="icon">🔴</div>
+                        <div><strong>Session 2:</strong> Same null check bug in auth. Again.</div>
+                    </li>
+                    <li>
+                        <div class="icon">🔧</div>
+                        <div><strong>Fix again.</strong> Another 30 min wasted.</div>
+                    </li>
+                    <li>
+                        <div class="icon">😤</div>
+                        <div><strong>Session 3:</strong> It happens a third time.</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="panel after">
+                <span class="panel-label">With Clouvel</span>
+                <h3>Caught before it ships</h3>
+                <ul class="timeline">
+                    <li>
+                        <div class="icon">📝</div>
+                        <div><strong>Session 1:</strong> Bug recorded in Regression Memory</div>
+                    </li>
+                    <li>
+                        <div class="icon">⚠️</div>
+                        <div><strong>Session 2:</strong> "MATCH — this pattern caused a bug 1 session ago"</div>
+                    </li>
+                    <li>
+                        <div class="icon">✅</div>
+                        <div><strong>Bug prevented.</strong> Zero time wasted.</div>
+                    </li>
+                    <li>
+                        <div class="icon">🚀</div>
+                        <div><strong>Ship with proof:</strong> lint → test → build → evidence file</div>
+                    </li>
+                    <li>
+                        <div class="icon">🧠</div>
+                        <div><strong>Context persists.</strong> Decisions never lost.</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

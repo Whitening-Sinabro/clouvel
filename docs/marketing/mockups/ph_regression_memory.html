@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clouvel — PH Gallery: Regression Memory</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            width: 1270px; height: 760px;
+            background: #0F172A;
+            font-family: 'Space Grotesk', sans-serif;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            overflow: hidden; padding: 50px 80px;
+        }
+        .header { text-align: center; margin-bottom: 48px; }
+        .header .badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(139, 92, 246, 0.15); color: #a78bfa;
+            padding: 6px 16px; border-radius: 20px;
+            font-size: 14px; font-weight: 500; margin-bottom: 16px;
+        }
+        .header h2 {
+            font-size: 36px; color: #F8FAFC; font-weight: 700;
+        }
+        .header p { font-size: 18px; color: #64748B; margin-top: 8px; }
+
+        .flow {
+            display: flex; align-items: center; gap: 0; width: 100%;
+        }
+        .step {
+            flex: 1; text-align: center; position: relative;
+        }
+        .step-box {
+            background: #1E293B; border: 1px solid #334155;
+            border-radius: 16px; padding: 28px 20px;
+            margin: 0 16px;
+        }
+        .step-num {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px; border-radius: 50%;
+            font-size: 16px; font-weight: 700; margin-bottom: 14px;
+        }
+        .step:nth-child(1) .step-num { background: #7f1d1d; color: #fca5a5; }
+        .step:nth-child(3) .step-num { background: #713f12; color: #fde68a; }
+        .step:nth-child(5) .step-num { background: #14532d; color: #86efac; }
+        .step-box h3 {
+            font-size: 18px; color: #F8FAFC; font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .step-box .tool {
+            display: inline-block; background: rgba(14, 165, 233, 0.1);
+            color: #0EA5E9; padding: 4px 12px; border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace; font-size: 13px;
+            margin-bottom: 12px;
+        }
+        .step-box p { color: #94A3B8; font-size: 14px; line-height: 1.5; }
+
+        .arrow-box {
+            flex: 0 0 48px; display: flex; align-items: center;
+            justify-content: center;
+        }
+        .arrow {
+            font-size: 28px; color: #475569;
+        }
+
+        .bottom-bar {
+            display: flex; gap: 32px; margin-top: 40px;
+            background: rgba(14, 165, 233, 0.05);
+            border: 1px solid rgba(14, 165, 233, 0.15);
+            border-radius: 12px; padding: 16px 32px;
+        }
+        .bottom-bar .item {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 14px; color: #94A3B8;
+        }
+        .bottom-bar .item strong { color: #F8FAFC; }
+        .bottom-bar .icon { font-size: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="badge">🧠 Core Feature</div>
+        <h2>Regression Memory</h2>
+        <p>Record → Match → Prevent. Same bug never ships twice.</p>
+    </div>
+
+    <div class="flow">
+        <div class="step">
+            <div class="step-box">
+                <div class="step-num">1</div>
+                <div class="tool">error_record</div>
+                <h3>Bug Happens</h3>
+                <p>Error recorded with<br>root cause + 5 Whys analysis.<br>Stored in local SQLite.</p>
+            </div>
+        </div>
+        <div class="arrow-box"><span class="arrow">→</span></div>
+        <div class="step">
+            <div class="step-box">
+                <div class="step-num">2</div>
+                <div class="tool">error_check</div>
+                <h3>Pattern Matched</h3>
+                <p>Before next code change,<br>Clouvel checks if this pattern<br>caused bugs before.</p>
+            </div>
+        </div>
+        <div class="arrow-box"><span class="arrow">→</span></div>
+        <div class="step">
+            <div class="step-box">
+                <div class="step-num">3</div>
+                <div class="tool">error_learn</div>
+                <h3>Rule Generated</h3>
+                <p>NEVER/ALWAYS rules auto-created.<br>CLAUDE.md updated.<br>Bug prevented forever.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <div class="item"><span class="icon">💾</span> <strong>100% Local</strong> — SQLite on your machine</div>
+        <div class="item"><span class="icon">🔗</span> <strong>Cross-session</strong> — survives restarts</div>
+        <div class="item"><span class="icon">🌍</span> <strong>Cross-project</strong> — promote patterns globally</div>
+        <div class="item"><span class="icon">📊</span> <strong>Reports</strong> — monthly prevention stats</div>
+    </div>
+</body>
+</html>

@@ -1,178 +1,192 @@
-# SNS Marketing Posts
+# SNS Posts — Product Hunt Launch
 
-## Launch Announcement (Twitter/X)
+> v5.0 메시지 기준. "Remembers errors, prevents repeats, ships with proof."
 
-### Version A - Problem-focused
+---
+
+## Twitter/X — Launch Day
+
+### Post A: Problem → Solution
 ```
-Shipped: Clouvel - "No spec, no code"
+Claude Code is incredibly fast.
 
-Tired of AI writing "almost right" code?
+But it has zero memory.
 
-The problem:
-AI compresses your requirements.
-"Build login" → skips password reset, OAuth, rate limiting.
+It breaks something → you fix it → next session it breaks the same thing.
 
-The fix:
-PRD-First gate. No docs? No coding.
+I built Clouvel to fix this:
+- Remembers every error pattern
+- Warns before repeats
+- Ships with proof
 
-Free & open source.
-github.com/Whitening-Sinabro/clouvel
+Free & open source. 5K+ monthly installs.
 
-#buildinpublic #indiehackers
+pip install clouvel
+
+Launched on Product Hunt today 👇
+[PH_LINK]
 ```
 
-### Version B - Solution-focused
+### Post B: Numbers-focused
 ```
-Just launched Clouvel
+Launching Clouvel on @ProductHunt today 🚀
 
 What it does:
-Blocks AI coding until you write specs.
+→ Gives Claude Code a persistent memory
+→ 20 MCP tools (10 free)
+→ Same bug never ships twice
 
-Why:
-- AI skips requirements silently
-- "Almost right" code = debugging hell
-- Same prompt, different results
-
-Now:
-No PRD? BLOCKED.
-Complete PRD? PASS.
+Numbers:
+→ 5,100+ monthly installs
+→ $0 marketing spend
+→ Solo developer
 
 Try it: pip install clouvel
 
-#opensource #claudecode
+[PH_LINK]
+
+#buildinpublic #devtools
 ```
 
-### Version C - Story-focused
+### Post C: Technical hook
 ```
-I spent 3 days debugging AI-generated code.
+Claude Code forgets everything between sessions.
 
-The bug? AI "forgot" password reset.
-I said "build login" - it skipped half the features.
+Your errors. Your decisions. Your context. All gone.
 
-So I built Clouvel.
+Clouvel remembers:
+🔴 Error patterns → auto-catch regression
+🟡 Decisions → persist in knowledge base
+🟢 Ship evidence → lint/test/build in one report
 
-It's a gate:
-No spec → No code
+It's an MCP server. Install: pip install clouvel
 
-Now AI reads my PRD before coding.
-Same input = same output.
-
-Free: github.com/Whitening-Sinabro/clouvel
-```
-
----
-
-## Threads Posts
-
-### Thread 1 - The Problem
-```
-Post 1:
-AI coding has a dirty secret:
-
-It compresses your requirements.
-
-You say "build login"
-AI hears "build basic auth, skip everything else"
-
-Let me explain why this happens... 🧵
-
-Post 2:
-LLMs have context limits.
-When context fills up, they summarize.
-Summarizing = losing details.
-
-Your 10-point spec becomes 3 points.
-Password reset? Gone.
-Rate limiting? Gone.
-OAuth? Gone.
-
-Post 3:
-The result?
-
-"Almost right" code.
-
-It works... mostly.
-Then you spend 2-3 days debugging.
-Finding the missing pieces.
-
-Post 4:
-My solution: Clouvel
-
-A simple gate:
-- No PRD? Can't code.
-- Incomplete PRD? Warning.
-- Complete PRD? Go ahead.
-
-It's free. It's open source.
-github.com/Whitening-Sinabro/clouvel
+Open source. Launched on PH today:
+[PH_LINK]
 ```
 
 ---
 
-## Build in Public Updates
+## Twitter/X — Teaser (D-3)
 
-### Weekly Update Template
+### Teaser A
 ```
-Week X building Clouvel:
+Something I've been building for 3 months is launching next week.
 
-Done:
-- [feature 1]
-- [feature 2]
+It fixes the biggest problem with AI coding tools:
+They have no memory.
 
-Metrics:
-- GitHub stars: X
-- PyPI downloads: X
-- Paid users: X
-
-Next week:
-- [goal 1]
-- [goal 2]
+More soon. 👀
 
 #buildinpublic
 ```
 
-### Milestone Posts
+### Teaser B
 ```
-[Milestone] Clouvel hit X downloads!
+Quick question for Claude Code users:
 
-Started: [date]
-Now: X users
+How often does Claude break something you already fixed in a previous session?
 
-What worked:
-- [thing 1]
-- [thing 2]
+For me it was multiple times per week.
 
-What didn't:
-- [thing 1]
+I built something to fix it. Launching on @ProductHunt [date].
 
-Next goal: [X]
+#claudecode #devtools
+```
 
-Thanks for the support!
+---
+
+## Twitter/X — Follow-up (D+1)
+
+### Results post
+```
+Product Hunt launch day results:
+
+🏆 Rank: #[X]
+⬆️ Upvotes: [X]
+💬 Comments: [X]
+📦 PyPI installs (that day): [X]
+⭐ New GitHub stars: [X]
+
+Biggest surprise: [insight]
+
+Thank you to everyone who supported!
+
+Next: [what's next]
+
+#buildinpublic
+```
+
+---
+
+## Threads — Launch Day Thread
+
+```
+Post 1:
+I launched Clouvel on Product Hunt today.
+
+It fixes the biggest problem with AI coding:
+AI has no memory.
+
+Here's what I mean... 🧵
+
+Post 2:
+Session 1: "Build auth system"
+→ Claude writes perfect code
+
+Session 2: "Refactor the API"
+→ Auth system breaks. The same way as last time.
+
+Session 3: "Add tests"
+→ Breaks it again.
+
+Every session starts from zero.
+
+Post 3:
+Clouvel gives Claude Code a persistent brain:
+
+🔴 Regression Memory
+Records every error pattern. Same bug tries to recur? Caught automatically.
+
+🟡 8 AI Managers
+CTO, QA, Security officer review your plan before coding starts.
+
+🟢 Ship with Proof
+One command: lint → test → build → evidence file.
+
+Post 4:
+Numbers so far:
+- 5,100+ monthly installs
+- 20 tools (10 completely free)
+- 100% local — no data leaves your machine
+- Open source
+
+Install: pip install clouvel
+Product Hunt: [PH_LINK]
+
+Would love your support! 🙏
 ```
 
 ---
 
 ## Hashtags
 
-Primary:
-- #buildinpublic
-- #indiehackers
-- #opensource
-
-Secondary:
-- #claudecode
-- #aitools
-- #devtools
-- #saas
+**Primary**: #buildinpublic #devtools #opensource
+**Secondary**: #claudecode #aitools #indiehackers #producthunt
+**Technical**: #mcp #anthropic #llm
 
 ---
 
-## Posting Schedule
+## Posting Schedule (Launch Week)
 
-| Day | Platform | Content Type |
-|-----|----------|--------------|
-| Mon | Twitter | Tip/insight |
-| Tue | Threads | Thread/story |
-| Wed | Twitter | Update/metric |
-| Thu | Both | Feature highlight |
-| Fri | Twitter | Week recap |
+| 날짜 | 플랫폼 | 콘텐츠 |
+|------|--------|--------|
+| D-3 | Twitter | Teaser A |
+| D-2 | Twitter | Teaser B |
+| D-1 | Twitter | "Launching tomorrow" + screenshot |
+| **D-Day** | **Twitter** | **Post A (launch)** |
+| D-Day | Threads | Launch thread |
+| D-Day +6h | Twitter | Post B (numbers) |
+| D+1 | Twitter | Results post |
+| D+2 | Twitter | Lesson learned / behind the scenes |
+| D+3 | Threads | Technical deep-dive thread |

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clouvel — PH Gallery: Hero</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            width: 1270px; height: 760px;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            font-family: 'Space Grotesk', sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        .container {
+            display: flex; align-items: center; gap: 60px;
+            padding: 0 80px;
+        }
+        .left { flex: 1; }
+        .badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(14, 165, 233, 0.15); color: #0EA5E9;
+            padding: 6px 16px; border-radius: 20px;
+            font-size: 14px; font-weight: 500;
+            margin-bottom: 24px;
+        }
+        .badge::before { content: "⚡"; }
+        h1 {
+            font-size: 52px; font-weight: 700; color: #F8FAFC;
+            line-height: 1.1; margin-bottom: 16px;
+        }
+        h1 span { color: #0EA5E9; }
+        .subtitle {
+            font-size: 20px; color: #94A3B8; line-height: 1.5;
+            margin-bottom: 32px;
+        }
+        .install {
+            display: inline-flex; align-items: center; gap: 12px;
+            background: #1E293B; border: 1px solid #334155;
+            padding: 14px 24px; border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px; color: #E2E8F0;
+        }
+        .install .prompt { color: #0EA5E9; }
+        .stats {
+            display: flex; gap: 32px; margin-top: 24px;
+        }
+        .stat { color: #64748B; font-size: 14px; }
+        .stat strong { color: #F8FAFC; font-size: 18px; display: block; }
+
+        .right { flex: 0 0 420px; }
+        .terminal {
+            background: #0d1117; border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+        .term-header {
+            background: #161b22; padding: 14px 16px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot.r { background: #ff5f56; }
+        .dot.y { background: #ffbd2e; }
+        .dot.g { background: #27c93f; }
+        .term-title {
+            color: #8b949e; font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            margin-left: 8px;
+        }
+        .term-body {
+            padding: 20px; font-family: 'JetBrains Mono', monospace;
+            font-size: 13px; line-height: 1.7;
+        }
+        .line { color: #8b949e; }
+        .line .cmd { color: #0EA5E9; }
+        .line .pass { color: #27c93f; font-weight: 600; }
+        .line .warn { color: #ffbd2e; }
+        .line .err { color: #ff5f56; }
+        .line .hi { color: #F8FAFC; }
+        .blank { height: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <div class="badge">MCP Server for Claude Code</div>
+            <h1>Stop Claude Code<br><span>from breaking your code.</span></h1>
+            <p class="subtitle">It remembers every error, warns before repeats,<br>and ships with proof.</p>
+            <div class="install">
+                <span class="prompt">$</span> pip install clouvel
+            </div>
+            <div class="stats">
+                <div class="stat"><strong>5,100+</strong>monthly installs</div>
+                <div class="stat"><strong>20</strong>MCP tools</div>
+                <div class="stat"><strong>10</strong>free forever</div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="terminal">
+                <div class="term-header">
+                    <div class="dot r"></div>
+                    <div class="dot y"></div>
+                    <div class="dot g"></div>
+                    <span class="term-title">claude-code</span>
+                </div>
+                <div class="term-body">
+                    <div class="line"><span class="cmd">❯</span> <span class="hi">error_check</span></div>
+                    <div class="line"><span class="warn">⚠ MATCH</span> — This pattern caused a bug</div>
+                    <div class="line">&nbsp; 2 sessions ago in auth.py:42</div>
+                    <div class="line">&nbsp; <span class="err">Root cause:</span> missing null check</div>
+                    <div class="blank"></div>
+                    <div class="line"><span class="cmd">❯</span> <span class="hi">quick_ship</span></div>
+                    <div class="line">&nbsp; Lint &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pass">✓ PASS</span></div>
+                    <div class="line">&nbsp; Test &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pass">✓ PASS</span> (42 passed)</div>
+                    <div class="line">&nbsp; Build &nbsp;&nbsp;&nbsp;&nbsp; <span class="pass">✓ PASS</span></div>
+                    <div class="blank"></div>
+                    <div class="line"><span class="pass">✓</span> Evidence saved → .claude/evidence/</div>
+                    <div class="line"><span class="hi">Ready to ship.</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

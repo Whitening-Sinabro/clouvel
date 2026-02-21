@@ -1,81 +1,167 @@
-# Product Hunt Launch Checklist
+# Product Hunt Launch — Clouvel v5.0
 
-## Basic Info
+> **목표 런칭일**: 2026-02-24 (화) or 2026-02-25 (수)
+> **최적 시간**: 00:01 PST (한국 17:01 / 베트남 14:01)
+> **상태**: 준비 중
 
-| Item | Status | Content |
-|------|--------|---------|
-| Product Name | ✅ | Clouvel |
-| Tagline (60 chars) | ✅ | No spec, no code - PRD gate for AI coding |
-| Website | ✅ | https://whitening-sinabro.github.io/clouvel/ |
-| GitHub | ✅ | https://github.com/Whitening-Sinabro/clouvel |
+---
 
-## Assets Needed
+## 1. Basic Info
 
-| Asset | Size | Status | Note |
-|-------|------|--------|------|
-| Logo | 240x240 PNG | ✅ | clouvel_logo.png (리사이즈 필요) |
-| Gallery Image 1 | 1270x760 | ✅ | mockups/can_code_block.html → 스크린샷 |
-| Gallery Image 2 | 1270x760 | ✅ | mockups/can_code_pass.html → 스크린샷 |
-| Gallery Image 3 | 1270x760 | ✅ | mockups/manager_feedback.html → 스크린샷 |
-| Demo GIF | 1270x760 | ✅ | docs/landing/assets/demo.gif |
+| Item | Content |
+|------|---------|
+| Product Name | Clouvel |
+| Tagline (60 chars) | Stop Claude Code from breaking your code. It remembers. |
+| Website | https://clouvels.com/ |
+| GitHub | https://github.com/Whitening-Sinabro/clouvel |
+| Topics | Developer Tools, AI, Open Source, Productivity |
+| Pricing | Free (10 tools) / Pro $7.99/mo or $49/yr |
 
-### Mockup 스크린샷 방법
-1. 브라우저에서 HTML 파일 열기
-2. 창 크기 1270x760으로 조정
-3. 전체 화면 스크린샷 캡처
-4. PNG로 저장
+---
 
-## Description (240 chars max)
+## 2. Description (240 chars max)
 
 ```
-Stop AI from compressing your requirements. Clouvel blocks coding until PRD exists. Same input = same output. No more debugging "almost right" code. Free & open source MCP server for Claude Code.
+Claude Code is fast. But it forgets what it broke yesterday and breaks it again today.
+
+Clouvel remembers every error, warns before repeats, and ships with proof. 20 MCP tools — 10 free. pip install clouvel.
 ```
 
-## First Comment (Hunter's Comment)
+---
+
+## 3. First Comment (Maker's Comment)
 
 ```
 Hey Product Hunt! 👋
 
-I built Clouvel because I was tired of AI writing "almost right" code.
+I built Clouvel because I kept hitting the same problem: Claude Code would break something, I'd fix it, and next session it would break the exact same thing again.
 
-The problem: When you say "build login", AI skips password reset, OAuth, rate limiting... It compresses your requirements.
+AI coding tools are incredibly fast — but they have zero memory between sessions. Your decisions, your errors, your context: all gone.
 
-The solution: PRD-First gate. No docs? No coding allowed.
+Clouvel is an MCP server that gives Claude Code a persistent brain:
 
-How it works:
-1. Install: pip install clouvel
-2. Claude Code checks docs before coding
-3. Missing spec? BLOCKED. Complete spec? PASS.
+🔴 Regression Memory — records every error pattern. If the same bug tries to ship again, it gets caught automatically.
 
-It's free, open source, and works with Claude Code/Desktop.
+🟡 8 AI Managers — before you code, a virtual CTO, QA lead, and security officer review your plan and ask the questions you forgot.
 
-Would love your feedback! 🙏
+🟢 Ship with Proof — one command runs lint → test → build and generates a signed evidence file. No more "it works on my machine."
+
+How to try it:
+  pip install clouvel
+
+10 tools are completely free. No account needed. No data leaves your machine.
+
+5,100+ monthly installs so far. Would love feedback from this community! 🙏
+
+Docs: https://clouvels.com/docs-en
+GitHub: https://github.com/Whitening-Sinabro/clouvel
 ```
 
-## Launch Timing
+---
 
-- **Best days**: Tuesday, Wednesday, Thursday
-- **Best time**: 00:01 PST (launch at midnight)
-- **Avoid**: Weekends, Mondays, Fridays
+## 4. Gallery Images (1270×760)
 
-## Pre-Launch (1 week before)
+| # | Content | Status | File |
+|---|---------|--------|------|
+| 1 | **Hero**: "Stop Claude Code from breaking your code" + terminal mockup | ✅ HTML | mockups/ph_hero.html |
+| 2 | **Problem → Solution**: "Without/With Clouvel" split view | ✅ HTML | mockups/ph_problem_solution.html |
+| 3 | **Regression Memory**: Record → Match → Prevent flow | ✅ HTML | mockups/ph_regression_memory.html |
+| 4 | **8 AI Managers**: meeting transcript screenshot | ✅ 기존 | mockups/manager_feedback.html |
+| 5 | **Ship Evidence**: PASS output + "One command. Proof it works." | ✅ HTML | mockups/ph_ship_evidence.html |
 
-- [ ] Teaser post on Twitter/Threads
-- [ ] DM indie hacker friends for support
-- [ ] Prepare upvote request message
-- [ ] Schedule social posts for launch day
+> 기존 can_code_block/pass 스크린샷은 v3.0 "PRD gate" 메시지라 교체 필요
 
-## Launch Day
+### 갤러리 이미지 제작 방법
+1. HTML mockup 파일 생성 (docs/marketing/mockups/)
+2. 브라우저에서 열고 1270×760 뷰포트
+3. 스크린샷 캡처 → PNG 저장
+4. 또는 Figma/Canva로 제작
 
-- [ ] Post on Twitter/Threads immediately
-- [ ] Reply to every comment within 1 hour
-- [ ] Share in relevant Discord/Slack communities
-- [ ] Update GitHub README with PH badge
+---
 
-## Communities to Share
+## 5. Assets Checklist
 
-- [ ] r/SideProject
-- [ ] r/indiehackers
-- [ ] Indie Hackers forum
-- [ ] Dev.to article
-- [ ] Hacker News (Show HN)
+- [ ] Logo 240×240 PNG (현재 있으나 리사이즈 확인 필요)
+- [ ] Gallery Image 1 — Hero (HTML 완성, 스크린샷 필요)
+- [ ] Gallery Image 2 — Problem/Solution (HTML 완성, 스크린샷 필요)
+- [ ] Gallery Image 3 — Regression Memory flow (HTML 완성, 스크린샷 필요)
+- [ ] Gallery Image 4 — Manager Meeting (기존 HTML, 스크린샷 필요)
+- [ ] Gallery Image 5 — Ship Evidence (HTML 완성, 스크린샷 필요)
+- [ ] OG Image 1200×630 (현재 og-image.png 확인)
+- [ ] Demo GIF or Video (선택, 강력 추천)
+
+---
+
+## 6. Pre-Launch (D-7 ~ D-1)
+
+- [ ] PH에 product page draft 생성 (producthunt.com/posts/new)
+- [ ] "Coming Soon" 페이지 활성화 → early followers 확보
+- [ ] Gallery images 5장 업로드
+- [ ] Maker profile 완성 (bio, avatar, links)
+- [ ] Twitter/X에 teaser 포스트 (D-3)
+- [ ] r/ClaudeAI에 value post 1개 (PH 언급 없이, 가치 제공)
+- [ ] GitHub README에 "Launching on PH [date]" 배너 추가
+- [ ] 랜딩 페이지에 PH launch badge 추가 (launch day에 활성화)
+- [ ] 지인/커뮤니티에 DM으로 런칭일 공유
+
+---
+
+## 7. Launch Day (D-Day)
+
+### 00:01 PST — 런칭
+- [ ] PH에서 제품 publish
+- [ ] First comment 즉시 게시
+
+### +1h — 초기 확산
+- [ ] Twitter/X 런칭 포스트 (아래 SNS Posts 참고)
+- [ ] GitHub README에 PH badge 활성화
+- [ ] 랜딩에 PH badge 표시
+
+### +2~4h — 커뮤니티
+- [ ] r/ClaudeAI 포스트
+- [ ] r/SideProject 포스트
+- [ ] r/IndieHackers 포스트
+
+### 종일 — 참여
+- [ ] PH 댓글에 30분 이내 답변
+- [ ] Twitter 멘션 답변
+- [ ] Reddit 댓글 답변
+
+### End of Day — 기록
+- [ ] 최종 순위 스크린샷
+- [ ] upvote/comment 수 기록
+- [ ] current.md 업데이트
+
+---
+
+## 8. Post-Launch (D+1 ~ D+7)
+
+- [ ] Hacker News "Show HN" 포스트
+- [ ] Dev.to 블로그 글 ("Why I built Clouvel")
+- [ ] PH followers에게 감사 코멘트
+- [ ] 피드백 기반 quick wins 구현
+- [ ] weekly download/star 추이 기록
+
+---
+
+## 9. Key Metrics to Track
+
+| Metric | Current | Launch Target |
+|--------|---------|---------------|
+| PH Upvotes | — | 100+ |
+| PH Rank | — | Top 10 |
+| GitHub Stars | 2 | 20+ |
+| PyPI Monthly | 5,124 | 8,000+ |
+| Website visitors (launch day) | ~50/day | 500+ |
+
+---
+
+## 10. Launch Timing Strategy
+
+| 옵션 | 날짜 | 장단점 |
+|------|------|--------|
+| **A (추천)** | 화 02-24 | 화요일 = PH 최적일, 준비 시간 3일 |
+| B | 수 02-25 | 하루 더 준비, 여전히 좋은 요일 |
+| C | 화 03-03 | 넉넉한 준비, gallery 완벽하게 |
+
+> ⚠️ 금/토/일/월 런칭 절대 금지 — 트래픽 최저

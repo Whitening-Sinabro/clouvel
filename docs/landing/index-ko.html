@@ -277,6 +277,58 @@
             <img src="assets/can_code_pass.png" alt="Clouvel PASS" class="w-full" loading="lazy" />
           </div>
         </div>
+
+        <!-- 추가 실제 출력 -->
+        <div class="grid md:grid-cols-3 gap-6 md:gap-8 mt-8">
+          <!-- error_learn -->
+          <div class="rounded-2xl overflow-hidden border border-yellow-500/30">
+            <div class="bg-slate-800/80 px-4 py-2 flex items-center gap-2">
+              <span class="text-yellow-400 font-bold">error_learn</span>
+              <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">PRO</span>
+            </div>
+            <div class="bg-slate-900 p-4 font-mono text-xs leading-relaxed">
+              <p class="text-slate-400"># 에러 학습 분석</p>
+              <p class="text-white mt-2">패턴 분석:</p>
+              <p class="text-slate-300">&nbsp; import_error &nbsp;&nbsp; 3회 &nbsp; <span class="text-yellow-400">학습 필요</span></p>
+              <p class="text-slate-300">&nbsp; null_check &nbsp;&nbsp;&nbsp; 2회 &nbsp; <span class="text-slate-500">관찰 중</span></p>
+              <p class="text-white mt-3">CLAUDE.md 업데이트:</p>
+              <p class="text-emerald-400">&nbsp; + NEVER: 삭제된 모듈에서 import</p>
+              <p class="text-emerald-400">&nbsp; + ALWAYS: 쿼리 결과 사용 전 검증</p>
+              <p class="text-slate-400 mt-3">학습: 규칙 2개 &middot; 분석: 에러 5개</p>
+            </div>
+          </div>
+          <!-- meeting -->
+          <div class="rounded-2xl overflow-hidden border border-purple-500/30">
+            <div class="bg-slate-800/80 px-4 py-2 flex items-center gap-2">
+              <span class="text-purple-400 font-bold">meeting</span>
+              <span class="bg-purple-500/20 text-purple-400 text-xs px-2 py-1 rounded">PRO</span>
+            </div>
+            <div class="bg-slate-900 p-4 font-mono text-xs leading-relaxed">
+              <p class="text-slate-400"># C-Level 회의: 인증 시스템</p>
+              <p class="text-white mt-2"><span class="text-accent">PM:</span> "토큰이 세션 중에 만료되면?"</p>
+              <p class="text-white mt-1"><span class="text-purple-400">CTO:</span> "비밀번호 해싱 bcrypt? argon2?"</p>
+              <p class="text-white mt-1"><span class="text-red-400">CSO:</span> "로그인 레이트 리밋? 무차별 대입 1순위."</p>
+              <p class="text-white mt-1"><span class="text-emerald-400">QA:</span> "엣지 케이스: 두 기기 동시 로그인?"</p>
+              <p class="text-slate-400 mt-3">매니저 4명 &middot; 맹점 8개 발견</p>
+            </div>
+          </div>
+          <!-- ship -->
+          <div class="rounded-2xl overflow-hidden border border-accent/30">
+            <div class="bg-slate-800/80 px-4 py-2 flex items-center gap-2">
+              <span class="text-accent font-bold">ship</span>
+              <span class="bg-accent/20 text-accent text-xs px-2 py-1 rounded">PRO</span>
+            </div>
+            <div class="bg-slate-900 p-4 font-mono text-xs leading-relaxed">
+              <p class="text-emerald-400">SHIP READY - 배포 준비 완료</p>
+              <p class="text-slate-300 mt-2">[████████████░] 3/4 PASS</p>
+              <p class="text-slate-300 mt-2">&nbsp; <span class="text-emerald-400">PASS</span> &nbsp; LINT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2.5s</p>
+              <p class="text-slate-300">&nbsp; <span class="text-emerald-400">PASS</span> &nbsp; TYPECHECK &nbsp; 1.8s</p>
+              <p class="text-slate-300">&nbsp; <span class="text-emerald-400">PASS</span> &nbsp; TEST &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4.2s</p>
+              <p class="text-slate-300">&nbsp; <span class="text-slate-500">SKIP</span> &nbsp; BUILD</p>
+              <p class="text-slate-400 mt-3">증거: .claude/evidence/auth_0221.md</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -602,6 +654,22 @@
         </div>
         <p class="text-center text-slate-500 text-sm mt-6">
           또는 <a href="https://github.com/Whitening-Sinabro/clouvel/issues" target="_blank" class="text-accent hover:underline">GitHub Issues</a>로 문의
+        </p>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="py-12 md:py-16 px-6 bg-slate-50">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-2xl md:text-3xl font-bold mb-4">1인 개발자가 만듭니다</h2>
+        <p class="text-slate-600 text-base md:text-lg leading-relaxed mb-4">
+          Claude Code가 어제 고친 걸 오늘 또 깨뜨리는 게 지겨워서 Clouvel을 만들었습니다.
+          매일 반복되는 같은 실수. 그래서 진짜로 학습하는 메모리 레이어를 만들었습니다.
+        </p>
+        <p class="text-slate-500 text-sm">
+          Clouvel은 매주 업데이트됩니다.
+          질문, 버그, 아이디어 &mdash; 모든
+          <a href="https://github.com/Whitening-Sinabro/clouvel/issues" target="_blank" class="text-accent hover:underline">GitHub Issue</a>를 직접 읽고 답합니다.
         </p>
       </div>
     </section>

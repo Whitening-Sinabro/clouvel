@@ -552,6 +552,16 @@
                 <p class="text-yellow-400">WARN - PRD 있지만 권장 문서 부족</p>
                 <p class="text-emerald-400">PASS - 모든 문서 준비됨, 코딩 시작</p>
               </div>
+              <div class="mt-4 bg-slate-50 border border-slate-200 rounded-lg p-4">
+                <p class="text-xs font-semibold text-slate-500 uppercase mb-2">출력 예시</p>
+                <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                  <p class="text-red-400">Status: BLOCK</p>
+                  <p class="text-slate-400 mt-1">docs/ 에서 PRD를 찾을 수 없음</p>
+                  <p class="text-slate-400">확인: docs/PRD.md, docs/prd.md, docs/requirements.md</p>
+                  <p class="text-slate-500 mt-2">조치: PRD를 먼저 작성하세요.</p>
+                  <p class="text-slate-500">실행: start(path="/your/project", init=true)</p>
+                </div>
+              </div>
             </div>
 
             <!-- start -->
@@ -708,6 +718,19 @@
                 <p>path: str - 프로젝트 루트</p>
                 <p>auto_update_claude_md: bool (선택)</p>
               </div>
+              <div class="mt-4 bg-slate-50 border border-slate-200 rounded-lg p-4">
+                <p class="text-xs font-semibold text-slate-500 uppercase mb-2">출력 예시</p>
+                <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                  <p class="text-white"># 에러 학습 분석</p>
+                  <p class="text-slate-400 mt-1">패턴 분석:</p>
+                  <p class="text-slate-300">&nbsp; import_error &nbsp; 3회 &nbsp; <span class="text-yellow-400">학습 필요</span></p>
+                  <p class="text-slate-300">&nbsp; null_check &nbsp;&nbsp;&nbsp; 2회 &nbsp; <span class="text-slate-500">관찰 중</span></p>
+                  <p class="text-slate-400 mt-2">CLAUDE.md 업데이트:</p>
+                  <p class="text-emerald-400">&nbsp; + NEVER: 삭제된 모듈에서 import</p>
+                  <p class="text-emerald-400">&nbsp; + ALWAYS: 쿼리 결과 사용 전 검증</p>
+                  <p class="text-slate-500 mt-2">학습: 규칙 2개 &middot; 분석: 에러 5개</p>
+                </div>
+              </div>
             </div>
 
             <!-- memory_status -->
@@ -803,6 +826,18 @@
                 <p>context: str - 회의 주제/상황</p>
                 <p>topic: str (선택) - auth, api, payment, ui 등</p>
                 <p>managers: list (선택) - 특정 매니저 지정</p>
+              </div>
+              <div class="mt-4 bg-slate-50 border border-slate-200 rounded-lg p-4">
+                <p class="text-xs font-semibold text-slate-500 uppercase mb-2">출력 예시</p>
+                <div class="code-block rounded-lg p-3 font-mono text-xs text-slate-300">
+                  <p class="text-white"># C-Level 회의: 인증 시스템</p>
+                  <p class="text-slate-400 mt-1">토픽: auth &middot; 매니저: PM, CTO, CSO, QA</p>
+                  <p class="text-slate-300 mt-2"><span class="text-accent">PM:</span> "토큰이 세션 중에 만료되면?"</p>
+                  <p class="text-slate-300"><span class="text-purple-400">CTO:</span> "비밀번호 해싱 bcrypt? argon2?"</p>
+                  <p class="text-slate-300"><span class="text-red-400">CSO:</span> "로그인 레이트 리밋? 무차별 대입 1순위."</p>
+                  <p class="text-slate-300"><span class="text-emerald-400">QA:</span> "엣지 케이스: 두 기기 동시 로그인?"</p>
+                  <p class="text-slate-500 mt-2">매니저 4명 &middot; 맹점 8개 발견</p>
+                </div>
               </div>
             </div>
 

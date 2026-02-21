@@ -705,6 +705,29 @@
           <h2 class="text-2xl font-bold mb-6">API 레퍼런스: Pro 도구 (10개)</h2>
           <p class="text-slate-600 mb-6">Pro 라이선스 필요 ($7.99/월 또는 $49/년). 7일 무료 체험 가능.</p>
 
+          <!-- D3: Pro가 제공하는 결과 -->
+          <div class="bg-gradient-to-r from-accent/5 to-purple-50 border border-accent/20 rounded-xl p-6 mb-8">
+            <h3 class="text-lg font-semibold mb-3">Pro가 제공하는 것</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-700">
+              <div class="flex items-start gap-2">
+                <span class="text-accent mt-0.5">&#10003;</span>
+                <span><strong>같은 버그 반복 방지</strong> — 회귀 메모리가 세션 간 패턴을 감지하여 같은 실수가 두 번 배포되지 않음</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-accent mt-0.5">&#10003;</span>
+                <span><strong>증거와 함께 배포</strong> — 원클릭 lint → test → build 파이프라인이 매 릴리스마다 증거 파일 생성</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-accent mt-0.5">&#10003;</span>
+                <span><strong>코딩 전 맹점 발견</strong> — 8명의 AI 매니저(CTO, QA, CSO…)가 계획을 리뷰하고 놓친 리스크 발견</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-accent mt-0.5">&#10003;</span>
+                <span><strong>사라지지 않는 컨텍스트</strong> — 결정, 코드 위치, 에러 패턴이 모든 세션과 프로젝트에 걸쳐 영구 유지</span>
+              </div>
+            </div>
+          </div>
+
           <div class="space-y-4">
             <!-- error_learn -->
             <div class="bg-white border border-accent/30 rounded-xl p-6">
@@ -855,6 +878,22 @@
                 <p>steps: list (선택) - ["lint", "typecheck", "test", "build"]</p>
                 <p>auto_fix: bool (선택) - 린트 에러 수정</p>
               </div>
+              <!-- D1: Ship 증거 파일 예시 -->
+              <details class="mt-4">
+                <summary class="text-sm font-medium text-accent cursor-pointer hover:underline">예시: 생성된 증거 파일</summary>
+                <div class="code-block rounded-lg p-3 font-mono text-xs text-green-400 mt-2 leading-relaxed">
+                  <p class="text-slate-500"># .claude/evidence/auth-refactor_20260215_143012.md</p>
+                  <p class="text-white">## Ship 증거</p>
+                  <p><strong>프로젝트:</strong> my-app &nbsp; <strong>기능:</strong> auth-refactor &nbsp; <strong>날짜:</strong> 2026-02-15 14:30:12</p>
+                  <table class="w-full mt-2 text-xs">
+                    <tr><td class="pr-4">Lint</td><td class="text-green-400">&#10003; PASS</td><td class="text-slate-500">0 errors, 0 warnings</td></tr>
+                    <tr><td class="pr-4">Typecheck</td><td class="text-green-400">&#10003; PASS</td><td class="text-slate-500">mypy clean</td></tr>
+                    <tr><td class="pr-4">Test</td><td class="text-green-400">&#10003; PASS</td><td class="text-slate-500">42 passed, 0 failed</td></tr>
+                    <tr><td class="pr-4">Build</td><td class="text-green-400">&#10003; PASS</td><td class="text-slate-500">dist/ 생성 완료</td></tr>
+                  </table>
+                  <p class="text-white mt-2">결론: 배포 가능.</p>
+                </div>
+              </details>
             </div>
           </div>
         </section>
@@ -910,6 +949,17 @@
                   </tbody>
                 </table>
               </div>
+            </div>
+
+            <!-- D2: machine_id 설명 -->
+            <div class="mt-4 bg-slate-50 rounded-lg p-4">
+              <h4 class="text-sm font-semibold mb-2">machine_id란?</h4>
+              <ul class="text-xs text-slate-600 space-y-1">
+                <li>&bull; 하드웨어 핑거프린트(CPU, 호스트명, OS)의 SHA-256 해시. 역추적 불가능.</li>
+                <li>&bull; 라이선스를 하나의 기기에 바인딩하는 용도로만 사용.</li>
+                <li>&bull; 개인정보 없음 — IP, 사용자명, 파일 경로 미포함.</li>
+                <li>&bull; 기기 변경? 24~48시간 내 자동 리셋. 즉시 리셋은 GitHub Issues로 문의.</li>
+              </ul>
             </div>
           </div>
         </section>

@@ -21,10 +21,11 @@ MANAGERS = {
     "ERROR": ERROR_DATA,
 }
 
-# v3.0: Free tier = 1 manager (PM only)
+# v5.0: Free tier (additional projects) = PM only
+# First project gets all managers via entitlements.can_use_pro() bypass
 FREE_MANAGERS = ["PM"]
 
-# v3.0: Pro-only = 7 managers (was 5, now includes CTO, QA)
+# v5.0: Pro-only managers (filtered for additional projects only)
 PRO_ONLY_MANAGERS = ["CTO", "QA", "CDO", "CMO", "CFO", "CSO", "ERROR"]
 
 # Pro-only manager descriptions (for "missed perspectives" hint)

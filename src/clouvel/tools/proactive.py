@@ -10,31 +10,13 @@ from datetime import datetime
 from typing import Optional
 from mcp.types import TextContent
 
-# Pro feature check
-try:
-    from ..license_common import is_developer
-    _IS_DEVELOPER = is_developer()
-except Exception:
-    _IS_DEVELOPER = False
-
-try:
-    from ..license import check_license_status
-    _HAS_LICENSE = True
-except ImportError:
-    _HAS_LICENSE = False
+# v3.0.0: Use runtime entitlements check (supports first project tier)
+from ..utils.entitlements import can_use_pro as _entitlements_can_use_pro
 
 
-def _can_use_pro() -> bool:
-    """Check if Pro features are available."""
-    if _IS_DEVELOPER:
-        return True
-    if _HAS_LICENSE:
-        try:
-            status = check_license_status()
-            return status.get("valid", False)
-        except Exception:
-            return False
-    return False
+def _can_use_pro(project_path: str | None = None) -> bool:
+    """Check if Pro features are available (runtime, supports first project)."""
+    return _entitlements_can_use_pro(project_path)
 
 
 async def drift_check(
@@ -53,14 +35,14 @@ async def drift_check(
     Returns:
         DRIFT status with score and suggestions, or OK if aligned
     """
+    project_path = Path(path)
+
     # Pro check
-    if not _can_use_pro():
+    if not _can_use_pro(str(project_path)):
         return [TextContent(
             type="text",
-            text="[Pro] drift_check is a Pro feature. Upgrade at https://whitening-sinabro.github.io/clouvel/"
+            text="[Pro] drift_check is a Pro feature. Upgrade at https://clouvels.com/"
         )]
-
-    project_path = Path(path)
 
     if not project_path.exists():
         if silent:
@@ -178,14 +160,14 @@ async def pattern_watch(
     Returns:
         Alert if pattern detected, otherwise OK
     """
+    project_path = Path(path)
+
     # Pro check
-    if not _can_use_pro():
+    if not _can_use_pro(str(project_path)):
         return [TextContent(
             type="text",
-            text="[Pro] pattern_watch is a Pro feature. Upgrade at https://whitening-sinabro.github.io/clouvel/"
+            text="[Pro] pattern_watch is a Pro feature. Upgrade at https://clouvels.com/"
         )]
-
-    project_path = Path(path)
 
     if not project_path.exists():
         return [TextContent(type="text", text=f"[ERROR] Path does not exist: {path}")]
@@ -249,14 +231,14 @@ async def auto_remind(
     Returns:
         Configuration status
     """
+    project_path = Path(path)
+
     # Pro check
-    if not _can_use_pro():
+    if not _can_use_pro(str(project_path)):
         return [TextContent(
             type="text",
-            text="[Pro] auto_remind is a Pro feature. Upgrade at https://whitening-sinabro.github.io/clouvel/"
+            text="[Pro] auto_remind is a Pro feature. Upgrade at https://clouvels.com/"
         )]
-
-    project_path = Path(path)
 
     if not project_path.exists():
         return [TextContent(type="text", text=f"[ERROR] Path does not exist: {path}")]

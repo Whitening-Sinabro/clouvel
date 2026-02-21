@@ -36,6 +36,7 @@ def can_use_kb(project_path: Optional[str] = None) -> bool:
 
     True if:
     - Developer mode (env-based OR project_path is clouvel repo), OR
+    - First project tier (v5.0: Reverse Trial), OR
     - DB module available (Pro installed)
 
     Args:
@@ -43,6 +44,15 @@ def can_use_kb(project_path: Optional[str] = None) -> bool:
     """
     if is_developer(project_path):
         return True
+    # v5.0: First project gets KB access
+    if project_path:
+        try:
+            from ..license_common import get_project_tier
+            if get_project_tier(project_path) in ("pro", "first"):
+                db = _get_db()
+                return db is not None  # Still need db module to actually work
+        except ImportError:
+            pass
     return _get_db() is not None
 
 

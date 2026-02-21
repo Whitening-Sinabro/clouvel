@@ -44,55 +44,59 @@ def print_result(label, text):
 
 
 # ============================================================
-# SCENARIO 1: Project Limit
+# SCENARIO 1: Project Limit (v3.0.0: First Project Unlimited)
 # ============================================================
 def test_scenario_1_project_limit():
-    print_separator("1. Project Limit (3rd project → blocked)")
+    print_separator("1. First Project Unlimited + 2nd project blocked")
 
     with tempfile.TemporaryDirectory() as tmp:
         clouvel_dir = setup_clean_env(tmp)
         projects_file = clouvel_dir / "projects.json"
-        events_file = clouvel_dir / "events.jsonl"
+        first_project_file = clouvel_dir / "first_project.json"
 
         # Patch paths
         with patch("clouvel.license_common.is_developer", return_value=False), \
              patch("clouvel.license_common.load_license_cache", return_value=None), \
-             patch("clouvel.license_common.get_projects_path", return_value=projects_file):
+             patch("clouvel.license_common.is_full_trial_active", return_value=False), \
+             patch("clouvel.license_common.get_projects_path", return_value=projects_file), \
+             patch("clouvel.license_common._get_first_project_path", return_value=first_project_file):
 
-            from clouvel.license_common import register_project, FREE_ACTIVE_PROJECT_LIMIT
+            from clouvel.license_common import register_project, get_project_tier, FREE_ACTIVE_PROJECT_LIMIT
 
             print(f"FREE_ACTIVE_PROJECT_LIMIT = {FREE_ACTIVE_PROJECT_LIMIT}")
-            assert FREE_ACTIVE_PROJECT_LIMIT == 1, f"Expected 1, got {FREE_ACTIVE_PROJECT_LIMIT}"
 
-            # Register project 1
+            # Register project 1 → becomes "first" project (unlimited Pro)
             r1 = register_project(str(Path(tmp) / "project-alpha"))
-            print_result("Project 1 (alpha)", f"allowed={r1['allowed']}, count={r1['count']}/{r1['limit']}, is_new={r1['is_new']}")
+            print_result("Project 1 (alpha)", f"allowed={r1['allowed']}, tier={r1.get('tier')}")
             assert r1["allowed"] == True
-            assert r1["count"] == 1
+            assert r1.get("tier") == "first"
 
-            # Register project 2 → BLOCKED (v3.3: limit is 1 active project)
+            # Verify tier
+            tier1 = get_project_tier(str(Path(tmp) / "project-alpha"))
+            print_result("Project 1 tier", tier1)
+            assert tier1 == "first"
+
+            # Register project 2 → BLOCKED (additional project, Pro required)
             r2 = register_project(str(Path(tmp) / "project-beta"))
-            print_result("Project 2 (beta) → BLOCKED", f"allowed={r2['allowed']}, needs_archive={r2.get('needs_archive')}")
+            print_result("Project 2 (beta)", f"allowed={r2['allowed']}, needs_upgrade={r2.get('needs_upgrade')}")
             assert r2["allowed"] == False
-            assert r2.get("needs_archive") == True
 
-            # Check the message that would be shown
+            tier2 = get_project_tier(str(Path(tmp) / "project-beta"))
+            print_result("Project 2 tier", tier2)
+            assert tier2 == "additional"
+
+            # Check the message
             from clouvel.messages.en import CAN_CODE_PROJECT_LIMIT
-            msg = CAN_CODE_PROJECT_LIMIT.format(
-                count=r2["count"],
-                limit=r2["limit"],
-                existing_project=r2.get("existing_project", "unknown"),
-            )
-            print_result("ACTUAL MESSAGE shown to user", msg)
+            print_result("ACTUAL MESSAGE shown to user", CAN_CODE_PROJECT_LIMIT)
 
-            # Verify existing project access still works
+            # Verify first project access still works
             r1_again = register_project(str(Path(tmp) / "project-alpha"))
-            print_result("Existing project (alpha) re-access", f"allowed={r1_again['allowed']} (existing OK)")
+            print_result("First project re-access", f"allowed={r1_again['allowed']}, tier={r1_again.get('tier')}")
             assert r1_again["allowed"] == True
 
-            # Check projects.json
-            projects_data = json.loads(projects_file.read_text(encoding="utf-8"))
-            print_result("projects.json contents", json.dumps(projects_data, indent=2))
+            # Check first_project.json
+            fp_data = json.loads(first_project_file.read_text(encoding="utf-8"))
+            print_result("first_project.json", json.dumps(fp_data, indent=2))
 
     print("[PASS] Scenario 1 complete\n")
 
@@ -101,7 +105,7 @@ def test_scenario_1_project_limit():
 # SCENARIO 2: KB Trial Expiry
 # ============================================================
 def test_scenario_2_kb_trial_expiry():
-    print_separator("2. KB Trial Expiry (date manipulation)")
+    print_separator("2. KB Trial Expiry (additional project, date manipulation)")
 
     with tempfile.TemporaryDirectory() as tmp:
         clouvel_dir = setup_clean_env(tmp)
@@ -109,7 +113,10 @@ def test_scenario_2_kb_trial_expiry():
 
         project_path = str(Path(tmp) / "my-project")
 
-        with patch("clouvel.license_common._get_kb_trial_path", return_value=trial_file):
+        # v5.0: KB trial expiry only applies to additional projects
+        # First project gets unlimited KB via get_project_tier bypass
+        with patch("clouvel.license_common._get_kb_trial_path", return_value=trial_file), \
+             patch("clouvel.license_common.get_project_tier", return_value="additional"):
 
             from clouvel.license_common import start_kb_trial, is_kb_trial_active, get_kb_trial_start
 
@@ -300,13 +307,13 @@ def test_scenario_6_ab_flags():
             from clouvel.license_common import get_experiment_variant, EXPERIMENTS
 
             # First call: deterministic assignment based on machine_id hash
-            group1 = get_experiment_variant("project_limit")
-            valid_variants = EXPERIMENTS.get("project_limit", {}).get("variants", ["control"])
-            print_result("Experiment: project_limit", f"group={group1}, valid={valid_variants}")
+            group1 = get_experiment_variant("pain_point_message")
+            valid_variants = EXPERIMENTS.get("pain_point_message", {}).get("variants", ["control"])
+            print_result("Experiment: pain_point_message", f"group={group1}, valid={valid_variants}")
             assert group1 in valid_variants
 
             # Second call: same group (persisted)
-            group2 = get_experiment_variant("project_limit")
+            group2 = get_experiment_variant("pain_point_message")
             print_result("Same experiment again", f"group={group2} (should match)")
             assert group1 == group2
 

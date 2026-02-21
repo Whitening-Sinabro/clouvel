@@ -110,7 +110,7 @@ def has_valid_license() -> bool:
 
 
 def can_use_pro(project_path: str | None = None, license_checker: callable = None) -> bool:
-    """Combined check: env-based OR path-based OR license-based Pro access.
+    """Combined check: env-based OR path-based OR license-based OR first-project Pro access.
 
     Args:
         project_path: Project path for auto-detection (MCP-friendly)
@@ -124,7 +124,16 @@ def can_use_pro(project_path: str | None = None, license_checker: callable = Non
     if is_developer(project_path):
         return True
 
-    # 2) License check
+    # 2) First project tier check (v3.0.0: Reverse Trial)
+    if project_path:
+        try:
+            from ..license_common import get_project_tier
+            if get_project_tier(project_path) in ("pro", "first"):
+                return True
+        except ImportError:
+            pass
+
+    # 3) License check
     if license_checker is not None:
         return license_checker()
     return has_valid_license()

@@ -20,7 +20,8 @@ from .context import (
     _get_recent_modified_files,
 )
 
-MAX_FREE_CHECKPOINTS = 3
+MAX_FREE_CHECKPOINTS = 1
+MAX_PRO_CHECKPOINTS = 50
 
 
 def _get_git_status_rich(project_path: Path) -> dict:
@@ -82,8 +83,9 @@ def _sanitize_reason(reason: str) -> str:
     return sanitized[:40] or "checkpoint"
 
 
-def _enforce_checkpoint_limit(checkpoints_dir: Path) -> list[str]:
+def _enforce_checkpoint_limit(checkpoints_dir: Path, is_pro: bool = False) -> list[str]:
     """Delete oldest checkpoints if over limit. Returns list of deleted files."""
+    limit = MAX_PRO_CHECKPOINTS if is_pro else MAX_FREE_CHECKPOINTS
     deleted = []
     # Get timestamped checkpoint files (exclude latest.md)
     checkpoint_files = sorted(
@@ -91,7 +93,7 @@ def _enforce_checkpoint_limit(checkpoints_dir: Path) -> list[str]:
         key=lambda f: f.name,
     )
 
-    while len(checkpoint_files) >= MAX_FREE_CHECKPOINTS:
+    while len(checkpoint_files) >= limit:
         oldest = checkpoint_files.pop(0)
         oldest.unlink()
         deleted.append(oldest.name)
@@ -222,6 +224,7 @@ async def context_save(
     active_files: list[str] = None,
     decisions_this_session: list[str] = None,
     depth: str = "full",
+    is_pro: bool = False,
 ) -> list[TextContent]:
     """Pre-emptive context checkpoint. Saves full working state.
 
@@ -232,6 +235,7 @@ async def context_save(
         active_files: Files currently being worked on
         decisions_this_session: Decisions made this session
         depth: "quick" (current.md + git only) or "full" (everything)
+        is_pro: Whether user has Pro access (affects slot limit)
 
     Returns:
         Confirmation with checkpoint summary
@@ -323,7 +327,7 @@ async def context_save(
     checkpoints_dir.mkdir(parents=True, exist_ok=True)
 
     # Enforce limit (delete oldest before writing new)
-    deleted = _enforce_checkpoint_limit(checkpoints_dir)
+    deleted = _enforce_checkpoint_limit(checkpoints_dir, is_pro=is_pro)
 
     # Write timestamped file
     filename = f"{file_timestamp}_{safe_reason}.md"
@@ -358,7 +362,16 @@ async def context_save(
         response_parts.append(f"- Recent files: {len(recent_files)}")
 
     if deleted:
-        response_parts.append(f"\n**Rotated**: {len(deleted)} old checkpoint(s) removed (max {MAX_FREE_CHECKPOINTS})")
+        limit = MAX_PRO_CHECKPOINTS if is_pro else MAX_FREE_CHECKPOINTS
+        response_parts.append(f"\n**Rotated**: {len(deleted)} old checkpoint(s) removed (max {limit})")
+
+    if not is_pro:
+        response_parts.append(
+            f"\n**Free plan**: {MAX_FREE_CHECKPOINTS} checkpoint slot(s). "
+            f"New saves overwrite older ones.\n"
+            f"Pro: {MAX_PRO_CHECKPOINTS} slots + timeline view "
+            f"→ `license_status(action=\"trial\")`"
+        )
 
     response_parts.append(f"\n**Recover with**: `context_load(path=\"{path}\")`")
 

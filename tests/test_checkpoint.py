@@ -328,11 +328,11 @@ class TestCheckpointRetention:
         assert deleted == []
 
     def test_enforce_limit_under_limit(self, temp_project):
-        """No deletion when under limit"""
+        """No deletion when under limit (Pro mode, limit=50)"""
         checkpoints_dir = temp_project / ".claude" / "checkpoints"
         checkpoints_dir.mkdir(parents=True, exist_ok=True)
         (checkpoints_dir / "2026-01-01T00-00-00_test.md").write_text("x")
-        deleted = _enforce_checkpoint_limit(checkpoints_dir)
+        deleted = _enforce_checkpoint_limit(checkpoints_dir, is_pro=True)
         assert deleted == []
 
 

@@ -1,6 +1,6 @@
 # Clouvel 현재 상태
 
-> **마지막 업데이트**: 2026-02-09 (v1.0.0 — Gate→Memory 피봇 리브랜딩)
+> **마지막 업데이트**: 2026-02-21 (랜딩페이지 AI 분석 기반 A+B+C 항목 전체 완료)
 
 ---
 
@@ -20,8 +20,9 @@
 
 | 항목              | 상태                              |
 | ----------------- | --------------------------------- |
-| **clouvel**       | v1.0.0 (피봇 후 리셋, Cross-Project Memory Transfer 포함) |
-| **전환율 개선**   | ✅ 4주 플랜 전체 완료 (Week 1-4) |
+| **clouvel**       | v5.0.0 (pyproject) / PyPI 미배포 |
+| **A/B 테스트**    | 🔄 데이터 수집 중 (4~5일 남음, 2/24경 결과) |
+| **전환율 개선**   | ✅ 4주 플랜 전체 완료 + v5.1 데이터 무결성 패치 |
 | **아키텍처**      | ✅ Manager Worker API 전환 완료   |
 | **문서 시스템**   | ✅ SSOT 완성 (ENTRYPOINTS + SIDE_EFFECTS + SMOKE_LOGS) |
 | **MCP 표준화**    | ✅ 52개 도구 분석 완료 (9그룹, 12표준, 5폐기, 6통합) |
@@ -30,10 +31,80 @@
 | **결제**          | ✅ Polar.sh 연동 완료             |
 | **보안**          | ✅ 민감 파일 커밋 차단 자동화     |
 | **Product Hunt**  | 런칭 완료 (2026-01-28) |
+| **테스트**        | ✅ 1593 passed, 10 skipped, 0 failed |
 
 ---
 
-## 오늘 완료 (2026-02-09) - v1.0.0 Regression Memory + 버전 리브랜딩
+## 오늘 완료 (2026-02-21) - 랜딩페이지 AI 분석 기반 A+B+C 항목 전체 완료
+
+### AI 3사 분석 종합 → A항목 4개 + B항목 3개 + C항목 2개 구현 + 배포
+
+GPT/Gemini/Grok 3개 AI의 clouvels.com 분석을 종합하여 A(즉시), B(강화), C(마케팅) 분류 후 A+B 구현.
+
+**A항목 (즉시 개선) — 완료**:
+1. **A1: "save 75%" → "Early Adopter Pricing"** — EN/KO 랜딩, docs, i18n JSON 전부 반영
+2. **A2: Privacy FAQ 추가** — "서버로 어떤 데이터가 전송되나요?" + "컴퓨터를 바꾸면?" 2개 항목
+3. **A3: 이용약관 현행화** — Personal/Team/Enterprise → Free/Pro 변경, 지원 응답시간 명시
+4. **A4: Troubleshooting 섹션 추가** — EN/KO docs에 6개 문제 해결 가이드 (사이드바 + 본문)
+
+**B항목 (강화 개선) — 완료**:
+5. **B5: 실제 출력 예시** — error_learn, meeting, ship 3개 터미널 스타일 블록 추가
+6. **B6: About 섹션** — "Built by a solo developer" 신뢰 구축 섹션
+7. **B7: Docs API 출력 예시** — can_code, error_learn, meeting 도구 레퍼런스에 예시 추가
+
+**수정 파일**:
+- `docs/landing/index.html` (EN 랜딩)
+- `docs/landing/index-ko.html` (KO 랜딩)
+- `docs/landing/docs-en.html` (EN 문서)
+- `docs/landing/docs.html` (KO 문서)
+- `docs/landing/terms.html` (이용약관)
+- `docs/landing/i18n/en.json`, `docs/landing/i18n/ko.json`
+
+**배포**: GitHub Pages (main push) + Cloudflare Pages (wrangler deploy) 양쪽 완료
+- 커밋: `d5dc289` (A항목), `f1e9513` (B항목) — dev→main cherry-pick
+
+**C항목 (마케팅 지원) — 완료**:
+8. **C8: GitHub Star 캠페인** — shields.io 배지 4종(PyPI/Python/MCP/60+ Tools), star 아이콘 hover 애니메이션, 다크 Star CTA 배너(About↔Footer 사이)
+9. **C9: 사용자 후기 수집** — Pricing 직전 Community Trust 섹션(4개 메트릭 카드), GitHub Issues 템플릿 링크 testimonial CTA
+
+**추가 커밋**: `43a250d`(dev) → `919e349`(main cherry-pick) → GitHub Pages + Cloudflare Pages 배포 완료
+
+---
+
+## 이전 완료 (2026-02-19) - v5.1 A/B 데이터 무결성 + 라이선스 로직 통합
+
+### 종합 점검 → 8건 발견 → P0 3건 수정
+
+**analytics.py 수정 (3건)**:
+1. `get_conversion_funnel(exclude_pro=True)` — Pro 사용자 자동 제외, tier breakdown 추가
+2. `get_monthly_kpis()` — tier_breakdown, excluded_pro_users 메트릭 추가
+3. `format_monthly_report()` — User Tier Breakdown 섹션 추가
+
+**license_common.py 수정 (4건)**:
+1. `experiment_assigned` 이벤트에 `user_id_hash` 추가 (Bug A: funnel first_touch 0명 문제 해결)
+2. `project_limit_hit`, `meeting_quota_used` 이벤트에 `project_tier` + `user_id_hash` 추가
+3. `get_experiment_variant()` — `license_tier` 감지 추가 (Pro/developer/trial 태그 → 데이터 오염 방지)
+4. `register_project()` — 이중 체크 제거, `get_project_tier()` 단일 진입점으로 통합 (130줄 → 45줄)
+
+### 검증 완료
+- **pytest**: 1593 passed, 10 skipped, 0 failed
+- **사이드이펙트 분석**: 8건 중 P0 3건 해결, 잔여 5건은 중간/낮음 (운영 지장 없음)
+
+### 다음 할 일
+
+1. **A/B 테스트 결과 확인** (2/24경) → `decide_winner` 실행
+2. **PyPI v5.0.0 배포** — 타이밍 미정
+3. **C항목 마케팅**: GitHub star 캠페인, 사용자 후기 수집
+4. **잔여 이슈 (P1-P2)**:
+   - #1 server.py error_record/memory 파라미터 검증 (중간)
+   - #4 EXPERIMENTS 동적 변경 불가 (낮음)
+   - #5 Manager 라우팅 이중 경로 (중간)
+   - #6 error_record → create_memory 변환 명확화 (중간)
+   - #8 license_free.py Pro 다운로드 로직 분리 (중간)
+
+---
+
+## 이전 완료 (2026-02-09) - v1.0.0 Regression Memory + 버전 리브랜딩
 
 ### Phase 2: 메모리 관리 도구 + 리포트 + Auto-Stale
 

@@ -24,7 +24,7 @@ How it works:
 - No spec? Blocked. Write the spec first.
 - Spec exists? Go ahead.
 
-Demo: https://whitening-sinabro.github.io/clouvel/assets/demo.gif
+Demo: https://clouvels.com/assets/demo.gif
 
 The idea is simple - same spec, same output. Every time.
 
@@ -60,7 +60,7 @@ So I built Clouvel, an MCP server that blocks AI from coding until you write a s
 
 It sounds annoying, but it actually saves time. Writing a 10-minute spec means AI knows exactly what to build, and you get consistent output every time.
 
-Demo: https://whitening-sinabro.github.io/clouvel/assets/demo.gif
+Demo: https://clouvels.com/assets/demo.gif
 
 Quick start:
 pip install clouvel
@@ -102,7 +102,7 @@ It blocks AI from coding until you write a spec. Sounds simple, but it solves th
 Before: "Build login" → AI guesses, different result each time
 After: "Build login" → AI reads your PRD, builds exactly what you specified
 
-Demo: https://whitening-sinabro.github.io/clouvel/assets/demo.gif
+Demo: https://clouvels.com/assets/demo.gif
 
 Business model:
 - Free: Core PRD gate (open source)

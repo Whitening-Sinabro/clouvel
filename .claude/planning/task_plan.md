@@ -73,7 +73,7 @@ claude  # can_code check runs automatically
 
 ## Documentation
 
-[Full docs →](https://whitening-sinabro.github.io/clouvel/)
+[Full docs →](https://clouvels.com/)
 ```
 
 ### 1.2 Contributing Guide

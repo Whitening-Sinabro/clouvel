@@ -71,7 +71,7 @@ export CLOUVEL_DEV=1
 
 ## Pro 버전
 
-더 강력한 기능이 필요하다면 [Clouvel Pro](https://whitening-sinabro.github.io/clouvel/)를 확인하세요.
+더 강력한 기능이 필요하다면 [Clouvel Pro](https://clouvels.com/)를 확인하세요.
 
 - Shovel 워크플로우 자동 설치
 - Gate 시스템 (lint → test → build)
@@ -83,7 +83,7 @@ export CLOUVEL_DEV=1
 ## 링크
 
 - [GitHub](https://github.com/Whitening-Sinabro/clouvel)
-- [Landing Page](https://whitening-sinabro.github.io/clouvel/)
+- [Landing Page](https://clouvels.com/)
 
 ---
 

@@ -1,132 +1,119 @@
 # Clouvel
 
-> **AI makes it fast. Clouvel makes it right.**
+> **Stop Claude Code from breaking your code.**
 
 [![PyPI](https://img.shields.io/pypi/v/clouvel)](https://pypi.org/project/clouvel/)
 [![Python](https://img.shields.io/pypi/pyversions/clouvel)](https://pypi.org/project/clouvel/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Your AI remembers its mistakes.** Regression Memory records every error and auto-warns before it happens again.
+Claude Code is fast. But it forgets what it broke yesterday and breaks it again today.
 
-**Try all Pro features free for 7 days** — no credit card required. Run `start_trial` in Claude Code.
-
----
-
-![Demo](docs/landing/assets/demo.gif)
+**Clouvel remembers.** It records every error, warns before repeats, and blocks coding without a spec.
 
 ---
 
-## Why Clouvel?
+## The Problem
 
-AI coding is fast but forgetful:
-
-| The Pain | What Actually Happens |
-|----------|----------------------|
-| AI repeats mistakes | Fixed a bug yesterday, AI recreates it today |
-| No one reviews your code | Ship bugs you'd catch with a second pair of eyes |
-| You forget past decisions | "Why did we do it this way?" — no one remembers |
-| Context resets every session | New chat = new AI = same old mistakes |
-
-**Free to act. Paid to remember.**
-
----
+| What happens | Why it hurts |
+|-------------|-------------|
+| AI recreates a bug it fixed yesterday | No error memory between sessions |
+| You ship without anyone reviewing | No second pair of eyes |
+| "Why did we do it this way?" | Decisions lost when context resets |
+| New session = same old mistakes | AI starts from zero every time |
 
 ## What Clouvel Does
 
-### 1. Memory — AI that learns from its mistakes
+### 1. Error Memory — AI that learns from mistakes
 ```
-AI:  ⚠️ REGRESSION MATCH: This error happened before.
+AI:  Warning: This error happened before.
      Root cause: Missing null check on DB query result
-     Prevention: Always validate query results before accessing properties
-     (Memory #7 — hit 4 times, saved 3 bugs)
+     Prevention: Always validate query results before accessing
+     (Memory #7 — prevented this bug 3 times)
 ```
 
-### 2. Feedback — 8 managers review in 30 seconds
-```
-👔 PM:  "User story covers happy path, but what about failed attempts?"
-🛠️ CTO: "Consider rate limiting for brute force protection."
-🔒 CSO: "⚠️ Password hashing not implemented."
-```
-
-### 3. Gate — Think before AI codes
+### 2. Spec Gate — Think before AI codes
 ```
 You: "Build login"
-AI:  ❌ BLOCKED - No PRD found. Write a spec first.
+AI:  BLOCKED - No PRD found. Write a spec first.
 
-You: *writes PRD with requirements*
-AI:  ✅ PASS - Ready to code.
+You: *writes PRD*
+AI:  PASS - Ready to code.
 ```
 
-**Memory + Feedback + Gate = AI that gets smarter over time.**
+### 3. Quick Check — Blind spots in 10 seconds
+```
+PM:  "What happens when login fails 5 times?"
+CTO: "Rate limiting needed for brute force protection."
+```
 
 ---
 
 ## Quick Start
 
 ```bash
-# Install
 pip install clouvel
 
-# Add to Claude Code (auto-detects your platform)
+# Auto-configure for Claude Code / Claude Desktop / VS Code
 clouvel install
-# If 'clouvel' is not recognized, use:
-# py -m clouvel install        (Windows)
-# python3 -m clouvel install   (Mac/Linux)
 
-# Start coding - can_code check runs automatically
+# Start coding
 claude
 ```
 
-That's it. No config needed.
+That's it. Clouvel runs automatically.
 
 ---
 
-## FREE vs PRO
+## Tools
 
-| | FREE | PRO ($7.99/mo) |
+### Free (10 tools — always available)
+
+| Tool | What it does |
+|------|-------------|
+| `can_code` | Blocks coding without a spec |
+| `start` | Set up a new project with PRD templates |
+| `save_prd` | Save your PRD from conversation |
+| `error_check` | Warns before repeating past mistakes |
+| `error_record` | Records errors with root cause analysis |
+| `context_save` | Saves working state before context runs out |
+| `context_load` | Restores state in a new session |
+| `quick_perspectives` | Quick blind-spot check (2 managers) |
+| `gate` | Run lint, test, build in sequence |
+| `license_status` | Check plan, activate license, start trial |
+
+### Pro (10 more tools — $7.99/mo)
+
+| Tool | What it does |
+|------|-------------|
+| `error_learn` | Auto-generates NEVER/ALWAYS rules from error patterns |
+| `memory_status` | Error memory dashboard with hit counts |
+| `memory_search` | Search past errors by keyword |
+| `memory_global_search` | Share error patterns across all projects |
+| `drift_check` | Detects when work drifts from goals |
+| `plan` | Detailed execution plans with dependencies |
+| `meeting` | Full 8-manager C-Level review |
+| `ship` | One-click lint+test+build with evidence |
+| `record_decision` | Persistent knowledge base for decisions |
+| `search_knowledge` | Search past decisions and context |
+
+---
+
+## Free vs Pro
+
+| | Free | Pro ($7.99/mo) |
 |---|---|---|
-| **Projects** | 1 active (archive to switch) | Unlimited |
-| **Templates** | `lite` + `minimal` | All (`lite` + `standard` + `detailed`) |
-| **Managers** | 1 (PM only) | 8 (PM, CTO, QA, CDO, CMO, CFO, CSO, Error) |
-| **Meeting** | 3 full meetings/month | Unlimited |
-| **can_code** | WARN (doesn't block) | BLOCK (enforces PRD) |
-| **Knowledge Base** | 7-day retention | Persistent across sessions |
-| **Regression Memory** | - | Records errors, auto-warns on repeat, monthly report |
-| **Error Learning** | - | Learns from your mistakes |
-| **Execution Plan** | - | `plan` with step-by-step actions |
+| **Error history** | Last 5 errors | Full history + patterns |
+| **Context slots** | 1 (overwrites) | 50 + timeline |
+| **Manager feedback** | 2 managers, 1 question | 8 managers, 2+ questions |
+| **Error learning** | - | Auto-generates rules |
+| **Cross-project memory** | - | Share lessons everywhere |
+| **Drift detection** | - | Catches scope creep |
+| **Ship pipeline** | gate (basic) | Full verify + evidence |
 
-**Want to try everything?** Start a 7-day free trial — all Pro features, no credit card.
-
+**Try Pro free for 7 days** — no credit card:
 ```
-> start_trial
-✅ 7-day Pro trial activated!
+> license_status(action="trial")
 ```
-
-**[Get Pro →](https://whitening-sinabro.github.io/clouvel/)**
-
----
-
-## Key Tools
-
-| Tool | What it does | FREE | PRO |
-|------|--------------|------|-----|
-| `can_code` | Checks if you can start coding | WARN | BLOCK |
-| `start` | Project onboarding + PRD templates | `lite` | All templates |
-| `quick_perspectives` | Quick blind-spot check (3-4 managers) | ✓ | ✓ |
-| `manager` | C-Level review meeting | PM only | 8 managers |
-| `meeting` | Natural meeting transcript | 3/month | Unlimited |
-| `plan` | Detailed execution planning | - | ✓ |
-| `ship` | lint → test → build pipeline | - | ✓ |
-| `record_decision` | Save decisions to Knowledge Base | - | ✓ |
-| `error_learn` | Learn from mistakes | - | ✓ |
-| `memory_status` | Regression Memory dashboard | - | ✓ |
-| `memory_search` | Search past error patterns | - | ✓ |
-| `memory_report` | Monthly savings report | - | ✓ |
-| `memory_global_search` | Search memories across all projects | - | ✓ |
-| `set_project_domain` | Isolate memories by domain (personal/work/client) | - | ✓ |
-| `start_trial` | Activate 7-day Pro trial | ✓ | - |
-
-**7 project types:** web-app, api, cli, chrome-ext, discord-bot, landing-page, saas
 
 ---
 
@@ -148,10 +135,6 @@ pip install clouvel
 **Automatic (recommended):**
 ```bash
 clouvel install
-
-# If 'clouvel' is not recognized:
-py -m clouvel install        # Windows
-python3 -m clouvel install   # Mac/Linux
 ```
 
 <details>
@@ -185,70 +168,25 @@ python3 -m clouvel install   # Mac/Linux
 
 ---
 
-## Usage Examples
-
-### `can_code` path
+## How It Works
 
 ```
-# Pass your project root OR docs folder:
-can_code(path="/your/project")
-can_code(path="/your/project/docs")
-
-# Wrong path? Clouvel exits immediately with suggestions:
-can_code(path="/wrong/path")
-→ PATH NOT FOUND: /wrong/path
-  Did you mean:
-    -> can_code(path="/your/project/docs")
-```
-
-### Block coding without PRD
-
-```
-You: "Build a user authentication system"
-
-Clouvel: ❌ BLOCKED
-- PRD.md not found
-- Architecture.md not found
-
-💡 Write a PRD first. Use `start` to begin.
-```
-
-### Start a new project
-
-```
-You: "Start a new project"
-
-Clouvel: 🚀 Project detected: web-app
-
-Questions:
-1. What's the main goal?
-2. Who are the users?
-3. What are the core features?
-
-→ Generates PRD from your answers
-```
-
-### Get manager feedback (Pro)
-
-```
-You: "Review my login implementation"
-
-👔 PM: User story covers happy path, but what about failed attempts?
-🛠️ CTO: Consider rate limiting for brute force protection.
-🧪 QA: Need tests for edge cases - empty password, SQL injection.
-🔒 CSO: ⚠️ CRITICAL - Password hashing not implemented.
-
-Status: NEEDS_REVISION
+Day 1:  Install → start → write PRD → can_code PASS → code
+Day 3:  Error happens → error_record saves it
+Day 5:  Same file → error_check warns "this broke before"
+Day 7:  5+ errors → "Full history available in Pro"
+Day 10: Context runs out → context_save/load preserves everything
+Day 14: Decide: $7.99/mo or stay Free
 ```
 
 ---
 
 ## Links
 
-- [Documentation](https://whitening-sinabro.github.io/clouvel/)
+- [Website](https://clouvels.com)
+- [Docs](https://clouvels.com/docs-en.html)
 - [Changelog](CHANGELOG.md)
 - [Report bugs](https://github.com/Whitening-Sinabro/clouvel/issues)
-- [Contribute](CONTRIBUTING.md)
 
 ---
 
@@ -259,8 +197,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 ---
 
 <p align="center">
-  <b>AI makes it fast. Clouvel makes it right.</b><br>
-  <a href="https://whitening-sinabro.github.io/clouvel/">Website</a> •
-  <a href="https://github.com/Whitening-Sinabro/clouvel/issues">Issues</a> •
-  <a href="https://whitening-sinabro.github.io/clouvel/">Get Pro</a>
+  <b>Stop Claude Code from breaking your code.</b><br>
+  <a href="https://github.com/Whitening-Sinabro/clouvel/issues">Issues</a>
 </p>

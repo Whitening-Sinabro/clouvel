@@ -8,6 +8,7 @@
 
 | 파일경로 | 목적 | 삭제가능 |
 |----------|------|----------|
+| `src/clouvel/gate_check.py` | Lightweight PreToolUse hook gate checker — reads .clouvel/gate.json, exits 0/1. No clouvel imports for speed. | ❌ |
 | `tests/test_prd_scoring.py` | PRD quality scoring engine tests (58 tests) | ❌ |
 | `tests/test_checkpoint.py` | context_save/context_load tests (36 tests) | ❌ |
 | `src/clouvel/tools/prd_scoring.py` | DEAD framework PRD quality scoring engine | ❌ |
@@ -118,6 +119,7 @@
 
 | 날짜 | 세션 | 생성/수정 파일 |
 |------|------|----------------|
+| 2026-02-21 | auto | `src/clouvel/gate_check.py` |
 | 2026-02-09 | auto | `tests/test_prd_scoring.py` |
 | 2026-02-09 | auto | `tests/test_checkpoint.py` |
 | 2026-02-09 | auto | `src/clouvel/tools/prd_scoring.py` |

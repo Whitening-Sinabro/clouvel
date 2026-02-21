@@ -705,6 +705,29 @@
           <h2 class="text-2xl font-bold mb-6">API Reference: Pro Tools (10)</h2>
           <p class="text-slate-600 mb-6">Requires Pro license ($7.99/mo or $49/yr). 7-day free trial available.</p>
 
+          <!-- D3: What Pro delivers — results, not features -->
+          <div class="bg-gradient-to-r from-accent/5 to-purple-50 border border-accent/20 rounded-xl p-6 mb-8">
+            <h3 class="text-lg font-semibold mb-3">What Pro delivers</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-700">
+              <div class="flex items-start gap-2">
+                <span class="text-accent mt-0.5">&#10003;</span>
+                <span><strong>Stop repeating bugs</strong> — Regression Memory catches patterns across sessions so the same mistake never ships twice</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-accent mt-0.5">&#10003;</span>
+                <span><strong>Ship with proof</strong> — One-click lint → test → build pipeline generates evidence files for every release</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-accent mt-0.5">&#10003;</span>
+                <span><strong>Catch blind spots before coding</strong> — 8 AI managers (CTO, QA, CSO…) review your plan and surface risks you missed</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-accent mt-0.5">&#10003;</span>
+                <span><strong>Context that never dies</strong> — Decisions, code locations, and error patterns persist across every session and project</span>
+              </div>
+            </div>
+          </div>
+
           <div class="space-y-4">
             <!-- error_learn -->
             <div class="bg-white border border-accent/30 rounded-xl p-6">
@@ -855,6 +878,26 @@
                 <p>steps: list (optional) - ["lint", "typecheck", "test", "build"]</p>
                 <p>auto_fix: bool (optional) - fix lint errors</p>
               </div>
+              <!-- D1: Evidence sample -->
+              <details class="mt-4">
+                <summary class="text-sm font-medium text-accent cursor-pointer hover:underline">Example: generated evidence file</summary>
+                <div class="code-block rounded-lg p-3 font-mono text-xs text-green-400 mt-2 leading-relaxed">
+                  <p class="text-slate-500"># .claude/evidence/auth-refactor_20260215_143012.md</p>
+                  <p>&nbsp;</p>
+                  <p class="text-white">## Ship Evidence</p>
+                  <p><strong>Project:</strong> my-app &nbsp; <strong>Feature:</strong> auth-refactor</p>
+                  <p><strong>Generated:</strong> 2026-02-15T14:30:12 &nbsp; <strong>Status:</strong> <span class="text-green-400">PASS</span></p>
+                  <p>&nbsp;</p>
+                  <p>| Step | Command | Status | Time |</p>
+                  <p>|------|---------|--------|------|</p>
+                  <p>| Lint | ruff check . | <span class="text-green-400">PASS</span> | 340ms |</p>
+                  <p>| Typecheck | mypy src/ | <span class="text-green-400">PASS</span> | 2.1s |</p>
+                  <p>| Test | pytest | <span class="text-green-400">PASS</span> (48 passed) | 4.7s |</p>
+                  <p>| Build | npm run build | <span class="text-green-400">PASS</span> | 8.2s |</p>
+                  <p>&nbsp;</p>
+                  <p class="text-white">Conclusion: Ready to ship.</p>
+                </div>
+              </details>
             </div>
           </div>
         </section>
@@ -909,6 +952,16 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
+              <!-- D2: machine_id definition -->
+              <div class="mt-4 bg-slate-50 rounded-lg p-4">
+                <h4 class="text-sm font-semibold mb-2">What is machine_id?</h4>
+                <ul class="text-xs text-slate-600 space-y-1">
+                  <li>&bull; <strong>SHA-256 hash</strong> of your hardware fingerprint (CPU, hostname, OS). Not reversible.</li>
+                  <li>&bull; Used only to bind your license to one device (prevents sharing).</li>
+                  <li>&bull; <strong>No personal data</strong> is included &mdash; no IP, no username, no file paths.</li>
+                  <li>&bull; <strong>Device change?</strong> machine_id resets automatically within 24&ndash;48 hours. Contact <a href="https://github.com/Whitening-Sinabro/clouvel/issues" class="text-accent hover:underline">GitHub Issues</a> for immediate reset.</li>
+                </ul>
               </div>
             </div>
           </div>

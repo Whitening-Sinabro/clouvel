@@ -75,6 +75,9 @@ from clouvel.messages import (
     CAN_CODE_TRIAL_EXPIRED,
     CAN_CODE_TRIAL_NUDGE_5,
     CAN_CODE_TRIAL_NUDGE_7,
+    # v3.0.0: First Project Unlimited
+    FIRST_PROJECT_WELCOME,
+    FIRST_PROJECT_ADDITIONAL_BLOCKED,
 )
 
 # Required documents definition
@@ -342,13 +345,22 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
     blocking_check = is_feature_available("code_blocking")
     can_block = blocking_check["available"]
 
+    # v3.0.0: First Project Unlimited override
+    if not is_pro:
+        from clouvel.license_common import get_project_tier
+        tier = get_project_tier(str(project_path))
+        if tier == "first":
+            is_pro = True
+            can_block = True
+            # Don't set is_trial — this is permanent, not trial
+
     # v3.2: Trial expired check (for FREE path messaging)
     trial_status = get_full_trial_status()
     trial_expired = (not trial_status.get("never_started", False)
                      and not trial_status.get("active", False)
                      and not is_trial)
 
-    # v3.0: Project limit check (FREE = 1 project)
+    # v3.0: Project limit check (FREE = 1 project, first project unlimited)
     project_check = register_project(str(project_path))
     if not project_check.get("allowed", True):
         # v3.3: Track A/B conversion event
@@ -360,11 +372,7 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
             })
         except Exception:
             pass
-        return [TextContent(type="text", text=CAN_CODE_PROJECT_LIMIT.format(
-            count=project_check["count"],
-            limit=project_check["limit"],
-            existing_project=project_check.get("existing_project", "unknown"),
-        ))]
+        return [TextContent(type="text", text=CAN_CODE_PROJECT_LIMIT)]
 
     # v3.0: No docs folder - BLOCK for Pro, WARN for Free
     if not docs_path.exists():
@@ -378,7 +386,7 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
             return [TextContent(type="text", text=CAN_CODE_BLOCK_NO_DOCS.format(path=path))]
         else:
             return [TextContent(type="text", text=CAN_CODE_WARN_NO_DOCS_FREE.format(
-                path=path, upgrade_hint="FIRST1"
+                path=path, upgrade_hint="$49/yr"
             ))]
 
     files = [f for f in docs_path.iterdir() if f.is_file()]
@@ -450,7 +458,7 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
         else:
             # v3.1: Track WARN count for no-PRD case too
             warn_count = increment_warn_count(str(project_path))
-            base_msg = CAN_CODE_WARN_NO_PRD_FREE.format(upgrade_hint="FIRST1")
+            base_msg = CAN_CODE_WARN_NO_PRD_FREE.format(upgrade_hint="$49/yr")
             if warn_count >= 3:
                 base_msg += CAN_CODE_WARN_ACCUMULATED.format(count=warn_count)
             return [TextContent(type="text", text=base_msg)]

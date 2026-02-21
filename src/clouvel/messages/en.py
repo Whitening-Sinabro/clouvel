@@ -62,19 +62,50 @@ CAN_CODE_PASS_WITH_WARN = "✅ PASS | ⚠️ WARN {warn_count} | Required: {foun
 
 CAN_CODE_PASS = "✅ PASS | Required: {found_docs} ✓{test_info} | Ready to code{prd_rule}"
 
+# v3.0.0: First Project Unlimited messages
+FIRST_PROJECT_WELCOME = """
+🎉 Welcome! This is your first project with Clouvel.
+
+You get FULL Pro features for this project:
+✅ 8 C-Level managers (PM, CTO, QA, CSO, CDO, CMO, CFO, ERROR)
+✅ Code blocking (prevents coding without proper spec)
+✅ Knowledge Base (context persists across sessions)
+✅ Error Learning (never repeat the same mistake)
+✅ Unlimited meetings
+
+Start your second project? Upgrade to Pro.
+"""
+
+FIRST_PROJECT_ADDITIONAL_BLOCKED = """
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🔒 Pro Required for Additional Projects
+
+  Your first project ({first_project_name}) has full Pro features.
+  To unlock Pro for all your projects:
+
+  Monthly: $7.99/mo
+  Annual:  $49/yr (Early Adopter Pricing)
+  → https://polar.sh/clouvel
+
+  💡 Pro developers manage 3.2 projects on average.
+     Knowledge Base remembers each project's context.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
+
 # v3.0: FREE tier messages (WARN instead of BLOCK)
 CAN_CODE_PROJECT_LIMIT = """
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  You've hit the 2-project limit.
+  🔒 Pro Required for Additional Projects
 
-  Active: {existing_project}
+  Your first project has full Pro features.
+  To unlock Pro for all your projects:
 
-  Your 3rd project is waiting.
-  Every day without Pro = decisions lost, context forgotten.
+  Monthly: $7.99/mo
+  Annual:  $49/yr (Early Adopter Pricing)
+  → https://polar.sh/clouvel
 
-  Monthly: $1 first month (code FIRST1), then $7.99/mo
-  Annual:  $23.99/yr forever (code LAUNCH70) - save 70%
-  -> https://polar.sh/clouvel
+  💡 Pro developers manage 3.2 projects on average.
+     Knowledge Base remembers each project's context.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
 
@@ -84,7 +115,7 @@ FREE tier: You can code, but PRD-first is recommended.
 Why spec first? 10 min spec -> 2 hours saved (no rework)
 
 Pro: Blocks coding until PRD exists (prevents rework)
--> https://polar.sh/clouvel (code: {upgrade_hint})
+-> https://polar.sh/clouvel ($49/yr — Early Adopter Pricing)
 """
 
 CAN_CODE_WARN_NO_PRD_FREE = """WARN | No PRD found | Recommended: start(path=".")
@@ -93,13 +124,13 @@ FREE tier: You can code, but PRD-first is recommended.
 Why spec first? 10 min spec -> 2 hours saved (no rework)
 
 Pro: Blocks coding + validates PRD sections + 8 managers
--> https://polar.sh/clouvel (code: {upgrade_hint})
+-> https://polar.sh/clouvel ($49/yr — Early Adopter Pricing)
 """
 
 CAN_CODE_PASS_FREE = """PASS | PRD exists | {test_count} tests | Ready to code (FREE tier)
 
 Pro: Full PRD validation + code blocking + 8 C-Level managers
--> https://polar.sh/clouvel (code: FIRST1)
+-> https://polar.sh/clouvel ($49/yr — Early Adopter Pricing)
 """
 
 CAN_CODE_WARN_ACCUMULATED = """
@@ -129,8 +160,8 @@ CAN_CODE_KB_TRIAL_EXPIRED = """
   Without Pro, new decisions won't be recorded.
   Next session = lost context = repeated mistakes.
 
-  Monthly: $1 first month (code FIRST1), then $7.99/mo
-  Annual:  $23.99/yr forever (code LAUNCH70) - save 70%
+  Monthly: $7.99/mo
+  Annual:  $49/yr (Early Adopter Pricing)
   -> https://polar.sh/clouvel
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
@@ -138,7 +169,7 @@ CAN_CODE_KB_TRIAL_EXPIRED = """
 CAN_CODE_TRIAL_ACTIVE = """
 ---
 Pro Trial: {remaining_days} day(s) left | Full access to 8 managers, KB, ship, BLOCK mode
-Lock in now: $1 first month (FIRST1) or $23.99/yr forever (LAUNCH70)
+Lock in now: $7.99/mo or $49/yr (Early Adopter Pricing)
 -> https://polar.sh/clouvel
 """
 
@@ -153,8 +184,8 @@ CAN_CODE_TRIAL_EXPIRED = """
   - ship generating evidence & reports
 
   Don't lose momentum:
-  Monthly: $1 first month (code FIRST1), then $7.99/mo
-  Annual:  $23.99/yr forever (code LAUNCH70) - save 70%
+  Monthly: $7.99/mo
+  Annual:  $49/yr (Early Adopter Pricing)
   -> https://polar.sh/clouvel
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
@@ -162,22 +193,24 @@ CAN_CODE_TRIAL_EXPIRED = """
 CAN_CODE_TRIAL_NUDGE_5 = """
 ---
 {remaining_days} day(s) left on your Pro trial.
-After that: PM only, WARN mode, 2-project limit.
-Lock in Pro now: $1 first month -> https://polar.sh/clouvel (code: FIRST1)
+After that: Your first project keeps Pro features, but additional projects need Pro.
+Lock in Pro now: $7.99/mo or $49/yr (Early Adopter Pricing) -> https://polar.sh/clouvel
 """
 
 CAN_CODE_TRIAL_NUDGE_7 = """
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Your Pro trial ends today.
 
-  Tomorrow you lose:
-  - 7 managers (CTO, QA, CDO, CMO, CFO, CSO, ERROR)
-  - Knowledge Base write access
-  - BLOCK mode (back to WARN)
-  - Unlimited projects (back to 2)
+  After trial, your first project keeps all Pro features.
+  But additional projects will need Pro for:
+  - 8 managers (only PM on free additional projects)
+  - Knowledge Base
+  - BLOCK mode
+  - Error Learning
 
-  $1 first month keeps everything:
-  -> https://polar.sh/clouvel (code: FIRST1)
+  Unlock Pro for all projects:
+  Monthly: $7.99/mo | Annual: $49/yr (Early Adopter Pricing)
+  -> https://polar.sh/clouvel
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
 

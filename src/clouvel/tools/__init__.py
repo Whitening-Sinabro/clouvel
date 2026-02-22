@@ -138,20 +138,15 @@ from .proactive import (
     auto_remind,
 )
 
-# Meeting 도구 (Free, v2.1)
+# Meeting 도구 (Free, v2.1) — consolidated subpackage
 from .meeting import (
     meeting,
     meeting_topics,
-)
-
-# Meeting Feedback & Tuning (Free, v2.2)
-from .meeting_feedback import (
+    # Meeting Feedback & Tuning (Free, v2.2)
     save_meeting,
     rate_meeting,
     get_meeting_stats,
     export_training_data,
-)
-from .meeting_tuning import (
     enable_ab_testing,
     disable_ab_testing,
     get_variant_performance,
@@ -164,8 +159,8 @@ from .checkpoint import (
     context_load,
 )
 
-# Meeting Personalization (Free, v2.3)
-from .meeting_personalization import (
+# Meeting Personalization (Free, v2.3) — from meeting subpackage
+from .meeting import (
     configure_meeting,
     add_persona_override,
     add_custom_prompt,

@@ -15,7 +15,7 @@ CACHE_FILE = CACHE_DIR / "version_cache.json"
 CACHE_TTL = 86400  # 24시간 (초)
 
 # 현재 버전 (pyproject.toml과 동기화)
-CURRENT_VERSION = "3.0.1"
+CURRENT_VERSION = "5.1.0"
 
 # v3.0 마이그레이션 공지 (한 번만 표시)
 V3_MIGRATION_NOTICE_FILE = CACHE_DIR / "v3_notice_shown.json"
@@ -91,10 +91,10 @@ def _compare_versions(current: str, latest: str) -> int:
     curr_parts.extend([0] * (max_len - len(curr_parts)))
     latest_parts.extend([0] * (max_len - len(latest_parts)))
 
-    for c, l in zip(curr_parts, latest_parts):
-        if c < l:
+    for c, lat in zip(curr_parts, latest_parts, strict=True):
+        if c < lat:
             return -1
-        elif c > l:
+        elif c > lat:
             return 1
     return 0
 

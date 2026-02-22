@@ -15,34 +15,13 @@ from mcp.types import TextContent
 
 # 공통 모듈에서 import
 from .license_common import (
-    get_license_path,
-    get_machine_id,
     get_tier_info,
-    guess_tier_from_key,
     load_license_cache,
     save_license_cache,
     delete_license_cache,
     calculate_license_status,
     create_license_data,
-    is_feature_available,
-    register_project,
-    get_project_count,
-    archive_project,
-    reactivate_project,
-    list_projects,
-    check_meeting_quota,
-    consume_meeting_quota,
-    get_experiment_variant,
-    get_experiment_value,
-    get_all_experiment_assignments,
-    track_conversion_event,
-    EXPERIMENTS,
     DEFAULT_TIER,
-    TIER_INFO,
-    PRO_ONLY_FEATURES,
-    FREE_PROJECT_LIMIT,
-    FREE_ACTIVE_PROJECT_LIMIT,
-    FREE_MONTHLY_MEETINGS,
 )
 
 

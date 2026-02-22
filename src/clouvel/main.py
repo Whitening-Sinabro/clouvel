@@ -28,7 +28,7 @@ def root():
         "status": "running",
         "endpoints": [
             "/docs/scan",
-            "/docs/analyze", 
+            "/docs/analyze",
             "/guide/prd",
             "/guide/verify"
         ]

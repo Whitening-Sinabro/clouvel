@@ -13,7 +13,7 @@ from ..license import require_team_license, get_cached_license
 # Team API URL
 TEAM_API_URL = os.environ.get(
     "CLOUVEL_TEAM_API_URL",
-    "https://clouvel-license-webhook.vnddns999.workers.dev"
+    "https://clouvel-api.vnddns999.workers.dev"
 )
 
 

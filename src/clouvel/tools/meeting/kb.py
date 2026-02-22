@@ -15,7 +15,7 @@ from pathlib import Path
 # Knowledge Base integration
 _HAS_KNOWLEDGE = False
 try:
-    from ..db.knowledge import (
+    from ...db.knowledge import (
         search_knowledge,
         get_recent_decisions,
         get_recent_locations,
@@ -165,7 +165,7 @@ def get_enriched_kb_context(
                 sections.append(loc_line)
 
         if sections:
-            header = f"## 💡 프로젝트 컨텍스트"
+            header = "## 💡 프로젝트 컨텍스트"
             if project_name:
                 header += f" ({project_name})"
             header += "\n_아래 정보를 참고하여 회의를 진행하세요._\n"
@@ -174,7 +174,7 @@ def get_enriched_kb_context(
 
         return None
 
-    except Exception as e:
+    except Exception:
         return None
 
 
@@ -271,7 +271,7 @@ def get_recommended_managers(
         Ordered list of recommended managers
     """
     # Default topic-based selection
-    from .manager.prompts import get_topic_guide
+    from ..manager.prompts import get_topic_guide
     guide = get_topic_guide(topic)
     default_managers = guide.get("participants", ["PM", "CTO", "QA"])
 

@@ -11,7 +11,7 @@ v3.2: project_path based detection for MCP compatibility.
 from typing import Optional, List
 
 # Runtime entitlement check (not import-time constant)
-from ..utils.entitlements import is_developer, can_use_pro
+from ..utils.entitlements import is_developer
 
 # DB module reference (lazy loaded)
 _db_module = None

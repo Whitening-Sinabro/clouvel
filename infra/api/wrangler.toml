@@ -1,0 +1,18 @@
+# Clouvel API Worker
+# v4.0: Server-side state (KV) + Version check + FREE tier
+# Deploy: cd infra/api && npx wrangler deploy
+
+name = "clouvel-api"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+MIN_VERSION = "3.0.0"
+FREE_MANAGERS = "PM"
+
+# KV Namespace for server-side state
+# Create with: wrangler kv namespace create STATE
+# Then paste the id below
+[[kv_namespaces]]
+binding = "STATE"
+id = "f6f4f57868ff438d8f4c80f7162cd1a7"

@@ -483,7 +483,7 @@ echo "[Clouvel] All checks passed. ✓"
             try:
                 import os
                 os.chmod(pre_commit, 0o755)
-            except:
+            except OSError:
                 pass
             created_files.append(".git/hooks/pre-commit")
 

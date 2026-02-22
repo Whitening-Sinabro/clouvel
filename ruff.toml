@@ -1,0 +1,27 @@
+# Clouvel - Ruff Configuration
+# Phase 0: Baseline linting infrastructure
+
+target-version = "py310"
+
+src = ["src"]
+
+line-length = 120
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "B",   # flake8-bugbear
+]
+ignore = [
+    "E501",  # line too long (handled by formatter if needed)
+    "E402",  # module level import not at top (bootstrap pattern)
+    "B904",  # raise ... from err (too many to fix at once)
+]
+
+[lint.per-file-ignores]
+"__init__.py" = ["F401"]  # unused imports in __init__ (re-exports)
+"_shared.py" = ["F401"]  # unused imports in shared modules (re-exports for subpackage)
+"src/clouvel/messages/__init__.py" = ["F403"]  # wildcard import for i18n re-export
+"src/clouvel/server.py" = ["E402"]  # bootstrap before imports

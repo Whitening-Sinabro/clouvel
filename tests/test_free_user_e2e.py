@@ -54,12 +54,15 @@ def test_scenario_1_project_limit():
         projects_file = clouvel_dir / "projects.json"
         first_project_file = clouvel_dir / "first_project.json"
 
-        # Patch paths
-        with patch("clouvel.license_common.is_developer", return_value=False), \
-             patch("clouvel.license_common.load_license_cache", return_value=None), \
-             patch("clouvel.license_common.is_full_trial_active", return_value=False), \
-             patch("clouvel.license_common.get_projects_path", return_value=projects_file), \
-             patch("clouvel.license_common._get_first_project_path", return_value=first_project_file):
+        # Patch paths (targets must match where functions are looked up in licensing submodules)
+        with patch("clouvel.licensing.projects.is_developer", return_value=False), \
+             patch("clouvel.licensing.first_project.is_developer", return_value=False), \
+             patch("clouvel.licensing.projects.load_license_cache", return_value=None), \
+             patch("clouvel.licensing.first_project.load_license_cache", return_value=None), \
+             patch("clouvel.licensing.projects.is_full_trial_active", return_value=False), \
+             patch("clouvel.licensing.first_project.is_full_trial_active", return_value=False), \
+             patch("clouvel.licensing.projects.get_projects_path", return_value=projects_file), \
+             patch("clouvel.licensing.first_project._get_first_project_path", return_value=first_project_file):
 
             from clouvel.license_common import register_project, get_project_tier, FREE_ACTIVE_PROJECT_LIMIT
 
@@ -115,8 +118,8 @@ def test_scenario_2_kb_trial_expiry():
 
         # v5.0: KB trial expiry only applies to additional projects
         # First project gets unlimited KB via get_project_tier bypass
-        with patch("clouvel.license_common._get_kb_trial_path", return_value=trial_file), \
-             patch("clouvel.license_common.get_project_tier", return_value="additional"):
+        with patch("clouvel.licensing.quotas._get_kb_trial_path", return_value=trial_file), \
+             patch("clouvel.licensing.quotas.get_project_tier", return_value="additional"):
 
             from clouvel.license_common import start_kb_trial, is_kb_trial_active, get_kb_trial_start
 
@@ -164,7 +167,7 @@ def test_scenario_3_weekly_meeting():
 
         project_path = str(Path(tmp) / "my-project")
 
-        with patch("clouvel.license_common._get_weekly_meeting_path", return_value=weekly_file):
+        with patch("clouvel.licensing.quotas._get_weekly_meeting_path", return_value=weekly_file):
 
             from clouvel.license_common import can_use_weekly_full_meeting, mark_weekly_meeting_used
 
@@ -211,7 +214,7 @@ def test_scenario_4_warn_accumulation():
 
         project_path = str(Path(tmp) / "my-project")
 
-        with patch("clouvel.license_common._get_warn_count_path", return_value=warn_file):
+        with patch("clouvel.licensing.quotas._get_warn_count_path", return_value=warn_file):
 
             from clouvel.license_common import increment_warn_count, get_warn_count
 
@@ -303,7 +306,7 @@ def test_scenario_6_ab_flags():
         clouvel_dir.mkdir(parents=True, exist_ok=True)
         ab_file = clouvel_dir / "ab_flags.json"
 
-        with patch("clouvel.license_common._get_ab_flags_path", return_value=ab_file):
+        with patch("clouvel.licensing.experiments._get_ab_flags_path", return_value=ab_file):
             from clouvel.license_common import get_experiment_variant, EXPERIMENTS
 
             # First call: deterministic assignment based on machine_id hash

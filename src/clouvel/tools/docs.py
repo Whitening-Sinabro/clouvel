@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Docs tools: PRD templates, guides, etc."""
 
-import os
 from datetime import datetime
 from pathlib import Path
 from mcp.types import TextContent
@@ -351,7 +350,7 @@ Same as VS Code. Install the "Clouvel" extension.
 
     if platform == "all":
         result = "# Clouvel Setup Guide\n\n"
-        for p, g in guides.items():
+        for _p, g in guides.items():
             result += g + "\n---\n\n"
         return [TextContent(type="text", text=result)]
 

@@ -350,7 +350,6 @@ def apply_personalization(
         # Score each manager
         scored = [(mgr, weights.get(mgr, 1.0)) for mgr in result["managers"]]
         # Sort by weight (descending), keeping PM first
-        pm_weight = weights.get("PM", 1.0)
         sorted_managers = sorted(scored, key=lambda x: (-1000 if x[0] == "PM" else 0) - x[1])
         result["managers"] = [mgr for mgr, _ in sorted_managers[:5]]
 

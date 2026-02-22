@@ -367,7 +367,7 @@ def _dev_mode_response(
             except ImportError:
                 # anthropic package not installed
                 pass
-            except Exception as e:
+            except Exception:
                 # API error - fall through to mock
                 pass
 

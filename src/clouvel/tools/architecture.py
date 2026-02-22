@@ -10,11 +10,10 @@ Clouvel Architecture Guard Tools (v1.8)
 아키텍처 결정 #30, #40 기반
 """
 
-import os
 import re
 import subprocess
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 
 
 def arch_check(
@@ -246,7 +245,7 @@ def check_imports(path: str = ".") -> Dict[str, Any]:
         output_lines.append("")
         for v in result["violations"]:
             output_lines.append(f"### Line {v['line']}")
-            output_lines.append(f"```python")
+            output_lines.append("```python")
             output_lines.append(v["content"])
             output_lines.append("```")
             output_lines.append(f"**이유**: {v['reason']}")
@@ -394,7 +393,6 @@ def check_sync(path: str = ".") -> Dict[str, Any]:
     Returns:
         동기화 검사 결과
     """
-    import ast
 
     project_path = Path(path).resolve()
     src_dir = project_path / "src" / "clouvel"

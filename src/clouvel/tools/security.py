@@ -111,7 +111,7 @@ echo "[Clouvel Pro] Security check passed."
         try:
             import os
             os.chmod(pre_commit, 0o755)
-        except:
+        except OSError:
             pass
     
     patterns_list = "\n".join(f"  - `{p}`" for p in patterns)

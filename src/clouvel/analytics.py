@@ -151,7 +151,7 @@ def format_stats(stats: dict) -> str:
     lines = [
         f"# Clouvel 사용량 통계 (최근 {stats['period_days']}일)",
         "",
-        f"## 요약",
+        "## 요약",
         f"- 총 호출: {stats['total_calls']}회",
         f"- 성공률: {stats['success_rate']}%",
         "",

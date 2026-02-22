@@ -12,7 +12,7 @@ Phase 2: Feedback loop for meeting quality improvement
 import json
 from pathlib import Path
 from datetime import datetime
-from typing import Optional, List, Dict, Any
+from typing import Optional, List
 from dataclasses import dataclass, asdict
 
 from mcp.types import TextContent

@@ -15,7 +15,6 @@ Clouvel Pro 다운로더
 """
 
 import os
-import sys
 import json
 import zipfile
 import shutil
@@ -369,7 +368,7 @@ def install_pro(
     result["success"] = len(result["failed"]) == 0
 
     print()
-    print(f"=== 설치 완료 ===")
+    print("=== 설치 완료 ===")
     print(f"성공: {len(result['installed'])}개")
     print(f"실패: {len(result['failed'])}개")
 
@@ -416,7 +415,7 @@ def main():
     install_parser.add_argument("--version", "-v", help="버전 지정")
 
     # status 명령
-    status_parser = subparsers.add_parser("status", help="설치 상태 확인")
+    subparsers.add_parser("status", help="설치 상태 확인")
 
     args = parser.parse_args()
 

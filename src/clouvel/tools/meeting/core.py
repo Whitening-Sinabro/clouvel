@@ -9,23 +9,21 @@ v5.0: First project = all 8 managers (unlimited)
       Pro = all 8 managers (unlimited)
 """
 
-from typing import Optional, List, Dict, Any
+from typing import Optional, List
 from mcp.types import TextContent
 
-from .meeting_prompt import build_meeting_prompt, detect_topic, get_available_topics
-from .meeting_tuning import (
-    get_active_variant,
+from .prompt import build_meeting_prompt, detect_topic, get_available_topics
+from .tuning import (
     get_variant_config,
     select_variant_for_ab_test,
-    PROMPT_VARIANTS,
 )
-from .meeting_kb import get_enriched_kb_context, get_recommended_managers
-from .meeting_personalization import apply_personalization, load_meeting_config
+from .kb import get_enriched_kb_context, get_recommended_managers
+from .personalization import apply_personalization
 
 # v3.0: Manager data import with fallback for Free tier (PyPI)
 # manager/ folder is Pro-only and excluded from PyPI distribution
 try:
-    from .manager.data import FREE_MANAGERS, PRO_ONLY_MANAGERS, PRO_ONLY_DESCRIPTIONS
+    from ..manager.data import FREE_MANAGERS, PRO_ONLY_MANAGERS, PRO_ONLY_DESCRIPTIONS
 except ImportError:
     # Fallback for Free tier - PM only
     FREE_MANAGERS = ["PM"]
@@ -61,7 +59,7 @@ TOPIC_UPSELL = {
 def _can_use_pro(project_path: str = None) -> bool:
     """Check if user can use Pro features."""
     try:
-        from ..utils.entitlements import can_use_pro
+        from ...utils.entitlements import can_use_pro
         return can_use_pro(project_path)
     except ImportError:
         return False
@@ -148,21 +146,19 @@ async def meeting(
     if not is_pro:
         # v3.3: Monthly meeting quota (3 times per month)
         monthly_quota_ok = False
-        quota_notice = None
 
         try:
-            from ..license_common import check_meeting_quota, consume_meeting_quota
+            from ...license_common import check_meeting_quota, consume_meeting_quota
             quota = check_meeting_quota(project_path)
 
             if quota["allowed"]:
                 # Consume one meeting from quota
-                consume_result = consume_meeting_quota(project_path)
+                consume_meeting_quota(project_path)
                 monthly_quota_ok = True
-                quota_notice = consume_result.get("notice")
             else:
                 # v3.3: Track A/B conversion event
                 try:
-                    from ..license_common import track_conversion_event
+                    from ...license_common import track_conversion_event
                     track_conversion_event("meeting_quota", "quota_exhausted", {
                         "used": quota.get("used", 0),
                         "limit": quota.get("limit", 3),
@@ -244,7 +240,7 @@ Pro: $7.99/mo (Annual: $49/yr — Early Adopter Pricing)
     meeting_id = None
     if project_path:
         try:
-            from .meeting_feedback import _generate_meeting_id, _get_history_file
+            from .feedback import _generate_meeting_id, _get_history_file
             import json
             from datetime import datetime
 
@@ -254,7 +250,7 @@ Pro: $7.99/mo (Annual: $49/yr — Early Adopter Pricing)
             # Get actual managers used
             if managers is None:
                 try:
-                    from .manager.prompts import get_topic_guide
+                    from ..manager.prompts import get_topic_guide
                     guide = get_topic_guide(topic)
                     managers = guide.get("participants", ["PM", "CTO", "QA"])
                 except ImportError:
@@ -296,7 +292,7 @@ rate_meeting(project_path="{project_path}", meeting_id="{meeting_id}", rating=4,
     # v3.1: Log upgrade message shown event
     if pro_hint and not is_pro:
         try:
-            from ..analytics import log_event
+            from ...analytics import log_event
             detected_topic = topic or detect_topic(context)
             log_event("upgrade_message_shown", {"source": "meeting", "topic": detected_topic})
         except Exception:

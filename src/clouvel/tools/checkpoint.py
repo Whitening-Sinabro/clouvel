@@ -5,7 +5,6 @@ Saves full working state as a markdown checkpoint file.
 Free tier: max 3 checkpoints (oldest auto-deleted).
 """
 
-import os
 import re
 import subprocess
 from pathlib import Path

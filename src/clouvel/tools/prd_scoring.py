@@ -489,7 +489,6 @@ def format_score_report(result: ScoringResult) -> str:
     parts = []
 
     # Header
-    emoji = {"PASS": "✅", "WARN": "⚠️", "BLOCK": "⛔"}.get(result.grade, "❓")
     parts.append(f"\n📊 PRD Quality: {result.total_score}/100 ({result.grade})")
 
     # Passed checks

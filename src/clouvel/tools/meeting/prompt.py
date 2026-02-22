@@ -12,17 +12,16 @@ from typing import List, Optional, Dict, Any
 
 # Try to import from manager module (full version), fallback to meeting_data (PyPI Free)
 try:
-    from .manager.prompts.personas import PERSONAS, get_persona
-    from .manager.prompts.examples import get_examples_for_topic, format_examples_for_prompt
-    from .manager.prompts import get_topic_guide
-    from .manager.utils import _analyze_context
+    from ..manager.prompts.personas import PERSONAS, get_persona
+    from ..manager.prompts.examples import get_examples_for_topic
+    from ..manager.prompts import get_topic_guide
+    from ..manager.utils import _analyze_context
 except ImportError:
     # Fallback to standalone meeting data
-    from .meeting_data import (
+    from .data import (
         PERSONAS,
         get_persona,
         get_examples_for_topic,
-        format_examples_for_prompt,
         get_topic_guide,
         analyze_context as _analyze_context,
     )
@@ -252,7 +251,7 @@ def _get_relevant_questions(probing_questions: Dict[str, List[str]], topic: str)
 
     # Fallback: get from any category
     if not questions:
-        for cat, qs in probing_questions.items():
+        for _cat, qs in probing_questions.items():
             questions.extend(qs[:2])
             if len(questions) >= 3:
                 break
@@ -262,7 +261,7 @@ def _get_relevant_questions(probing_questions: Dict[str, List[str]], topic: str)
 
 def get_available_topics() -> List[str]:
     """Return list of available topics with examples."""
-    from .manager.prompts.examples import EXAMPLES
+    from ..manager.prompts.examples import EXAMPLES
     return list(EXAMPLES.keys())
 
 

@@ -21,7 +21,6 @@ from clouvel.license_common import is_feature_available, register_project, incre
 from clouvel.license_common import get_full_trial_status
 
 # v3.0: Migration notice
-from clouvel.version_check import get_v3_migration_notice
 
 # Knowledge Base integration (optional - graceful fallback if not available)
 try:
@@ -77,9 +76,6 @@ from clouvel.messages import (
     CAN_CODE_TRIAL_EXPIRED,
     CAN_CODE_TRIAL_NUDGE_5,
     CAN_CODE_TRIAL_NUDGE_7,
-    # v3.0.0: First Project Unlimited
-    FIRST_PROJECT_WELCOME,
-    FIRST_PROJECT_ADDITIONAL_BLOCKED,
 )
 
 # Required documents definition

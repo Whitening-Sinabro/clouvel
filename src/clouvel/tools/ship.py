@@ -10,7 +10,6 @@ v3.1: Runtime entitlement checks (no import-time constants).
 v3.2: project_path based detection for MCP compatibility.
 """
 
-from pathlib import Path
 from typing import Dict, Any, List
 
 from ..api_client import call_ship_api

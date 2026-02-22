@@ -40,7 +40,7 @@ LEMONSQUEEZY_ACTIVATE_URL = "https://api.lemonsqueezy.com/v1/licenses/activate"
 # 배포 후 실제 URL로 교체 필요
 REVOKE_CHECK_URL = os.environ.get(
     "CLOUVEL_REVOKE_CHECK_URL",
-    "https://clouvel-license-webhook.vnddns999.workers.dev/check"
+    "https://clouvel-api.vnddns999.workers.dev/api/v2/check"
 )
 
 # 라이선스 티어 (variant_id로 매핑)
@@ -65,7 +65,7 @@ DEV_MODE = is_developer()
 # Heartbeat 설정
 HEARTBEAT_URL = os.environ.get(
     "CLOUVEL_HEARTBEAT_URL",
-    "https://clouvel-license-webhook.vnddns999.workers.dev/heartbeat"
+    "https://clouvel-api.vnddns999.workers.dev/api/v2/heartbeat"
 )
 HEARTBEAT_FILE = Path.home() / ".clouvel-heartbeat"
 HEARTBEAT_INTERVAL_SECONDS = 24 * 60 * 60  # 24시간
@@ -1086,7 +1086,7 @@ https://clouvel.lemonsqueezy.com
 ## 해결 방법
 1. 인터넷 연결 확인
 2. VPN 사용 시 일시 해제
-3. 방화벽에서 clouvel-license-webhook.vnddns999.workers.dev 허용
+3. 방화벽에서 clouvel-api.vnddns999.workers.dev 허용
 
 연결 후 자동으로 heartbeat가 전송됩니다.
 """)]

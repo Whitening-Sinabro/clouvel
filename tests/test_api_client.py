@@ -239,7 +239,7 @@ class TestDevModeResponse:
 class TestCallManagerApi:
     """call_manager_api function tests"""
 
-    @patch("clouvel.license_common.is_developer")
+    @patch("clouvel.licensing.core.is_developer")
     def test_dev_mode_bypasses_api(self, mock_is_dev):
         """Developer mode bypasses API"""
         from clouvel.api_client import call_manager_api
@@ -247,7 +247,7 @@ class TestCallManagerApi:
         result = call_manager_api("Test context")
         assert result.get("dev_mode") is True
 
-    @patch("clouvel.license_common.is_developer")
+    @patch("clouvel.licensing.core.is_developer")
     @patch("requests.post")
     def test_api_call_with_context(self, mock_post, mock_is_dev):
         """API called with context"""
@@ -263,7 +263,7 @@ class TestCallManagerApi:
         call_args = mock_post.call_args
         assert "context" in call_args.kwargs["json"]
 
-    @patch("clouvel.license_common.is_developer")
+    @patch("clouvel.licensing.core.is_developer")
     @patch("requests.post")
     def test_api_timeout_returns_fallback(self, mock_post, mock_is_dev):
         """Timeout returns fallback response"""
@@ -275,7 +275,7 @@ class TestCallManagerApi:
         result = call_manager_api("Context")
         assert result.get("offline") is True
 
-    @patch("clouvel.license_common.is_developer")
+    @patch("clouvel.licensing.core.is_developer")
     @patch("requests.post")
     def test_api_connection_error_returns_fallback(self, mock_post, mock_is_dev):
         """Connection error returns fallback"""
@@ -287,7 +287,7 @@ class TestCallManagerApi:
         result = call_manager_api("Context")
         assert result.get("offline") is True
 
-    @patch("clouvel.license_common.is_developer")
+    @patch("clouvel.licensing.core.is_developer")
     @patch("requests.post")
     def test_402_returns_trial_exhausted(self, mock_post, mock_is_dev):
         """402 status returns trial exhausted"""
@@ -304,7 +304,7 @@ class TestCallManagerApi:
         result = call_manager_api("Context")
         assert result.get("error") == "trial_exhausted"
 
-    @patch("clouvel.license_common.is_developer")
+    @patch("clouvel.licensing.core.is_developer")
     @patch("requests.post")
     @patch("clouvel.api_client._get_license_key")
     def test_license_key_added_to_payload(self, mock_license, mock_post, mock_is_dev):
@@ -321,7 +321,7 @@ class TestCallManagerApi:
         call_args = mock_post.call_args
         assert call_args.kwargs["json"].get("licenseKey") == "test-license-key"
 
-    @patch("clouvel.license_common.is_developer")
+    @patch("clouvel.licensing.core.is_developer")
     @patch("requests.post")
     def test_topic_added_to_payload(self, mock_post, mock_is_dev):
         """Topic added to payload when provided"""
@@ -336,7 +336,7 @@ class TestCallManagerApi:
         call_args = mock_post.call_args
         assert call_args.kwargs["json"].get("topic") == "auth"
 
-    @patch("clouvel.license_common.is_developer")
+    @patch("clouvel.licensing.core.is_developer")
     @patch("requests.post")
     def test_managers_added_to_payload(self, mock_post, mock_is_dev):
         """Managers added to payload when provided"""
@@ -355,7 +355,7 @@ class TestCallManagerApi:
 class TestCallShipApi:
     """call_ship_api function tests"""
 
-    @patch("clouvel.license_common.is_developer")
+    @patch("clouvel.licensing.core.is_developer")
     def test_dev_mode_always_allows(self, mock_is_dev):
         """Developer mode always allows"""
         from clouvel.api_client import call_ship_api
@@ -364,7 +364,7 @@ class TestCallShipApi:
         assert result.get("allowed") is True
         assert result.get("dev_mode") is True
 
-    @patch("clouvel.license_common.is_developer")
+    @patch("clouvel.licensing.core.is_developer")
     @patch("requests.post")
     def test_api_call_with_path(self, mock_post, mock_is_dev):
         """API called with path"""
@@ -379,7 +379,7 @@ class TestCallShipApi:
         call_args = mock_post.call_args
         assert call_args.kwargs["json"]["path"] == "/path/to/project"
 
-    @patch("clouvel.license_common.is_developer")
+    @patch("clouvel.licensing.core.is_developer")
     @patch("requests.post")
     def test_feature_in_payload(self, mock_post, mock_is_dev):
         """Feature in payload"""
@@ -394,7 +394,7 @@ class TestCallShipApi:
         call_args = mock_post.call_args
         assert call_args.kwargs["json"]["feature"] == "auth"
 
-    @patch("clouvel.license_common.is_developer")
+    @patch("clouvel.licensing.core.is_developer")
     @patch("requests.post")
     def test_402_returns_not_allowed(self, mock_post, mock_is_dev):
         """402 status returns not allowed"""
@@ -412,7 +412,7 @@ class TestCallShipApi:
         assert result.get("allowed") is False
         assert result.get("error") == "trial_exhausted"
 
-    @patch("clouvel.license_common.is_developer")
+    @patch("clouvel.licensing.core.is_developer")
     @patch("requests.post")
     def test_exception_allows_graceful_degradation(self, mock_post, mock_is_dev):
         """Exception allows graceful degradation"""
@@ -565,7 +565,7 @@ class TestApiClientImportErrors:
         from clouvel.api_client import call_manager_api
         # The import error handling is internal - test that function completes
         # by using a mock that simulates the error being caught
-        with patch("clouvel.license_common.is_developer", return_value=False):
+        with patch("clouvel.licensing.core.is_developer", return_value=False):
             with patch("requests.post") as mock_post:
                 mock_response = MagicMock()
                 mock_response.status_code = 200
@@ -579,7 +579,7 @@ class TestApiClientImportErrors:
     def test_ship_api_handles_import_error(self):
         """Ship API handles import errors gracefully"""
         from clouvel.api_client import call_ship_api
-        with patch("clouvel.license_common.is_developer", return_value=False):
+        with patch("clouvel.licensing.core.is_developer", return_value=False):
             with patch("requests.post") as mock_post:
                 mock_response = MagicMock()
                 mock_response.status_code = 200
@@ -625,7 +625,7 @@ class TestDevModeWithDynamicMeeting:
 class TestCallManagerApiGenericException:
     """Test generic exception handling"""
 
-    @patch("clouvel.license_common.is_developer")
+    @patch("clouvel.licensing.core.is_developer")
     @patch("requests.post")
     def test_generic_exception_returns_fallback(self, mock_post, mock_is_dev):
         """Generic exception returns fallback"""

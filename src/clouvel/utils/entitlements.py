@@ -102,9 +102,9 @@ def has_valid_license() -> bool:
     Delegates to license_common if available.
     """
     try:
-        from ..license_common import check_license_status
-        status = check_license_status()
-        return status.get("valid", False)
+        from ..licensing.validation import load_license_cache
+        cached = load_license_cache()
+        return bool(cached and cached.get("tier"))
     except (ImportError, Exception):
         return False
 
@@ -112,28 +112,36 @@ def has_valid_license() -> bool:
 def can_use_pro(project_path: str | None = None, license_checker: callable = None) -> bool:
     """Combined check: env-based OR path-based OR license-based OR first-project Pro access.
 
+    Delegates to services.tier.can_use_pro() for unified tier resolution.
+    license_checker parameter kept for backward compat (rarely used).
+
     Args:
         project_path: Project path for auto-detection (MCP-friendly)
         license_checker: Optional callable that returns bool for license validity
-                        If None, uses has_valid_license()
+                        If None, uses services.tier logic
 
     Returns:
         True if Pro features should be enabled
     """
-    # 1) Developer mode (env or path-based)
-    if is_developer(project_path):
-        return True
-
-    # 2) First project tier check (v3.0.0: Reverse Trial)
-    if project_path:
-        try:
-            from ..license_common import get_project_tier
-            if get_project_tier(project_path) in ("pro", "first"):
-                return True
-        except ImportError:
-            pass
-
-    # 3) License check
+    # If custom license_checker is provided, use legacy path
     if license_checker is not None:
+        if is_developer(project_path):
+            return True
+        if project_path:
+            try:
+                from ..licensing.first_project import get_project_tier
+                if get_project_tier(project_path) in ("pro", "first"):
+                    return True
+            except ImportError:
+                pass
         return license_checker()
-    return has_valid_license()
+
+    # Default: delegate to unified tier service
+    try:
+        from ..services.tier import can_use_pro as _tier_can_use_pro
+        return _tier_can_use_pro(project_path)
+    except ImportError:
+        # Fallback if services not available
+        if is_developer(project_path):
+            return True
+        return has_valid_license()

@@ -16,9 +16,10 @@ except ImportError:
     render_can_code = None
 
 # v3.0: License tier checking
-from clouvel.license_common import is_feature_available, register_project, increment_warn_count
+from clouvel.licensing.projects import is_feature_available, register_project
+from clouvel.licensing.quotas import increment_warn_count
 # v3.2: Full Pro trial
-from clouvel.license_common import get_full_trial_status
+from clouvel.licensing.trial import get_full_trial_status
 
 # v3.0: Migration notice
 
@@ -362,7 +363,7 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
 
     # v3.0.0: First Project Unlimited override
     if not is_pro:
-        from clouvel.license_common import get_project_tier
+        from clouvel.licensing.first_project import get_project_tier
         tier = get_project_tier(str(project_path))
         if tier == "first":
             is_pro = True
@@ -380,7 +381,7 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
     if not project_check.get("allowed", True):
         # v3.3: Track A/B conversion event
         try:
-            from ..license_common import track_conversion_event
+            from ..licensing.experiments import track_conversion_event
             track_conversion_event("project_limit", "limit_hit", {
                 "count": project_check["count"],
                 "limit": project_check["limit"],
@@ -394,7 +395,7 @@ async def can_code(path: str, mode: str = "pre") -> list[TextContent]:
     if not docs_path.exists():
         # v3.3: Track A/B conversion event
         try:
-            from ..license_common import track_conversion_event
+            from ..licensing.experiments import track_conversion_event
             track_conversion_event("pain_point_message", "no_docs_warn", {"path": str(path)})
         except Exception:
             pass

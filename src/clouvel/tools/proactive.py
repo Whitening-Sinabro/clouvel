@@ -10,13 +10,14 @@ from datetime import datetime
 from typing import Optional
 from mcp.types import TextContent
 
-# v3.0.0: Use runtime entitlements check (supports first project tier)
-from ..utils.entitlements import can_use_pro as _entitlements_can_use_pro
-
-
+# v5.2: Use unified TierService (supports first project tier)
 def _can_use_pro(project_path: str | None = None) -> bool:
     """Check if Pro features are available (runtime, supports first project)."""
-    return _entitlements_can_use_pro(project_path)
+    try:
+        from ..services.tier import can_use_pro
+        return can_use_pro(project_path)
+    except ImportError:
+        return False
 
 
 async def drift_check(

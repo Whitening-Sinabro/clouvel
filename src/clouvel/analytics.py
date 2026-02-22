@@ -331,7 +331,7 @@ def get_ab_report(days: int = 7) -> dict:
 
     Returns a report with all experiments, their status, and recommendations.
     """
-    from .license_common import EXPERIMENTS
+    from .licensing.experiments import EXPERIMENTS
 
     report = {
         "generated_at": datetime.now().isoformat(),
@@ -808,7 +808,7 @@ def promote_winning_variant(experiment_name: str) -> dict:
         }
 
     winner = decision["winner"]
-    from .license_common import EXPERIMENTS
+    from .licensing.experiments import EXPERIMENTS
 
     current_config = EXPERIMENTS.get(experiment_name, {})
     winner_value = current_config.get("values", {}).get(winner)
@@ -822,7 +822,7 @@ def promote_winning_variant(experiment_name: str) -> dict:
         "new_rollout": 100,
         "action_required": f"Update EXPERIMENTS['{experiment_name}']['rollout_percent'] = 100",
         "code_change": f"""
-# In license_common.py, update:
+# In licensing/experiments.py, update:
 EXPERIMENTS["{experiment_name}"] = {{
     ...
     "rollout_percent": 100,

@@ -269,16 +269,16 @@ class TestAutoRemind:
 
 
 class TestCanUsePro:
-    """Test _can_use_pro function (v3.0.0: delegates to entitlements.can_use_pro)"""
+    """Test _can_use_pro function (v5.2: delegates to services.tier.can_use_pro)"""
 
     def test_developer_mode(self):
         """Test Pro access in developer mode"""
-        with patch("src.clouvel.tools.proactive._entitlements_can_use_pro", return_value=True):
+        with patch("src.clouvel.services.tier.can_use_pro", return_value=True):
             from src.clouvel.tools.proactive import _can_use_pro
             assert _can_use_pro("/some/path") is True
 
     def test_no_license(self):
         """Test no Pro access without license"""
-        with patch("src.clouvel.tools.proactive._entitlements_can_use_pro", return_value=False):
+        with patch("src.clouvel.services.tier.can_use_pro", return_value=False):
             from src.clouvel.tools.proactive import _can_use_pro
             assert _can_use_pro("/some/path") is False

@@ -7,14 +7,14 @@ Pro 기능은 라이선스 활성화 후 사용 가능합니다.
 실제 라이선스 검증 로직은 license.py에 있으며,
 해당 파일이 없으면 이 stub이 사용됩니다.
 
-NOTE: 공통 로직은 license_common.py에서 가져옴.
+NOTE: 공통 로직은 licensing/ 서브패키지에서 가져옴.
       인터페이스 변경 시 license.py와 동기화 필수.
 """
 
 from mcp.types import TextContent
 
-# 공통 모듈에서 import
-from .license_common import (
+# Import from licensing subpackage directly
+from .licensing import (
     get_tier_info,
     load_license_cache,
     save_license_cache,

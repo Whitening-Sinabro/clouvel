@@ -79,46 +79,46 @@ class TestDefenseInDepth:
 
 class TestTierDetection:
     def test_is_pro_developer(self):
-        with patch("clouvel.license_common.is_developer", return_value=True):
+        with patch("clouvel.licensing.core.is_developer", return_value=True):
             assert _is_pro("") is True
 
     def test_is_pro_license(self):
-        with patch("clouvel.license_common.is_developer", return_value=False), \
-             patch("clouvel.license_common.load_license_cache", return_value={"tier": "personal"}):
+        with patch("clouvel.licensing.core.is_developer", return_value=False), \
+             patch("clouvel.licensing.validation.load_license_cache", return_value={"tier": "personal"}):
             assert _is_pro("") is True
 
     def test_is_pro_trial(self):
-        with patch("clouvel.license_common.is_developer", return_value=False), \
-             patch("clouvel.license_common.load_license_cache", return_value=None), \
-             patch("clouvel.license_common.is_full_trial_active", return_value=True):
+        with patch("clouvel.licensing.core.is_developer", return_value=False), \
+             patch("clouvel.licensing.validation.load_license_cache", return_value=None), \
+             patch("clouvel.licensing.trial.is_full_trial_active", return_value=True):
             assert _is_pro("") is True
 
     def test_is_not_pro_free_user(self):
-        with patch("clouvel.license_common.is_developer", return_value=False), \
-             patch("clouvel.license_common.load_license_cache", return_value=None), \
-             patch("clouvel.license_common.is_full_trial_active", return_value=False):
+        with patch("clouvel.licensing.core.is_developer", return_value=False), \
+             patch("clouvel.licensing.validation.load_license_cache", return_value=None), \
+             patch("clouvel.licensing.trial.is_full_trial_active", return_value=False):
             assert _is_pro("") is False
 
     def test_list_tools_tier_free_for_normal_user(self):
         """Normal user (no license, no trial) gets 'free' tier."""
-        with patch("clouvel.license_common.is_developer", return_value=False), \
-             patch("clouvel.license_common.load_license_cache", return_value=None), \
-             patch("clouvel.license_common.is_full_trial_active", return_value=False):
+        with patch("clouvel.licensing.core.is_developer", return_value=False), \
+             patch("clouvel.licensing.validation.load_license_cache", return_value=None), \
+             patch("clouvel.licensing.trial.is_full_trial_active", return_value=False):
             assert _get_list_tools_tier() == "free"
 
     def test_list_tools_tier_pro_for_licensed(self):
-        with patch("clouvel.license_common.is_developer", return_value=False), \
-             patch("clouvel.license_common.load_license_cache", return_value={"tier": "personal"}):
+        with patch("clouvel.licensing.core.is_developer", return_value=False), \
+             patch("clouvel.licensing.validation.load_license_cache", return_value={"tier": "personal"}):
             assert _get_list_tools_tier() == "pro"
 
     def test_call_tool_tier_matches_is_pro(self):
         """_get_call_tool_tier uses _is_pro internally — should be consistent."""
-        with patch("clouvel.license_common.is_developer", return_value=False), \
-             patch("clouvel.license_common.load_license_cache", return_value=None), \
-             patch("clouvel.license_common.is_full_trial_active", return_value=False):
+        with patch("clouvel.licensing.core.is_developer", return_value=False), \
+             patch("clouvel.licensing.validation.load_license_cache", return_value=None), \
+             patch("clouvel.licensing.trial.is_full_trial_active", return_value=False):
             assert _get_call_tool_tier("/some/path") == "free"
 
-        with patch("clouvel.license_common.is_developer", return_value=True):
+        with patch("clouvel.licensing.core.is_developer", return_value=True):
             assert _get_call_tool_tier("/some/path") == "pro"
 
 
@@ -129,7 +129,7 @@ class TestGhostData:
     def test_ghost_data_appended_for_free_user(self):
         """Free users get Pro teaser appended to error tools."""
         result = [TextContent(type="text", text="Error recorded.")]
-        with patch("clouvel.tool_dispatch._is_pro", return_value=False):
+        with patch("clouvel.services.tier.is_pro", return_value=False):
             output = _append_ghost_data(result, "/path", "error_record")
             assert "Pro" in output[0].text
             assert 'license_status(action="trial")' in output[0].text
@@ -137,19 +137,19 @@ class TestGhostData:
     def test_ghost_data_not_appended_for_pro_user(self):
         """Pro users don't see teasers."""
         result = [TextContent(type="text", text="Error recorded.")]
-        with patch("clouvel.tool_dispatch._is_pro", return_value=True):
+        with patch("clouvel.services.tier.is_pro", return_value=True):
             output = _append_ghost_data(result, "/path", "error_record")
             assert output[0].text == "Error recorded."
 
     def test_ghost_data_only_for_error_tools(self):
         """Ghost data only for error_record and error_check."""
         result = [TextContent(type="text", text="Some output")]
-        with patch("clouvel.tool_dispatch._is_pro", return_value=False):
+        with patch("clouvel.services.tier.is_pro", return_value=False):
             output = _append_ghost_data(result, "/path", "gate")
             assert output[0].text == "Some output"
 
     def test_ghost_data_empty_result_safe(self):
-        with patch("clouvel.tool_dispatch._is_pro", return_value=False):
+        with patch("clouvel.services.tier.is_pro", return_value=False):
             output = _append_ghost_data([], "/path", "error_record")
             assert output == []
 
@@ -203,7 +203,7 @@ class TestCTAConsistency:
 
     def test_ghost_data_cta(self):
         result = [TextContent(type="text", text="test")]
-        with patch("clouvel.tool_dispatch._is_pro", return_value=False):
+        with patch("clouvel.services.tier.is_pro", return_value=False):
             output = _append_ghost_data(result, "/p", "error_record")
             assert 'license_status(action="trial")' in output[0].text
 

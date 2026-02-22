@@ -217,13 +217,19 @@ tools/xxx.py (진입점)
 - Non-dev: Worker API 호출
 - Dev: 로컬 manager 모듈 사용
 
-### 라이센스 모듈 (🔒 LOCKED #33)
+### 라이센스 모듈 (🔒 LOCKED #33, v5.2 DDD 리팩토링 반영)
 
 | 파일 | 역할 |
 |------|------|
-| `license_common.py` | 공통 로직 (is_developer, get_machine_id 등) |
+| `licensing/` | 공통 로직 서브패키지 (core, validation, trial, first_project, projects, quotas, experiments, sync) |
+| `services/tier.py` | 티어 판별 단일 소스 (Tier enum + resolve_tier) |
+| `services/quota.py` | 쿼터/제한 로직 |
+| `services/gate.py` | Pro 게이팅 (에러 도구, KB 접근) |
+| `formatters/` | dict→markdown 포맷팅 (knowledge, project, license, analytics) |
 | `license.py` | Pro 버전 (API 검증) |
 | `license_free.py` | Free 스텁 (PyPI 배포용) |
+
+**삭제됨**: `license_common.py` (v5.2에서 제거 — 심 역할을 `licensing/`이 직접 대체)
 
 **규칙**: 반환값 구조 동일 유지 필수
 

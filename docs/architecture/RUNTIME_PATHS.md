@@ -6,7 +6,7 @@
 <!-- AUTO-GEN:START -->
 ## Runtime Paths
 
-_Auto-generated: 2026-01-26 19:44_
+_Auto-generated: 2026-02-22 (post DDD refactoring)_
 
 ### Conditional Branches
 
@@ -14,7 +14,8 @@ _Auto-generated: 2026-01-26 19:44_
 |------|------|-----------|
 | `src\clouvel\license.py` | 479 | `if is_developer():` |
 | `src\clouvel\license.py` | 921 | `if is_developer():` |
-| `src\clouvel\license_common.py` | 201 | `if is_developer():` |
+| `src\clouvel\services\tier.py` | 51 | `if is_developer():` |
+| `src\clouvel\services\quota.py` | 61 | `if is_developer():` |
 | `src\clouvel\tools\ship.py` | 22 | `if is_developer():` |
 | `src\clouvel\tools\manager\core.py` | 86 | `if is_developer():` |
 | `src\clouvel\tools\manager\core.py` | 259 | `if use_dynamic:` |

@@ -27,7 +27,7 @@ except ImportError:
 # 개발 모드 (표준 is_developer() 사용)
 def _is_dev_mode() -> bool:
     try:
-        from .license_common import is_developer
+        from .licensing.core import is_developer
         return is_developer()
     except ImportError:
         # Fallback: CLOUVEL_DEV=1 (통합된 개발 모드 변수)

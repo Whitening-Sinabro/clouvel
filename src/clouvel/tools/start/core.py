@@ -203,7 +203,9 @@ _Minimal PRD created by Clouvel. Expand sections as needed._
                 }
 
         # Check layout access (Free=lite+minimal, Pro=all)
-        from ...license_common import is_developer, load_license_cache, FREE_LAYOUTS
+        from ...licensing.core import is_developer
+        from ...licensing.validation import load_license_cache
+        from ...licensing.projects import FREE_LAYOUTS
 
         is_pro = is_developer()
         if not is_pro:
@@ -311,7 +313,7 @@ You requested `{requested_layout}` layout, but Free tier only includes `lite` an
         return result
 
     # === Check project limit (Free = 1 active project) ===
-    from ...license_common import register_project
+    from ...licensing.projects import register_project
 
     project_reg = register_project(str(project_path))
 

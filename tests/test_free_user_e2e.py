@@ -64,7 +64,8 @@ def test_scenario_1_project_limit():
              patch("clouvel.licensing.projects.get_projects_path", return_value=projects_file), \
              patch("clouvel.licensing.first_project._get_first_project_path", return_value=first_project_file):
 
-            from clouvel.license_common import register_project, get_project_tier, FREE_ACTIVE_PROJECT_LIMIT
+            from clouvel.licensing.projects import register_project, FREE_ACTIVE_PROJECT_LIMIT
+            from clouvel.licensing.first_project import get_project_tier
 
             print(f"FREE_ACTIVE_PROJECT_LIMIT = {FREE_ACTIVE_PROJECT_LIMIT}")
 
@@ -121,7 +122,7 @@ def test_scenario_2_kb_trial_expiry():
         with patch("clouvel.licensing.quotas._get_kb_trial_path", return_value=trial_file), \
              patch("clouvel.licensing.quotas.get_project_tier", return_value="additional"):
 
-            from clouvel.license_common import start_kb_trial, is_kb_trial_active, get_kb_trial_start
+            from clouvel.licensing.quotas import start_kb_trial, is_kb_trial_active, get_kb_trial_start
 
             # Start trial
             start_date = start_kb_trial(project_path)
@@ -169,7 +170,7 @@ def test_scenario_3_weekly_meeting():
 
         with patch("clouvel.licensing.quotas._get_weekly_meeting_path", return_value=weekly_file):
 
-            from clouvel.license_common import can_use_weekly_full_meeting, mark_weekly_meeting_used
+            from clouvel.licensing.quotas import can_use_weekly_full_meeting, mark_weekly_meeting_used
 
             # First check: should be available
             check1 = can_use_weekly_full_meeting(project_path)
@@ -216,7 +217,7 @@ def test_scenario_4_warn_accumulation():
 
         with patch("clouvel.licensing.quotas._get_warn_count_path", return_value=warn_file):
 
-            from clouvel.license_common import increment_warn_count, get_warn_count
+            from clouvel.licensing.quotas import increment_warn_count, get_warn_count
 
             results = []
             for i in range(1, 6):
@@ -307,7 +308,7 @@ def test_scenario_6_ab_flags():
         ab_file = clouvel_dir / "ab_flags.json"
 
         with patch("clouvel.licensing.experiments._get_ab_flags_path", return_value=ab_file):
-            from clouvel.license_common import get_experiment_variant, EXPERIMENTS
+            from clouvel.licensing.experiments import get_experiment_variant, EXPERIMENTS
 
             # First call: deterministic assignment based on machine_id hash
             group1 = get_experiment_variant("pain_point_message")

@@ -55,11 +55,11 @@ TOPIC_UPSELL = {
 }
 
 
-# License check
+# License check — delegates to unified TierService
 def _can_use_pro(project_path: str = None) -> bool:
     """Check if user can use Pro features."""
     try:
-        from ...utils.entitlements import can_use_pro
+        from ...services.tier import can_use_pro
         return can_use_pro(project_path)
     except ImportError:
         return False
@@ -148,7 +148,7 @@ async def meeting(
         monthly_quota_ok = False
 
         try:
-            from ...license_common import check_meeting_quota, consume_meeting_quota
+            from ...licensing.quotas import check_meeting_quota, consume_meeting_quota
             quota = check_meeting_quota(project_path)
 
             if quota["allowed"]:
@@ -158,7 +158,7 @@ async def meeting(
             else:
                 # v3.3: Track A/B conversion event
                 try:
-                    from ...license_common import track_conversion_event
+                    from ...licensing.experiments import track_conversion_event
                     track_conversion_event("meeting_quota", "quota_exhausted", {
                         "used": quota.get("used", 0),
                         "limit": quota.get("limit", 3),

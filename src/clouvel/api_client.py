@@ -81,7 +81,7 @@ def call_manager_api(
     """
     # Developer mode: bypass API, use local fallback with full features
     try:
-        from .license_common import is_developer
+        from .licensing.core import is_developer
         if is_developer():
             return _dev_mode_response(
                 context=context,
@@ -190,7 +190,7 @@ def call_ship_api(
     """
     # Developer mode: always allow
     try:
-        from .license_common import is_developer
+        from .licensing.core import is_developer
         if is_developer():
             return {
                 "allowed": True,

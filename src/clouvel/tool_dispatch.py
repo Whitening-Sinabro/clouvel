@@ -15,6 +15,22 @@ from .api_client import call_manager_api
 from .version_check import get_v3_migration_notice, get_v1_pivot_notice
 from .version_check import init_version_check
 
+from .services.tier import (
+    is_pro as _is_pro_service,
+    get_tool_filter_tier as _get_tool_filter_tier_service,
+)
+from .services.gate import (
+    require_error_tools as _require_error_tools,
+    require_kb_access as _require_kb_access,
+    append_free_nudge as _append_free_nudge,
+)
+from .services.quota import (
+    FREE_ERROR_LIMIT,
+    check_error_view_quota as _check_error_view_quota,
+    get_perspectives_limits as _get_perspectives_limits,
+)
+from .formatters import knowledge as _fmt_kb, project as _fmt_proj, license as _fmt_lic, analytics as _fmt_analytics
+
 from .tools import (
     # core
     can_code, scan_docs, analyze_docs, init_docs, get_prd_template, list_templates, write_prd_section, get_prd_guide, get_verify_checklist, get_setup_guide,
@@ -54,7 +70,8 @@ from .tools import (
     context_save, context_load,
 )
 
-# Error Learning tools (Pro feature - separate import)
+# Error Learning tools (Pro feature - imported via gate service)
+# gate.py handles _HAS_ERROR_TOOLS check; import functions for call forwarding
 try:
     from .tools.errors import (
         error_record, error_check, error_learn, memory_status,
@@ -62,20 +79,11 @@ try:
         memory_promote, memory_global_search,
         set_project_domain,
     )
-    _HAS_ERROR_TOOLS = True
 except ImportError:
-    _HAS_ERROR_TOOLS = False
-    error_record = None
-    error_check = None
-    error_learn = None
-    memory_status = None
-    memory_list = None
-    memory_search = None
-    memory_archive = None
-    memory_report = None
-    memory_promote = None
-    memory_global_search = None
-    set_project_domain = None
+    error_record = error_check = error_learn = None
+    memory_status = memory_list = memory_search = None
+    memory_archive = memory_report = memory_promote = None
+    memory_global_search = set_project_domain = None
 
 # License module import
 try:
@@ -105,60 +113,25 @@ def _ensure_sync_once():
 def _get_list_tools_tier() -> str:
     """Determine license tier for list_tools() filtering.
 
-    Only developer/license/trial → "pro".
-    Everyone else (including "first" project) → "free".
-    Free users see 10 Core tools only.
+    Delegates to services.tier.get_tool_filter_tier().
     """
-    try:
-        from .license_common import (
-            is_developer, load_license_cache,
-            is_full_trial_active,
-        )
-
-        if is_developer():
-            return "pro"
-
-        cached = load_license_cache()
-        if cached and cached.get("tier"):
-            return "pro"
-
-        if is_full_trial_active():
-            return "pro"
-
-        return "free"
-    except ImportError:
-        return "free"
+    return _get_tool_filter_tier_service()
 
 
 def _get_call_tool_tier(project_path: str) -> str:
     """Determine tier for call_tool() defense-in-depth.
 
-    Only developer/license/trial → "pro". Everything else → "free".
-    Consistent with _get_list_tools_tier() and _is_pro().
+    Delegates to services.tier.get_tool_filter_tier().
     """
-    if _is_pro(project_path):
-        return "pro"
-    return "free"
+    return _get_tool_filter_tier_service(project_path)
 
 
 def _is_pro(project_path: str) -> bool:
     """Check if user has actual Pro access (license or trial).
 
-    Returns True ONLY for paid Pro users.
-    "first" project without license = False (Free limitations apply).
+    Delegates to services.tier.is_pro().
     """
-    try:
-        from .license_common import is_developer, load_license_cache, is_full_trial_active
-        if is_developer():
-            return True
-        cached = load_license_cache()
-        if cached and cached.get("tier"):
-            return True
-        if is_full_trial_active():
-            return True
-        return False
-    except ImportError:
-        return False
+    return _is_pro_service(project_path)
 
 
 
@@ -445,52 +418,7 @@ async def _wrap_start(args: dict) -> list[TextContent]:
     )
 
     if isinstance(result, dict):
-        # Handle special modes (guide, init, template)
-        status = result.get("status", "UNKNOWN")
-
-        if status == "GUIDE":
-            return [TextContent(type="text", text=result.get("message", ""))]
-
-        if status == "INITIALIZED":
-            return [TextContent(type="text", text=result.get("message", ""))]
-
-        if status == "TEMPLATE":
-            return [TextContent(type="text", text=result.get("message", ""))]
-
-        # Project type info
-        ptype = result.get("project_type", {})
-        type_info = f"**Type**: {ptype.get('description', 'N/A')} ({ptype.get('type', 'generic')}) - Confidence {ptype.get('confidence', 0)}%"
-
-        output = f"""# 🚀 Start
-
-**Status**: {status}
-**Project**: {result.get('project_name', 'N/A')}
-{type_info}
-
-{result.get('message', '')}
-"""
-
-        # PRD writing guide (when status is NEED_PRD)
-        if result.get("status") == "NEED_PRD" and result.get("prd_guide"):
-            guide = result["prd_guide"]
-            output += guide.get("instruction", "")
-
-        # Next steps
-        output += "\n## Next Steps\n"
-        for step in result.get('next_steps', []):
-            output += f"- {step}\n"
-
-        # Created files
-        if result.get('created_files'):
-            output += "\n## Created Files\n"
-            for f in result['created_files']:
-                output += f"- {f}\n"
-
-        # Append rules result if requested
-        if rules_msg:
-            output += f"\n## Rules\n{rules_msg}\n"
-
-        return [TextContent(type="text", text=output)]
+        return [TextContent(type="text", text=_fmt_proj.format_start(result, rules_msg))]
     return [TextContent(type="text", text=str(result))]
 
 
@@ -502,21 +430,8 @@ async def _wrap_save_prd(args: dict) -> list[TextContent]:
         args.get("project_name", ""),
         args.get("project_type", "")
     )
-
     if isinstance(result, dict):
-        output = f"""# 📝 Save PRD
-
-**Status**: {result.get('status', 'UNKNOWN')}
-**Path**: {result.get('prd_path', 'N/A')}
-
-{result.get('message', '')}
-"""
-        if result.get('next_steps'):
-            output += "\n## Next Steps\n"
-            for step in result['next_steps']:
-                output += f"- {step}\n"
-
-        return [TextContent(type="text", text=output)]
+        return [TextContent(type="text", text=_fmt_proj.format_save_prd(result))]
     return [TextContent(type="text", text=str(result))]
 
 
@@ -524,82 +439,28 @@ async def _wrap_save_prd(args: dict) -> list[TextContent]:
 
 async def _wrap_archive_project(args: dict) -> list[TextContent]:
     """archive_project tool wrapper"""
-    from .license_common import archive_project
+    from .licensing.projects import archive_project
     result = archive_project(args.get("path", ""))
-
     if isinstance(result, dict):
-        if result.get("success"):
-            output = f"""# 📦 Archive Project
-
-{result.get('message', '')}
-
-**Archived at**: {result.get('archived_at', 'N/A')}
-
-Now you can start a new project with `start` tool.
-"""
-        else:
-            output = f"""# ❌ Archive Failed
-
-{result.get('message', '')}
-"""
-        return [TextContent(type="text", text=output)]
+        return [TextContent(type="text", text=_fmt_proj.format_archive_project(result))]
     return [TextContent(type="text", text=str(result))]
 
 
 async def _wrap_list_projects(args: dict) -> list[TextContent]:
     """list_projects tool wrapper"""
-    from .license_common import list_projects
+    from .licensing.projects import list_projects
     result = list_projects()
-
-    output = f"""# 📋 Project List
-
-**Active**: {result.get('active_count', 0)}/{result.get('limit', 1)}
-**Archived**: {result.get('archived_count', 0)}
-**Tier**: {'Pro' if result.get('is_pro') else 'Free'}
-
-## Active Projects
-"""
-    active = result.get("active", [])
-    if active:
-        for p in active:
-            output += f"- **{p.get('name', 'Unknown')}** ({p.get('path', 'N/A')})\n"
-    else:
-        output += "_No active projects_\n"
-
-    archived = result.get("archived", [])
-    if archived:
-        output += "\n## Archived Projects\n"
-        for p in archived:
-            output += f"- {p.get('name', 'Unknown')} ({p.get('path', 'N/A')})\n"
-
-    if not result.get('is_pro'):
-        output += (
-            "\n---\n\n"
-            "Unlock full error history, 8 managers, and 10 more tools with Pro.\n\n"
-            "→ `license_status(action=\"trial\")` (7 days free)\n"
-        )
-
-    return [TextContent(type="text", text=output)]
+    return [TextContent(type="text", text=_fmt_proj.format_list_projects(result))]
 
 
 # === Knowledge Base Wrappers (Free, v1.4) ===
 
 async def _wrap_record_decision(args: dict) -> list[TextContent]:
     """record_decision tool wrapper"""
-    # v5.0: KB access check — first project gets unlimited KB
-    try:
-        from .license_common import is_developer, is_kb_trial_active, start_kb_trial
-        project_path = args.get("project_path", ".")
-        if not is_developer():
-            # v5.0: First project bypasses trial via is_kb_trial_active
-            start_kb_trial(project_path)  # Start trial on first use (no-op for first project)
-            if not is_kb_trial_active(project_path):
-                from .messages.en import CAN_CODE_KB_TRIAL_EXPIRED
-                return [TextContent(type="text", text=CAN_CODE_KB_TRIAL_EXPIRED.format(
-                    decision_count="N/A"
-                ))]
-    except ImportError:
-        pass
+    # KB access gate (v5.2: delegated to services.gate)
+    blocked = _require_kb_access(args.get("project_path", "."))
+    if blocked:
+        return blocked
 
     result = await record_decision(
         category=args.get("category", "general"),
@@ -610,42 +471,15 @@ async def _wrap_record_decision(args: dict) -> list[TextContent]:
         project_path=args.get("project_path"),
         locked=args.get("locked", False)
     )
-
-    if result.get("status") == "recorded":
-        locked_badge = "🔒 **LOCKED**" if result.get("locked") else ""
-        output = f"""# ✅ Decision Recorded {locked_badge}
-
-**ID**: {result.get('decision_id')}
-**Category**: {result.get('category')}
-**Project**: {result.get('project_id', 'global')}
-
-Decision saved to knowledge base. Use `search_knowledge` to retrieve later.
-{"⚠️ This decision is LOCKED. Do not change without explicit user approval." if result.get("locked") else ""}
-"""
-    else:
-        output = f"""# ❌ Error Recording Decision
-
-{result.get('error', 'Unknown error')}
-"""
-    return [TextContent(type="text", text=output)]
+    return [TextContent(type="text", text=_fmt_kb.format_record_decision(result))]
 
 
 async def _wrap_record_location(args: dict) -> list[TextContent]:
     """record_location tool wrapper"""
-    # v5.0: KB access check — first project gets unlimited KB
-    try:
-        from .license_common import is_developer, is_kb_trial_active, start_kb_trial
-        project_path = args.get("project_path", ".")
-        if not is_developer():
-            # v5.0: First project bypasses trial via is_kb_trial_active
-            start_kb_trial(project_path)
-            if not is_kb_trial_active(project_path):
-                from .messages.en import CAN_CODE_KB_TRIAL_EXPIRED
-                return [TextContent(type="text", text=CAN_CODE_KB_TRIAL_EXPIRED.format(
-                    decision_count="N/A"
-                ))]
-    except ImportError:
-        pass
+    # KB access gate (v5.2: delegated to services.gate)
+    blocked = _require_kb_access(args.get("project_path", "."))
+    if blocked:
+        return blocked
 
     result = await record_location(
         name=args.get("name", ""),
@@ -655,23 +489,7 @@ async def _wrap_record_location(args: dict) -> list[TextContent]:
         project_name=args.get("project_name"),
         project_path=args.get("project_path")
     )
-
-    if result.get("status") == "recorded":
-        output = f"""# ✅ Location Recorded
-
-**ID**: {result.get('location_id')}
-**Name**: {result.get('name')}
-**Repo**: {result.get('repo')}
-**Path**: {result.get('path')}
-
-Location saved to knowledge base.
-"""
-    else:
-        output = f"""# ❌ Error Recording Location
-
-{result.get('error', 'Unknown error')}
-"""
-    return [TextContent(type="text", text=output)]
+    return [TextContent(type="text", text=_fmt_kb.format_record_location(result))]
 
 
 async def _wrap_search_knowledge(args: dict) -> list[TextContent]:
@@ -682,28 +500,7 @@ async def _wrap_search_knowledge(args: dict) -> list[TextContent]:
         project_path=args.get("project_path"),
         limit=args.get("limit", 20)
     )
-
-    if result.get("status") == "success":
-        output = f"""# 🔍 Knowledge Search Results
-
-**Query**: {result.get('query')}
-**Found**: {result.get('count')} results
-
-"""
-        for item in result.get("results", []):
-            output += f"""## [{item['type'].upper()}] ID: {item['id']}
-{item['content'][:200]}{'...' if len(item['content']) > 200 else ''}
-
----
-"""
-        if not result.get("results"):
-            output += "_No results found._\n"
-    else:
-        output = f"""# ❌ Search Error
-
-{result.get('error', 'Unknown error')}
-"""
-    return [TextContent(type="text", text=output)]
+    return [TextContent(type="text", text=_fmt_kb.format_search_knowledge(result))]
 
 
 async def _wrap_get_context(args: dict) -> list[TextContent]:
@@ -715,81 +512,19 @@ async def _wrap_get_context(args: dict) -> list[TextContent]:
         include_locations=args.get("include_locations", True),
         limit=args.get("limit", 10)
     )
-
-    if result.get("status") == "success":
-        output = f"""# 📋 Project Context
-
-**Project ID**: {result.get('project_id', 'global')}
-
-"""
-        if result.get("decisions"):
-            output += "## Recent Decisions\n\n"
-            for d in result["decisions"]:
-                output += f"- **[{d.get('category', 'general')}]** {d.get('decision', '')[:100]}\n"
-            output += "\n"
-
-        if result.get("locations"):
-            output += "## Code Locations\n\n"
-            for loc in result["locations"]:
-                output += f"- **{loc.get('name', '')}**: `{loc.get('repo', '')}/{loc.get('path', '')}`\n"
-            output += "\n"
-
-        if not result.get("decisions") and not result.get("locations"):
-            output += "_No context recorded yet. Use `record_decision` and `record_location` to add context._\n"
-    else:
-        output = f"""# ❌ Error Getting Context
-
-{result.get('error', 'Unknown error')}
-"""
-    return [TextContent(type="text", text=output)]
+    return [TextContent(type="text", text=_fmt_kb.format_get_context(result))]
 
 
 async def _wrap_init_knowledge(args: dict) -> list[TextContent]:
     """init_knowledge tool wrapper"""
-    result = await init_knowledge(
-        project_path=args.get("project_path")
-    )
-
-    if result.get("status") == "initialized":
-        output = f"""# ✅ Knowledge Base Initialized
-
-**Database**: {result.get('db_path')}
-
-{result.get('message', '')}
-
-## Available Commands
-- `record_decision` - Record a decision
-- `record_location` - Record a code location
-- `search_knowledge` - Search past knowledge
-- `get_context` - Get recent context
-"""
-    else:
-        output = f"""# ❌ Initialization Error
-
-{result.get('error', 'Unknown error')}
-"""
-    return [TextContent(type="text", text=output)]
+    result = await init_knowledge(project_path=args.get("project_path"))
+    return [TextContent(type="text", text=_fmt_kb.format_init_knowledge(result))]
 
 
 async def _wrap_rebuild_index(args: dict) -> list[TextContent]:
     """rebuild_index tool wrapper"""
-    result = await rebuild_index(
-        project_path=args.get("project_path")
-    )
-
-    if result.get("status") == "rebuilt":
-        output = f"""# ✅ Search Index Rebuilt
-
-**Indexed Items**: {result.get('indexed_count')}
-
-{result.get('message', '')}
-"""
-    else:
-        output = f"""# ❌ Rebuild Error
-
-{result.get('error', 'Unknown error')}
-"""
-    return [TextContent(type="text", text=output)]
+    result = await rebuild_index(project_path=args.get("project_path"))
+    return [TextContent(type="text", text=_fmt_kb.format_rebuild_index(result))]
 
 
 async def _wrap_unlock_decision(args: dict) -> list[TextContent]:
@@ -799,30 +534,7 @@ async def _wrap_unlock_decision(args: dict) -> list[TextContent]:
         reason=args.get("reason"),
         project_path=args.get("project_path")
     )
-
-    if result.get("status") == "unlocked":
-        output = f"""# 🔓 Decision Unlocked
-
-**Decision ID**: {result.get('decision_id')}
-**Category**: {result.get('category')}
-**Decision**: {result.get('decision')}
-**Unlock Reason**: {result.get('unlock_reason', 'Not specified')}
-
-This decision can now be modified.
-"""
-    elif result.get("status") == "pro_required":
-        output = f"""# ⚠️ Pro Feature Required
-
-{result.get('error')}
-
-**Purchase**: {result.get('purchase')}
-"""
-    else:
-        output = f"""# ❌ Unlock Error
-
-{result.get('error', 'Unknown error')}
-"""
-    return [TextContent(type="text", text=output)]
+    return [TextContent(type="text", text=_fmt_kb.format_unlock_decision(result))]
 
 
 async def _wrap_list_locked_decisions(args: dict) -> list[TextContent]:
@@ -831,32 +543,7 @@ async def _wrap_list_locked_decisions(args: dict) -> list[TextContent]:
         project_name=args.get("project_name"),
         project_path=args.get("project_path")
     )
-
-    if result.get("status") == "success":
-        decisions = result.get("decisions", [])
-        if not decisions:
-            output = "# 🔒 Locked Decisions\n\nNo locked decisions found."
-        else:
-            lines = ["# 🔒 Locked Decisions\n"]
-            for d in decisions:
-                lines.append(f"- **[{d['id']}]** [{d['category']}] {d['decision']}")
-                if d.get('reasoning'):
-                    lines.append(f"  - Reason: {d['reasoning'][:100]}...")
-            lines.append(f"\n**Total**: {result.get('count')} locked decisions")
-            output = "\n".join(lines)
-    elif result.get("status") == "pro_required":
-        output = f"""# ⚠️ Pro Feature Required
-
-{result.get('error')}
-
-**Purchase**: {result.get('purchase')}
-"""
-    else:
-        output = f"""# ❌ Error
-
-{result.get('error', 'Unknown error')}
-"""
-    return [TextContent(type="text", text=output)]
+    return [TextContent(type="text", text=_fmt_kb.format_list_locked_decisions(result))]
 
 
 # === Tracking Wrappers (v1.5) ===
@@ -1003,14 +690,10 @@ async def _wrap_quick_perspectives(args: dict) -> list[TextContent]:
     context = args.get("context", "")
     is_pro_user = _is_pro("")  # No project path for this tool
 
-    # Free: 2 managers, 1 question | Pro: up to 4 managers, 2 questions
-    free_max_managers = 2
-    free_max_questions = 1
-    pro_max_managers = args.get("max_managers", 4)
-    pro_max_questions = args.get("questions_per_manager", 2)
-
-    max_managers = pro_max_managers if is_pro_user else free_max_managers
-    max_questions = pro_max_questions if is_pro_user else free_max_questions
+    # Limits from QuotaService
+    limits = _get_perspectives_limits()
+    max_managers = args.get("max_managers", limits["max_managers"]) if is_pro_user else limits["max_managers"]
+    max_questions = args.get("questions_per_manager", limits["max_questions"]) if is_pro_user else limits["max_questions"]
 
     # Worker API 호출 (manager와 동일)
     result = call_manager_api(
@@ -1095,88 +778,29 @@ async def _wrap_full_ship(args: dict) -> list[TextContent]:
     return [TextContent(type="text", text=str(result))]
 
 
-FREE_ERROR_LIMIT = 5
-
-
 def _apply_free_error_limit(result: list[TextContent], project_path: str) -> list[TextContent]:
-    """Limit error_check output for Free users.
-
-    Counts total error entries in error_log.jsonl,
-    shows only the last FREE_ERROR_LIMIT entries in output,
-    and appends a soft nudge with the total count.
-    """
+    """Limit error_check output for Free users. Delegates to services.quota."""
     if not result or len(result) == 0:
         return result
-
-    # Count total errors from log
-    total_errors = 0
-    try:
-        from pathlib import Path as _P
-        log_file = _P(project_path) / ".claude" / "errors" / "error_log.jsonl"
-        if log_file.exists():
-            total_errors = sum(1 for _ in open(log_file, "r", encoding="utf-8"))
-    except Exception:
-        pass
-
-    if total_errors > FREE_ERROR_LIMIT:
+    quota = _check_error_view_quota(project_path)
+    if quota.message:
         text = result[0].text if hasattr(result[0], 'text') else str(result[0])
-        nudge = (
-            f"\n\n---\n"
-            f"Checked **{FREE_ERROR_LIMIT} of {total_errors}** error records (Free limit).\n"
-            f"Older errors may contain relevant patterns.\n\n"
-            f"Unlock full error history with Pro → `license_status(action=\"trial\")`"
-        )
-        result[0] = TextContent(type="text", text=text + nudge)
-
+        result[0] = TextContent(type="text", text=text + "\n\n---\n" + quota.message)
     return result
 
 
 def _append_ghost_data(
     result: list[TextContent], project_path: str, tool_name: str
 ) -> list[TextContent]:
-    """Append ghost data teaser to Free user's error tool output.
-
-    Shows hints about Pro features (pattern learning, memory search)
-    to naturally drive conversion from error_record/error_check usage.
-    """
-    # Only append for non-Pro users
-    try:
-        if _is_pro(project_path):
-            return result
-    except Exception:
-        return result
-
-    teasers = {
-        "error_record": (
-            "\n\n---\n"
-            "**Pro**: Auto-generate NEVER/ALWAYS rules from your error patterns "
-            "→ `license_status(action=\"trial\")`"
-        ),
-        "error_check": (
-            "\n\n---\n"
-            "**Pro**: Search all past errors by keyword + share lessons across projects "
-            "→ `license_status(action=\"trial\")`"
-        ),
-    }
-
-    teaser = teasers.get(tool_name)
-    if teaser and result and len(result) > 0:
-        original = result[0].text if hasattr(result[0], 'text') else str(result[0])
-        result[0] = TextContent(type="text", text=original + teaser)
-
-    return result
+    """Append ghost data teaser. Delegates to services.gate."""
+    return _append_free_nudge(result, project_path, tool_name)
 
 
 async def _wrap_error_record(args: dict) -> list[TextContent]:
     """error_record tool wrapper"""
-    if not _HAS_ERROR_TOOLS or error_record is None:
-        return [TextContent(type="text", text="""
-# Clouvel Pro Feature
-
-Error Learning requires **Clouvel Pro**.
-
-Start a free 7-day trial: `license_status(action="trial")`
-""")]
+    blocked = _require_error_tools("error_record")
+    if blocked:
+        return blocked
     result = await error_record(
         path=args.get("path", ""),
         error_text=args.get("error_text", ""),
@@ -1191,14 +815,9 @@ Start a free 7-day trial: `license_status(action="trial")`
 
 async def _wrap_error_check(args: dict) -> list[TextContent]:
     """error_check tool wrapper — Free: recent 5 errors only."""
-    if not _HAS_ERROR_TOOLS or error_check is None:
-        return [TextContent(type="text", text="""
-# Clouvel Pro Feature
-
-Error Learning requires **Clouvel Pro**.
-
-Start a free 7-day trial: `license_status(action="trial")`
-""")]
+    blocked = _require_error_tools("error_check")
+    if blocked:
+        return blocked
     result = await error_check(
         path=args.get("path", ""),
         context=args.get("context", ""),
@@ -1216,14 +835,9 @@ Start a free 7-day trial: `license_status(action="trial")`
 
 async def _wrap_error_learn(args: dict) -> list[TextContent]:
     """error_learn tool wrapper"""
-    if not _HAS_ERROR_TOOLS or error_learn is None:
-        return [TextContent(type="text", text="""
-# Clouvel Pro Feature
-
-Error Learning requires **Clouvel Pro**.
-
-Start a free 7-day trial: `license_status(action="trial")`
-""")]
+    blocked = _require_error_tools("error_learn")
+    if blocked:
+        return blocked
     return await error_learn(
         path=args.get("path", ""),
         auto_update_claude_md=args.get("auto_update_claude_md", True),
@@ -1233,14 +847,9 @@ Start a free 7-day trial: `license_status(action="trial")`
 
 async def _wrap_memory_status(args: dict) -> list[TextContent]:
     """memory_status tool wrapper"""
-    if not _HAS_ERROR_TOOLS or memory_status is None:
-        return [TextContent(type="text", text="""
-# Clouvel Pro Feature
-
-Regression Memory requires **Clouvel Pro**.
-
-Start a free 7-day trial: `license_status(action="trial")`
-""")]
+    blocked = _require_error_tools("memory_status")
+    if blocked:
+        return blocked
     return await memory_status(
         path=args.get("path", ""),
     )
@@ -1248,8 +857,9 @@ Start a free 7-day trial: `license_status(action="trial")`
 
 async def _wrap_memory_list(args: dict) -> list[TextContent]:
     """memory_list tool wrapper"""
-    if not _HAS_ERROR_TOOLS or memory_list is None:
-        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires **Clouvel Pro**.\n\nStart a free 7-day trial: `license_status(action=\"trial\")`\n")]
+    blocked = _require_error_tools("memory_list")
+    if blocked:
+        return blocked
     return await memory_list(
         path=args.get("path", ""),
         category=args.get("category", ""),
@@ -1260,8 +870,9 @@ async def _wrap_memory_list(args: dict) -> list[TextContent]:
 
 async def _wrap_memory_search(args: dict) -> list[TextContent]:
     """memory_search tool wrapper"""
-    if not _HAS_ERROR_TOOLS or memory_search is None:
-        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires **Clouvel Pro**.\n\nStart a free 7-day trial: `license_status(action=\"trial\")`\n")]
+    blocked = _require_error_tools("memory_search")
+    if blocked:
+        return blocked
     return await memory_search(
         path=args.get("path", ""),
         query=args.get("query", ""),
@@ -1271,8 +882,9 @@ async def _wrap_memory_search(args: dict) -> list[TextContent]:
 
 async def _wrap_memory_archive(args: dict) -> list[TextContent]:
     """memory_archive tool wrapper"""
-    if not _HAS_ERROR_TOOLS or memory_archive is None:
-        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires **Clouvel Pro**.\n\nStart a free 7-day trial: `license_status(action=\"trial\")`\n")]
+    blocked = _require_error_tools("memory_archive")
+    if blocked:
+        return blocked
     return await memory_archive(
         path=args.get("path", ""),
         memory_id=args.get("memory_id", 0),
@@ -1282,8 +894,9 @@ async def _wrap_memory_archive(args: dict) -> list[TextContent]:
 
 async def _wrap_memory_report(args: dict) -> list[TextContent]:
     """memory_report tool wrapper"""
-    if not _HAS_ERROR_TOOLS or memory_report is None:
-        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nRegression Memory requires **Clouvel Pro**.\n\nStart a free 7-day trial: `license_status(action=\"trial\")`\n")]
+    blocked = _require_error_tools("memory_report")
+    if blocked:
+        return blocked
     return await memory_report(
         path=args.get("path", ""),
         days=args.get("days", 30),
@@ -1292,8 +905,9 @@ async def _wrap_memory_report(args: dict) -> list[TextContent]:
 
 async def _wrap_memory_promote(args: dict) -> list[TextContent]:
     """memory_promote tool wrapper"""
-    if not _HAS_ERROR_TOOLS or memory_promote is None:
-        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nCross-project memory requires **Clouvel Pro**.\n\nStart a free 7-day trial: `license_status(action=\"trial\")`\n")]
+    blocked = _require_error_tools("memory_promote")
+    if blocked:
+        return blocked
     return await memory_promote(
         path=args.get("path", ""),
         memory_id=args.get("memory_id", 0),
@@ -1302,8 +916,9 @@ async def _wrap_memory_promote(args: dict) -> list[TextContent]:
 
 async def _wrap_memory_global_search(args: dict) -> list[TextContent]:
     """memory_global_search tool wrapper"""
-    if not _HAS_ERROR_TOOLS or memory_global_search is None:
-        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nCross-project memory requires **Clouvel Pro**.\n\nStart a free 7-day trial: `license_status(action=\"trial\")`\n")]
+    blocked = _require_error_tools("memory_global_search")
+    if blocked:
+        return blocked
     return await memory_global_search(
         path=args.get("path", ""),
         query=args.get("query", ""),
@@ -1314,8 +929,9 @@ async def _wrap_memory_global_search(args: dict) -> list[TextContent]:
 
 async def _wrap_set_project_domain(args: dict) -> list[TextContent]:
     """set_project_domain tool wrapper"""
-    if not _HAS_ERROR_TOOLS or set_project_domain is None:
-        return [TextContent(type="text", text="# Clouvel Pro Feature\n\nDomain scoping requires **Clouvel Pro**.\n\nStart a free 7-day trial: `license_status(action=\"trial\")`\n")]
+    blocked = _require_error_tools("set_project_domain")
+    if blocked:
+        return blocked
     return await set_project_domain(
         path=args.get("path", ""),
         domain=args.get("domain", ""),
@@ -1326,65 +942,11 @@ async def _wrap_activate_license(args: dict) -> list[TextContent]:
     """activate_license tool wrapper"""
     license_key = args.get("license_key", "")
     if not license_key:
-        return [TextContent(type="text", text="""
-# ❌ Please enter license key
-
-## Usage
-```
-license_status(action="activate", license_key="YOUR-KEY")
-```
-
-Or start a free trial: `license_status(action="trial")`
-""")]
-
+        return [TextContent(type="text", text=_fmt_lic.format_activate_license_no_key())]
     result = activate_license_cli(license_key)
-
     if result.get("success"):
-        tier_info = result.get("tier_info", {})
-        machine_id = result.get("machine_id", "unknown")
-        product = result.get("product", "Clouvel Pro")
-
-        # Test license extra info
-        extra_info = ""
-        if result.get("test_license"):
-            expires_at = result.get("expires_at", "")
-            expires_in_days = result.get("expires_in_days", 7)
-            extra_info = f"""
-## ⚠️ Test License
-- **Expires**: {expires_at}
-- **Days remaining**: {expires_in_days}
-"""
-
-        return [TextContent(type="text", text=f"""
-# ✅ License Activated
-
-## Info
-- **Tier**: {tier_info.get('name', 'Unknown')}
-- **Product**: {product}
-- **Machine**: `{machine_id[:8]}...`
-{extra_info}
-## 🔒 Machine Binding
-
-This license is bound to the current machine.
-- Personal: Can only be used on 1 machine
-- Team: Can be used on up to 10 machines
-- Enterprise: Unlimited machines
-
-To use on another machine, deactivate the existing machine or upgrade to a higher tier.
-""")]
-    else:
-        return [TextContent(type="text", text=f"""
-# ❌ License Activation Failed
-
-{result.get('message', 'Unknown error')}
-
-## Checklist
-- Verify license key is correct
-- Check network connection
-- Check activation limit (Personal: 1)
-
-Need a key? `license_status(action="upgrade")`
-""")]
+        return [TextContent(type="text", text=_fmt_lic.format_activate_license_success(result))]
+    return [TextContent(type="text", text=_fmt_lic.format_activate_license_failure(result))]
 
 
 async def _wrap_license_status(args: dict = None) -> list[TextContent]:
@@ -1407,164 +969,34 @@ async def _wrap_license_status(args: dict = None) -> list[TextContent]:
 
     # Default: status
     result = get_license_status()
-
     if not result.get("has_license"):
-        return [TextContent(type="text", text=f"""
-# License Status
-
-**Status**: Not activated
-
-{result.get('message', '')}
-
-## Quick Actions
-- **Free trial**: `license_status(action="trial")` — 7 days, no credit card
-- **Activate key**: `license_status(action="activate", license_key="YOUR-KEY")`
-- **Pricing**: `license_status(action="upgrade")`
-""")]
-
-    tier_info = result.get("tier_info", {})
-    machine_id = result.get("machine_id", "unknown")
-    activated_at = result.get("activated_at", "N/A")
-    days = result.get("days_since_activation", 0)
-    premium_unlocked = result.get("premium_unlocked", False)
-    remaining = result.get("premium_unlock_remaining", 0)
-
-    unlock_status = "Unlocked" if premium_unlocked else f"{remaining} days remaining"
-
-    return [TextContent(type="text", text=f"""
-# License Status
-
-**Status**: Active
-
-## Info
-- **Tier**: {tier_info.get('name', 'Unknown')} ({tier_info.get('price', '?')})
-- **Machine**: `{machine_id[:8]}...`
-- **Activated at**: {activated_at[:19] if len(activated_at) > 19 else activated_at}
-- **Days since activation**: {days}
-- **Premium features**: {unlock_status}
-""")]
+        return [TextContent(type="text", text=_fmt_lic.format_license_status_none(result))]
+    return [TextContent(type="text", text=_fmt_lic.format_license_status_active(result))]
 
 
 async def _wrap_start_trial() -> list[TextContent]:
     """start_trial tool wrapper - 7-day Full Pro trial"""
-    from .license_common import start_full_trial, get_full_trial_status, load_license_cache
+    from .licensing.trial import start_full_trial, get_full_trial_status
+    from .licensing.validation import load_license_cache
 
-    # Already has a license? No need for trial
     cached = load_license_cache()
     if cached and cached.get("tier"):
-        return [TextContent(type="text", text="""
-# Pro Trial
+        return [TextContent(type="text", text=_fmt_lic.format_trial_already_licensed())]
 
-You already have an active Pro license. No trial needed!
-
-Use `license_status` to check your current plan.
-""")]
-
-    # Already in trial?
     status = get_full_trial_status()
     if status.get("active"):
-        remaining = status.get("remaining_days", 0)
-        return [TextContent(type="text", text=f"""
-# Pro Trial Active
+        return [TextContent(type="text", text=_fmt_lic.format_trial_active(status.get("remaining_days", 0)))]
 
-**{remaining} day(s) remaining** | All Pro features unlocked
-
-Included:
-- 8 C-Level AI managers (PM, CTO, QA, CDO, CMO, CFO, CSO, ERROR)
-- Knowledge Base (decisions preserved across sessions)
-- BLOCK mode (enforced spec-first)
-- ship (lint -> test -> build -> evidence)
-- Unlimited projects
-
-Like it? Keep it:
-- Monthly: **$7.99/mo**
-- Annual: **$49/yr** (Early Adopter Pricing)
-
-→ `license_status(action="upgrade")`
-""")]
-
-    # Trial already expired?
     if not status.get("never_started", False) and not status.get("active", False):
-        return [TextContent(type="text", text="""
-# Pro Trial Expired
+        return [TextContent(type="text", text=_fmt_lic.format_trial_expired())]
 
-Your 7-day trial has ended.
-
-- Monthly: **$7.99/mo**
-- Annual: **$49/yr** (Early Adopter Pricing)
-
-→ `license_status(action="upgrade")`
-""")]
-
-    # Start new trial
     result = start_full_trial()
-    remaining = result.get("remaining_days", 7)
-
-    return [TextContent(type="text", text=f"""
-# Pro Trial Started!
-
-**{remaining} days of full Pro access** - no credit card required.
-
-You now have:
-- 8 C-Level AI managers (PM, CTO, QA, CDO, CMO, CFO, CSO, ERROR)
-- Knowledge Base (decisions preserved across sessions)
-- BLOCK mode (enforced spec-first coding)
-- ship (one-click lint -> test -> build -> evidence)
-- Unlimited projects
-- All Pro templates (standard + detailed)
-
-## Try these first
-1. `manager(context="your current task")` - get 8-manager review
-2. `record_decision(category="architecture", decision="...")` - save a decision
-3. `ship(path=".")` - run full verification
-
-## After trial
-- Monthly: **$7.99/mo**
-- Annual: **$49/yr** (Early Adopter Pricing)
-→ `license_status(action="upgrade")`
-""")]
+    return [TextContent(type="text", text=_fmt_lic.format_trial_started(result.get("remaining_days", 7)))]
 
 
 async def _upgrade_pro() -> list[TextContent]:
     """Pro upgrade guide"""
-    return [TextContent(type="text", text="""
-# Clouvel Pro
-
-10 more tools that make Claude Code reliable.
-
-## What You Get
-
-| Tool | What it does |
-|------|-------------|
-| `error_learn` | Auto-generate NEVER/ALWAYS rules from error patterns |
-| `memory_status` | Error memory dashboard with hit counts |
-| `memory_search` | Search past errors by keyword |
-| `memory_global_search` | Share error patterns across all projects |
-| `drift_check` | Detect when work drifts from goals |
-| `plan` | Detailed execution plans with dependencies |
-| `meeting` | Full 8-manager C-Level review |
-| `ship` | One-click lint+test+build with evidence |
-| `record_decision` | Persistent knowledge base for decisions |
-| `search_knowledge` | Search past decisions and context |
-
-## Also Unlocked
-- Full error history (not just last 5)
-- 50 checkpoint slots (not 1)
-- 4 managers + 2 questions each (not 2+1)
-
-## Pricing
-
-| Plan | Price |
-|------|-------|
-| Monthly | **$7.99/mo** |
-| Annual | **$49/yr** (Early Adopter Pricing) |
-
-## Purchase
-
-https://polar.sh/clouvel
-
-Or start a free 7-day trial first: `license_status(action="trial")`
-""")]
+    return [TextContent(type="text", text=_fmt_lic.format_upgrade_pro())]
 
 
 async def _wrap_debug_runtime(args: dict) -> list[TextContent]:
@@ -1650,32 +1082,10 @@ async def _get_ab_report(days: int, experiment: str = None) -> list[TextContent]
     from .analytics import get_ab_report, format_ab_report, analyze_ab_experiment
 
     if experiment:
-        # Single experiment analysis
         analysis = analyze_ab_experiment(experiment, days)
-        lines = [
-            f"# A/B Test: {experiment}",
-            f"Period: Last {days} days",
-            "",
-        ]
-        if analysis["variants"]:
-            lines.append("| Variant | Impressions | Conversions | Rate |")
-            lines.append("|---------|-------------|-------------|------|")
-            for variant, data in analysis["variants"].items():
-                winner = " *" if variant == analysis.get("winner") else ""
-                lines.append(
-                    f"| {variant}{winner} | {data['impressions']} | "
-                    f"{data['conversions']} | {data['rate']}% |"
-                )
-            lines.append("")
-            lines.append(f"**Uplift:** {analysis['uplift']:+.1f}%")
-            lines.append(f"**Confidence:** {analysis['confidence']}")
-        else:
-            lines.append("_No data collected yet_")
-        return [TextContent(type="text", text="\n".join(lines))]
-    else:
-        # Full report
-        report = get_ab_report(days)
-        return [TextContent(type="text", text=format_ab_report(report))]
+        return [TextContent(type="text", text=_fmt_analytics.format_ab_experiment(experiment, days, analysis))]
+    report = get_ab_report(days)
+    return [TextContent(type="text", text=format_ab_report(report))]
 
 
 async def _get_monthly_report(days: int) -> list[TextContent]:
@@ -1695,34 +1105,5 @@ async def _decide_winner(experiment: str, min_confidence: str) -> list[TextConte
 
     decision = decide_experiment_winner(experiment, min_confidence)
     promotion = promote_winning_variant(experiment)
-
-    lines = [
-        f"# Experiment Decision: {experiment}",
-        "",
-        "## Analysis",
-        f"- Decision: **{decision['decision'].upper()}**",
-        f"- Reason: {decision['reason']}",
-        "",
-    ]
-
-    if decision["ready_for_rollout"]:
-        lines.extend([
-            "## Ready for Promotion",
-            f"- Winner: **{decision['winner']}**",
-            f"- Winner value: `{promotion.get('winner_value')}`",
-            f"- Previous rollout: {promotion.get('previous_rollout')}%",
-            f"- New rollout: {promotion.get('new_rollout')}%",
-            "",
-            "### Code Change Required:",
-            "```python",
-            promotion.get("code_change", "").strip(),
-            "```",
-        ])
-    else:
-        lines.extend([
-            "## Action Required",
-            f"- {promotion.get('action_required', 'Continue collecting data')}",
-        ])
-
-    return [TextContent(type="text", text="\n".join(lines))]
+    return [TextContent(type="text", text=_fmt_analytics.format_decide_winner(experiment, decision, promotion))]
 

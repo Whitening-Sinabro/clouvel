@@ -34,27 +34,27 @@ class TestIsPro:
 
     def test_developer_is_pro(self):
         """Developer mode should be treated as Pro."""
-        with patch("clouvel.license_common.is_developer", return_value=True):
+        with patch("clouvel.licensing.core.is_developer", return_value=True):
             assert _is_pro("") is True
 
     def test_license_is_pro(self):
         """User with license cache should be Pro."""
-        with patch("clouvel.license_common.is_developer", return_value=False), \
-             patch("clouvel.license_common.load_license_cache", return_value={"tier": "personal"}):
+        with patch("clouvel.licensing.core.is_developer", return_value=False), \
+             patch("clouvel.licensing.validation.load_license_cache", return_value={"tier": "personal"}):
             assert _is_pro("") is True
 
     def test_trial_is_pro(self):
         """User with active trial should be Pro."""
-        with patch("clouvel.license_common.is_developer", return_value=False), \
-             patch("clouvel.license_common.load_license_cache", return_value=None), \
-             patch("clouvel.license_common.is_full_trial_active", return_value=True):
+        with patch("clouvel.licensing.core.is_developer", return_value=False), \
+             patch("clouvel.licensing.validation.load_license_cache", return_value=None), \
+             patch("clouvel.licensing.trial.is_full_trial_active", return_value=True):
             assert _is_pro("") is True
 
     def test_no_license_no_trial_is_not_pro(self):
         """User without license or trial should not be Pro."""
-        with patch("clouvel.license_common.is_developer", return_value=False), \
-             patch("clouvel.license_common.load_license_cache", return_value=None), \
-             patch("clouvel.license_common.is_full_trial_active", return_value=False):
+        with patch("clouvel.licensing.core.is_developer", return_value=False), \
+             patch("clouvel.licensing.validation.load_license_cache", return_value=None), \
+             patch("clouvel.licensing.trial.is_full_trial_active", return_value=False):
             assert _is_pro("") is False
 
 

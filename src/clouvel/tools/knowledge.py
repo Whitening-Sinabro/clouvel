@@ -47,7 +47,7 @@ def can_use_kb(project_path: Optional[str] = None) -> bool:
     # v5.0: First project gets KB access
     if project_path:
         try:
-            from ..license_common import get_project_tier
+            from ..licensing.first_project import get_project_tier
             if get_project_tier(project_path) in ("pro", "first"):
                 db = _get_db()
                 return db is not None  # Still need db module to actually work

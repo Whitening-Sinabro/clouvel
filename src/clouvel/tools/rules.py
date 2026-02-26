@@ -142,8 +142,22 @@ Use `setup_cli` with rules option instead:
 """)]
 
 
+CONTEXT_RULES_MAP = {
+    "coding":   ["global.md", "clouvel.md"],
+    "security": ["security.md"],
+    "commit":   ["security.md", "global.md"],
+    "review":   ["global.md", "security.md"],
+    "debug":    ["global.md", "errors.md"],
+    "test":     ["global.md"],
+    "api":      ["global.md", "api.md", "security.md"],
+    "frontend": ["global.md", "frontend.md"],
+    "database": ["global.md", "database.md", "security.md"],
+    "all":      None,  # 전체 로드 (기존 동작)
+}
+
+
 async def get_rule(path: str, context: str) -> list[TextContent]:
-    """경로 기반 규칙 로딩"""
+    """경로 기반 규칙 로딩 (컨텍스트 필터링 지원)"""
     file_path = Path(path)
 
     # 프로젝트 루트 찾기
@@ -162,19 +176,32 @@ async def get_rule(path: str, context: str) -> list[TextContent]:
     if not rules_dir:
         return [TextContent(type="text", text="❌ .claude/rules/ 폴더를 찾을 수 없습니다. `init_rules`로 먼저 생성하세요.")]
 
+    # 컨텍스트별 필터링
+    allowed_files = CONTEXT_RULES_MAP.get(context)
+
     # 규칙 파일 로딩
     rules = []
-    for rule_file in rules_dir.glob("*.md"):
+    for rule_file in sorted(rules_dir.glob("*.md")):
+        # allowed_files가 None이면 전체 로드 (all 또는 매핑에 없는 context)
+        if allowed_files is not None and rule_file.name not in allowed_files:
+            continue
         rules.append(f"## {rule_file.stem}\n\n{rule_file.read_text(encoding='utf-8')}")
+
+    # clouvel.md는 항상 포함 (존재 시, 아직 로드되지 않았을 때)
+    if allowed_files is not None and "clouvel.md" not in (allowed_files or []):
+        clouvel_file = rules_dir / "clouvel.md"
+        if clouvel_file.exists():
+            rules.append(f"## clouvel\n\n{clouvel_file.read_text(encoding='utf-8')}")
 
     if not rules:
         return [TextContent(type="text", text="❌ 규칙 파일이 없습니다.")]
 
     context_note = f"\n\n> 컨텍스트: {context}" if context != "coding" else ""
+    filtered_note = f" ({len(rules)} files)" if allowed_files is not None else " (all)"
 
     return [TextContent(type="text", text=f"""# 적용 규칙
 
-경로: `{path}`{context_note}
+경로: `{path}`{context_note}{filtered_note}
 
 ---
 

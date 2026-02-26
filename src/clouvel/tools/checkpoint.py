@@ -270,11 +270,11 @@ async def context_save(
     recent_files = []
 
     if depth == "full":
-        # CLAUDE.md rules
+        # CLAUDE.md rules + .claude/rules/*.md
         claude_md_path = project_path / "CLAUDE.md"
         if claude_md_path.exists():
             try:
-                rules = _extract_rules(claude_md_path.read_text(encoding="utf-8"))
+                rules = _extract_rules(claude_md_path.read_text(encoding="utf-8"), project_path=str(project_path))
             except Exception:
                 pass
 

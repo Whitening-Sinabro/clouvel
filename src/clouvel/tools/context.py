@@ -126,11 +126,16 @@ def _get_git_status(project_path: Path) -> dict:
     return result
 
 
-def _extract_rules(claude_md: str) -> list[str]:
-    """CLAUDE.md에서 핵심 규칙 추출"""
+def _extract_rules(claude_md: str, project_path: str = None) -> list[str]:
+    """CLAUDE.md + .claude/rules/*.md에서 핵심 규칙 추출
+
+    Args:
+        claude_md: CLAUDE.md 파일 내용
+        project_path: 프로젝트 경로 (옵셔널, .claude/rules/ 스캔용)
+    """
     rules = []
 
-    # NEVER/ALWAYS 패턴 찾기
+    # CLAUDE.md에서 NEVER/ALWAYS 패턴 찾기
     never_matches = re.findall(r"NEVER[:\s]+([^\n]+)", claude_md, re.IGNORECASE)
     always_matches = re.findall(r"ALWAYS[:\s]+([^\n]+)", claude_md, re.IGNORECASE)
 
@@ -140,7 +145,31 @@ def _extract_rules(claude_md: str) -> list[str]:
     for match in always_matches[:5]:
         rules.append(f"ALWAYS: {match.strip()}")
 
-    return rules
+    # .claude/rules/*.md에서 추가 규칙 추출
+    if project_path:
+        rules_dir = Path(project_path) / ".claude" / "rules"
+        if rules_dir.exists():
+            seen = set(rules)
+            for rule_file in sorted(rules_dir.glob("*.md")):
+                try:
+                    content = rule_file.read_text(encoding="utf-8")
+                    r_never = re.findall(r"NEVER[:\s]+([^\n]+)", content, re.IGNORECASE)
+                    r_always = re.findall(r"ALWAYS[:\s]+([^\n]+)", content, re.IGNORECASE)
+                    for match in r_never:
+                        entry = f"NEVER: {match.strip()}"
+                        if entry not in seen:
+                            rules.append(entry)
+                            seen.add(entry)
+                    for match in r_always:
+                        entry = f"ALWAYS: {match.strip()}"
+                        if entry not in seen:
+                            rules.append(entry)
+                            seen.add(entry)
+                except Exception:
+                    continue
+
+    # 최대 10개 (CLAUDE.md 5개 + rules/ 5개)
+    return rules[:10]
 
 
 def _extract_prd_summary(prd_content: str) -> str:

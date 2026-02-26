@@ -186,7 +186,19 @@ TOOL_DEFINITIONS = [
             "type": "object",
             "properties": {
                 "path": {"type": "string", "description": "File path"},
-                "context": {"type": "string", "enum": ["coding", "review", "debug", "test"]}
+                "context": {"type": "string", "enum": ["coding", "security", "commit", "review", "debug", "test", "api", "frontend", "database", "all"]}
+            },
+            "required": ["path"]
+        }
+    ),
+    Tool(
+        name="audit_rules",
+        description="Analyze CLAUDE.md for bloat and migrate sections to .claude/rules/ for context savings.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project root path"},
+                "migrate": {"type": "boolean", "description": "If true, perform the migration. If false (default), report only.", "default": False}
             },
             "required": ["path"]
         }
@@ -318,7 +330,7 @@ TOOL_DEFINITIONS = [
         }
     ),
 
-    # === Context Checkpoint (Free) ===
+    # === Context Checkpoint ===
     Tool(
         name="context_save",
         description="Save your working state before context runs out. One call captures everything needed for recovery.",
@@ -451,7 +463,7 @@ TOOL_DEFINITIONS = [
     # === Project Management Tools (Free, v3.3) ===
     Tool(
         name="archive_project",
-        description="Archive a project to free up the active slot. Free tier allows 1 active project. (Free)",
+        description="Archive a project.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -462,7 +474,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="list_projects",
-        description="List all registered projects with their status (active/archived). (Free)",
+        description="List all registered projects with their status (active/archived).",
         inputSchema={
             "type": "object",
             "properties": {}
@@ -489,7 +501,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="record_location",
-        description="Record a code location to the knowledge base. Track where important code lives. (Pro)",
+        description="Record a code location to the knowledge base. Track where important code lives. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -519,7 +531,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="get_context",
-        description="Get recent context for a project. Returns recent decisions and code locations. (Pro)",
+        description="Get recent context for a project. Returns recent decisions and code locations. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -533,7 +545,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="init_knowledge",
-        description="Initialize the knowledge base. Creates SQLite database at ~/.clouvel/knowledge.db. (Pro)",
+        description="Initialize the knowledge base. Creates SQLite database at ~/.clouvel/knowledge.db. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -543,7 +555,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="rebuild_index",
-        description="Rebuild the knowledge base search index. Use if search results seem incomplete. (Pro)",
+        description="Rebuild the knowledge base search index. Use if search results seem incomplete. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -553,7 +565,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="unlock_decision",
-        description="Unlock a locked decision. Requires explicit reason. (Pro)",
+        description="Unlock a locked decision. Requires explicit reason. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -566,7 +578,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="list_locked_decisions",
-        description="List all locked decisions. (Pro)",
+        description="List all locked decisions. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -607,7 +619,7 @@ TOOL_DEFINITIONS = [
     # === Manager Tool (Pro, v1.2) ===
     Tool(
         name="manager",
-        description="Context-based collaborative feedback from 8 C-Level managers. PM/CTO/QA/CDO/CMO/CFO/CSO/Error. Set use_dynamic=true for natural meeting transcript generation. (Pro)",
+        description="Context-based collaborative feedback from 8 C-Level managers. PM/CTO/QA/CDO/CMO/CFO/CSO/Error. Set use_dynamic=true for natural meeting transcript generation. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -623,7 +635,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="list_managers",
-        description="List available managers. (Pro)",
+        description="List available managers. ",
         inputSchema={"type": "object", "properties": {}}
     ),
     Tool(
@@ -658,7 +670,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="quick_ship",
-        description="Quick ship - run lint and test only. (Pro)",
+        description="Quick ship - run lint and test only. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -670,7 +682,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="full_ship",
-        description="Full ship - all verification steps + auto fix. (Pro)",
+        description="Full ship - all verification steps + auto fix. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -739,7 +751,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="memory_list",
-        description="List regression memories. Filter by category, show archived. (Pro)",
+        description="List regression memories. Filter by category, show archived. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -766,7 +778,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="memory_archive",
-        description="Archive or unarchive a regression memory. Archived memories are excluded from matching. (Pro)",
+        description="Archive or unarchive a regression memory. Archived memories are excluded from matching. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -779,7 +791,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="memory_report",
-        description="Monthly regression memory report. Shows savings, prevention count, top patterns, and time saved estimate. (Pro)",
+        description="Monthly regression memory report. Shows savings, prevention count, top patterns, and time saved estimate. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -791,7 +803,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="memory_promote",
-        description="Promote a local regression memory to global. Shared across all projects. Only root_cause and prevention_rule are promoted (no raw error text). Requires hit_count >= 1. (Pro)",
+        description="Promote a local regression memory to global. Shared across all projects. Only root_cause and prevention_rule are promoted (no raw error text). Requires hit_count >= 1. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -818,7 +830,7 @@ TOOL_DEFINITIONS = [
 
     Tool(
         name="set_project_domain",
-        description="Set the domain for the current project. Domains isolate memories: personal/work/client. (Pro)",
+        description="Set the domain for the current project. Domains isolate memories: personal/work/client. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -843,33 +855,11 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="license_status",
-        description="Check your Clouvel license, trial status, and available features.",
+        description="Check Clouvel status. All features are free in v6.0.",
         inputSchema={
             "type": "object",
-            "properties": {
-                "action": {
-                    "type": "string",
-                    "enum": ["status", "activate", "trial", "upgrade"],
-                    "description": "Action: status (default), activate (with license_key), trial (start 7-day), upgrade (show Pro guide)",
-                },
-                "license_key": {
-                    "type": "string",
-                    "description": "License key (required when action=activate)",
-                },
-            },
+            "properties": {},
         },
-    ),
-    Tool(
-        name="start_trial",
-        description="Start 7-day Full Pro trial. No credit card required. All Pro features unlocked for 7 days.",
-        inputSchema={"type": "object", "properties": {}}
-    ),
-
-    # === Pro Guide ===
-    Tool(
-        name="upgrade_pro",
-        description="Clouvel Pro guide. Shovel auto-install, Error Learning, etc.",
-        inputSchema={"type": "object", "properties": {}}
     ),
 
     # === Architecture Guard (v1.8) ===
@@ -943,7 +933,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="pattern_watch",
-        description="v2.0: Watch for repeated error patterns. Detects when same error occurs multiple times. (Pro)",
+        description="v2.0: Watch for repeated error patterns. Detects when same error occurs multiple times. ",
         inputSchema={
             "type": "object",
             "properties": {
@@ -956,7 +946,7 @@ TOOL_DEFINITIONS = [
     ),
     Tool(
         name="auto_remind",
-        description="v2.0: Configure automatic progress reminders. Reminds to update current.md periodically. (Pro)",
+        description="v2.0: Configure automatic progress reminders. Reminds to update current.md periodically. ",
         inputSchema={
             "type": "object",
             "properties": {

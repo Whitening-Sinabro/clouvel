@@ -585,16 +585,19 @@ async def error_learn(
                 result += f"- **Prevention**: {rec['prevention'][:100]}...\n"
             result += "\n"
 
-    # 3. Update CLAUDE.md
+    # 3. Write to .claude/rules/errors.md (slim: no longer bloats CLAUDE.md)
+    rules_dir = project_path / ".claude" / "rules"
+    rules_dir.mkdir(parents=True, exist_ok=True)
+    errors_rules_path = rules_dir / "errors.md"
     claude_md_path = project_path / "CLAUDE.md"
     update_content = ""
 
     if learned_rules and auto_update_claude_md:
-        update_content = "\n## Error Learning Rules (Auto-generated)\n\n"
+        update_content = "# Error Learning Rules (Auto-generated)\n\n"
         update_content += "> These rules were auto-generated from past error analysis.\n\n"
 
         # Generate NEVER rules
-        update_content += "### NEVER\n\n"
+        update_content += "## NEVER\n\n"
         for rule in learned_rules:
             update_content += f"- **{rule['category']}** ({rule['count']} occurrences)\n"
             if rule['root_causes']:
@@ -603,42 +606,32 @@ async def error_learn(
             update_content += f"  - Prevention: {rule['prevention']}\n\n"
 
         # Generate ALWAYS rules
-        update_content += "### ALWAYS\n\n"
+        update_content += "## ALWAYS\n\n"
         for rule in learned_rules:
             if rule['prevention']:
                 update_content += f"- {rule['prevention']} (prevents {rule['category']})\n"
 
         update_content += "\n---\n"
 
-        # Update CLAUDE.md
-        marker = "## Error Learning Rules"
+        # Write to .claude/rules/errors.md
+        errors_rules_path.write_text(update_content, encoding="utf-8")
+        result += "## Error Rules Updated\n\n"
+        result += f"**Path**: {errors_rules_path}\n\n"
+        result += "Added rules:\n"
+        for rule in learned_rules:
+            result += f"- {rule['category']}: NEVER rule added\n"
 
+        # Add 1-line reference in CLAUDE.md if not already there
+        error_ref_marker = "Error Learning Rules"
         if claude_md_path.exists():
             existing_content = claude_md_path.read_text(encoding="utf-8")
-
-            if marker in existing_content:
-                # Replace existing section
-                pattern = r"## Error Learning Rules.*?(?=\n## [^E]|\Z)"
-                new_content = re.sub(pattern, update_content.strip() + "\n\n", existing_content, flags=re.DOTALL)
-            else:
-                # Append to end
-                new_content = existing_content.rstrip() + "\n\n" + update_content
-
-            claude_md_path.write_text(new_content, encoding="utf-8")
-            result += "## CLAUDE.md Updated\n\n"
-            result += f"**Path**: {claude_md_path}\n\n"
-            result += "Added rules:\n"
-            for rule in learned_rules:
-                result += f"- {rule['category']}: NEVER rule added\n"
-        else:
-            # Create new
-            new_content = f"# {project_path.name} Project Rules\n\n{update_content}"
-            claude_md_path.write_text(new_content, encoding="utf-8")
-            result += f"## CLAUDE.md Created\n\n**Path**: {claude_md_path}\n\n"
+            if error_ref_marker not in existing_content:
+                ref_line = "\n## Error Learning Rules\nSee `.claude/rules/errors.md` for auto-generated error prevention rules.\n"
+                claude_md_path.write_text(existing_content.rstrip() + "\n" + ref_line, encoding="utf-8")
 
     elif learned_rules and not auto_update_claude_md:
-        result += "## CLAUDE.md Update Suggestion\n\n"
-        result += "Add the following to CLAUDE.md:\n\n"
+        result += "## Rules Update Suggestion\n\n"
+        result += "Add the following to `.claude/rules/errors.md`:\n\n"
         result += "```markdown\n"
         result += update_content
         result += "```\n"

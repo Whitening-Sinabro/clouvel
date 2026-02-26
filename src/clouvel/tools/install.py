@@ -183,15 +183,7 @@ def _add_global_rules(force: bool = False) -> dict:
 
     clouvel_rule = """
 ## Clouvel 규칙 (자동 생성)
-
-**코드 작성 전 반드시 clouvel의 `can_code` 도구 호출 필수.**
-
-- 코드를 작성(Edit/Write)하기 전에 항상 `can_code` 도구를 먼저 호출하세요
-- path 인자로 프로젝트의 docs 폴더 경로를 전달하세요
-- BLOCK이 뜨면 코드 작성 금지, 사용자에게 문서 작성 안내
-- PASS가 뜨면 코딩 진행 가능
-- WARN은 권장 사항, 진행 가능하지만 권장 문서 추가 안내
-
+코드 작성 전 `can_code` 호출. 중요 파일 생성 후 `record_file` 호출.
 """
     marker = "## Clouvel 규칙"
 
@@ -202,10 +194,26 @@ def _add_global_rules(force: bool = False) -> dict:
             content = claude_md.read_text(encoding="utf-8")
 
             if marker in content and not force:
-                result["success"] = True
-                result["message"] = "이미 규칙 있음"
-                result["skipped"] = True
-                return result
+                # 옛 규칙(상세) 감지 → 자동 슬림화
+                has_verbose = "코드를 작성(Edit/Write)" in content or "BLOCK이 뜨면" in content or "can_code 실패" in content
+                if has_verbose:
+                    import re as _re
+                    slimmed = _re.sub(
+                        r"## Clouvel [^\n]*\n.*?(?=\n## [^C]|\Z)",
+                        clouvel_rule.strip() + "\n",
+                        content,
+                        count=1,
+                        flags=_re.DOTALL,
+                    )
+                    claude_md.write_text(slimmed, encoding="utf-8")
+                    result["success"] = True
+                    result["message"] = "자동 슬림화 완료 (상세 규칙 → 2줄 참조)"
+                    return result
+                else:
+                    result["success"] = True
+                    result["message"] = "이미 규칙 있음"
+                    result["skipped"] = True
+                    return result
 
             if marker in content and force:
                 # 기존 규칙 제거 후 재추가

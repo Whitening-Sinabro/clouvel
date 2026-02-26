@@ -38,6 +38,8 @@ from .tools import (
     init_clouvel, setup_cli,
     # rules (v0.5)
     init_rules, get_rule, add_rule,
+    # audit
+    audit_rules,
     # verify (v0.5)
     verify, gate, handoff,
     # planning (v0.6, v1.3)
@@ -182,6 +184,7 @@ TOOL_HANDLERS = {
     "init_rules": lambda args: init_rules(args.get("path", ""), args.get("template", "minimal")),
     "get_rule": lambda args: get_rule(args.get("path", ""), args.get("context", "coding")),
     "add_rule": lambda args: add_rule(args.get("path", ""), args.get("rule_type", "always"), args.get("content", ""), args.get("category", "general")),
+    "audit_rules": lambda args: audit_rules(args.get("path", ""), args.get("migrate", False)),
 
     # Verify (v0.5)
     "verify": lambda args: verify(args.get("path", ""), args.get("scope", "file"), args.get("checklist", [])),
@@ -257,8 +260,7 @@ TOOL_HANDLERS = {
     "license_status": lambda args: _wrap_license_status(args),
     "start_trial": lambda args: _wrap_start_trial(),
 
-    # Pro 안내
-    "upgrade_pro": lambda args: _upgrade_pro(),
+    # v6.0: upgrade_pro removed
 
     # Architecture Guard (v1.8 + v3.1)
     "arch_check": lambda args: arch_check(args.get("name", ""), args.get("purpose", ""), args.get("path", ".")),
@@ -686,14 +688,13 @@ async def _wrap_list_managers() -> list[TextContent]:
 
 
 async def _wrap_quick_perspectives(args: dict) -> list[TextContent]:
-    """quick_perspectives tool wrapper — Free: 2 managers, 1 question each."""
+    """quick_perspectives tool wrapper — v6.0: all managers, no limits."""
     context = args.get("context", "")
-    is_pro_user = _is_pro("")  # No project path for this tool
 
-    # Limits from QuotaService
+    # v6.0: Always use Pro limits
     limits = _get_perspectives_limits()
-    max_managers = args.get("max_managers", limits["max_managers"]) if is_pro_user else limits["max_managers"]
-    max_questions = args.get("questions_per_manager", limits["max_questions"]) if is_pro_user else limits["max_questions"]
+    max_managers = args.get("max_managers", limits["max_managers"])
+    max_questions = args.get("questions_per_manager", limits["max_questions"])
 
     # Worker API 호출 (manager와 동일)
     result = call_manager_api(
@@ -721,21 +722,6 @@ async def _wrap_quick_perspectives(args: dict) -> list[TextContent]:
                 for q in questions:
                     lines.append(f"  - {q}")
                 lines.append("")
-
-        # Free nudge: show hidden managers as teaser
-        if not is_pro_user and hidden:
-            hidden_names = []
-            for mgr_key in hidden:
-                mgr = feedback.get(mgr_key, {})
-                hidden_names.append(mgr.get("title", mgr_key))
-            lines.append("---")
-            lines.append(f"**{len(hidden)} more perspectives available** ({', '.join(hidden_names)})")
-            # Show first hidden manager's first question as a teaser
-            first_hidden = feedback.get(hidden[0], {})
-            hint_q = first_hidden.get("questions", [""])[0]
-            if hint_q:
-                lines.append(f"_Hint: {first_hidden.get('title', '')} asks: \"{hint_q[:60]}...\"_")
-            lines.append("\nUnlock all managers with Pro → `license_status(action=\"trial\")`")
 
         return [TextContent(type="text", text="\n".join(lines))]
 
@@ -810,7 +796,7 @@ async def _wrap_error_record(args: dict) -> list[TextContent]:
         solution=args.get("solution", ""),
         prevention=args.get("prevention", "")
     )
-    return _append_ghost_data(result, args.get("path", ""), "error_record")
+    return result
 
 
 async def _wrap_error_check(args: dict) -> list[TextContent]:
@@ -825,12 +811,8 @@ async def _wrap_error_check(args: dict) -> list[TextContent]:
         operation=args.get("operation", "")
     )
 
-    # Free limit: cap visible errors and add nudge
-    project_path = args.get("path", "")
-    if not _is_pro(project_path):
-        result = _apply_free_error_limit(result, project_path)
-
-    return _append_ghost_data(result, project_path, "error_check")
+    # v6.0: No free limits or nudges
+    return result
 
 
 async def _wrap_error_learn(args: dict) -> list[TextContent]:
@@ -950,28 +932,12 @@ async def _wrap_activate_license(args: dict) -> list[TextContent]:
 
 
 async def _wrap_license_status(args: dict = None) -> list[TextContent]:
-    """Unified license_status tool wrapper.
-
-    Absorbs: activate_license, start_trial, upgrade_pro.
-    Dispatches based on 'action' parameter.
-    """
-    args = args or {}
-    action = args.get("action", "status")
-
-    if action == "activate":
-        return await _wrap_activate_license(args)
-
-    if action == "trial":
-        return await _wrap_start_trial()
-
-    if action == "upgrade":
-        return await _upgrade_pro()
-
-    # Default: status
-    result = get_license_status()
-    if not result.get("has_license"):
-        return [TextContent(type="text", text=_fmt_lic.format_license_status_none(result))]
-    return [TextContent(type="text", text=_fmt_lic.format_license_status_active(result))]
+    """v6.0: Simplified — all features are free."""
+    return [TextContent(type="text", text=(
+        "# Clouvel v6.0 — All Features Free\n\n"
+        "All tools and features are included at no cost.\n"
+        "No license or trial needed."
+    ))]
 
 
 async def _wrap_start_trial() -> list[TextContent]:
@@ -995,8 +961,8 @@ async def _wrap_start_trial() -> list[TextContent]:
 
 
 async def _upgrade_pro() -> list[TextContent]:
-    """Pro upgrade guide"""
-    return [TextContent(type="text", text=_fmt_lic.format_upgrade_pro())]
+    """v6.0: All features free — no upgrade needed."""
+    return [TextContent(type="text", text="All features are free in Clouvel v6.0.")]
 
 
 async def _wrap_debug_runtime(args: dict) -> list[TextContent]:

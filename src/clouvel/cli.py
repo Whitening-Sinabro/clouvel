@@ -160,22 +160,7 @@ echo "[Clouvel] All checks passed. ✓"
 
     clouvel_rule = """
 ## Clouvel Rules (Auto-generated)
-
-**Must call clouvel's `can_code` tool before writing code.**
-
-- Always call `can_code` tool before writing code (Edit/Write)
-- Pass the project's docs folder path as the path argument
-- If BLOCK appears, do not write code, guide user to write documentation
-- If PASS appears, proceed with coding
-- WARN is a recommendation, can proceed but suggest adding recommended docs
-
-**Must call `record_file` after creating important files.**
-
-- After creating a new file with Write tool, call `record_file` to track it
-- Required fields: path (project root), file_path (relative), purpose (what it does)
-- Skip for: temporary files, test data, config files (.json, .yml, .env)
-- This enables file tracking and prevents accidental deletion
-
+Call `can_code` before writing code. Call `record_file` after creating important files.
 """
 
     marker = "## Clouvel Rules"
@@ -184,7 +169,21 @@ echo "[Clouvel] All checks passed. ✓"
     if claude_md_path.exists():
         content = claude_md_path.read_text(encoding='utf-8')
         if marker in content or marker_ko in content:
-            results.append("[OK] Global CLAUDE.md: Clouvel rules already exist")
+            # 옛 규칙(상세) 감지 → 자동 슬림화
+            has_verbose = "Must call clouvel" in content or "필수 준수 사항" in content or "can_code 실패 시" in content
+            if has_verbose:
+                import re as _re
+                slimmed = _re.sub(
+                    r"## Clouvel [^\n]*\n.*?(?=\n## [^C]|\Z)",
+                    clouvel_rule.strip() + "\n",
+                    content,
+                    count=1,
+                    flags=_re.DOTALL,
+                )
+                claude_md_path.write_text(slimmed, encoding='utf-8')
+                results.append("[OK] Global CLAUDE.md: Auto-slimmed (verbose rules → 2-line stub)")
+            else:
+                results.append("[OK] Global CLAUDE.md: Clouvel rules already exist")
         else:
             # Append to existing content
             new_content = content.rstrip() + "\n\n---\n" + clouvel_rule
@@ -283,7 +282,7 @@ def main():
     setup_parser = subparsers.add_parser("setup", help="Install Clouvel forced invocation mechanism (global)")
     setup_parser.add_argument("--global-only", action="store_true", help="Configure CLAUDE.md only (exclude MCP registration)")
     setup_parser.add_argument("--hooks", action="store_true", help="Install pre-commit hooks for record enforcement")
-    setup_parser.add_argument("--proactive", choices=["free", "pro"], help="Setup proactive hooks (v2.0) - auto PRD check, drift detection")
+    setup_parser.add_argument("--proactive", choices=["free", "pro"], help="Setup proactive hooks (v2.0) - auto PRD check, drift detection")  # kept for backward compat
     setup_parser.add_argument("--path", "-p", default=".", help="Project root path")
 
     # install command (new, recommended)
@@ -297,7 +296,7 @@ def main():
     can_code_parser.add_argument("--silent", "-s", action="store_true", help="Silent mode - exit code only")
 
     # drift_check command (for hooks integration)
-    drift_parser = subparsers.add_parser("drift_check", help="Check for context drift (Pro)")
+    drift_parser = subparsers.add_parser("drift_check", help="Check for context drift")
     drift_parser.add_argument("--path", "-p", default=".", help="Project root path")
     drift_parser.add_argument("--silent", "-s", action="store_true", help="Silent mode - minimal output")
 
@@ -388,17 +387,16 @@ def main():
         if result["success"]:
             print(f"""
 ================================================================
-              Clouvel Pro License Activated
+              Clouvel License Activated
 ================================================================
 
 {result['message']}
 
-Tier: {result.get('tier_info', {}).get('name', 'Unknown')}
 Machine: {result.get('machine_id', 'Unknown')[:8]}...
-Product: {result.get('product', 'Clouvel Pro')}
+Product: Clouvel
 
 ----------------------------------------------------------------
-Premium features will be available 7 days after activation.
+All features are available immediately.
 Check status with 'clouvel status'.
 ================================================================
 """)
@@ -412,20 +410,16 @@ Check status with 'clouvel status'.
             from .license_free import get_license_status
         result = get_license_status()
         if result.get("has_license"):
-            tier_info = result.get("tier_info", {})
-            unlock_status = "[OK] Unlocked" if result.get("premium_unlocked") else f"[...] {result.get('premium_unlock_remaining', '?')} days remaining"
             print(f"""
 ================================================================
                    Clouvel License Status
 ================================================================
 
 Status: [OK] Activated
-Tier: {tier_info.get('name', 'Unknown')} ({tier_info.get('price', '?')})
 Machine: {result.get('machine_id', 'Unknown')[:8]}...
 
 Activated at: {result.get('activated_at', 'N/A')[:19]}
-Days since activation: {result.get('days_since_activation', 0)}
-Premium features: {unlock_status}
+All features: [OK] Unlocked
 
 ================================================================
 """)
@@ -435,12 +429,9 @@ Premium features: {unlock_status}
                    Clouvel License Status
 ================================================================
 
-Status: [X] Not activated
+Status: Clouvel v6.0 - All features free
+All features are available without a license.
 
-{result.get('message', '')}
-
-Start trial: clouvel activate --trial
-Purchase:    https://polar.sh/clouvel
 ================================================================
 """)
     elif args.command == "gate_check":
@@ -457,6 +448,7 @@ Purchase:    https://polar.sh/clouvel
         if not result["success"]:
             sys.exit(1)
     else:
+        import asyncio
         asyncio.run(run_server())
 
 

@@ -30,6 +30,10 @@ from .rules import (
     add_rule,
 )
 
+from .audit import (
+    audit_rules,
+)
+
 from .verify import (
     verify,
     gate,
@@ -229,6 +233,8 @@ __all__ = [
     "init_clouvel", "setup_cli",
     # rules (v0.5)
     "init_rules", "get_rule", "add_rule",
+    # audit
+    "audit_rules",
     # verify (v0.5)
     "verify", "gate", "handoff",
     # planning (v0.6, v1.3)

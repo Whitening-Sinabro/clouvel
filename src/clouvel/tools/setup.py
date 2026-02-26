@@ -388,22 +388,62 @@ Tip: Edit `.claude/settings.local.json` to customize.
         hooks_file.write_text(json.dumps(hooks_content, indent=2, ensure_ascii=False), encoding='utf-8')
         created_files.append(".claude/hooks.json")
 
-    # 3. CLAUDE.md 규칙
+    # 3. CLAUDE.md 슬림 규칙 + .claude/rules/clouvel.md 상세
     claude_md = project_path / "CLAUDE.md"
     clouvel_rule = """
 ## Clouvel 규칙 (자동 생성)
-
-> 이 규칙은 Clouvel이 자동으로 추가했습니다.
-
-### 필수 준수 사항
-1. **코드 작성 전 문서 체크**: Edit/Write 도구 사용 전 반드시 `can_code` 도구를 먼저 호출
-2. **can_code 실패 시 코딩 금지**: 필수 문서가 없으면 PRD 작성부터
-3. **PRD가 법**: docs/PRD.md에 없는 기능은 구현하지 않음
+코드 작성 전 `can_code` 호출 필수. 상세: `.claude/rules/clouvel.md`
 """
 
+    clouvel_detail = """# Clouvel Rules
+
+## ALWAYS
+- Edit/Write 전 `can_code` 도구 호출
+- docs 폴더 경로를 path 인자로 전달
+- PRD(docs/PRD.md)가 단일 진실 소스
+
+## NEVER
+- `can_code`가 BLOCK 반환 시 코드 작성
+- PRD에 없는 기능 구현
+"""
+
+    # .claude/rules/clouvel.md 생성
+    rules_dir = project_path / ".claude" / "rules"
+    rules_dir.mkdir(parents=True, exist_ok=True)
+    clouvel_rules_file = rules_dir / "clouvel.md"
+    if not clouvel_rules_file.exists():
+        clouvel_rules_file.write_text(clouvel_detail, encoding='utf-8')
+        created_files.append(".claude/rules/clouvel.md")
+
+    # 기존 CLAUDE.md 옛 규칙 감지 → 자동 슬림화
+    slim_warning = ""
     if claude_md.exists():
         existing = claude_md.read_text(encoding='utf-8')
-        if "Clouvel 규칙" not in existing:
+        has_old_marker = "Clouvel 규칙" in existing or "Clouvel Rules" in existing
+        has_verbose_rules = has_old_marker and ("필수 준수 사항" in existing or "can_code 실패 시" in existing or "Must call clouvel" in existing)
+
+        if has_verbose_rules:
+            # 자동 슬림화: 옛 섹션 제거 → 2줄 stub 교체
+            import re as _re
+            slimmed = _re.sub(
+                r"## Clouvel [^\n]*\n.*?(?=\n## [^C]|\Z)",
+                clouvel_rule.strip() + "\n",
+                existing,
+                count=1,
+                flags=_re.DOTALL,
+            )
+            claude_md.write_text(slimmed, encoding='utf-8')
+            slim_warning = """
+**CLAUDE.md 자동 슬림화 완료**
+
+기존 상세 Clouvel 규칙 → 2줄 참조로 교체되었습니다.
+상세 규칙은 `.claude/rules/clouvel.md`에서 관리됩니다.
+
+**왜?** CLAUDE.md가 길수록 에이전트 성능 하락 + 비용 증가 (연구 결과)
+"""
+            created_files.append("CLAUDE.md (자동 슬림화)")
+
+        elif not has_old_marker:
             claude_md.write_text(existing + "\n" + clouvel_rule, encoding='utf-8')
             created_files.append("CLAUDE.md (규칙 추가)")
     else:
@@ -499,7 +539,7 @@ echo "[Clouvel] All checks passed. ✓"
 
 ## 생성/수정된 파일
 {files_list}
-
+{slim_warning}
 ## 다음 단계
 1. `docs/PRD.md` 생성
 2. Claude에게 "코딩해도 돼?" 질문

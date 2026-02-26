@@ -46,17 +46,17 @@ TOOL_TIERS: dict[str, ToolTier] = {
     "gate":               ToolTier.CORE,
     "license_status":     ToolTier.CORE,
 
-    # ── PRO (10) ── Visible to Pro users ─────────────────
-    "error_learn":          ToolTier.PRO,   # natural upgrade: error_record → learn patterns
-    "memory_status":        ToolTier.PRO,   # natural upgrade: error tracking → memory dashboard
-    "memory_search":        ToolTier.PRO,   # natural upgrade: search past errors
-    "memory_global_search": ToolTier.PRO,   # natural upgrade: cross-project patterns
-    "drift_check":          ToolTier.PRO,   # natural upgrade: context_save → drift detection
-    "record_decision":      ToolTier.PRO,   # persistent knowledge base
-    "search_knowledge":     ToolTier.PRO,   # search knowledge base
-    "plan":                 ToolTier.PRO,   # detailed execution plans
-    "meeting":              ToolTier.PRO,   # natural upgrade: quick_perspectives → full meeting
-    "ship":                 ToolTier.PRO,   # natural upgrade: gate → one-click ship + evidence
+    # ── v6.0: All tools visible (formerly PRO) ────────────
+    "error_learn":          ToolTier.CORE,
+    "memory_status":        ToolTier.CORE,
+    "memory_search":        ToolTier.CORE,
+    "memory_global_search": ToolTier.CORE,
+    "drift_check":          ToolTier.CORE,
+    "record_decision":      ToolTier.CORE,
+    "search_knowledge":     ToolTier.CORE,
+    "plan":                 ToolTier.CORE,
+    "meeting":              ToolTier.CORE,
+    "ship":                 ToolTier.CORE,
 
     # ── INTERNAL ── Not exposed via MCP ──────────────────
     # Core internals (absorbed into core tools)
@@ -80,6 +80,7 @@ TOOL_TIERS: dict[str, ToolTier] = {
     "init_rules":  ToolTier.INTERNAL,
     "get_rule":    ToolTier.INTERNAL,
     "add_rule":    ToolTier.INTERNAL,
+    "audit_rules": ToolTier.CORE,
 
     # Verify (gate absorbs these)
     "verify":   ToolTier.INTERNAL,
@@ -150,7 +151,7 @@ TOOL_TIERS: dict[str, ToolTier] = {
     # License internals (license_status absorbs)
     "activate_license": ToolTier.INTERNAL,
     "start_trial":      ToolTier.INTERNAL,
-    "upgrade_pro":      ToolTier.INTERNAL,
+    # "upgrade_pro" removed in v6.0
 
     # Analytics (internal only)
     "get_analytics":     ToolTier.INTERNAL,
@@ -186,20 +187,8 @@ def get_tool_tier(name: str) -> ToolTier:
 
 
 def filter_tools_by_tier(tools: list, tier: str) -> list:
-    """Filter TOOL_DEFINITIONS list by license tier.
-
-    Args:
-        tools: list of mcp.types.Tool objects
-        tier: "pro" or "free"
-
-    Returns:
-        Filtered list of Tool objects
-    """
+    """v6.0: Returns all CORE tools (PRO tier removed)."""
     visible_tiers = {ToolTier.CORE}
-
-    if tier == "pro":
-        visible_tiers.add(ToolTier.PRO)
-
     return [t for t in tools if get_tool_tier(t.name) in visible_tiers]
 
 
@@ -209,17 +198,7 @@ def get_redirect_message(name: str) -> Optional[str]:
 
 
 def is_tool_allowed(name: str, tier: str) -> bool:
-    """Check if a tool is allowed for the given tier.
-
-    Used in call_tool() as defense-in-depth.
-    Internal/deprecated tools are always callable (for backward compat).
-    Only PRO tools are gated — requires "pro" tier (license/trial/developer).
-    """
-    tool_tier = get_tool_tier(name)
-
-    if tool_tier == ToolTier.PRO and tier != "pro":
-        return False
-
+    """v6.0: Always True — all tools allowed."""
     return True
 
 

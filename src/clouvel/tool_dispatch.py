@@ -19,14 +19,7 @@ from .services.tier import (
     is_pro as _is_pro_service,
     get_tool_filter_tier as _get_tool_filter_tier_service,
 )
-from .services.gate import (
-    require_error_tools as _require_error_tools,
-    require_kb_access as _require_kb_access,
-    append_free_nudge as _append_free_nudge,
-)
 from .services.quota import (
-    FREE_ERROR_LIMIT,
-    check_error_view_quota as _check_error_view_quota,
     get_perspectives_limits as _get_perspectives_limits,
 )
 from .formatters import knowledge as _fmt_kb, project as _fmt_proj, license as _fmt_lic, analytics as _fmt_analytics
@@ -72,26 +65,16 @@ from .tools import (
     context_save, context_load,
 )
 
-# Error Learning tools (Pro feature - imported via gate service)
-# gate.py handles _HAS_ERROR_TOOLS check; import functions for call forwarding
-try:
-    from .tools.errors import (
-        error_record, error_check, error_learn, memory_status,
-        memory_list, memory_search, memory_archive, memory_report,
-        memory_promote, memory_global_search,
-        set_project_domain,
-    )
-except ImportError:
-    error_record = error_check = error_learn = None
-    memory_status = memory_list = memory_search = None
-    memory_archive = memory_report = memory_promote = None
-    memory_global_search = set_project_domain = None
+# Error Learning / Regression Memory tools
+from .tools.errors import (
+    error_record, error_check, error_learn, memory_status,
+    memory_list, memory_search, memory_archive, memory_report,
+    memory_promote, memory_global_search,
+    set_project_domain,
+)
 
-# License module import
-try:
-    from .license import activate_license_cli, get_license_status
-except ImportError:
-    from .license_free import activate_license_cli, get_license_status
+# License module
+from .license import activate_license_cli, get_license_status
 
 
 # Version check state (shared with server.py)
@@ -416,7 +399,8 @@ async def _wrap_start(args: dict) -> list[TextContent]:
         args.get("template", ""),
         args.get("layout", "standard"),
         args.get("guide", False),
-        args.get("init", False)
+        args.get("init", False),
+        mode=args.get("mode", "auto"),
     )
 
     if isinstance(result, dict):
@@ -459,11 +443,6 @@ async def _wrap_list_projects(args: dict) -> list[TextContent]:
 
 async def _wrap_record_decision(args: dict) -> list[TextContent]:
     """record_decision tool wrapper"""
-    # KB access gate (v5.2: delegated to services.gate)
-    blocked = _require_kb_access(args.get("project_path", "."))
-    if blocked:
-        return blocked
-
     result = await record_decision(
         category=args.get("category", "general"),
         decision=args.get("decision", ""),
@@ -478,11 +457,6 @@ async def _wrap_record_decision(args: dict) -> list[TextContent]:
 
 async def _wrap_record_location(args: dict) -> list[TextContent]:
     """record_location tool wrapper"""
-    # KB access gate (v5.2: delegated to services.gate)
-    blocked = _require_kb_access(args.get("project_path", "."))
-    if blocked:
-        return blocked
-
     result = await record_location(
         name=args.get("name", ""),
         repo=args.get("repo", ""),
@@ -764,29 +738,8 @@ async def _wrap_full_ship(args: dict) -> list[TextContent]:
     return [TextContent(type="text", text=str(result))]
 
 
-def _apply_free_error_limit(result: list[TextContent], project_path: str) -> list[TextContent]:
-    """Limit error_check output for Free users. Delegates to services.quota."""
-    if not result or len(result) == 0:
-        return result
-    quota = _check_error_view_quota(project_path)
-    if quota.message:
-        text = result[0].text if hasattr(result[0], 'text') else str(result[0])
-        result[0] = TextContent(type="text", text=text + "\n\n---\n" + quota.message)
-    return result
-
-
-def _append_ghost_data(
-    result: list[TextContent], project_path: str, tool_name: str
-) -> list[TextContent]:
-    """Append ghost data teaser. Delegates to services.gate."""
-    return _append_free_nudge(result, project_path, tool_name)
-
-
 async def _wrap_error_record(args: dict) -> list[TextContent]:
     """error_record tool wrapper"""
-    blocked = _require_error_tools("error_record")
-    if blocked:
-        return blocked
     result = await error_record(
         path=args.get("path", ""),
         error_text=args.get("error_text", ""),
@@ -801,9 +754,6 @@ async def _wrap_error_record(args: dict) -> list[TextContent]:
 
 async def _wrap_error_check(args: dict) -> list[TextContent]:
     """error_check tool wrapper — Free: recent 5 errors only."""
-    blocked = _require_error_tools("error_check")
-    if blocked:
-        return blocked
     result = await error_check(
         path=args.get("path", ""),
         context=args.get("context", ""),
@@ -817,9 +767,6 @@ async def _wrap_error_check(args: dict) -> list[TextContent]:
 
 async def _wrap_error_learn(args: dict) -> list[TextContent]:
     """error_learn tool wrapper"""
-    blocked = _require_error_tools("error_learn")
-    if blocked:
-        return blocked
     return await error_learn(
         path=args.get("path", ""),
         auto_update_claude_md=args.get("auto_update_claude_md", True),
@@ -829,9 +776,6 @@ async def _wrap_error_learn(args: dict) -> list[TextContent]:
 
 async def _wrap_memory_status(args: dict) -> list[TextContent]:
     """memory_status tool wrapper"""
-    blocked = _require_error_tools("memory_status")
-    if blocked:
-        return blocked
     return await memory_status(
         path=args.get("path", ""),
     )
@@ -839,9 +783,6 @@ async def _wrap_memory_status(args: dict) -> list[TextContent]:
 
 async def _wrap_memory_list(args: dict) -> list[TextContent]:
     """memory_list tool wrapper"""
-    blocked = _require_error_tools("memory_list")
-    if blocked:
-        return blocked
     return await memory_list(
         path=args.get("path", ""),
         category=args.get("category", ""),
@@ -852,9 +793,6 @@ async def _wrap_memory_list(args: dict) -> list[TextContent]:
 
 async def _wrap_memory_search(args: dict) -> list[TextContent]:
     """memory_search tool wrapper"""
-    blocked = _require_error_tools("memory_search")
-    if blocked:
-        return blocked
     return await memory_search(
         path=args.get("path", ""),
         query=args.get("query", ""),
@@ -864,9 +802,6 @@ async def _wrap_memory_search(args: dict) -> list[TextContent]:
 
 async def _wrap_memory_archive(args: dict) -> list[TextContent]:
     """memory_archive tool wrapper"""
-    blocked = _require_error_tools("memory_archive")
-    if blocked:
-        return blocked
     return await memory_archive(
         path=args.get("path", ""),
         memory_id=args.get("memory_id", 0),
@@ -876,9 +811,6 @@ async def _wrap_memory_archive(args: dict) -> list[TextContent]:
 
 async def _wrap_memory_report(args: dict) -> list[TextContent]:
     """memory_report tool wrapper"""
-    blocked = _require_error_tools("memory_report")
-    if blocked:
-        return blocked
     return await memory_report(
         path=args.get("path", ""),
         days=args.get("days", 30),
@@ -887,9 +819,6 @@ async def _wrap_memory_report(args: dict) -> list[TextContent]:
 
 async def _wrap_memory_promote(args: dict) -> list[TextContent]:
     """memory_promote tool wrapper"""
-    blocked = _require_error_tools("memory_promote")
-    if blocked:
-        return blocked
     return await memory_promote(
         path=args.get("path", ""),
         memory_id=args.get("memory_id", 0),
@@ -898,9 +827,6 @@ async def _wrap_memory_promote(args: dict) -> list[TextContent]:
 
 async def _wrap_memory_global_search(args: dict) -> list[TextContent]:
     """memory_global_search tool wrapper"""
-    blocked = _require_error_tools("memory_global_search")
-    if blocked:
-        return blocked
     return await memory_global_search(
         path=args.get("path", ""),
         query=args.get("query", ""),
@@ -911,9 +837,6 @@ async def _wrap_memory_global_search(args: dict) -> list[TextContent]:
 
 async def _wrap_set_project_domain(args: dict) -> list[TextContent]:
     """set_project_domain tool wrapper"""
-    blocked = _require_error_tools("set_project_domain")
-    if blocked:
-        return blocked
     return await set_project_domain(
         path=args.get("path", ""),
         domain=args.get("domain", ""),

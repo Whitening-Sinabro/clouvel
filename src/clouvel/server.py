@@ -78,13 +78,8 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
     if redirect:
         return [TextContent(type="text", text=f"⚠️ `{name}` is deprecated.\n\n{redirect}")]
 
-    # Defense-in-depth: PRO tool gating
+    # v6.0: No Pro tool gating — all tools free
     project_path = arguments.get("path", arguments.get("project_path", None))
-    if project_path and not is_tool_allowed(name, _get_call_tool_tier(project_path)):
-        return [TextContent(type="text", text=(
-            f"`{name}` requires **Clouvel Pro**.\n\n"
-            "Start a free 7-day trial: `license_status(action=\"trial\")`"
-        ))]
 
     # Analytics logging
     if name != "get_analytics":
@@ -128,12 +123,4 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
 # Backward compatibility re-exports
 # (tests and other modules may import these from server)
 from .cli import main, run_server, _run_setup  # noqa: F401, E402
-from .tool_dispatch import (  # noqa: F401, E402
-    _is_pro, _apply_free_error_limit, _append_ghost_data,
-)
-
-# Re-export FREE_ERROR_LIMIT if it exists in tool_dispatch
-try:
-    from .tool_dispatch import FREE_ERROR_LIMIT  # noqa: F401, E402
-except ImportError:
-    pass
+from .tool_dispatch import _is_pro  # noqa: F401, E402

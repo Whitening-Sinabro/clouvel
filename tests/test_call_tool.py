@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""call_tool integration tests — deprecated redirect, defense-in-depth, ghost data."""
+"""call_tool integration tests — v6.0: no Pro gating."""
 
 import pytest
 import sys
@@ -13,11 +13,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from clouvel.registry import get_redirect_message, is_tool_allowed
 from clouvel.server import (
     _is_pro,
+)
+from clouvel.tool_dispatch import (
     _get_list_tools_tier,
     _get_call_tool_tier,
-    _apply_free_error_limit,
-    _append_ghost_data,
-    FREE_ERROR_LIMIT,
 )
 from mcp.types import TextContent
 
@@ -46,30 +45,17 @@ class TestDeprecatedRedirect:
 
 
 class TestDefenseInDepth:
-    def test_core_tool_always_allowed(self):
-        """Core tools pass for any tier."""
+    def test_all_tools_always_allowed(self):
+        """v6.0: All tools allowed for any tier."""
         for tier in ["pro", "free", "first", "unknown"]:
             assert is_tool_allowed("can_code", tier) is True
             assert is_tool_allowed("gate", tier) is True
             assert is_tool_allowed("error_check", tier) is True
-
-    def test_pro_tool_only_pro_allowed(self):
-        """Pro tools require exactly 'pro' tier."""
-        assert is_tool_allowed("error_learn", "pro") is True
-        assert is_tool_allowed("meeting", "pro") is True
-        assert is_tool_allowed("ship", "pro") is True
-
-    def test_pro_tool_blocked_for_free(self):
-        assert is_tool_allowed("error_learn", "free") is False
-        assert is_tool_allowed("meeting", "free") is False
-
-    def test_pro_tool_blocked_for_first(self):
-        """'first' is NOT pro — Pro tools blocked."""
-        assert is_tool_allowed("error_learn", "first") is False
-        assert is_tool_allowed("ship", "first") is False
+            assert is_tool_allowed("error_learn", tier) is True
+            assert is_tool_allowed("meeting", tier) is True
+            assert is_tool_allowed("ship", tier) is True
 
     def test_internal_tool_always_allowed(self):
-        """Internal tools pass (backward compat)."""
         assert is_tool_allowed("scan_docs", "free") is True
         assert is_tool_allowed("init_rules", "free") is True
 
@@ -78,146 +64,138 @@ class TestDefenseInDepth:
 
 
 class TestTierDetection:
-    def test_is_pro_developer(self):
-        with patch("clouvel.licensing.core.is_developer", return_value=True):
-            assert _is_pro("") is True
+    def test_is_pro_always_true(self):
+        """v6.0: _is_pro always returns True."""
+        assert _is_pro("") is True
+        assert _is_pro("/any/path") is True
 
-    def test_is_pro_license(self):
-        with patch("clouvel.licensing.core.is_developer", return_value=False), \
-             patch("clouvel.licensing.validation.load_license_cache", return_value={"tier": "personal"}):
-            assert _is_pro("") is True
+    def test_list_tools_tier_always_pro(self):
+        """v6.0: list tools tier is always 'pro'."""
+        assert _get_list_tools_tier() == "pro"
 
-    def test_is_pro_trial(self):
-        with patch("clouvel.licensing.core.is_developer", return_value=False), \
-             patch("clouvel.licensing.validation.load_license_cache", return_value=None), \
-             patch("clouvel.licensing.trial.is_full_trial_active", return_value=True):
-            assert _is_pro("") is True
-
-    def test_is_not_pro_free_user(self):
-        with patch("clouvel.licensing.core.is_developer", return_value=False), \
-             patch("clouvel.licensing.validation.load_license_cache", return_value=None), \
-             patch("clouvel.licensing.trial.is_full_trial_active", return_value=False):
-            assert _is_pro("") is False
-
-    def test_list_tools_tier_free_for_normal_user(self):
-        """Normal user (no license, no trial) gets 'free' tier."""
-        with patch("clouvel.licensing.core.is_developer", return_value=False), \
-             patch("clouvel.licensing.validation.load_license_cache", return_value=None), \
-             patch("clouvel.licensing.trial.is_full_trial_active", return_value=False):
-            assert _get_list_tools_tier() == "free"
-
-    def test_list_tools_tier_pro_for_licensed(self):
-        with patch("clouvel.licensing.core.is_developer", return_value=False), \
-             patch("clouvel.licensing.validation.load_license_cache", return_value={"tier": "personal"}):
-            assert _get_list_tools_tier() == "pro"
-
-    def test_call_tool_tier_matches_is_pro(self):
-        """_get_call_tool_tier uses _is_pro internally — should be consistent."""
-        with patch("clouvel.licensing.core.is_developer", return_value=False), \
-             patch("clouvel.licensing.validation.load_license_cache", return_value=None), \
-             patch("clouvel.licensing.trial.is_full_trial_active", return_value=False):
-            assert _get_call_tool_tier("/some/path") == "free"
-
-        with patch("clouvel.licensing.core.is_developer", return_value=True):
-            assert _get_call_tool_tier("/some/path") == "pro"
+    def test_call_tool_tier_always_pro(self):
+        """v6.0: call tool tier is always 'pro'."""
+        assert _get_call_tool_tier("/some/path") == "pro"
 
 
-# ── Ghost Data Tests ──
+# ── PRD Heading Extraction Tests ──
 
 
-class TestGhostData:
-    def test_ghost_data_appended_for_free_user(self):
-        """Free users get Pro teaser appended to error tools."""
-        result = [TextContent(type="text", text="Error recorded.")]
-        with patch("clouvel.services.tier.is_pro", return_value=False):
-            output = _append_ghost_data(result, "/path", "error_record")
-            assert "Pro" in output[0].text
-            assert 'license_status(action="trial")' in output[0].text
+class TestPrdHeadingExtraction:
+    """Test _extract_prd_headings and _format_prd_toc."""
 
-    def test_ghost_data_not_appended_for_pro_user(self):
-        """Pro users don't see teasers."""
-        result = [TextContent(type="text", text="Error recorded.")]
-        with patch("clouvel.services.tier.is_pro", return_value=True):
-            output = _append_ghost_data(result, "/path", "error_record")
-            assert output[0].text == "Error recorded."
+    def setup_method(self):
+        from clouvel.tools.core import _extract_prd_headings, _format_prd_toc
+        self._extract = _extract_prd_headings
+        self._format = _format_prd_toc
 
-    def test_ghost_data_only_for_error_tools(self):
-        """Ghost data only for error_record and error_check."""
-        result = [TextContent(type="text", text="Some output")]
-        with patch("clouvel.services.tier.is_pro", return_value=False):
-            output = _append_ghost_data(result, "/path", "gate")
-            assert output[0].text == "Some output"
+    def test_basic_headings(self, tmp_path):
+        prd = tmp_path / "PRD.md"
+        prd.write_text("# Title\n## Summary\n### Details\n## Acceptance Criteria\ntext\n", encoding="utf-8")
+        headings = self._extract(prd)
+        assert "## Summary" in headings
+        assert "### Details" in headings
+        assert "## Acceptance Criteria" in headings
+        # # Title is h1 — should NOT be extracted
+        assert "# Title" not in headings
 
-    def test_ghost_data_empty_result_safe(self):
-        with patch("clouvel.services.tier.is_pro", return_value=False):
-            output = _append_ghost_data([], "/path", "error_record")
-            assert output == []
+    def test_empty_file(self, tmp_path):
+        prd = tmp_path / "PRD.md"
+        prd.write_text("", encoding="utf-8")
+        assert self._extract(prd) == []
 
+    def test_nonexistent_file(self, tmp_path):
+        prd = tmp_path / "NOPE.md"
+        assert self._extract(prd) == []
 
-# ── Free Error Limit Tests ──
+    def test_many_headings(self, tmp_path):
+        prd = tmp_path / "PRD.md"
+        lines = [f"## Section {i}" for i in range(35)]
+        prd.write_text("\n".join(lines), encoding="utf-8")
+        headings = self._extract(prd)
+        assert len(headings) == 35
 
+    def test_format_toc_with_headings(self):
+        headings = ["## Summary", "### Details", "## Acceptance Criteria"]
+        toc = self._format(headings)
+        assert "- ## Summary" in toc
+        assert "- ### Details" in toc
+        assert "- ## Acceptance Criteria" in toc
 
-class TestFreeErrorLimit:
-    def test_nudge_when_over_limit(self):
-        temp_dir = tempfile.mkdtemp()
-        try:
-            errors_dir = Path(temp_dir) / ".claude" / "errors"
-            errors_dir.mkdir(parents=True)
-            log_file = errors_dir / "error_log.jsonl"
-            log_file.write_text("\n".join([f'{{"id": {i}}}' for i in range(10)]))
-
-            result = [TextContent(type="text", text="Warning")]
-            output = _apply_free_error_limit(result, temp_dir)
-
-            assert "5 of 10" in output[0].text
-            assert "Free limit" in output[0].text
-            assert 'license_status(action="trial")' in output[0].text
-        finally:
-            shutil.rmtree(temp_dir)
-
-    def test_no_nudge_under_limit(self):
-        temp_dir = tempfile.mkdtemp()
-        try:
-            errors_dir = Path(temp_dir) / ".claude" / "errors"
-            errors_dir.mkdir(parents=True)
-            log_file = errors_dir / "error_log.jsonl"
-            log_file.write_text("\n".join([f'{{"id": {i}}}' for i in range(3)]))
-
-            result = [TextContent(type="text", text="Warning")]
-            output = _apply_free_error_limit(result, temp_dir)
-            assert "Free limit" not in output[0].text
-        finally:
-            shutil.rmtree(temp_dir)
-
-    def test_no_error_log_no_nudge(self):
-        result = [TextContent(type="text", text="No risk.")]
-        output = _apply_free_error_limit(result, "/nonexistent/path")
-        assert "Free limit" not in output[0].text
+    def test_format_toc_empty(self):
+        assert "_No headings" in self._format([])
 
 
-# ── CTA Consistency Tests ──
+# ── can_code TOC Integration Tests ──
 
 
-class TestCTAConsistency:
-    """Verify all Pro-related messages use the unified CTA."""
+class TestCanCodeTocIntegration:
+    """Test that can_code PASS responses include PRD TOC and session rules."""
 
-    def test_ghost_data_cta(self):
-        result = [TextContent(type="text", text="test")]
-        with patch("clouvel.services.tier.is_pro", return_value=False):
-            output = _append_ghost_data(result, "/p", "error_record")
-            assert 'license_status(action="trial")' in output[0].text
+    @pytest.fixture
+    def project_with_prd(self, tmp_path):
+        docs = tmp_path / "docs"
+        docs.mkdir()
+        prd = docs / "PRD.md"
+        prd.write_text(
+            "# My PRD\n\n## Summary\nBuild a thing\n\n"
+            "## Acceptance Criteria\n- [ ] It works\n\n"
+            "## Non-Goals\nNot this\n",
+            encoding="utf-8",
+        )
+        return tmp_path
 
-    def test_error_limit_cta(self):
-        temp_dir = tempfile.mkdtemp()
-        try:
-            errors_dir = Path(temp_dir) / ".claude" / "errors"
-            errors_dir.mkdir(parents=True)
-            (errors_dir / "error_log.jsonl").write_text(
-                "\n".join([f'{{"id": {i}}}' for i in range(10)])
-            )
-            result = [TextContent(type="text", text="test")]
-            output = _apply_free_error_limit(result, temp_dir)
-            assert 'license_status(action="trial")' in output[0].text
-            assert "polar.sh" not in output[0].text
-        finally:
-            shutil.rmtree(temp_dir)
+    @pytest.mark.asyncio
+    async def test_pass_includes_toc(self, project_with_prd):
+        from clouvel.tools.core import can_code
+        result = await can_code(str(project_with_prd / "docs"))
+        text = result[0].text
+        assert "PRD Table of Contents" in text
+        assert "## Summary" in text
+        assert "## Acceptance Criteria" in text
+
+    @pytest.mark.asyncio
+    async def test_pass_includes_session_rules(self, project_with_prd):
+        from clouvel.tools.core import can_code
+        result = await can_code(str(project_with_prd / "docs"))
+        text = result[0].text
+        assert "Rules for This Session" in text
+        assert "Build ONLY what is listed" in text
+
+
+# ── Start Mode Tests ──
+
+
+class TestStartMode:
+    """Test start tool mode parameter."""
+
+    def test_mode_auto_default(self, tmp_path):
+        from clouvel.tools.start.core import start
+        result = start(str(tmp_path))
+        # auto mode = existing behavior (NEED_PRD or READY)
+        assert result["status"] in ("NEED_PRD", "READY", "INCOMPLETE")
+
+    def test_mode_existing(self, tmp_path):
+        from clouvel.tools.start.core import start
+        result = start(str(tmp_path), mode="existing")
+        assert result["status"] == "MODE_GUIDE"
+        assert result["mode"] == "existing"
+        assert "Place PRD" in result["next_steps"][0]
+
+    def test_mode_write(self, tmp_path):
+        from clouvel.tools.start.core import start
+        result = start(str(tmp_path), mode="write")
+        assert result["status"] == "MODE_GUIDE"
+        assert "Acceptance Criteria" in result["next_steps"][1]
+
+    def test_mode_hybrid(self, tmp_path):
+        from clouvel.tools.start.core import start
+        result = start(str(tmp_path), mode="hybrid")
+        assert result["status"] == "MODE_GUIDE"
+        assert result["mode"] == "hybrid"
+
+    def test_mode_ai_falls_through(self, tmp_path):
+        from clouvel.tools.start.core import start
+        result = start(str(tmp_path), mode="ai")
+        # ai mode falls through to normal flow (NEED_PRD)
+        assert result["status"] in ("NEED_PRD", "READY", "INCOMPLETE")

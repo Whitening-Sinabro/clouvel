@@ -4,9 +4,7 @@
 MCP tool that returns a prompt for Claude to simulate C-Level meetings.
 No additional API calls needed - uses the host Claude to generate.
 
-v5.0: First project = all 8 managers (unlimited)
-      Additional projects (Free) = monthly quota + PM only
-      Pro = all 8 managers (unlimited)
+v6.0: All features free — 8 managers for all users, no tier distinction
 """
 
 from typing import Optional, List
@@ -79,9 +77,7 @@ async def meeting(
 
     별도 API 호출 없이 Claude가 직접 회의록을 생성합니다.
 
-    **v3.0 티어 구분**:
-    - Free (추가 프로젝트): PM만 참여. 첫 프로젝트: 8명 전체
-    - Pro: 8명 전체 (PM, CTO, QA, CSO, CDO, CMO, CFO, ERROR)
+    **v6.0**: 모든 사용자 8명 전체 참여 (PM, CTO, QA, CSO, CDO, CMO, CFO, ERROR)
 
     Args:
         context: 회의 주제/상황 설명
@@ -89,7 +85,6 @@ async def meeting(
                지원: auth, api, payment, ui, feature, launch, error,
                      security, performance, design, cost, maintenance
         managers: 참여 매니저 목록 (미지정시 토픽에 따라 자동 선택)
-                  Free 추가 프로젝트는 PM만 사용 가능 (첫 프로젝트는 전체)
         project_path: 프로젝트 경로 (Knowledge Base 연동 + 피드백 저장용)
         include_example: few-shot 예시 포함 여부
         variant: 프롬프트 버전 (A/B 테스팅용, 미지정시 자동 선택)
@@ -100,7 +95,7 @@ async def meeting(
     Example:
         meeting("로그인 기능 추가. OAuth + 이메일 로그인 지원 예정")
         meeting("결제 시스템 도입", topic="payment")
-        meeting("보안 감사 결과 리뷰", managers=["PM", "CTO", "CSO", "QA"])  # Pro only
+        meeting("보안 감사 결과 리뷰", managers=["PM", "CTO", "CSO", "QA"])
     """
     # Auto-detect topic if not provided
     if topic is None:
@@ -144,44 +139,9 @@ async def meeting(
     weekly_trial_used = False
 
     if not is_pro:
-        # v3.3: Monthly meeting quota (3 times per month)
-        monthly_quota_ok = False
-
-        try:
-            from ...licensing.quotas import check_meeting_quota, consume_meeting_quota
-            quota = check_meeting_quota(project_path)
-
-            if quota["allowed"]:
-                # Consume one meeting from quota
-                consume_meeting_quota(project_path)
-                monthly_quota_ok = True
-            else:
-                # v3.3: Track A/B conversion event
-                try:
-                    from ...licensing.experiments import track_conversion_event
-                    track_conversion_event("meeting_quota", "quota_exhausted", {
-                        "used": quota.get("used", 0),
-                        "limit": quota.get("limit", 3),
-                    })
-                except Exception:
-                    pass
-                # Quota exhausted - return error message
-                return [TextContent(type="text", text=quota.get("message", "월별 Meeting 할당량을 모두 사용했습니다."))]
-        except ImportError:
-            # Fallback: allow if import fails
-            monthly_quota_ok = True
-
-        if monthly_quota_ok:
-            # Full meeting allowed - no filtering
-            missed_perspectives = []
-        else:
-            # Track Pro-only managers that were requested but filtered
-            missed_perspectives = [m for m in managers if m in PRO_ONLY_MANAGERS]
-            # Filter to Free tier only (PM only)
-            managers = [m for m in managers if m in FREE_MANAGERS]
-            # Ensure at least PM is included
-            if not managers:
-                managers = FREE_MANAGERS.copy()
+        # v6.0+: All features free — this branch is effectively dead
+        # but kept for structural backward compat
+        missed_perspectives = []
 
     # Get enriched KB context (Phase 3)
     kb_context = get_enriched_kb_context(context, topic, project_path)
@@ -216,13 +176,10 @@ async def meeting(
 
 ---
 
-With Pro, {topic_specific}
+{topic_specific}
 
 Missed perspectives:
 {chr(10).join(missed_descriptions)}
-
-Pro: $7.99/mo (Annual: $49/yr — Early Adopter Pricing)
--> https://polar.sh/clouvel
 """
         else:
             pro_hint = f"""
@@ -231,9 +188,6 @@ Pro: $7.99/mo (Annual: $49/yr — Early Adopter Pricing)
 
 Missed perspectives:
 {chr(10).join(missed_descriptions)}
-
-Pro: $7.99/mo (Annual: $49/yr — Early Adopter Pricing)
--> https://polar.sh/clouvel
 """
 
     # Auto-save meeting for feedback (if project_path provided)
@@ -298,10 +252,8 @@ rate_meeting(project_path="{project_path}", meeting_id="{meeting_id}", rating=4,
         except Exception:
             pass
 
-    # v3.1: Add weekly trial badge
+    # v6.0: weekly trial badge removed — all features are free
     weekly_badge = ""
-    if not is_pro and weekly_trial_used:
-        weekly_badge = "\n\n---\n\nThis week's free Full C-Level Meeting trial. Next week's trial resets automatically.\nPro: Unlimited full meetings -> https://polar.sh/clouvel ($49/yr — Early Adopter Pricing)\n"
 
     return [TextContent(type="text", text=prompt + footer + pro_hint + weekly_badge + rating_prompt)]
 

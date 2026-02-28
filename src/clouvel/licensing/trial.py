@@ -4,12 +4,12 @@
 Full Pro Trial (v3.2: 7일 전체 기능 체험).
 """
 
-import os
 import json
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any
 
+from .paths import get_clouvel_file, load_json, save_json
 from .validation import get_machine_id
 
 
@@ -22,13 +22,7 @@ FULL_TRIAL_DAYS = 7
 
 def _get_full_trial_path() -> Path:
     """Get full trial tracking file path: ~/.clouvel/full_trial.json"""
-    if os.name == 'nt':
-        base = Path(os.environ.get('USERPROFILE', '~'))
-    else:
-        base = Path.home()
-    clouvel_dir = base / ".clouvel"
-    clouvel_dir.mkdir(parents=True, exist_ok=True)
-    return clouvel_dir / "full_trial.json"
+    return get_clouvel_file("full_trial.json")
 
 
 def start_full_trial() -> Dict[str, Any]:
@@ -49,13 +43,7 @@ def start_full_trial() -> Dict[str, Any]:
                 "started_at": result.get("started_at", datetime.now().isoformat()),
                 "machine_id": get_machine_id(),
             }
-            try:
-                _get_full_trial_path().write_text(
-                    json.dumps(local_data, indent=2, ensure_ascii=False),
-                    encoding="utf-8",
-                )
-            except OSError:
-                pass
+            save_json(_get_full_trial_path(), local_data)
             return {
                 "active": result.get("active", True),
                 "started_at": local_data["started_at"],
@@ -67,12 +55,7 @@ def start_full_trial() -> Dict[str, Any]:
 
     # 2. Fallback: local logic
     path = _get_full_trial_path()
-    data = {}
-    if path.exists():
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError, ValueError):
-            data = {}
+    data = load_json(path, {})
 
     mid = get_machine_id()
 
@@ -83,10 +66,7 @@ def start_full_trial() -> Dict[str, Any]:
     data["started_at"] = datetime.now().isoformat()
     data["machine_id"] = mid
 
-    try:
-        path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
-    except OSError:
-        pass
+    save_json(path, data)
 
     # Queue for next sync
     try:
@@ -144,9 +124,8 @@ def get_full_trial_status() -> Dict[str, Any]:
     if not path.exists():
         return {"active": False, "remaining_days": 0, "never_started": True}
 
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError, ValueError):
+    data = load_json(path, None)
+    if data is None:
         return {"active": False, "remaining_days": 0, "never_started": True}
 
     started_at = data.get("started_at")

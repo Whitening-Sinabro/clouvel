@@ -14,6 +14,7 @@ import threading
 from pathlib import Path
 from typing import Dict, Any, Optional
 
+from .paths import get_clouvel_dir as _paths_get_clouvel_dir, load_json, save_json
 from .validation import get_machine_id
 
 # ============================================================
@@ -26,18 +27,12 @@ SYNC_API_BASE = os.environ.get(
 )
 SYNC_INTERVAL_SECONDS = 3600  # 1 hour
 SYNC_TIMEOUT_SECONDS = 10
-CLIENT_VERSION = "5.1.0"
+CLIENT_VERSION = "6.2.0"
 
 
 def _get_clouvel_dir() -> Path:
     """Get ~/.clouvel/ directory."""
-    if os.name == "nt":
-        base = Path(os.environ.get("USERPROFILE", "~"))
-    else:
-        base = Path.home()
-    d = base / ".clouvel"
-    d.mkdir(parents=True, exist_ok=True)
-    return d
+    return _paths_get_clouvel_dir()
 
 
 def _get_sync_cache_path() -> Path:
@@ -47,22 +42,12 @@ def _get_sync_cache_path() -> Path:
 
 def _load_sync_cache() -> Dict[str, Any]:
     """Load cached server state from disk."""
-    p = _get_sync_cache_path()
-    if not p.exists():
-        return {}
-    try:
-        return json.loads(p.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError, ValueError):
-        return {}
+    return load_json(_get_sync_cache_path(), {})
 
 
 def _save_sync_cache(data: Dict[str, Any]) -> None:
     """Save server state to disk cache."""
-    p = _get_sync_cache_path()
-    try:
-        p.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
-    except OSError:
-        pass
+    save_json(_get_sync_cache_path(), data)
 
 
 def _http_post(url: str, payload: dict) -> Optional[dict]:
@@ -131,10 +116,7 @@ def _read_local_trial() -> Optional[dict]:
     p = _get_clouvel_dir() / "full_trial.json"
     if not p.exists():
         return None
-    try:
-        return json.loads(p.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError, ValueError):
-        return None
+    return load_json(p, None)
 
 
 def _read_local_first_project() -> Optional[dict]:
@@ -142,10 +124,7 @@ def _read_local_first_project() -> Optional[dict]:
     p = _get_clouvel_dir() / "first_project.json"
     if not p.exists():
         return None
-    try:
-        return json.loads(p.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError, ValueError):
-        return None
+    return load_json(p, None)
 
 
 def _read_local_meeting_quota() -> Optional[dict]:
@@ -153,10 +132,7 @@ def _read_local_meeting_quota() -> Optional[dict]:
     p = _get_clouvel_dir() / "monthly_meeting.json"
     if not p.exists():
         return None
-    try:
-        return json.loads(p.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError, ValueError):
-        return None
+    return load_json(p, None)
 
 
 def _read_local_experiments() -> Optional[dict]:
@@ -164,11 +140,10 @@ def _read_local_experiments() -> Optional[dict]:
     p = _get_clouvel_dir() / "ab_flags.json"
     if not p.exists():
         return None
-    try:
-        data = json.loads(p.read_text(encoding="utf-8"))
-        return data.get("experiments", {})
-    except (OSError, json.JSONDecodeError, ValueError):
+    data = load_json(p, None)
+    if data is None:
         return None
+    return data.get("experiments", {})
 
 
 def _build_local_state() -> dict:
@@ -210,21 +185,11 @@ def _get_pending_path() -> Path:
 
 
 def _load_pending() -> list:
-    p = _get_pending_path()
-    if not p.exists():
-        return []
-    try:
-        return json.loads(p.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError, ValueError):
-        return []
+    return load_json(_get_pending_path(), [])
 
 
 def _save_pending(items: list) -> None:
-    p = _get_pending_path()
-    try:
-        p.write_text(json.dumps(items, ensure_ascii=False), encoding="utf-8")
-    except OSError:
-        pass
+    save_json(_get_pending_path(), items)
 
 
 def mark_pending_sync(action: str, data: dict) -> None:

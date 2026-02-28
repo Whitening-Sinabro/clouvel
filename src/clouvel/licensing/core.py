@@ -5,7 +5,6 @@ Developer detection, paths, tier defaults.
 """
 
 import os
-import subprocess
 from pathlib import Path
 from typing import Dict, Any
 
@@ -14,36 +13,18 @@ from typing import Dict, Any
 # 개발자 감지
 # ============================================================
 
-def is_developer() -> bool:
+def is_developer(project_path: str = None) -> bool:
     """Check if running as Clouvel developer.
 
-    개발자 조건:
-    1. CLOUVEL_DEV=1 환경변수 설정
-    2. 또는 소스 코드가 clouvel git 저장소 내에 있는 경우
+    Delegates to utils.entitlements.is_developer() for MCP-safe detection.
+    project_path parameter added for backward compat (default None).
     """
-    # 환경변수로 명시적 개발자 모드
-    if os.environ.get("CLOUVEL_DEV") == "1":
-        return True
-
-    # git remote 확인 (소스 파일 위치 기준)
-    # __file__ 기반으로 체크해서 MCP 서버 cwd와 무관하게 동작
     try:
-        source_dir = Path(__file__).parent.parent
-        result = subprocess.run(
-            ["git", "remote", "-v"],
-            capture_output=True,
-            text=True,
-            timeout=5,
-            cwd=str(source_dir)
-        )
-        if result.returncode == 0:
-            output = result.stdout.lower()
-            if "clouvel" in output and ("github.com" in output or "origin" in output):
-                return True
-    except (subprocess.SubprocessError, FileNotFoundError, OSError):
-        pass
-
-    return False
+        from ..utils.entitlements import is_developer as _ent_is_developer
+        return _ent_is_developer(project_path)
+    except ImportError:
+        # Fallback: env-only check
+        return os.environ.get("CLOUVEL_DEV") == "1"
 
 
 DEV_TIER_INFO = {
@@ -62,14 +43,8 @@ def get_license_path() -> Path:
 
     api_client.py, trial.py와 동일한 경로 사용.
     """
-    if os.name == 'nt':  # Windows
-        base = Path(os.environ.get('USERPROFILE', '~'))
-    else:  # Unix
-        base = Path.home()
-
-    clouvel_dir = base / ".clouvel"
-    clouvel_dir.mkdir(parents=True, exist_ok=True)
-    return clouvel_dir / "license.json"
+    from .paths import get_clouvel_file
+    return get_clouvel_file("license.json")
 
 
 # ============================================================
@@ -79,9 +54,9 @@ def get_license_path() -> Path:
 DEFAULT_TIER = "personal"
 
 TIER_INFO = {
-    "personal": {"name": "Personal", "price": "$7.99/mo", "seats": 1},
-    "team": {"name": "Team", "price": "$79/mo", "seats": 10},
-    "enterprise": {"name": "Enterprise", "price": "$199/mo", "seats": 999},
+    "personal": {"name": "Personal", "price": "free", "seats": 1},
+    "team": {"name": "Team", "price": "free", "seats": 10},
+    "enterprise": {"name": "Enterprise", "price": "free", "seats": 999},
 }
 
 

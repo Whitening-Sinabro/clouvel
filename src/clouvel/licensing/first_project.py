@@ -5,13 +5,13 @@ First Project Unlimited (Reverse Trial) logic.
 v3.0.0: 첫 프로젝트에 모든 Pro 기능 제공.
 """
 
-import os
 import json
 import hashlib
 from pathlib import Path
 from datetime import datetime
 from typing import Optional, Dict, Any
 
+from .paths import get_clouvel_file, load_json, save_json
 from .core import is_developer
 from .validation import get_machine_id, load_license_cache
 from .trial import is_full_trial_active
@@ -23,13 +23,7 @@ from .trial import is_full_trial_active
 
 def _get_first_project_path() -> Path:
     """Get first project tracking file: ~/.clouvel/first_project.json"""
-    if os.name == 'nt':
-        base = Path(os.environ.get('USERPROFILE', '~'))
-    else:
-        base = Path.home()
-    clouvel_dir = base / ".clouvel"
-    clouvel_dir.mkdir(parents=True, exist_ok=True)
-    return clouvel_dir / "first_project.json"
+    return get_clouvel_file("first_project.json")
 
 
 def _hash_path(path: str) -> str:
@@ -42,14 +36,10 @@ def get_first_project() -> Optional[Dict[str, Any]]:
     fp_path = _get_first_project_path()
     if not fp_path.exists():
         return None
-    try:
-        data = json.loads(fp_path.read_text(encoding="utf-8"))
-        # Validate structure
-        if "path_hash" in data and "machine_id" in data:
-            return data
-        return None
-    except (OSError, json.JSONDecodeError, ValueError):
-        return None
+    data = load_json(fp_path, None)
+    if data and "path_hash" in data and "machine_id" in data:
+        return data
+    return None
 
 
 def register_first_project(project_path: str) -> Dict[str, Any]:
@@ -86,13 +76,7 @@ def register_first_project(project_path: str) -> Dict[str, Any]:
                 "registered_at": datetime.now().isoformat(),
                 "version": "3.0.0",
             }
-            try:
-                fp_path.write_text(
-                    json.dumps(data, indent=2, ensure_ascii=False),
-                    encoding="utf-8",
-                )
-            except OSError:
-                pass
+            save_json(fp_path, data)
             return data
     except (ImportError, OSError, ConnectionError, ValueError):
         pass
@@ -106,13 +90,7 @@ def register_first_project(project_path: str) -> Dict[str, Any]:
         "version": "3.0.0",
     }
 
-    try:
-        fp_path.write_text(
-            json.dumps(data, indent=2, ensure_ascii=False),
-            encoding="utf-8"
-        )
-    except OSError:
-        pass
+    save_json(fp_path, data)
 
     # Queue for next sync
     try:

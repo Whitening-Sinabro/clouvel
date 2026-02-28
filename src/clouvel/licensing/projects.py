@@ -5,12 +5,12 @@ Feature availability checking and project tracking.
 v3.0: Feature availability & project tracking.
 """
 
-import os
 import json
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any
 
+from .paths import get_clouvel_file, load_json, save_json
 from .core import is_developer
 from .validation import get_machine_id, load_license_cache
 from .trial import is_full_trial_active, get_full_trial_status
@@ -43,53 +43,13 @@ PRO_LAYOUTS = ["lite", "minimal", "standard", "detailed"]
 
 
 def is_feature_available(feature: str) -> Dict[str, Any]:
-    """Check if feature is available for current license.
-
-    v5.0: First project = full Pro (8 managers, BLOCK, KB, unlimited)
-          Additional projects = Pro license required
-
-    Returns:
-        dict with keys:
-        - available: bool
-        - reason: "developer" | "pro" | "free"
-        - upgrade_hint: str (only if not available)
-    """
-    if is_developer():
-        return {"available": True, "reason": "developer"}
-
-    cached = load_license_cache()
-    has_license = cached is not None and cached.get("tier") is not None
-
-    # Non-pro features are always available
-    if feature not in PRO_ONLY_FEATURES:
-        return {"available": True, "reason": "free"}
-
-    # Full Pro Trial active = treat as Pro
-    if is_full_trial_active():
-        trial_status = get_full_trial_status()
-        return {
-            "available": True,
-            "reason": "trial",
-            "remaining_days": trial_status.get("remaining_days", 0),
-        }
-
-    # Pro features require license
-    if has_license:
-        return {"available": True, "reason": "pro"}
-
-    return {"available": False, "reason": "free", "upgrade_hint": "$49/yr"}
+    """v6.0: Always available — all features free."""
+    return {"available": True, "reason": "free"}
 
 
 def get_projects_path() -> Path:
     """Get projects tracking file path: ~/.clouvel/projects.json"""
-    if os.name == 'nt':  # Windows
-        base = Path(os.environ.get('USERPROFILE', '~'))
-    else:  # Unix
-        base = Path.home()
-
-    clouvel_dir = base / ".clouvel"
-    clouvel_dir.mkdir(parents=True, exist_ok=True)
-    return clouvel_dir / "projects.json"
+    return get_clouvel_file("projects.json")
 
 
 def load_projects() -> Dict[str, Any]:
@@ -99,101 +59,38 @@ def load_projects() -> Dict[str, Any]:
     New format: {"projects": [{"path": "...", "status": "active"|"archived", "registered_at": "..."}]}
     """
     projects_path = get_projects_path()
-    if projects_path.exists():
-        try:
-            data = json.loads(projects_path.read_text(encoding="utf-8"))
+    data = load_json(projects_path, None)
+    if data is None:
+        return {"projects": [], "last_updated": None}
 
-            # v3.3: Migrate old format to new format
-            projects = data.get("projects", [])
-            if projects and isinstance(projects[0], str):
-                # Old format: list of path strings
-                migrated = []
-                for p in projects:
-                    migrated.append({
-                        "path": p,
-                        "status": "active",
-                        "registered_at": data.get("last_updated") or datetime.now().isoformat()
-                    })
-                data["projects"] = migrated
-                data["migrated_at"] = datetime.now().isoformat()
-                # Save migrated data
-                save_projects(data)
+    # v3.3: Migrate old format to new format
+    projects = data.get("projects", [])
+    if projects and isinstance(projects[0], str):
+        # Old format: list of path strings
+        migrated = []
+        for p in projects:
+            migrated.append({
+                "path": p,
+                "status": "active",
+                "registered_at": data.get("last_updated") or datetime.now().isoformat()
+            })
+        data["projects"] = migrated
+        data["migrated_at"] = datetime.now().isoformat()
+        # Save migrated data
+        save_projects(data)
 
-            return data
-        except (OSError, json.JSONDecodeError, ValueError):
-            pass
-    return {"projects": [], "last_updated": None}
+    return data
 
 
 def save_projects(data: Dict[str, Any]) -> bool:
     """Save projects data to tracking file."""
-    projects_path = get_projects_path()
-    try:
-        data["last_updated"] = datetime.now().isoformat()
-        projects_path.write_text(
-            json.dumps(data, indent=2, ensure_ascii=False),
-            encoding="utf-8"
-        )
-        return True
-    except OSError:
-        return False
+    data["last_updated"] = datetime.now().isoformat()
+    return save_json(get_projects_path(), data)
 
 
 def register_project(project_path: str) -> Dict[str, Any]:
-    """Register a project and check if within FREE tier limit.
-
-    v5.1: Single source of truth via get_project_tier().
-          Removes redundant Pro/developer/trial checks.
-
-    Returns:
-        dict with keys:
-        - allowed: bool
-        - count: int (active project count)
-        - limit: int (project limit)
-        - is_new: bool (True if newly registered)
-        - tier: str (pro/first/additional)
-    """
-    # v5.1: Single tier check (handles developer, license, trial, first, additional)
-    try:
-        tier = get_project_tier(project_path)
-    except (OSError, json.JSONDecodeError, ValueError):
-        tier = "additional"  # Safe fallback: require Pro
-
-    # Pro/developer/trial = unlimited
-    if tier == "pro":
-        return {"allowed": True, "count": 0, "limit": 999, "is_new": False, "tier": "pro"}
-
-    # First project = unlimited (all Pro features)
-    if tier == "first":
-        return {"allowed": True, "count": 0, "limit": 999, "is_new": False, "tier": "first"}
-
-    # Additional project = Pro required
-    first = get_first_project()
-    first_path = first.get("path", "Unknown") if first else "Unknown"
-
-    # Log project limit hit event
-    try:
-        from ..analytics import log_event
-        log_event("project_limit_hit", {
-            "active_count": 1,
-            "limit": FREE_ACTIVE_PROJECT_LIMIT,
-            "active_project": first_path,
-            "project_tier": "additional",
-            "user_id_hash": get_machine_id()[:8],
-        })
-    except (ImportError, OSError):
-        pass
-
-    return {
-        "allowed": False,
-        "count": 1,
-        "limit": FREE_ACTIVE_PROJECT_LIMIT,
-        "is_new": False,
-        "tier": "additional",
-        "active_projects": [{"path": first_path}],
-        "needs_upgrade": True,
-        "message": _get_project_limit_message([{"path": first_path}]),
-    }
+    """v6.0: Always allowed — unlimited projects."""
+    return {"allowed": True, "count": 0, "limit": 999, "is_new": False, "tier": "free"}
 
 
 def _get_project_limit_message(active_projects: list) -> str:
@@ -207,34 +104,16 @@ def _get_project_limit_message(active_projects: list) -> str:
         first_name = Path(first.get("path", "Unknown")).name
         return f"""
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  🔒 Pro Required for Additional Projects
-
-  Your first project ({first_name}) has full Pro features.
-  To unlock Pro for all your projects:
-
-  Monthly: $7.99/mo
-  Annual:  $49/yr (Early Adopter Pricing)
-  → https://polar.sh/clouvel
-
-  💡 Pro developers manage 3.2 projects on average.
-     Knowledge Base remembers each project's context.
+  All projects are now free in Clouvel v6.0!
+  Your project ({first_name}) has full features.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
 
     active_name = Path(active_projects[0].get("path", "Unknown")).name
     return f"""
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  🔒 Pro Required for Additional Projects
-
-  Your first project ({active_name}) has full Pro features.
-  To unlock Pro for all your projects:
-
-  Monthly: $7.99/mo
-  Annual:  $49/yr (Early Adopter Pricing)
-  → https://polar.sh/clouvel
-
-  💡 Pro developers manage 3.2 projects on average.
-     Knowledge Base remembers each project's context.
+  All projects are now free in Clouvel v6.0!
+  Your project ({active_name}) has full features.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
 

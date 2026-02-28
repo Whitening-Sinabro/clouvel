@@ -5,6 +5,14 @@ Re-exports all public names from licensing sub-modules.
 This package replaces the monolithic license_common.py.
 """
 
+# === paths.py: Centralized path & JSON I/O helpers ===
+from .paths import (
+    get_clouvel_dir,
+    get_clouvel_file,
+    load_json,
+    save_json,
+)
+
 # === core.py: Developer detection, paths, tier defaults ===
 from .core import (
     is_developer,
@@ -72,12 +80,9 @@ from .quotas import (
     get_warn_count,
     get_kb_trial_start,
     start_kb_trial,
-    is_kb_trial_active,
     can_use_weekly_full_meeting,
     mark_weekly_meeting_used,
     FREE_MONTHLY_MEETINGS,
-    check_meeting_quota,
-    consume_meeting_quota,
     # Private but re-exported for backward compat
     _get_warn_count_path,
     _get_kb_trial_path,
@@ -109,6 +114,11 @@ from .trial import _get_full_trial_path
 
 
 __all__ = [
+    # paths
+    "get_clouvel_dir",
+    "get_clouvel_file",
+    "load_json",
+    "save_json",
     # core
     "is_developer",
     "DEV_TIER_INFO",
@@ -154,12 +164,9 @@ __all__ = [
     "get_warn_count",
     "get_kb_trial_start",
     "start_kb_trial",
-    "is_kb_trial_active",
     "can_use_weekly_full_meeting",
     "mark_weekly_meeting_used",
     "FREE_MONTHLY_MEETINGS",
-    "check_meeting_quota",
-    "consume_meeting_quota",
     # experiments
     "EXPERIMENTS",
     "get_ab_group",

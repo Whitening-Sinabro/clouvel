@@ -188,43 +188,8 @@ class TestFirstProjectImmutability:
 # ============================================================
 
 class TestMeetingQuotaResetPrevention:
-    """Server counter prevents local reset to 0."""
-
-    def test_server_quota_overrides_local_zero(self, tmp_clouvel_dir):
-        """Local file reset to used:0, but server says used:3."""
-        mq_local = {"month": "2026-02", "used": 0, "history": []}
-        (tmp_clouvel_dir / "monthly_meeting.json").write_text(
-            json.dumps(mq_local), encoding="utf-8"
-        )
-
-        _make_synced_state({
-            "meeting_quota": {"month": "2026-02", "used": 3, "limit": 3, "remaining": 0},
-        })
-
-        with patch("clouvel.licensing.quotas._get_monthly_meeting_path",
-                    return_value=tmp_clouvel_dir / "monthly_meeting.json"), \
-             patch("clouvel.licensing.quotas.get_project_tier", return_value="additional"):
-            from clouvel.licensing.quotas import check_meeting_quota
-            result = check_meeting_quota(project_path="/some/additional/project")
-            assert result["used"] == 3
-            assert result["remaining"] == 0
-            assert result["allowed"] is False
-
-    def test_consume_via_server(self, tmp_clouvel_dir):
-        """consume_meeting_quota uses server and mirrors locally."""
-        from clouvel.licensing.sync import SyncState
-        ss = SyncState.get()
-
-        with patch("clouvel.licensing.quotas.get_project_tier", return_value="additional"), \
-             patch("clouvel.licensing.quotas._get_monthly_meeting_path",
-                    return_value=tmp_clouvel_dir / "monthly_meeting.json"), \
-             patch("clouvel.licensing.sync._http_post",
-                    return_value={"allowed": True, "used": 2, "remaining": 1, "limit": 3}), \
-             patch("clouvel.licensing.sync.get_machine_id", return_value="testmachineid123"):
-            from clouvel.licensing.quotas import consume_meeting_quota
-            result = consume_meeting_quota(project_path="/some/additional/project")
-            assert result["used"] == 2
-            assert result["remaining"] == 1
+    """v6.0+: Meeting quota stubs removed — section kept for future quota tests."""
+    pass
 
 
 # ============================================================
@@ -282,7 +247,6 @@ class TestOfflineResilience:
         """Trial status works with no server state."""
         from clouvel.licensing.sync import SyncState
         SyncState.reset()
-        # No sync done = not synced
 
         trial_data = {
             "started_at": (datetime.now() - timedelta(days=2)).isoformat(),
@@ -299,25 +263,6 @@ class TestOfflineResilience:
             status = get_full_trial_status()
             assert status["active"] is True
             assert status["remaining_days"] == 5
-
-    def test_meeting_quota_works_offline(self, tmp_clouvel_dir):
-        """Meeting quota works with local fallback."""
-        from clouvel.licensing.sync import SyncState
-        SyncState.reset()
-
-        mq_data = {"month": datetime.now().strftime("%Y-%m"), "used": 1, "history": []}
-        (tmp_clouvel_dir / "monthly_meeting.json").write_text(
-            json.dumps(mq_data), encoding="utf-8"
-        )
-
-        with patch("clouvel.licensing.quotas._get_monthly_meeting_path",
-                    return_value=tmp_clouvel_dir / "monthly_meeting.json"), \
-             patch("clouvel.licensing.quotas.get_project_tier", return_value="additional"), \
-             patch("clouvel.licensing.quotas.get_machine_id", return_value="testmachineid123"):
-            from clouvel.licensing.quotas import check_meeting_quota
-            result = check_meeting_quota(project_path="/some/path")
-            assert result["allowed"] is True
-            assert result["used"] == 1
 
     def test_experiment_works_offline(self, tmp_clouvel_dir):
         """Experiment assignment works offline with local hash."""

@@ -4,13 +4,13 @@
 A/B testing flags (v3.3: 전환율 실험 확장).
 """
 
-import os
 import json
 import hashlib
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any
 
+from .paths import get_clouvel_file, load_json, save_json
 from .core import is_developer
 from .validation import get_machine_id, load_license_cache
 from .trial import is_full_trial_active
@@ -49,13 +49,7 @@ EXPERIMENTS = {
 
 def _get_ab_flags_path() -> Path:
     """Get A/B test flags file path: ~/.clouvel/ab_flags.json"""
-    if os.name == 'nt':
-        base = Path(os.environ.get('USERPROFILE', '~'))
-    else:
-        base = Path.home()
-    clouvel_dir = base / ".clouvel"
-    clouvel_dir.mkdir(parents=True, exist_ok=True)
-    return clouvel_dir / "ab_flags.json"
+    return get_clouvel_file("ab_flags.json")
 
 
 def get_ab_group(experiment_name: str) -> str:
@@ -124,12 +118,7 @@ def get_experiment_variant(experiment_name: str, user_id: str = None) -> str:
 
     # Fallback: local logic
     path = _get_ab_flags_path()
-    data = {}
-    if path.exists():
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError, ValueError):
-            data = {}
+    data = load_json(path, {})
 
     # Check if already assigned
     experiments = data.get("experiments", {})
@@ -179,10 +168,7 @@ def get_experiment_variant(experiment_name: str, user_id: str = None) -> str:
         "license_tier": _license_tier,
     }
 
-    try:
-        path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
-    except OSError:
-        pass
+    save_json(path, data)
 
     # Queue for next sync
     try:
@@ -211,12 +197,7 @@ def _mirror_experiment_to_local(experiment_name: str, variant: str, user_id: str
     if user_id is None:
         user_id = get_machine_id()
     path = _get_ab_flags_path()
-    data = {}
-    if path.exists():
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError, ValueError):
-            data = {}
+    data = load_json(path, {})
     if "experiments" not in data:
         data["experiments"] = {}
     data["experiments"][experiment_name] = {
@@ -225,10 +206,7 @@ def _mirror_experiment_to_local(experiment_name: str, variant: str, user_id: str
         "user_id_hash": user_id[:8] if user_id else "",
         "source": "server",
     }
-    try:
-        path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
-    except OSError:
-        pass
+    save_json(path, data)
 
 
 def get_experiment_value(experiment_name: str) -> Any:
@@ -245,14 +223,8 @@ def get_experiment_value(experiment_name: str) -> Any:
 
 def get_all_experiment_assignments() -> Dict[str, Any]:
     """Get all experiment assignments for the current user."""
-    path = _get_ab_flags_path()
-    if not path.exists():
-        return {}
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-        return data.get("experiments", {})
-    except (OSError, json.JSONDecodeError, ValueError):
-        return {}
+    data = load_json(_get_ab_flags_path(), {})
+    return data.get("experiments", {})
 
 
 def track_conversion_event(experiment_name: str, event_type: str, metadata: Dict = None) -> None:
@@ -282,18 +254,12 @@ def track_conversion_event(experiment_name: str, event_type: str, metadata: Dict
 
     # Also save to local file for offline analysis
     path = _get_ab_flags_path()
-    try:
-        data = {}
-        if path.exists():
-            data = json.loads(path.read_text(encoding="utf-8"))
+    data = load_json(path, {})
 
-        if "events" not in data:
-            data["events"] = []
+    if "events" not in data:
+        data["events"] = []
 
-        # Keep last 100 events
-        data["events"].append(event_data)
-        data["events"] = data["events"][-100:]
-
-        path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
-    except OSError:
-        pass
+    # Keep last 100 events
+    data["events"].append(event_data)
+    data["events"] = data["events"][-100:]
+    save_json(path, data)

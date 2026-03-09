@@ -178,5 +178,5 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 <p align="center">
   <b>Stop Claude Code from breaking your code.</b><br>
-  <a href="https://github.com/Whitening-Sinabro/clouvel/issues">Issues</a> · <a href="https://www.upwork.com/freelancers/~015b3ed55c51eb34c5">Hire me on Upwork</a>
+  <a href="https://github.com/Whitening-Sinabro/clouvel/issues">Issues</a> · <a href="https://www.upwork.com/freelancers/~015b3ed55c51eb34c5">Hire me on Upwork</a> · <a href="https://x.com/ShovelMaker91">X</a>
 </p>

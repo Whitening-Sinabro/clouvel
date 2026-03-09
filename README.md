@@ -14,16 +14,17 @@ Claude Code is fast. But it forgets what it broke yesterday and breaks it again 
 
 ## The Problem
 
-| What happens | Why it hurts |
-|-------------|-------------|
-| AI recreates a bug it fixed yesterday | No error memory between sessions |
-| You ship without anyone reviewing | No second pair of eyes |
-| "Why did we do it this way?" | Decisions lost when context resets |
-| New session = same old mistakes | AI starts from zero every time |
+| What happens                          | Why it hurts                       |
+| ------------------------------------- | ---------------------------------- |
+| AI recreates a bug it fixed yesterday | No error memory between sessions   |
+| You ship without anyone reviewing     | No second pair of eyes             |
+| "Why did we do it this way?"          | Decisions lost when context resets |
+| New session = same old mistakes       | AI starts from zero every time     |
 
 ## What Clouvel Does
 
 ### 1. Error Memory — AI that learns from mistakes
+
 ```
 AI:  Warning: This error happened before.
      Root cause: Missing null check on DB query result
@@ -32,6 +33,7 @@ AI:  Warning: This error happened before.
 ```
 
 ### 2. Spec Gate — Think before AI codes
+
 ```
 You: "Build login"
 AI:  BLOCKED - No PRD found. Write a spec first.
@@ -41,6 +43,7 @@ AI:  PASS - Ready to code.
 ```
 
 ### 3. Quick Check — Blind spots in 10 seconds
+
 ```
 PM:  "What happens when login fails 5 times?"
 CTO: "Rate limiting needed for brute force protection."
@@ -64,56 +67,30 @@ That's it. Clouvel runs automatically.
 
 ---
 
-## Tools
+## All Tools (20)
 
-### Free (10 tools — always available)
-
-| Tool | What it does |
-|------|-------------|
-| `can_code` | Blocks coding without a spec |
-| `start` | Set up a new project with PRD templates |
-| `save_prd` | Save your PRD from conversation |
-| `error_check` | Warns before repeating past mistakes |
-| `error_record` | Records errors with root cause analysis |
-| `context_save` | Saves working state before context runs out |
-| `context_load` | Restores state in a new session |
-| `quick_perspectives` | Quick blind-spot check (2 managers) |
-| `gate` | Run lint, test, build in sequence |
-| `license_status` | Check plan, activate license, start trial |
-
-### Pro (10 more tools — $7.99/mo)
-
-| Tool | What it does |
-|------|-------------|
-| `error_learn` | Auto-generates NEVER/ALWAYS rules from error patterns |
-| `memory_status` | Error memory dashboard with hit counts |
-| `memory_search` | Search past errors by keyword |
-| `memory_global_search` | Share error patterns across all projects |
-| `drift_check` | Detects when work drifts from goals |
-| `plan` | Detailed execution plans with dependencies |
-| `meeting` | Full 8-manager C-Level review |
-| `ship` | One-click lint+test+build with evidence |
-| `record_decision` | Persistent knowledge base for decisions |
-| `search_knowledge` | Search past decisions and context |
-
----
-
-## Free vs Pro
-
-| | Free | Pro ($7.99/mo) |
-|---|---|---|
-| **Error history** | Last 5 errors | Full history + patterns |
-| **Context slots** | 1 (overwrites) | 50 + timeline |
-| **Manager feedback** | 2 managers, 1 question | 8 managers, 2+ questions |
-| **Error learning** | - | Auto-generates rules |
-| **Cross-project memory** | - | Share lessons everywhere |
-| **Drift detection** | - | Catches scope creep |
-| **Ship pipeline** | gate (basic) | Full verify + evidence |
-
-**Try Pro free for 7 days** — no credit card:
-```
-> license_status(action="trial")
-```
+| Tool                   | What it does                                          |
+| ---------------------- | ----------------------------------------------------- |
+| `can_code`             | Blocks coding without a spec                          |
+| `start`                | Set up a new project with PRD templates               |
+| `save_prd`             | Save your PRD from conversation                       |
+| `error_check`          | Warns before repeating past mistakes                  |
+| `error_record`         | Records errors with root cause analysis               |
+| `error_learn`          | Auto-generates NEVER/ALWAYS rules from error patterns |
+| `memory_status`        | Error memory dashboard with hit counts                |
+| `memory_search`        | Search past errors by keyword                         |
+| `memory_global_search` | Share error patterns across all projects              |
+| `context_save`         | Saves working state before context runs out           |
+| `context_load`         | Restores state in a new session                       |
+| `quick_perspectives`   | Quick blind-spot check from managers                  |
+| `meeting`              | Full 8-manager C-Level review                         |
+| `drift_check`          | Detects when work drifts from goals                   |
+| `plan`                 | Detailed execution plans with dependencies            |
+| `gate`                 | Run lint, test, build in sequence                     |
+| `ship`                 | One-click lint+test+build with evidence               |
+| `record_decision`      | Persistent knowledge base for decisions               |
+| `search_knowledge`     | Search past decisions and context                     |
+| `license_status`       | Check Clouvel status                                  |
 
 ---
 
@@ -133,6 +110,7 @@ pip install clouvel
 ### Connect to Claude
 
 **Automatic (recommended):**
+
 ```bash
 clouvel install
 ```
@@ -141,6 +119,7 @@ clouvel install
 <summary>Manual configuration</summary>
 
 **Windows:**
+
 ```json
 {
   "mcpServers": {
@@ -153,6 +132,7 @@ clouvel install
 ```
 
 **Mac/Linux:**
+
 ```json
 {
   "mcpServers": {
@@ -174,9 +154,9 @@ clouvel install
 Day 1:  Install → start → write PRD → can_code PASS → code
 Day 3:  Error happens → error_record saves it
 Day 5:  Same file → error_check warns "this broke before"
-Day 7:  5+ errors → "Full history available in Pro"
+Day 7:  error_learn auto-generates NEVER/ALWAYS rules
 Day 10: Context runs out → context_save/load preserves everything
-Day 14: Decide: $7.99/mo or stay Free
+Day 14: Cross-project memory shares lessons across repos
 ```
 
 ---
@@ -198,5 +178,5 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 <p align="center">
   <b>Stop Claude Code from breaking your code.</b><br>
-  <a href="https://github.com/Whitening-Sinabro/clouvel/issues">Issues</a>
+  <a href="https://github.com/Whitening-Sinabro/clouvel/issues">Issues</a> · <a href="https://www.upwork.com/freelancers/~015b3ed55c51eb34c5">Hire me on Upwork</a>
 </p>

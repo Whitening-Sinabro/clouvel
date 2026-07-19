@@ -27,8 +27,10 @@ document
       other: "Other",
     };
 
-    const webhookUrl =
-      "https://discord.com/api/webhooks/1462105007804645468/JWNks6MBwpBOMeWj3nWFo6wwE3SpsXUZ8KMUVw9riBUR3uvETvLNSxSW4VU69fJ31w_2";
+    // Discord webhooks must never live in client-side JS (visible to every visitor).
+    // The old webhook was deleted. Route contact submissions through a server endpoint
+    // (e.g. a Worker) that holds the webhook as a secret, and set the URL below to that endpoint.
+    const webhookUrl = "";
 
     const payload = {
       embeds: [
